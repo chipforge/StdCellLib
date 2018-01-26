@@ -1,0 +1,292 @@
+\documentclass[12pt, a4paper, twoside, titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,shapes}
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em, text badly centered, node distance=2.5cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, very thick, color=black!50, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=2.5cm,minimum height=2em]
+
+\definecolor{LightGray}{gray}{0.9}
+\definecolor{NormalGray}{gray}{0.8}
+\definecolor{DarkGray}{gray}{0.7}
+
+\title{Libre Silicon 180nm Standard Cell Library}
+\author{Hagen Sankowski}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Design Decisions}
+
+\section{Common Combinatorial Gates}
+
+\subsection{AND2}
+2-input AND gate
+
+\subsection{AND3}
+3-input AND gate
+
+\subsection{EQ2}
+2-input Equality gate (aka XNOR)
+
+\subsection{EQ3}
+3-input Equality gate (aka XNOR)
+
+\subsection{OR2}
+2-input OR gate
+
+\subsection{OR3}
+3-input OR gate
+
+\subsection{NAND2}
+2-input NAND
+
+\subsection{NAND3}
+3-input NAND
+
+\subsection{NOR2}
+2-input NOR
+
+\subsection{NOR3}
+3-input NOR
+
+\subsection{XOR2}
+2-input Exclusive-OR
+
+\subsection{XOR3}
+3-input Exclusive-OR
+
+
+\section{Complex Logic Gates}
+
+\subsection{AOI21}
+2-1-input AND-OR-Invert complex gate
+
+\subsection{AOI211}
+2-1-1-input AND-OR-Invert complex gate
+
+\subsection{AOI22}
+2-2-input AND-OR-Invert complex gate
+
+\subsection{AOI221}
+2-2-1-input AND-OR-Invert complex gate
+
+\subsection{AOI222}
+2-2-2-input AND-OR-Invert complex gate
+
+\subsection{AOI31}
+3-1-input AND-OR-Invert complex gate
+
+\subsection{AOI311}
+3-1-1-input AND-OR-Invert complex gate
+
+\subsection{AOI32}
+3-2-input AND-OR-Invert complex gate
+
+\subsection{AOI321}
+3-2-1-input AND-OR-Invert complex gate
+
+\subsection{AOI322}
+3-2-2-input AND-OR-Invert complex gate
+
+\subsection{AOI33}
+3-3-input AND-OR-Invert complex gate
+
+\subsection{AOI331}
+3-3-1-input AND-OR-Invert complex gate
+
+\subsection{AOI332}
+3-3-2-input AND-OR-Invert complex gate
+
+\subsection{AOI333}
+3-3-3-input AND-OR-Invert complex gate
+
+\subsection{OAI21}
+2-1-input OR-AND-Invert complex gate
+
+\subsection{OAI211}
+2-1-1-input OR-AND-Invert complex gate
+
+\subsection{OAI22}
+2-2-input OR-AND-Invert complex gate
+
+\subsection{OAI221}
+2-2-1-input OR-AND-Invert complex gate
+
+\subsection{OAI222}
+2-2-2-input OR-AND-Invert complex gate
+
+\subsection{OAI31}
+3-1-input OR-AND-Invert complex gate
+
+\subsection{OAI311}
+3-1-1-input OR-AND-Invert complex gate
+
+\subsection{OAI32}
+3-2-input OR-AND-Invert complex gate
+
+\subsection{OAI321}
+3-2-1-input OR-AND-Invert complex gate
+
+\subsection{OAI322}
+3-2-2-input OR-AND-Invert complex gate
+
+\subsection{OAI33}
+3-3-input OR-AND-Invert complex gate
+
+\subsection{OAI331}
+3-3-1-input OR-AND-Invert complex gate
+
+\subsection{OAI332}
+3-3-2-input OR-AND-Invert complex gate
+
+\subsection{OAI333}
+3-3-3-input OR-AND-Invert complex gate
+
+
+\section{Dedicated Function Gates}
+
+\subsection{MUX2}
+2-input Multipexer
+
+\subsection{MUX4}
+4-input Multipexer
+
+
+\subsection{FA2}
+2-input Full Adder
+
+\subsection{HA2}
+2-input Half Adder
+
+
+\section{Inverter}
+
+\subsection{INV}
+Inverter
+
+\subsection{INV2}
+Inverter with strength 2
+
+\subsection{INV4}
+Inverter with strength 4
+
+\subsection{INV8}
+Inverter with strength 8
+
+\subsection{INV16}
+Inverter with strength 16
+
+
+\section{Additionals}
+
+\subsection{TIE0}
+Tie-to-Zero cell
+
+\subsection{TIE1}
+Tie-to-One cell
+
+\subsection{BUF}
+non-inverting Buffer
+
+\subsection{BUF2}
+non-inverting Buffer with strength 2
+
+\subsection{BUF4}
+non-inverting Buffer with strength 4
+
+\subsection{BUF8}
+non-inverting Buffer with strength 8
+
+\subsection{BUF16}
+non-inverting Buffer with strength 16
+
+
+\section{Global Clock-/Long Line Buffer}
+
+\subsection{GBUF}
+Global Buffer
+
+\subsection{GBUF2}
+Global Buffer with strength 2
+
+\subsection{GBUF4}
+Global Buffer with strength 4
+
+\subsection{GBUF8}
+Global Buffer with strength 8
+
+\subsection{GBUF16}
+Global Buffer with strength 16
+
+
+\section{Sequentials}
+
+\subsection{SFFR}
+Scanable D-FlipFlop with Reset
+
+\subsection{SFFS}
+Scanable D-FlipFlop with Set
+
+\subsection{SLAR}
+Scanable D-Latch with Reset
+
+\subsection{SLAS}
+Scanable D-Latch with Set
+
+
+\section{Core Layout Additives}
+
+\subsection{FILL1}
+Filler Cell with capacitance
+
+\subsection{FILL2}
+Filler Cell with capacitance
+
+\subsection{FILL4}
+Filler Cell with capacitance
+
+\subsection{FILL8}
+Filler Cell with capacitance
+
+\subsection{FILL16}
+Filler Cell with capacitance
+
+
+\section{Boundary Layout Cells}
+
+\subsection{PADIN}
+Boundary Scan Input Pad
+
+\subsection{PADOUT}
+Boundary Scan Output Pad
+
+\subsection{PADIO}
+Boundary Scan (bi-directional) Input/Output Pad
+
+\subsection{PADVDD}
+Power Supply Input Pad
+
+\subsection{PADGND}
+Power Supply Ground Pad
+
+\subsection{IOGAP1}
+IO-Ring Gap cell
+
+\subsection{IOGAP2}
+IO-Ring Gap cell
+
+\subsection{IOCORNER}
+IO-Ring Corner cell
+
+
+\end{document}
