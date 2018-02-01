@@ -1,0 +1,61 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/schematic_NAND2.tex
+%%
+%%  Purpose:        Schematic File for NAND2
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+
+\begin{center}
+    \begin{figure}[h] \caption{Schematic}
+        \begin{circuitdiagram}{17}{21}
+        \pin{16}{2.5}{R}{A}  % pin A, n-channel
+        \trans{nenh*}{12}{4}{L}{}{}  % nmos <- left
+        \wire{7}{7.5}{7}{7}   % wire between both nmos
+        \wire{7}{7}{10}{7}   % wire between both nmos
+        \wire{10}{6.5}{10}{7}   % wire between both nmos
+        \pin{1}{8.5}{L}{B}  % pin B, n-channel
+        \trans{nenh*}{5}{10}{R}{}{} % nmos -> right
+        \ground{10}{0.5}{D}  % ground below nmos
+        \pin{1}{17.5}{L}{B} % pin B, p-channel
+        \trans{penh*}{5}{16}{R}{}{} % pmos -> right
+        \power{7}{19.5}{U}{}  % power above left pmos
+        \wire{7}{12}{7}{14}     % wire between nmos and pmos
+        \pin{16}{17.5}{R}{A} % pin A, p-channel
+        \trans{penh*}{12}{16}{L}{}{} % pmos <- left 
+        \power{10}{19.5}{U}{}  % power above right pmos
+        \wire{10}{13}{10}{14}
+        \wire{7}{13}{15}{13}    % wire before pin Z
+        \pin{16}{13}{R}{Z}  % pin Z
+        \junct{7}{13}
+        \junct{10}{13}
+        \end{circuitdiagram}
+    \end{figure}
+\end{center}

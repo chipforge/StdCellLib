@@ -1,4 +1,3 @@
-\newpage
 \section{CMOS in a nutshell}
 
 This basic initial project is dedicated to the CMOS Technology only and for this reason two types of metal–oxide–semiconductor field-effect transistors (MOSFET) are required.
@@ -7,7 +6,7 @@ Historicaly, the first chips with MOSFETs on the mass market were p-channel MOSF
 
 \begin{center}
     \begin{figure}[h] \caption{enhancement-mode PMOS transistor use-case}
-        \begin{circuitdiagram}[draft*]{20}{20}
+        \begin{circuitdiagram}{20}{20}
         \power{15}{18.5}{U}{}  % power above pmos
         \wire{15}{18}{15}{16}   % wire above pmos
         \trans{penh}{13}{14}{R}{}{} % pmos -> right
@@ -28,14 +27,14 @@ Historicaly, the first chips with MOSFETs on the mass market were p-channel MOSF
 \end{center}
 
 The sectional view of a PMOS transistor in silicon is being shown below
-\begin{center}
-\end{center}
+%\begin{center}
+%\end{center}
 
 Historicaly later, faster chips with MOSFETs on the mass market were marked as n-channel MOSFETs in enhancement mode also.
 
 \begin{center}
     \begin{figure}[h] \caption{enhancement-mode NMOS transistor use-case}
-        \begin{circuitdiagram}[draft*]{20}{20}
+        \begin{circuitdiagram}{20}{20}
         \power{15}{18.5}{U}{}  % power above resistor
         \wire{15}{17}{15}{18}   % wire above resistor
         \resis{15}{14}{V}{$R_D$}{}  % resistor on drain
@@ -56,16 +55,17 @@ Historicaly later, faster chips with MOSFETs on the mass market were marked as n
 \end{center}
 
 The sectional view of a NMOS transistor in silicon is being shown here also.
-\begin{center}
-\end{center}
+%\begin{center}
+%\end{center}
 
-Both technologies, the older NMOS as the newer PMOS, have the same disadvantage. Every time, the transistor is switched on, the current between Drain and Source of the transistor is limited by the Resistor on Drain only. Higher currents here meaning also higher power consumption for the chip where the transistors are integrated also. If the transistors are switched off, now currents flows between Drain and Source anymore, the power consumption of the chip also goes low.
+Both technologies, the older NMOS as the newer PMOS, have the same disadvantage. Every time, the transistor is switched on, the current between Drain and Source of the transistor is limited by the Resistor on Drain only. Higher currents here meaning higher power consumption for the chip where the transistors are integrated also. If the transistors are switched off, no currents flows between Drain and Source anymore, the power consumption of the chip also goes low.
+
 Et violà, the US-Patent with Number 3356858\footnotemark changed the world and combines both technologies to the new complementary metal-oxide-semiconductor (CMOS) technology. Instead of every transistor is working against a weak resistor, the transistor works against a complementary switched-off transistor. With the Eyes of our antecessor CMOS doubles the transistor count, but contemporary chips all are build in CMOS.
 \footnotetext[1]{https://www.google.com/patents/US3356858}
 
 \begin{center}
     \begin{figure}[h] \caption{complementary PMOS and NMOS transistor couple use-case}
-        \begin{circuitdiagram}[draft*]{20}{20}
+        \begin{circuitdiagram}{20}{20}
         \power{15}{18.5}{U}{}  % power above pmos 
         \wire{15}{16}{15}{18}   % wire above pmos
         \trans{penh}{13}{14}{R}{}{} % pmos -> right
@@ -90,7 +90,3 @@ Et violà, the US-Patent with Number 3356858\footnotemark changed the world and 
 \end{center}
 
 The sectional view of a NMOS and PMOS transistors couple in silicon - building the CMOS technology - are being shown here also.
-\begin{center}
-\end{center}
-
-\end{document}
