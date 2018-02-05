@@ -33,7 +33,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\documentclass[10pt,a4paper,twoside]{article}
+\documentclass[10pt,a4paper,oneside]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 %\usepackage{amsmath}
@@ -64,19 +64,49 @@ For further clarification consult the complete documentation of the process.
 \end{abstract}
 
 \input{revision.tex}
-
 \clearpage
+
 \input{cmos_in_a_nutshell.tex}
-
 \clearpage
+
 \section{Design Decisions}
+\clearpage
+
+\newcommand{\stacktfour}{YES}
+%\newcommand{\stacktfour}{NO}
 
 \section{Cell Descriptions}
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_AND4.tex}
+    \clearpage
+}{}
 
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_AO2111.tex}
+    \clearpage
+}{}
+
+\input{manpage_EQ2.tex}
 \clearpage
-\input{manpage_NAND2.tex}
 
-%\clearpage
-%\input{manpage_NAND3.tex}
+\input{manpage_NAND2.tex}
+\clearpage
+
+\input{manpage_NAND3.tex}
+\clearpage
+
+\input{manpage_NOR2.tex}
+\clearpage
+
+\input{manpage_NOR3.tex}
+\clearpage
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_OR4.tex}
+    \clearpage
+}{}
+
+\input{manpage_XOR2.tex}
+\clearpage
 
 \end{document}

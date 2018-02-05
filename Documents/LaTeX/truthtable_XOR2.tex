@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_NAND2.tex
+%%  File:           StdCellLib/Documents/LaTeX/truthtable_XOR2.tex
 %%
-%%  Purpose:        Manual Page File for NAND2
+%%  Purpose:        Truth Table File for XOR2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,34 +33,16 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\label{NAND2}
-\textsc{Cell}
-\begin{quote}
-    \textbf{NAND2} - a 2-input Not-AND (or NAND) gate
-\end{quote}
-
-\textsc{Synopsys}
-\begin{quote}
-    NAND2(Z, B, A) \\
-    NAND2(Z, B, A, Vdd, Gnd)
-\end{quote}
-
-\textsc{Description}
-\input{circuit_NAND2.tex}
-\input{schematic_NAND2.tex}
-
-\textsc{Truth Table}
-\input{truthtable_NAND2.tex}
-
-\textsc{Usage}
-
-\textsc{Fan-in / Fan-out}
-
-\textsc{Layout}
-
-\textsc{Files}
-
-\textsc{See also}
-\begin{quote}
-    NAND3 - a 3-input Not-AND (or NAND) gate [Page \pageref{NAND3}]
-\end{quote}
+\begin{center}
+    \begin{table}[h] \caption{\(Z = B \oplus A \)}
+        \begin{center}
+            \begin{tabular}{|c|c||c|} \hline
+            B & A & Z \\ \hline\hline
+            0 & 0 & 0 \\ \hline
+            0 & 1 & 1 \\ \hline
+            1 & 0 & 1 \\ \hline
+            1 & 1 & 0 \\ \hline
+            \end{tabular}
+        \end{center}
+    \end{table}
+\end{center}

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_NAND2.tex
+%%  File:           StdCellLib/Documents/LaTeX/manpage_OR4.tex
 %%
-%%  Purpose:        Manual Page File for NAND2
+%%  Purpose:        Manual Page File for OR4
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,24 +33,24 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\label{NAND2}
+\label{OR4}
 \textsc{Cell}
 \begin{quote}
-    \textbf{NAND2} - a 2-input Not-AND (or NAND) gate
+    \textbf{OR4} - a 4-input OR gate
 \end{quote}
 
 \textsc{Synopsys}
 \begin{quote}
-    NAND2(Z, B, A) \\
-    NAND2(Z, B, A, Vdd, Gnd)
+    OR4(Z, D, C, B, A) \\
+    OR4(Z, D, C, B, A, Vdd, Gnd)
 \end{quote}
 
 \textsc{Description}
-\input{circuit_NAND2.tex}
-\input{schematic_NAND2.tex}
+\input{circuit_OR4.tex}
+%\input{schematic_OR4.tex}
 
 \textsc{Truth Table}
-\input{truthtable_NAND2.tex}
+\input{truthtable_OR4.tex}
 
 \textsc{Usage}
 
@@ -59,8 +59,3 @@
 \textsc{Layout}
 
 \textsc{Files}
-
-\textsc{See also}
-\begin{quote}
-    NAND3 - a 3-input Not-AND (or NAND) gate [Page \pageref{NAND3}]
-\end{quote}

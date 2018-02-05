@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_NAND2.tex
+%%  File:           StdCellLib/Documents/LaTeX/circuit_NOR2.tex
 %%
-%%  Purpose:        Manual Page File for NAND2
+%%  Purpose:        Circuit File for NOR2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,34 +33,15 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\label{NAND2}
-\textsc{Cell}
-\begin{quote}
-    \textbf{NAND2} - a 2-input Not-AND (or NAND) gate
-\end{quote}
-
-\textsc{Synopsys}
-\begin{quote}
-    NAND2(Z, B, A) \\
-    NAND2(Z, B, A, Vdd, Gnd)
-\end{quote}
-
-\textsc{Description}
-\input{circuit_NAND2.tex}
-\input{schematic_NAND2.tex}
-
-\textsc{Truth Table}
-\input{truthtable_NAND2.tex}
-
-\textsc{Usage}
-
-\textsc{Fan-in / Fan-out}
-
-\textsc{Layout}
-
-\textsc{Files}
-
-\textsc{See also}
-\begin{quote}
-    NAND3 - a 3-input Not-AND (or NAND) gate [Page \pageref{NAND3}]
-\end{quote}
+\begin{center}
+    \begin{figure}[h] \caption{Circuit}
+        \begin{center}
+            \begin{circuitdiagram}{11}{6}
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{5}{L}{B}    % pin B
+            \gate[\inputs{2}]{nor}{5}{3}{R}{}{}    % NOR gate -> right
+            \pin{10}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
