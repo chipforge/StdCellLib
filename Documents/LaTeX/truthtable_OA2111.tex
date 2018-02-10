@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AO2111.tex
+%%  File:           StdCellLib/Documents/LaTeX/truthtable_OA2111.tex
 %%
-%%  Purpose:        Truth Table File for AO2111
+%%  Purpose:        Truth Table File for OA2111
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -34,19 +34,16 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    \begin{table}[h] \caption{\(Z = (D1 \land D0) \lor C \lor B \lor A \)}
+    \begin{table}[h] \caption{\(Z = (D1 \lor D0) \land C \land B \land A \)}
         \begin{center}
             \begin{tabular}{|c|c|c|c|c||c|} \hline
             D1 & D0 & C & B & A & Z \\ \hline\hline
-            0  & X  & 0 & 0 & 0 & 0 \\ \hline
-            0  & X  & 1 & X & X & 1 \\ \hline
-            0  & X  & X & 1 & X & 1 \\ \hline
-            0  & X  & X & X & 1 & 1 \\ \hline
-            X  & 0  & 0 & 0 & 0 & 0 \\ \hline
-            X  & 0  & 1 & X & X & 1 \\ \hline
-            X  & 0  & X & 1 & X & 1 \\ \hline
-            X  & 0  & X & X & 1 & 1 \\ \hline
-            1  & 1  & X & X & X & 1 \\ \hline
+            0  & 0  & X & X & X & 0 \\ \hline
+            1  & X  & 1 & 1 & 1 & 1 \\ \hline
+            X  & 1  & 1 & 1 & 1 & 1 \\ \hline
+            X  & X  & 0 & X & X & 0 \\ \hline
+            X  & X  & X & 0 & X & 0 \\ \hline
+            X  & X  & X & X & 0 & 0 \\ \hline
             \end{tabular}
         \end{center}
     \end{table}

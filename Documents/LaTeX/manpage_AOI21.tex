@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AO2111.tex
+%%  File:           StdCellLib/Documents/LaTeX/manpage_AOI21.tex
 %%
-%%  Purpose:        Truth Table File for AO2111
+%%  Purpose:        Manual Page File for AOI21
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,21 +33,34 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\begin{center}
-    \begin{table}[h] \caption{\(Z = (D1 \land D0) \lor C \lor B \lor A \)}
-        \begin{center}
-            \begin{tabular}{|c|c|c|c|c||c|} \hline
-            D1 & D0 & C & B & A & Z \\ \hline\hline
-            0  & X  & 0 & 0 & 0 & 0 \\ \hline
-            0  & X  & 1 & X & X & 1 \\ \hline
-            0  & X  & X & 1 & X & 1 \\ \hline
-            0  & X  & X & X & 1 & 1 \\ \hline
-            X  & 0  & 0 & 0 & 0 & 0 \\ \hline
-            X  & 0  & 1 & X & X & 1 \\ \hline
-            X  & 0  & X & 1 & X & 1 \\ \hline
-            X  & 0  & X & X & 1 & 1 \\ \hline
-            1  & 1  & X & X & X & 1 \\ \hline
-            \end{tabular}
-        \end{center}
-    \end{table}
-\end{center}
+\label{AOI21}
+\textsc{Cell}
+\begin{quote}
+    \textbf{AOI21} - a 2-1-input AND-OR-Invert gate
+\end{quote}
+
+\textsc{Synopsys}
+\begin{quote}
+    AOI21(Z, B1, B0, A) \\
+    AOI21(Z, B1, B0, A, Vdd, Gnd)
+\end{quote}
+
+\textsc{Description}
+\input{circuit_AOI21.tex}
+%\input{schematic_AOI21.tex}
+
+\textsc{Truth Table}
+\input{truthtable_AOI21.tex}
+
+\textsc{Usage}
+
+\textsc{Fan-in / Fan-out}
+
+\textsc{Layout}
+
+\textsc{Files}
+
+\textsc{See also}
+\begin{quote}
+    AOI31 - a 3-1-input AND-OR-Invert gate [Page \pageref{AOI31}]
+\end{quote}

@@ -33,7 +33,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\documentclass[10pt,a4paper,oneside]{article}
+\documentclass[10pt,a4paper,oneside]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 %\usepackage{amsmath}
@@ -86,6 +86,32 @@ For further clarification consult the complete documentation of the process.
     \clearpage
 }{}
 
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_AO3111.tex}
+    \clearpage
+}{}
+
+\input{manpage_AOI21.tex}
+\clearpage
+
+\input{manpage_AOI211.tex}
+\clearpage
+
+\input{manpage_AOI22.tex}
+\clearpage
+
+\input{manpage_AOI31.tex}
+\clearpage
+
+\input{manpage_AOI311.tex}
+\clearpage
+
+\input{manpage_AOI32.tex}
+\clearpage
+
+\input{manpage_AOI33.tex}
+\clearpage
+
 \input{manpage_EQ2.tex}
 \clearpage
 
@@ -99,6 +125,31 @@ For further clarification consult the complete documentation of the process.
 \clearpage
 
 \input{manpage_NOR3.tex}
+\clearpage
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_OA2111.tex}
+    \clearpage
+}{}
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \input{manpage_OA3111.tex}
+    \clearpage
+}{}
+
+\input{manpage_OAI21.tex}
+\clearpage
+
+\input{manpage_OAI22.tex}
+\clearpage
+
+\input{manpage_OAI31.tex}
+\clearpage
+
+\input{manpage_OAI32.tex}
+\clearpage
+
+\input{manpage_OAI33.tex}
 \clearpage
 
 \ifthenelse{\equal{\stacktfour}{YES}}{

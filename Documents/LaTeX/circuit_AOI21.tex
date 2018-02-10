@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AO2111.tex
+%%  File:           StdCellLib/Documents/LaTeX/circuit_AOI21.tex
 %%
-%%  Purpose:        Truth Table File for AO2111
+%%  Purpose:        Circuit File for AOI21
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -34,20 +34,17 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    \begin{table}[h] \caption{\(Z = (D1 \land D0) \lor C \lor B \lor A \)}
+    \begin{figure}[h] \caption{Circuit}
         \begin{center}
-            \begin{tabular}{|c|c|c|c|c||c|} \hline
-            D1 & D0 & C & B & A & Z \\ \hline\hline
-            0  & X  & 0 & 0 & 0 & 0 \\ \hline
-            0  & X  & 1 & X & X & 1 \\ \hline
-            0  & X  & X & 1 & X & 1 \\ \hline
-            0  & X  & X & X & 1 & 1 \\ \hline
-            X  & 0  & 0 & 0 & 0 & 0 \\ \hline
-            X  & 0  & 1 & X & X & 1 \\ \hline
-            X  & 0  & X & 1 & X & 1 \\ \hline
-            X  & 0  & X & X & 1 & 1 \\ \hline
-            1  & 1  & X & X & X & 1 \\ \hline
-            \end{tabular}
+            \begin{circuitdiagram}{18}{8}
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{3}{L}{B0}   % pin B0
+            \pin{1}{7}{L}{B1}   % pin B1
+            \gate[\inputs{2}]{and}{5}{5}{R}{}{}    % AND gate -> right
+            \gate[\inputs{2}]{nor}{12}{3}{R}{}{}    % NOR gate -> right
+            \wire{2}{1}{9}{1}     % wire from pin A
+            \pin{17}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
         \end{center}
-    \end{table}
+    \end{figure}
 \end{center}
