@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_OAI33.tex
+%%  File:           StdCellLib/Documents/LaTeX/manpage_OAI333.tex
 %%
-%%  Purpose:        Manual Page File for OAI33
+%%  Purpose:        Manual Page File for OAI333
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,24 +33,24 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 
-\label{OAI33}
+\label{OAI333}
 \textsc{Cell}
 \begin{quote}
-    \textbf{OAI33} - a 3-3-input OR-AND-Invert gate
+    \textbf{OAI333} - a 3-3-3-input OR-AND-Invert gate
 \end{quote}
 
 \textsc{Synopsys}
 \begin{quote}
-    OAI33(Z, B2, B1, B0, A2, A1, A0) \\
-    OAI33(Z, B2, B1, B0, A2, A1, A0, Vdd, Gnd)
+    OAI333(Z, C2, C1, C0, B2, B1, B0, A2, A1, A0) \\
+    OAI333(Z, C2, C1, C0, B2, B1, B0, A2, A1, A0, Vdd, Gnd)
 \end{quote}
 
 \textsc{Description}
-\input{circuit_OAI33.tex}
-%\input{schematic_OAI33.tex}
+\input{circuit_OAI333.tex}
+%\input{schematic_OAI333.tex}
 
 \textsc{Truth Table}
-\input{truthtable_OAI33.tex}
+\input{truthtable_OAI333.tex}
 
 \textsc{Usage}
 
@@ -62,6 +62,7 @@
 
 \textsc{See also}
 \begin{quote}
-    OAI22 - a 2-2-input OR-AND-Invert gate [Page \pageref{OAI22}] \\
-    OAI32 - a 3-2-input OR-AND-Invert gate [Page \pageref{OAI32}]
+    OAI222 - a 2-2-2-input OR-AND-Invert gate [Page \pageref{OAI222}] \\
+    OAI322 - a 3-2-2-input OR-AND-Invert gate [Page \pageref{OAI322}] \\
+    OAI332 - a 3-3-2-input OR-AND-Invert gate [Page \pageref{OAI332}]
 \end{quote}
