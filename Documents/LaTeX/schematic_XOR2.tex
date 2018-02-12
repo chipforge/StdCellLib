@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_NOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/schematic_XOR2.tex
 %%
-%%  Purpose:        Schematic File for NOR2
+%%  Purpose:        Schematic File for XOR2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,29 +33,57 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2T stacked, 4T total)
+    Schematic (two stages, 2T stacked, 10T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{circuitdiagram}{24}{22}
+            \begin{circuitdiagram}{48}{27}
             \pin{2}{2.5}{L}{A}  % pin A, n-channel left
-            \pin{2}{11.5}{L}{A}  % pin A, p-channel below
-            \pin{2}{17.5}{L}{B}  % pin B, p-channel above
+            \pin{2}{17.5}{L}{A}  % pin A, p-channel below
+            \pin{2}{23.5}{L}{B}  % pin B, p-channel above
             \pin{14}{2.5}{L}{B} % pin B, n-channel right
-            \pin{23}{7}{R}{Z}  % pin Z
             \trans{nenh*}{6}{4}{R}{}{}  % nmos left
-            \trans{penh*}{6}{10}{R}{}{} % pmos below
-            \trans{penh*}{6}{16}{R}{}{} % pmos middle
+            \trans{penh*}{6}{16}{R}{}{} % pmos below
+            \trans{penh*}{6}{22}{R}{}{} % pmos middle
             \trans{nenh*}{18}{4}{R}{}{} % nmos middle
-            \wire{8}{6}{8}{8}     % wire between nmos
+            \wire{8}{6}{8}{14}     % wire between nmos
             \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{20.5}{U}{}  % power above left pmos
+            \power{8}{25.5}{U}{}  % power above left pmos
             \ground{20}{0.5}{D}  % ground below nmos
             \wire{8}{12}{8}{14}     % wire between nmos
             \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{7}{20}{6}
-            \wire{8}{7}{22}{7}    % wire before pin Z
-            \junct{8}{7}
-            \junct{20}{7}
+            \wire{20}{6}{20}{13}
+            \wire{8}{13}{27}{13}    % wire horizontal 1st stage
+            \junct{8}{13}
+            \junct{20}{13}
+            \junct{27}{13}
+            \wire{32}{13}{46}{13}    % wire horizontal 2nd stage before pin Z
+            \pin{26}{23.5}{L}{A}  % pin A
+            \pin{38}{23.5}{L}{B}  % pin B
+            \pin{38}{2.5}{L}{A} % pin A
+            \pin{38}{8.5}{L}{B}  % pin B
+            \wire{27}{8.5}{27}{17.5}
+            \trans{nenh*}{30}{10}{R}{}{}  % nmos
+            \trans{penh*}{30}{16}{R}{}{} % pmos
+            \power{32}{25.5}{U}{}  % power above left pmos
+            \wire{32}{1}{32}{8}
+            \wire{32}{12}{32}{14}
+            \ground{32}{0.5}{D}  % ground below nmos
+            \junct{32}{13}
+            \trans{nenh*}{42}{4}{R}{}{}  % nmos
+            \wire{32}{19}{44}{19}    % wire horizontal between pmos
+            \junct{32}{19}
+            \trans{nenh*}{42}{10}{R}{}{}  % nmos
+            \wire{32}{18}{32}{20}
+            \wire{44}{6}{44}{8}
+            \wire{44}{12}{44}{13}
+            \wire{44}{19}{44}{20}
+            \ground{44}{0.5}{D}  % ground below nmos
+            \junct{44}{13}
+            \trans{penh*}{30}{22}{R}{}{} % pmos
+            \trans{penh*}{42}{22}{R}{}{} % pmos
+            \power{44}{25.5}{U}{}  % power above left pmos
+            \wire{32}{12}{32}{14}
+            \pin{47}{13}{R}{Z}  % pin Z
             \end{circuitdiagram}
         \end{center}
     \end{figure}
