@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_AOI331.tex
+%%  File:           StdCellLib/Documents/LaTeX/manpage_TIE1.tex
 %%
-%%  Purpose:        Manual Page File for AOI331
+%%  Purpose:        Manual Page File for TIE1
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,23 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{AOI331}
+\label{TIE1}
 \paragraph{Cell}
 \begin{quote}
-    \textbf{AOI331} - a 3-3-1-input AND-OR-Invert gate
+    \textbf{TIE1} - a Tie-high (or pull-up) cell 
 \end{quote}
 
 \paragraph{Synopsys}
 \begin{quote}
-    AOI331(Z, C2, C1, C0, B2, B1, B0, A)
+    TIE1(Z)
 \end{quote}
 
 \paragraph{Description}
-\input{circuit_AOI331.tex}
-%\input{schematic_AOI331.tex}
+\input{circuit_TIE1.tex}
+%\input{schematic_TIE1.tex}
 
 \paragraph{Truth Table}
-\input{truthtable_AOI331.tex}
+\input{truthtable_TIE1.tex}
 
 \paragraph{Usage}
 
@@ -60,6 +60,5 @@
 
 \paragraph{See also}
 \begin{quote}
-    AOI221 - a 2-2-1-input AND-OR-Invert gate [p.\pageref{AOI221}] \\
-    AOI321 - a 3-2-1-input AND-OR-Invert gate [p.\pageref{AOI321}]
+    TIE0 - a Tie-low (or pull-down) cell [p.\pageref{TIE0}]
 \end{quote}

@@ -32,8 +32,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-
-\documentclass[10pt,a4paper,oneside]{report}
+\documentclass[10pt,a4paper,twoside]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 %\usepackage{amsmath}
@@ -43,6 +42,7 @@
 %\usepackage{graphicx}
 \usepackage[digital,srcmeas]{circdia}
 % \usepackage[dvipsnames]{xcolor}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \title{LibreSilicon's Standard Cell Library}
 \author{Hagen Sankowski}
@@ -66,146 +66,221 @@ For further clarification consult the complete documentation of the process.
 \input{revision.tex}
 \clearpage
 
+\pagestyle{headings}
+
+\chapter{CMOS in a nutshell}
 \input{cmos_in_a_nutshell.tex}
 \clearpage
 
-\section{Design Decisions}
-\clearpage
-
+\chapter{Considerations}
 \newcommand{\stacktfour}{YES}
 %\newcommand{\stacktfour}{NO}
+\clearpage
 
-\section{Cell Descriptions}
+\chapter{Logical Cells}
+\clearpage
+\twocolumn
+
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AND4}
     \input{manpage_AND4.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AO2111}
     \input{manpage_AO2111.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AO3111}
     \input{manpage_AO3111.tex}
     \clearpage
 }{}
 
+\section{AOI21}
 \input{manpage_AOI21.tex}
 \clearpage
 
+\section{AOI22}
 \input{manpage_AOI22.tex}
 \clearpage
 
+\section{AOI31}
 \input{manpage_AOI31.tex}
 \clearpage
 
+\section{AOI32}
 \input{manpage_AOI32.tex}
 \clearpage
 
+\section{AOI33}
 \input{manpage_AOI33.tex}
 \clearpage
 
+\section{AOI211}
 \input{manpage_AOI211.tex}
 \clearpage
 
+\section{AOI221}
 \input{manpage_AOI221.tex}
 \clearpage
 
+\section{AOI222}
 \input{manpage_AOI222.tex}
 \clearpage
 
+\section{AOI311}
 \input{manpage_AOI311.tex}
 \clearpage
 
+\section{AOI321}
 \input{manpage_AOI321.tex}
 \clearpage
 
+\section{AOI322}
 \input{manpage_AOI322.tex}
 \clearpage
 
+\section{AOI331}
 \input{manpage_AOI331.tex}
 \clearpage
 
+\section{AOI332}
 \input{manpage_AOI332.tex}
 \clearpage
 
+\section{AOI333}
 \input{manpage_AOI333.tex}
 \clearpage
 
+\section{BUF}
+\input{manpage_BUF.tex}
+\clearpage
+
+\section{EQ2}
 \input{manpage_EQ2.tex}
 \clearpage
 
+\section{INV}
+\input{manpage_INV.tex}
+\clearpage
+
+\section{NAND2}
 \input{manpage_NAND2.tex}
 \clearpage
 
+\section{NAND3}
 \input{manpage_NAND3.tex}
 \clearpage
 
+\section{NOR2}
 \input{manpage_NOR2.tex}
 \clearpage
 
+\section{NOR3}
 \input{manpage_NOR3.tex}
 \clearpage
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OA2111}
     \input{manpage_OA2111.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OA3111}
     \input{manpage_OA3111.tex}
     \clearpage
 }{}
 
+\section{OAI21}
 \input{manpage_OAI21.tex}
 \clearpage
 
+\section{OAI22}
 \input{manpage_OAI22.tex}
 \clearpage
 
+\section{OAI31}
 \input{manpage_OAI31.tex}
 \clearpage
 
+\section{OAI32}
 \input{manpage_OAI32.tex}
 \clearpage
 
+\section{OAI33}
 \input{manpage_OAI33.tex}
 \clearpage
 
+\section{OAI211}
 \input{manpage_OAI211.tex}
 \clearpage
 
+\section{OAI221}
 \input{manpage_OAI221.tex}
 \clearpage
 
+\section{OAI222}
 \input{manpage_OAI222.tex}
 \clearpage
 
+\section{OAI311}
 \input{manpage_OAI311.tex}
 \clearpage
 
+\section{OAI321}
 \input{manpage_OAI321.tex}
 \clearpage
 
+\section{OAI322}
 \input{manpage_OAI322.tex}
 \clearpage
 
+\section{OAI331}
 \input{manpage_OAI331.tex}
 \clearpage
 
+\section{OAI332}
 \input{manpage_OAI332.tex}
 \clearpage
 
+\section{OAI333}
 \input{manpage_OAI333.tex}
 \clearpage
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OR4}
     \input{manpage_OR4.tex}
     \clearpage
 }{}
 
+\section{XOR2}
 \input{manpage_XOR2.tex}
 \clearpage
+
+\onecolumn
+
+\chapter{Physical Cells}
+\clearpage
+
+\twocolumn
+
+\section{TIE0}
+\input{manpage_TIE0.tex}
+\clearpage
+
+\section{TIE1}
+\input{manpage_TIE1.tex}
+\clearpage
+
+FILL \\
+VDDIO \\
+GND \\
+ANA
+
+\onecolumn
 
 \end{document}
