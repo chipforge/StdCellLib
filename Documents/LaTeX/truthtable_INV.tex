@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_OAI21.tex
+%%  File:           StdCellLib/Documents/LaTeX/truthtable_INV.tex
 %%
-%%  Purpose:        Truth Table File for OAI21
+%%  Purpose:        Truth Table File for INV
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -34,15 +34,13 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    {\(Z = \lnot ((B1 \lor B0) \land A) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((B1 \lor B0) \land A) \)}
+    {\(Z = \lnot A \)}
+    \begin{table}[h] %\caption{\(Z = \lnot A \)}
         \begin{center}
-            \begin{tabular}{|c|c|c||c|} \hline
-            B1 & B0 & A & Z \\ \hline\hline
-            0  & 0  & X & 1 \\ \hline
-            1  & X  & 1 & 0 \\ \hline
-            X  & 1  & 1 & 0 \\ \hline
-            X  & X  & 0 & 1 \\ \hline
+            \begin{tabular}{|c||c|} \hline
+            A & Z \\ \hline\hline
+            0 & 1 \\ \hline
+            1 & 0 \\ \hline
             \end{tabular}
         \end{center}
     \end{table}

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_AOI33.tex
+%%  File:           StdCellLib/Documents/LaTeX/schematic_NOR3.tex
 %%
-%%  Purpose:        Circuit File for AOI33
+%%  Purpose:        Schematic File for NOR2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,23 +32,38 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
+
 \begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    Schematic
+    \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{circuitdiagram}{18}{12}
-            \pin{1}{1}{L}{A0}    % pin A0
-            \pin{1}{3}{L}{A1}    % pin A1
-            \pin{1}{5}{L}{A2}    % pin A2
-            \pin{1}{7}{L}{B0}    % pin B0
-            \pin{1}{9}{L}{B1}    % pin B1
-            \pin{1}{11}{L}{B2}   % pin B2
-            \gate[\inputs{3}]{and}{5}{9}{R}{}{}    % AND gate -> right
-            \gate[\inputs{3}]{and}{5}{3}{R}{}{}    % AND gate -> right
-            \gate[\inputs{2}]{nor}{12}{6}{R}{}{}    % NOR gate -> right
-            \wire{9}{3}{9}{4}     % wire between AND and NOR
-            \wire{9}{9}{9}{8}     % wire between AND and NOR
-            \pin{17}{6}{R}{Z}   % pin Z
+            \begin{circuitdiagram}{36}{27}
+            \pin{2}{2.5}{L}{A}  % pin A, n-channel left
+            \pin{2}{11.5}{L}{A}  % pin A, p-channel below
+            \pin{2}{17.5}{L}{B}  % pin B, p-channel middle
+            \pin{2}{23.5}{L}{C} % pin C, p-channel above
+            \pin{14}{2.5}{L}{B} % pin B, n-channel middle
+            \pin{26}{2.5}{L}{C} % pin A, n-channel right
+            \pin{35}{7}{R}{Z}  % pin Z
+            \trans{nenh*}{6}{4}{R}{}{}  % nmos left
+            \trans{penh*}{6}{10}{R}{}{} % pmos below
+            \trans{penh*}{6}{16}{R}{}{} % pmos middle
+            \trans{penh*}{6}{22}{R}{}{} % pmos above
+            \trans{nenh*}{18}{4}{R}{}{} % nmos middle
+            \trans{nenh*}{30}{4}{R}{}{} % nmos right
+            \wire{8}{6}{8}{8}     % wire between nmos
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{8}{25.5}{U}{}  % power above left pmos
+            \ground{20}{0.5}{D}  % ground below nmos
+            \ground{32}{0.5}{D}  % ground below nmos
+            \wire{8}{12}{8}{14}     % wire between nmos
+            \wire{8}{18}{8}{20}     % wire between nmos and pmos
+            \wire{20}{7}{20}{6}
+            \wire{32}{7}{32}{6}
+            \wire{8}{7}{34}{7}    % wire before pin Z
+            \junct{8}{7}
+            \junct{20}{7}
+            \junct{32}{7}
             \end{circuitdiagram}
         \end{center}
     \end{figure}

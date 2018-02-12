@@ -34,27 +34,28 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    \begin{figure}[h] \caption{Schematic}
+    Schematic
+    \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{circuitdiagram}[draft*]{21}{21}
-            \pin{1}{2.5}{L}{A}  % pin A, n-channel below
-            \pin{1}{8.5}{L}{B}  % pin B, n-channel above
-            \pin{1}{17.5}{L}{B} % pin B, p-channel left
-            \pin{11}{17.5}{L}{A} % pin A, p-channel right
-            \pin{20}{13}{R}{Z}  % pin Z
-            \trans{nenh*}{5}{4}{R}{}{}  % nmos below
-            \trans{nenh*}{5}{10}{R}{}{} % nmos above
-            \trans{penh*}{5}{16}{R}{}{} % pmos left
-            \trans{penh*}{15}{16}{R}{}{} % pmos right
-            \ground{7}{0.5}{D}  % ground below nmos
-            \power{7}{19.5}{U}{}  % power above left pmos
-            \power{17}{19.5}{U}{}  % power above right pmos
-            \wire{7}{6}{7}{8}     % wire between both nmos
-            \wire{7}{12}{7}{14}     % wire between nmos and pmos
-            \wire{17}{13}{17}{14}
-            \wire{7}{13}{19}{13}    % wire before pin Z
-            \junct{7}{13}
-            \junct{17}{13}
+            \begin{circuitdiagram}{24}{21}
+            \pin{2}{2.5}{L}{A}  % pin A, n-channel below
+            \pin{2}{8.5}{L}{B}  % pin B, n-channel above
+            \pin{2}{17.5}{L}{B} % pin B, p-channel left
+            \pin{14}{17.5}{L}{A} % pin A, p-channel right
+            \trans{nenh*}{6}{4}{R}{}{}  % nmos below
+            \trans{nenh*}{6}{10}{R}{}{} % nmos above
+            \trans{penh*}{6}{16}{R}{}{} % pmos left
+            \trans{penh*}{18}{16}{R}{}{} % pmos right
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{8}{19.5}{U}{}  % power above left pmos
+            \power{20}{19.5}{U}{}  % power above right pmos
+            \wire{8}{6}{8}{8}     % wire between both nmos
+            \wire{8}{12}{8}{14}     % wire between nmos and pmos
+            \wire{20}{13}{20}{14}
+            \wire{8}{13}{22}{13}    % wire before pin Z
+            \junct{8}{13}
+            \junct{20}{13}
+            \pin{23}{13}{R}{Z}  % pin Z
             \end{circuitdiagram}
         \end{center}
     \end{figure}

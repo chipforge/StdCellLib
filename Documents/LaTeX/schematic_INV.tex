@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_OAI21.tex
+%%  File:           StdCellLib/Documents/LaTeX/schematic_INV.tex
 %%
-%%  Purpose:        Truth Table File for OAI21
+%%  Purpose:        Schematic File for INV
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -34,16 +34,23 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    {\(Z = \lnot ((B1 \lor B0) \land A) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((B1 \lor B0) \land A) \)}
+    Schematic
+    \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{tabular}{|c|c|c||c|} \hline
-            B1 & B0 & A & Z \\ \hline\hline
-            0  & 0  & X & 1 \\ \hline
-            1  & X  & 1 & 0 \\ \hline
-            X  & 1  & 1 & 0 \\ \hline
-            X  & X  & 0 & 1 \\ \hline
-            \end{tabular}
+            \begin{circuitdiagram}{12}{15}
+            \pin{2}{2.5}{L}{A}  % pin A, n-channel
+            \pin{2}{11.5}{L}{A} % pin A, p-channel
+            \trans{nenh*}{6}{4}{R}{}{}  % nmos
+            \trans{penh*}{6}{10}{R}{}{} % pmos
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{8}{13.5}{U}{}  % power above pmos
+            \wire{8}{6}{8}{8}     % wire between nmos and pmos
+            \wire{8}{12}{8}{14}     % wire between nmos and pmos
+            \wire{18}{13}{18}{14}
+            \wire{8}{7}{10}{7}    % wire before pin Z
+            \junct{8}{7}
+            \pin{11}{7}{R}{Z}  % pin Z
+            \end{circuitdiagram}
         \end{center}
-    \end{table}
+    \end{figure}
 \end{center}
