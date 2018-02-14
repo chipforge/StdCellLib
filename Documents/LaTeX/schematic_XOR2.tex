@@ -37,21 +37,20 @@
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{48}{27}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel left
+            \pin{2}{8.5}{L}{A}  % pin A, n-channel left
             \pin{2}{17.5}{L}{A}  % pin A, p-channel below
             \pin{2}{23.5}{L}{B}  % pin B, p-channel above
-            \pin{14}{2.5}{L}{B} % pin B, n-channel right
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos left
+            \pin{14}{8.5}{L}{B} % pin B, n-channel right
+            \trans{nenh*}{6}{10}{R}{}{}  % nmos left
             \trans{penh*}{6}{16}{R}{}{} % pmos below
             \trans{penh*}{6}{22}{R}{}{} % pmos middle
-            \trans{nenh*}{18}{4}{R}{}{} % nmos middle
-            \wire{8}{6}{8}{14}     % wire between nmos
-            \ground{8}{0.5}{D}  % ground below nmos
+            \trans{nenh*}{18}{10}{R}{}{} % nmos middle
+            \ground{8}{6.5}{D}  % ground below nmos
             \power{8}{25.5}{U}{}  % power above left pmos
-            \ground{20}{0.5}{D}  % ground below nmos
+            \ground{20}{6.5}{D}  % ground below nmos
             \wire{8}{12}{8}{14}     % wire between nmos
             \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{6}{20}{13}
+            \wire{20}{12}{20}{13}
             \wire{8}{13}{27}{13}    % wire horizontal 1st stage
             \junct{8}{13}
             \junct{20}{13}
