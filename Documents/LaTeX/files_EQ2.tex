@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_EQ2.tex
+%%  File:           StdCellLib/Documents/LaTeX/files_EQ2.tex
 %%
-%%  Purpose:        Manual Page File for EQ2
+%%  Purpose:        File list for EQ2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,34 +32,15 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{EQ2}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{EQ2} - a 2-input Equality (or XNOR) gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    EQ2(Z, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{circuit_EQ2.tex}
-\input{schematic_EQ2.tex}
-
-\paragraph{Truth Table}
-\input{truthtable_EQ2.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-\input{files_EQ2.tex}
-
-\paragraph{See also}
-\begin{quote}
-    XOR2 - a 2-input Exclusive-OR (or XOR) gate
-\end{quote}
+\begin{center}
+    Simulation
+    \begin{itemize}
+        \item ./Sources/verilog/\textbf{EQ2.v} - Verilog-95 Cell Model
+        \item ./Sources/verilog/\textbf{EQ2\_switch.v} - Verilog-2001 Switch-Level Model
+        \item ./TBench/verilog/\textbf{tb\_EQ2.v} - Verilog-2001 Self-checking Testbench
+    \end{itemize}
+    Physical Layout
+    \begin{itemize}
+        \item \textbf{?}
+    \end{itemize}
+\end{center}

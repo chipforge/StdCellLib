@@ -1,0 +1,90 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/schematic_EQ2.tex
+%%
+%%  Purpose:        Schematic File for EQ2
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Schematic (two stages, 2$T_{p}$/2$T_{n}$ stacked, 10T total)
+    \begin{figure}[h] %\caption{Schematic}
+        \begin{center}
+            \begin{circuitdiagram}{48}{27}
+            \pin{2}{8.5}{L}{A}  % pin A, n-channel
+            \pin{2}{17.5}{L}{A}  % pin A, p-channel left
+            \pin{14}{17.5}{L}{B}  % pin B, p-channel right
+            \pin{2}{2.5}{L}{B} % pin B, n-channel
+            \trans{nenh*}{6}{10}{R}{}{}  % nmos
+            \trans{penh*}{6}{16}{R}{}{} % pmos
+            \trans{nenh*}{6}{4}{R}{}{} % nmos
+            \trans{penh*}{18}{16}{R}{}{} % pmos
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{8}{19.5}{U}{}  % power above left pmos
+            \power{20}{19.5}{U}{}  % power above right pmos
+            \wire{8}{6}{8}{8}     % wire between nmos
+            \wire{8}{12}{8}{14}     % wire between nmos
+            \wire{8}{18}{8}{20}     % wire between nmos and pmos
+            \wire{20}{13}{20}{14}
+            \wire{8}{13}{27}{13}    % wire horizontal 1st stage
+            \junct{8}{13}
+            \junct{20}{13}
+            \junct{27}{13}
+            \wire{32}{13}{46}{13}    % wire horizontal 2nd stage before pin Z
+            \pin{38}{17.5}{L}{A}  % pin A
+            \pin{38}{23.5}{L}{B}  % pin B
+            \pin{38}{2.5}{L}{B} % pin B
+            \pin{26}{2.5}{L}{A}  % pin A
+            \wire{27}{8.5}{27}{17.5}
+            \trans{nenh*}{30}{10}{R}{}{}  % nmos
+            \trans{penh*}{30}{16}{R}{}{} % pmos
+            \power{32}{25.5}{U}{}  % power above left pmos
+            \wire{32}{6}{32}{8}
+            \wire{32}{12}{32}{14}
+            \ground{32}{0.5}{D}  % ground below nmos
+            \junct{32}{13}
+            \trans{nenh*}{42}{4}{R}{}{}  % nmos
+            \wire{32}{7}{44}{7}    % wire horizontal between pmos
+            \junct{32}{7}
+            \trans{nenh*}{30}{4}{R}{}{}  % nmos
+            \wire{32}{18}{32}{25}
+            \wire{44}{6}{44}{7}
+            \wire{44}{14}{44}{13}
+            \wire{44}{18}{44}{20}
+            \ground{44}{0.5}{D}  % ground below nmos
+            \junct{44}{13}
+            \trans{penh*}{42}{16}{R}{}{} % pmos
+            \trans{penh*}{42}{22}{R}{}{} % pmos
+            \power{44}{25.5}{U}{}  % power above left pmos
+            \wire{32}{12}{32}{14}
+            \pin{47}{13}{R}{Z}  % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
