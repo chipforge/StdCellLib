@@ -33,7 +33,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (two stages, 4T stacked, 10T total)
+    Schematic (two stages, 1$T_{p}$/4$T_{n}$ stacked, 10T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{50}{33}
@@ -41,10 +41,10 @@
             \pin{2}{8.5}{L}{B}  % pin B, n-channel middle
             \pin{2}{14.5}{L}{C} % pin C, n-channel middle
             \pin{2}{20.5}{L}{D} % pin D, n-channel above
-            \pin{2}{29.5}{L}{D} % pin D, p-channel left
-            \pin{14}{29.5}{L}{C} % pin C, p-channel middle
-            \pin{26}{29.5}{L}{B} % pin B, p-channel middle
-            \pin{38}{29.5}{L}{A} % pin A, p-channel right
+            \pin{2}{29.5}{L}{A} % pin A, p-channel left
+            \pin{14}{29.5}{L}{B} % pin B, p-channel middle
+            \pin{26}{29.5}{L}{C} % pin C, p-channel middle
+            \pin{38}{29.5}{L}{D} % pin D, p-channel right
             \trans{nenh*}{6}{4}{R}{}{}  % nmos below
             \trans{nenh*}{6}{10}{R}{}{} % nmos middle
             \trans{nenh*}{6}{16}{R}{}{} % nmos middle

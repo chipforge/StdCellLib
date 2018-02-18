@@ -9,11 +9,11 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_OR4.tex
+%%  File:           StdCellLib/Documents/LaTeX/reading.bib
 %%
-%%  Purpose:        Manual Page File for OR4
+%%  Purpose:        Bibliography
 %%
-%%  ************    LaTeX with circdia.sty package      ***************
+%%  ************    LaTeX - BibTeX      *******************************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
@@ -32,34 +32,30 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{OR4}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{OR4} - a 4-input OR gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    OR4(Z, D, C, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{circuit_OR4.tex}
-\input{schematic_OR4.tex}
-
-\paragraph{Truth Table}
-\input{truthtable_OR4.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-
-\paragraph{See also}
-\begin{quote}
-    AND4 - a 4-input AND gate
-\end{quote}
+@book{Kaeslin:2008,
+    author  = "Hubert {Kaeslin}",
+    title   = "Digital Integrated Circuit Design: From VLSI Architecture to CMOS Fabrication",
+    year    = "2008",
+    isbn    = "978-0-521-88267-5",
+    edition = "1st",
+    publisher = "Cambridge University Press",
+    address = "New Your, NY, USA"
+}
+@book{Weste:1985,
+    author  = "Neil H. E. {Weste} and Kamran {Eshraghian}",
+    title   = "Principles of CMOS VLSI Design: A Systems Perspective",
+    year    = "1985",
+    isbn    = "0-201-08222-5",
+    publisher = "Addison-Wesley Longman Publishing Co., Inc.",
+    address = "Boston, MA, USA",
+}
+@book{Weste:2010,
+    author  = "Neil H. E. {Weste} and David {Harris}",
+    title   = "CMOS VLSI Design: A Circuits and Systems Perspective",
+    year    =  "2010",
+    isbn    = "978-0-32154774-3",
+    edition = "4th",
+    publisher = "Addison-Wesley Publishing Company",
+    address = "USA",
+} 
 

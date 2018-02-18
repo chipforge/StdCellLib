@@ -33,7 +33,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (two stages, 2T stacked, 10T total)
+    Schematic (two stages, 2$T_{p}$/2$T_{n}$ stacked, 10T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{48}{27}
@@ -58,8 +58,8 @@
             \wire{32}{13}{46}{13}    % wire horizontal 2nd stage before pin Z
             \pin{26}{23.5}{L}{A}  % pin A
             \pin{38}{23.5}{L}{B}  % pin B
-            \pin{38}{2.5}{L}{A} % pin A
-            \pin{38}{8.5}{L}{B}  % pin B
+            \pin{38}{2.5}{L}{B} % pin B
+            \pin{38}{8.5}{L}{A}  % pin A
             \wire{27}{8.5}{27}{17.5}
             \trans{nenh*}{30}{10}{R}{}{}  % nmos
             \trans{penh*}{30}{16}{R}{}{} % pmos

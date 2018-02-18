@@ -33,16 +33,16 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 3T stacked, 6T total)
+    Schematic (one stage, 1$T_{p}$/3$T_{n}$ stacked, 6T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{36}{27}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel below
+            \pin{2}{2.5}{L}{C}  % pin C, n-channel below
             \pin{2}{8.5}{L}{B}  % pin B, n-channel middle
-            \pin{2}{14.5}{L}{C}  % pin C, n-channel above
-            \pin{2}{23.5}{L}{C} % pin C, p-channel left
+            \pin{2}{14.5}{L}{A}  % pin A, n-channel above
+            \pin{2}{23.5}{L}{A} % pin A, p-channel left
             \pin{14}{23.5}{L}{B} % pin B, p-channel middle
-            \pin{26}{23.5}{L}{A} % pin A, p-channel right
+            \pin{26}{23.5}{L}{C} % pin C, p-channel right
             \pin{35}{19}{R}{Z}  % pin Z
             \trans{nenh*}{6}{4}{R}{}{}  % nmos below
             \trans{nenh*}{6}{10}{R}{}{} % nmos middle

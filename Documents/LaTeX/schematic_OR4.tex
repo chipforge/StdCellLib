@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_NOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/schematic_OR4.tex
 %%
-%%  Purpose:        Schematic File for NOR2
+%%  Purpose:        Schematic File for OR4
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,29 +33,51 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2$T_{p}$/1$T_{n}$ stacked, 4T total)
+    Schematic (two stages, 4T stacked, 10T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{circuitdiagram}{24}{22}
+            \begin{circuitdiagram}{60}{33}
             \pin{2}{2.5}{L}{A}  % pin A, n-channel left
             \pin{2}{11.5}{L}{A}  % pin A, p-channel below
-            \pin{2}{17.5}{L}{B}  % pin B, p-channel above
-            \pin{14}{2.5}{L}{B} % pin B, n-channel right
-            \pin{23}{7}{R}{Z}  % pin Z
+            \pin{2}{17.5}{L}{B}  % pin B, p-channel middle
+            \pin{2}{23.5}{L}{C} % pin C, p-channel above
+            \pin{2}{29.5}{L}{D} % pin D, p-channel above
+            \pin{14}{2.5}{L}{B} % pin B, n-channel middle
+            \pin{26}{2.5}{L}{C} % pin C, n-channel right
+            \pin{38}{2.5}{L}{D} % pin D, n-channel right
             \trans{nenh*}{6}{4}{R}{}{}  % nmos left
             \trans{penh*}{6}{10}{R}{}{} % pmos below
             \trans{penh*}{6}{16}{R}{}{} % pmos middle
+            \trans{penh*}{6}{22}{R}{}{} % pmos above
+            \trans{penh*}{6}{28}{R}{}{} % pmos above
             \trans{nenh*}{18}{4}{R}{}{} % nmos middle
+            \trans{nenh*}{30}{4}{R}{}{} % nmos right
+            \trans{nenh*}{42}{4}{R}{}{} % nmos right
             \wire{8}{6}{8}{8}     % wire between nmos
             \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{20.5}{U}{}  % power above left pmos
+            \power{8}{31.5}{U}{}  % power above left pmos
             \ground{20}{0.5}{D}  % ground below nmos
+            \ground{32}{0.5}{D}  % ground below nmos
+            \ground{44}{0.5}{D}  % ground below nmos
             \wire{8}{12}{8}{14}     % wire between nmos
             \wire{8}{18}{8}{20}     % wire between nmos and pmos
             \wire{20}{7}{20}{6}
-            \wire{8}{7}{22}{7}    % wire before pin Z
+            \wire{32}{7}{32}{6}
+            \wire{8}{7}{51}{7}    % wire before inverter gates
+            \wire{51}{2.5}{51}{11.5}  % wire on inverter gates
             \junct{8}{7}
             \junct{20}{7}
+            \junct{32}{7}
+            \junct{44}{7}
+            \junct{51}{7}
+            \trans{nenh*}{54}{4}{R}{}{} % nmos right
+            \trans{penh*}{54}{10}{R}{}{} % pmos below
+            \power{56}{13.5}{U}{}  % power above left pmos
+            \ground{56}{0.5}{D}  % ground below nmos
+            \wire{56}{7}{58}{7}    % wire before pin
+            \wire{56}{6}{56}{8}    % wire before pin
+            \junct{56}{7}
+            \pin{59}{7}{R}{Z}  % pin Z
             \end{circuitdiagram}
         \end{center}
     \end{figure}

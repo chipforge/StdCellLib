@@ -33,18 +33,18 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2T stacked, 8T total)
+    Schematic (one stage, 2$T_{p}$/2$T_{n}$ stacked, 8T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{24}{27}
-            \pin{2}{2.5}{L}{A1}  % pin A1, n-channel left-below
-            \pin{2}{8.5}{L}{B1}  % pin B1, n-channel left-above
-            \pin{14}{2.5}{L}{A0}  % pin A0, n-channel right-below
-            \pin{14}{8.5}{L}{B0}  % pin B0, n-channel right-above
-            \pin{2}{17.5}{L}{B1} % pin B1, p-channel left-below
-            \pin{14}{17.5}{L}{A1} % pin A1, p-channel right-below
-            \pin{2}{23.5}{L}{B0} % pin B0, p-channel left-above
-            \pin{14}{23.5}{L}{A0} % pin A0, p-channel right-above
+            \pin{2}{2.5}{L}{B0}  % pin B0, n-channel left-below
+            \pin{2}{8.5}{L}{A0}  % pin A0, n-channel left-above
+            \pin{14}{2.5}{L}{B1}  % pin B1, n-channel right-below
+            \pin{14}{8.5}{L}{A1}  % pin A1, n-channel right-above
+            \pin{2}{17.5}{L}{A0} % pin A0, p-channel left-below
+            \pin{14}{17.5}{L}{B0} % pin B0, p-channel right-below
+            \pin{2}{23.5}{L}{A1} % pin A1, p-channel left-above
+            \pin{14}{23.5}{L}{B1} % pin B1, p-channel right-above
             \trans{nenh*}{6}{4}{R}{}{}  % nmos left-below
             \trans{nenh*}{6}{10}{R}{}{} % nmos left-above
             \trans{nenh*}{18}{4}{R}{}{} % nmos right-below

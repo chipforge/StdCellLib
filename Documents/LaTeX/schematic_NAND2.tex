@@ -33,14 +33,14 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2T stacked, 4T total)
+    Schematic (one stage, 1$T_{p}$/2$T_{n}$ stacked, 4T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{24}{21}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel below
-            \pin{2}{8.5}{L}{B}  % pin B, n-channel above
-            \pin{2}{17.5}{L}{B} % pin B, p-channel left
-            \pin{14}{17.5}{L}{A} % pin A, p-channel right
+            \pin{2}{2.5}{L}{B}  % pin B, n-channel below
+            \pin{2}{8.5}{L}{A}  % pin A, n-channel above
+            \pin{2}{17.5}{L}{A} % pin A, p-channel left
+            \pin{14}{17.5}{L}{B} % pin B, p-channel right
             \trans{nenh*}{6}{4}{R}{}{}  % nmos below
             \trans{nenh*}{6}{10}{R}{}{} % nmos above
             \trans{penh*}{6}{16}{R}{}{} % pmos left
