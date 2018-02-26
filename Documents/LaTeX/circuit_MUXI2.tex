@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/files_XOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/circuit_MUXI2.tex
 %%
-%%  Purpose:        File list for XOR2
+%%  Purpose:        Circuit File for MUXI2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,14 +33,33 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Simulation
-    \begin{itemize}
-        \item[$\square$] \texttt{./Sources/verilog/XOR2.v} - Verilog-95 Cell Model \\
-        \item[$\square$] \texttt{./Sources/verilog/XOR2\_switch.v} - Verilog-2001 Switch-Level Model \\
-        \item[$\square$] \texttt{./TBench/verilog/tb\_XOR2.v} - Verilog-2001 Self-checking Testbench
-    \end{itemize}
-    Physical Layout
-    \begin{itemize}
-        \item[\checkmark] \texttt{?}
-    \end{itemize}
+    Circuit
+    \begin{figure}[h] %\caption{Circuit}
+        \begin{center}
+            \begin{circuitdiagram}{25}{14}
+            \pin{15}{4}{L}{A0}
+            \pin{1}{10}{L}{S}
+            \wire{2}{10}{2}{7}
+            \junct{2}{10}
+            \wire{2}{7}{19}{7}
+            \junct{19}{7}
+            \pin{15}{10}{L}{A1}
+            \gate{not}{5}{10}{R}{}{}
+            \gate[\tristate{Dp}]{not}{19}{4}{R}{}{}
+            \gate[\tristate{Un}]{not}{19}{4}{R}{}{}
+            \gate[\tristate{Dp}]{not}{19}{10}{R}{}{}
+            \gate[\tristate{Un}]{not}{19}{10}{R}{}{}
+            \wire{22}{10}{23}{10}
+            \wire{22}{4}{23}{4}
+            \wire{9}{1}{9}{13}     % wire /S vertical
+            \wire{8}{10}{9}{10}     % wire /S horizontal 
+            \junct{9}{10}
+            \wire{9}{1}{19}{1}     % wire /S below
+            \wire{9}{13}{19}{13}     % wire /S above
+            \wire{23}{10}{23}{4}   % wire S before pin, vertical
+            \junct{23}{7}
+            \pin{24}{7}{R}{Z},
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
 \end{center}

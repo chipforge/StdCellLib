@@ -37,8 +37,8 @@
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
             \begin{circuitdiagram}{10}{15}
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos
-            \trans{penh*}{5}{10}{L}{}{} % pmos
+            \trans{nenh*}{6}{4}{R}{$M_{N}$}{}
+            \trans{penh*}{5}{10}{L}{}{$M_{P}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{3}{13.5}{U}{}  % power above pmos
             \wire{8}{6}{8}{11.5}  % wire between pmos gate and nmos

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/files_XOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/manpage_MUXI2.tex
 %%
-%%  Purpose:        File list for XOR2
+%%  Purpose:        Manual Page File for MUXI2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,15 +32,35 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Simulation
-    \begin{itemize}
-        \item[$\square$] \texttt{./Sources/verilog/XOR2.v} - Verilog-95 Cell Model \\
-        \item[$\square$] \texttt{./Sources/verilog/XOR2\_switch.v} - Verilog-2001 Switch-Level Model \\
-        \item[$\square$] \texttt{./TBench/verilog/tb\_XOR2.v} - Verilog-2001 Self-checking Testbench
-    \end{itemize}
-    Physical Layout
-    \begin{itemize}
-        \item[\checkmark] \texttt{?}
-    \end{itemize}
-\end{center}
+\label{MUXI2}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{MUXI2} - a 2-to-1 Multiplexor Invert cell
+\end{quote}
+
+\paragraph{Synopsys}
+\begin{quote}
+    MUXI2(Z, S, A1, A0)
+\end{quote}
+
+\paragraph{Description}
+\input{circuit_MUXI2.tex}
+\input{schematic_MUXI2.tex}
+
+\paragraph{Truth Table}
+\input{truthtable_MUXI2.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
+%\input{files_MUXI2.tex}
+
+\paragraph{See also}
+\begin{quote}
+    MUXI3 - a 3-to-1 Multiplexor Invert cell \\
+    MUXI4 - a 4-to-1 Multiplexor Invert cell
+\end{quote}

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/files_XOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/schematic_MUXI2.tex
 %%
-%%  Purpose:        File list for XOR2
+%%  Purpose:        Schematic File for MUXI2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,14 +33,34 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Simulation
-    \begin{itemize}
-        \item[$\square$] \texttt{./Sources/verilog/XOR2.v} - Verilog-95 Cell Model \\
-        \item[$\square$] \texttt{./Sources/verilog/XOR2\_switch.v} - Verilog-2001 Switch-Level Model \\
-        \item[$\square$] \texttt{./TBench/verilog/tb\_XOR2.v} - Verilog-2001 Self-checking Testbench
-    \end{itemize}
-    Physical Layout
-    \begin{itemize}
-        \item[\checkmark] \texttt{?}
-    \end{itemize}
+    Schematic (two stages, 2$T_{p}$/2$T_{n}$ stacked, 10T total)
+    \begin{figure}[h] %\caption{Schematic}
+        \begin{center}
+            \begin{circuitdiagram}{24}{27}
+            \pin{2}{7}{L}{A}
+            \wire{3}{2.5}{3}{11.5}
+            \junct{3}{7}
+            \trans{nenh*}{6}{4}{R}{$M_{0NA}$}{}
+            \trans{penh*}{6}{10}{R}{}{$M_{0PA}$}
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{8}{13.5}{U}{}  % power above pmos
+            \wire{8}{6}{8}{8}     % wire between nmos and pmos
+            \wire{8}{7}{12}{7}    % stage output
+            \junct{8}{7}
+
+            \pin{2}{19}{L}{A}
+            \wire{3}{14.5}{3}{23.5}
+            \junct{3}{19}
+            \trans{nenh*}{6}{16}{R}{$M_{0NA}$}{}
+            \trans{penh*}{6}{22}{R}{}{$M_{0PA}$}
+            \ground{8}{12.5}{D}  % ground below nmos
+            \power{8}{25.5}{U}{}  % power above pmos
+            \wire{8}{18}{8}{20}     % wire between nmos and pmos
+            \wire{8}{19}{12}{19}    % stage output
+            \junct{8}{19}
+
+
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
 \end{center}
