@@ -44,21 +44,16 @@
             \pin{14}{23.5}{L}{B} % pin B, p-channel middle
             \pin{26}{23.5}{L}{C} % pin C, p-channel right
             \pin{35}{19}{R}{Z}  % pin Z
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos below
-            \trans{nenh*}{6}{10}{R}{}{} % nmos middle
-            \trans{nenh*}{6}{16}{R}{}{} % nmos above
-            \trans{penh*}{6}{22}{R}{}{} % pmos left
-            \trans{penh*}{18}{22}{R}{}{} % pmos middle
-            \trans{penh*}{30}{22}{R}{}{} % pmos right
-            \wire{8}{6}{8}{8}     % wire between nmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NC}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NB}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{16}{R}{$M_{NA}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{22}{R}{}{$M_{PA}$}
+            \trans[\wireD{0.5}]{penh*}{18}{22}{R}{}{$M_{PB}$}
+            \trans[\wireD{0.5}]{penh*}{30}{22}{R}{}{$M_{PC}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{25.5}{U}{}  % power above left pmos
             \power{20}{25.5}{U}{}  % power above left pmos
             \power{32}{25.5}{U}{}  % power above left pmos
-            \wire{8}{12}{8}{14}     % wire between nmos
-            \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{19}{20}{20}
-            \wire{32}{19}{32}{20}
             \wire{8}{19}{34}{19}    % wire before pin Z
             \junct{8}{19}
             \junct{20}{19}

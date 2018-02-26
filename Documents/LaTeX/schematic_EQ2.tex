@@ -41,17 +41,13 @@
             \pin{2}{17.5}{L}{A}  % pin A, p-channel left
             \pin{14}{17.5}{L}{B}  % pin B, p-channel right
             \pin{2}{2.5}{L}{B} % pin B, n-channel
-            \trans{nenh*}{6}{10}{R}{}{}  % nmos
-            \trans{penh*}{6}{16}{R}{}{} % pmos
-            \trans{nenh*}{6}{4}{R}{}{} % nmos
-            \trans{penh*}{18}{16}{R}{}{} % pmos
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{0NA}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{16}{R}{}{$M_{0PA}$}
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{0NB}$}{}
+            \trans[\wireD{0.5}]{penh*}{18}{16}{R}{}{$M_{0PB}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{19.5}{U}{}  % power above left pmos
             \power{20}{19.5}{U}{}  % power above right pmos
-            \wire{8}{6}{8}{8}     % wire between nmos
-            \wire{8}{12}{8}{14}     % wire between nmos
-            \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{13}{20}{14}
             \wire{8}{13}{27}{13}    % wire horizontal 1st stage
             \junct{8}{13}
             \junct{20}{13}
@@ -62,27 +58,21 @@
             \pin{38}{2.5}{L}{B} % pin B
             \pin{26}{2.5}{L}{A}  % pin A
             \wire{27}{8.5}{27}{17.5}
-            \trans{nenh*}{30}{10}{R}{}{}  % nmos
-            \trans{penh*}{30}{16}{R}{}{} % pmos
+            \trans[\wireUD{0.5}]{nenh*}{30}{10}{R}{$M_{1N0}$}{}
+            \trans[\wireUD{0.5}]{penh*}{30}{16}{R}{}{$M_{1P0}$}
             \power{32}{25.5}{U}{}  % power above left pmos
-            \wire{32}{6}{32}{8}
-            \wire{32}{12}{32}{14}
             \ground{32}{0.5}{D}  % ground below nmos
             \junct{32}{13}
-            \trans{nenh*}{42}{4}{R}{}{}  % nmos
+            \trans[\wireU{0.5}]{nenh*}{42}{4}{R}{$M_{1NB}$}{}
             \wire{32}{7}{44}{7}    % wire horizontal between pmos
             \junct{32}{7}
-            \trans{nenh*}{30}{4}{R}{}{}  % nmos
-            \wire{32}{18}{32}{25}
-            \wire{44}{6}{44}{7}
-            \wire{44}{14}{44}{13}
-            \wire{44}{18}{44}{20}
+            \trans[\wireU{0.5}]{nenh*}{30}{4}{R}{$M_{1NA}$}{}
+            \wire{32}{19}{32}{25}
             \ground{44}{0.5}{D}  % ground below nmos
             \junct{44}{13}
-            \trans{penh*}{42}{16}{R}{}{} % pmos
-            \trans{penh*}{42}{22}{R}{}{} % pmos
+            \trans[\wireUD{0.5}]{penh*}{42}{16}{R}{}{$M_{1PA}$}
+            \trans[\wireD{0.5}]{penh*}{42}{22}{R}{}{$M_{1PB}$}
             \power{44}{25.5}{U}{}  % power above left pmos
-            \wire{32}{12}{32}{14}
             \pin{47}{13}{R}{Z}  % pin Z
             \end{circuitdiagram}
         \end{center}

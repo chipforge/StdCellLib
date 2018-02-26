@@ -42,17 +42,13 @@
             \pin{2}{17.5}{L}{B}  % pin B, p-channel above
             \pin{14}{2.5}{L}{B} % pin B, n-channel right
             \pin{23}{7}{R}{Z}  % pin Z
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos left
-            \trans{penh*}{6}{10}{R}{}{} % pmos below
-            \trans{penh*}{6}{16}{R}{}{} % pmos middle
-            \trans{nenh*}{18}{4}{R}{}{} % nmos middle
-            \wire{8}{6}{8}{8}     % wire between nmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NA}$}{}
+            \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$M_{PA}$}
+            \trans[\wireD{0.5}]{penh*}{6}{16}{R}{}{$M_{PB}$}
+            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NB}$}{}
             \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{20.5}{U}{}  % power above left pmos
+            \power{8}{19.5}{U}{}  % power above left pmos
             \ground{20}{0.5}{D}  % ground below nmos
-            \wire{8}{12}{8}{14}     % wire between nmos
-            \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{7}{20}{6}
             \wire{8}{7}{22}{7}    % wire before pin Z
             \junct{8}{7}
             \junct{20}{7}

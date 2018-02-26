@@ -45,17 +45,16 @@
             \pin{14}{29.5}{L}{B} % pin B, p-channel middle
             \pin{26}{29.5}{L}{C} % pin C, p-channel middle
             \pin{38}{29.5}{L}{D} % pin D, p-channel right
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos below
-            \trans{nenh*}{6}{10}{R}{}{} % nmos middle
-            \trans{nenh*}{6}{16}{R}{}{} % nmos middle
-            \trans{nenh*}{6}{22}{R}{}{} % nmos above
-            \trans{nenh*}{54}{22}{R}{}{} % nmos inverter
-            \trans{penh*}{6}{28}{R}{}{} % pmos left
-            \trans{penh*}{18}{28}{R}{}{} % pmos middle
-            \trans{penh*}{30}{28}{R}{}{} % pmos middle
-            \trans{penh*}{42}{28}{R}{}{} % pmos right
-            \trans{penh*}{54}{28}{R}{}{} % pmos inverter
-            \wire{8}{6}{8}{8}     % wire between nmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{0NA}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{0NB}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{16}{R}{$M_{0NC}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{22}{R}{$M_{0ND}$}{}
+            \trans[\wireU{0.5}]{nenh*}{54}{22}{R}{$M_{1N0}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{28}{R}{}{$M_{0PA}$}
+            \trans[\wireD{0.5}]{penh*}{18}{28}{R}{}{$M_{0PB}$}
+            \trans[\wireD{0.5}]{penh*}{30}{28}{R}{}{$M_{0PC}$}
+            \trans[\wireD{0.5}]{penh*}{42}{28}{R}{}{$M_{0PD}$}
+            \trans[\wireD{0.5}]{penh*}{54}{28}{R}{}{$M_{1P0}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \ground{56}{18.5}{D}  % ground below inverter
             \power{8}{31.5}{U}{}  % power above left pmos
@@ -63,11 +62,6 @@
             \power{32}{31.5}{U}{}  % power above middle pmos
             \power{44}{31.5}{U}{}  % power above right pmos
             \power{56}{31.5}{U}{}  % power above inverter
-            \wire{8}{12}{8}{14}     % wire between nmos
-            \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{25}{20}{26}
-            \wire{32}{25}{32}{26}
-            \wire{44}{25}{44}{26}
             \wire{8}{25}{51}{25}    % wire before inverter gate
             \junct{8}{25}
             \junct{20}{25}

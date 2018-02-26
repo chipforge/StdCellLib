@@ -41,16 +41,13 @@
             \pin{2}{8.5}{L}{A}  % pin A, n-channel above
             \pin{2}{17.5}{L}{A} % pin A, p-channel left
             \pin{14}{17.5}{L}{B} % pin B, p-channel right
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos below
-            \trans{nenh*}{6}{10}{R}{}{} % nmos above
-            \trans{penh*}{6}{16}{R}{}{} % pmos left
-            \trans{penh*}{18}{16}{R}{}{} % pmos right
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NB}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NA}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{16}{R}{}{$M_{PA}$}
+            \trans[\wireD{0.5}]{penh*}{18}{16}{R}{}{$M_{PB}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{19.5}{U}{}  % power above left pmos
             \power{20}{19.5}{U}{}  % power above right pmos
-            \wire{8}{6}{8}{8}     % wire between both nmos
-            \wire{8}{12}{8}{14}     % wire between nmos and pmos
-            \wire{20}{13}{20}{14}
             \wire{8}{13}{22}{13}    % wire before pin Z
             \junct{8}{13}
             \junct{20}{13}

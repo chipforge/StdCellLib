@@ -39,22 +39,18 @@
             \begin{circuitdiagram}{24}{15}
             \pin{2}{2.5}{L}{A}  % pin A, n-channel
             \pin{2}{11.5}{L}{A} % pin A, p-channel
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos
-            \trans{penh*}{6}{10}{R}{}{} % pmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{0NA}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{10}{R}{}{$M_{0PA}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{13.5}{U}{}  % power above pmos
-            \wire{8}{6}{8}{8}     % wire between nmos and pmos
-            \wire{8}{12}{8}{14}     % wire between nmos and pmos
             \wire{8}{7}{15}{7}    % wire to next gates
             \junct{8}{7}
             \wire{15}{11.5}{15}{2.5}    % wire for next gates
             \junct{15}{7}
-            \trans{nenh*}{18}{4}{R}{}{}  % nmos
-            \trans{penh*}{18}{10}{R}{}{} % pmos
+            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{1N0}$}{}
+            \trans[\wireD{0.5}]{penh*}{18}{10}{R}{}{$M_{1P0}$}
             \ground{20}{0.5}{D}  % ground below nmos
             \power{20}{13.5}{U}{}  % power above pmos
-            \wire{20}{6}{20}{8}     % wire between nmos and pmos
-            \wire{20}{12}{20}{14}     % wire between nmos and pmos
             \wire{20}{7}{22}{7}    % wire before pin Z
             \junct{20}{7}
             \pin{23}{7}{R}{Z}  % pin Z

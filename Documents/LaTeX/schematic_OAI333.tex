@@ -55,46 +55,30 @@
             \pin{26}{23.5}{L}{C0} % pin C0, p-channel
             \pin{26}{29.5}{L}{C1} % pin C1, p-channel
             \pin{26}{35.5}{L}{C2} % pin C2, p-channel
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos
-            \trans{nenh*}{6}{10}{R}{}{}  % nmos
-            \trans{nenh*}{6}{16}{R}{}{}  % nmos
-            \trans{nenh*}{18}{4}{R}{}{} % nmos
-            \trans{nenh*}{18}{10}{R}{}{} % nmos
-            \trans{nenh*}{18}{16}{R}{}{} % nmos
-            \trans{nenh*}{30}{4}{R}{}{} % nmos
-            \trans{nenh*}{30}{10}{R}{}{} % nmos
-            \trans{nenh*}{30}{16}{R}{}{} % nmos
-            \trans{penh*}{6}{22}{R}{}{} % pmos
-            \trans{penh*}{6}{28}{R}{}{} % pmos
-            \trans{penh*}{6}{34}{R}{}{} % pmos
-            \trans{penh*}{18}{22}{R}{}{} % pmos
-            \trans{penh*}{18}{28}{R}{}{} % pmos
-            \trans{penh*}{18}{34}{R}{}{} % pmos
-            \trans{penh*}{30}{22}{R}{}{} % pmos
-            \trans{penh*}{30}{28}{R}{}{} % pmos
-            \trans{penh*}{30}{34}{R}{}{} % pmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NC0}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NB0}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{16}{R}{$M_{NA0}$}{}
+            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NC1}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{18}{10}{R}{$M_{NB1}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{18}{16}{R}{$M_{NA1}$}{}
+            \trans[\wireU{0.5}]{nenh*}{30}{4}{R}{$M_{NC2}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{30}{10}{R}{$M_{NB2}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{30}{16}{R}{$M_{NA2}$}{}
+            \trans[\wireUD{0.5}]{penh*}{6}{22}{R}{}{$M_{PA0}$}
+            \trans[\wireUD{0.5}]{penh*}{6}{28}{R}{}{$M_{PA1}$}
+            \trans[\wireD{0.5}]{penh*}{6}{34}{R}{}{$M_{PA2}$}
+            \trans[\wireUD{0.5}]{penh*}{18}{22}{R}{}{$M_{PB0}$}
+            \trans[\wireUD{0.5}]{penh*}{18}{28}{R}{}{$M_{PB1}$}
+            \trans[\wireD{0.5}]{penh*}{18}{34}{R}{}{$M_{PB2}$}
+            \trans[\wireUD{0.5}]{penh*}{30}{22}{R}{}{$M_{PC0}$}
+            \trans[\wireUD{0.5}]{penh*}{30}{28}{R}{}{$M_{PC1}$}
+            \trans[\wireD{0.5}]{penh*}{30}{34}{R}{}{$M_{PC2}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \ground{20}{0.5}{D}  % ground below nmos
             \ground{32}{0.5}{D}  % ground below nmos
             \power{8}{37.5}{U}{}  % power above left pmos
             \power{20}{37.5}{U}{}  % power above middle pmos
             \power{32}{37.5}{U}{}  % power above right pmos
-            \wire{8}{6}{8}{8}
-            \wire{8}{12}{8}{14}
-            \wire{8}{12}{8}{14}
-            \wire{8}{18}{8}{20}
-            \wire{8}{24}{8}{26}
-            \wire{8}{30}{8}{32}
-            \wire{20}{6}{20}{8}
-            \wire{20}{12}{20}{14}
-            \wire{20}{18}{20}{20}
-            \wire{20}{24}{20}{26}
-            \wire{20}{30}{20}{32}
-            \wire{32}{6}{32}{8}
-            \wire{32}{12}{32}{14}
-            \wire{32}{18}{32}{20}
-            \wire{32}{24}{32}{26}
-            \wire{32}{30}{32}{32}
             \wire{8}{7}{32}{7}    % wire short between nmos
             \wire{8}{13}{32}{13}    % wire short between nmos
             \wire{8}{19}{34}{19}    % wire before pin Z

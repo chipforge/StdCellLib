@@ -39,12 +39,10 @@
             \begin{circuitdiagram}{12}{15}
             \pin{2}{2.5}{L}{A}  % pin A, n-channel
             \pin{2}{11.5}{L}{A} % pin A, p-channel
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos
-            \trans{penh*}{6}{10}{R}{}{} % pmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NA}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{10}{R}{}{$M_{PA}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{13.5}{U}{}  % power above pmos
-            \wire{8}{6}{8}{8}     % wire between nmos and pmos
-            \wire{8}{12}{8}{14}     % wire between nmos and pmos
             \wire{8}{7}{10}{7}    % wire before pin Z
             \junct{8}{7}
             \pin{11}{7}{R}{Z}  % pin Z

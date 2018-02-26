@@ -45,24 +45,19 @@
             \pin{14}{2.5}{L}{B} % pin B, n-channel middle
             \pin{26}{2.5}{L}{C} % pin C, n-channel right
             \pin{38}{2.5}{L}{D} % pin D, n-channel right
-            \trans{nenh*}{6}{4}{R}{}{}  % nmos left
-            \trans{penh*}{6}{10}{R}{}{} % pmos below
-            \trans{penh*}{6}{16}{R}{}{} % pmos middle
-            \trans{penh*}{6}{22}{R}{}{} % pmos above
-            \trans{penh*}{6}{28}{R}{}{} % pmos above
-            \trans{nenh*}{18}{4}{R}{}{} % nmos middle
-            \trans{nenh*}{30}{4}{R}{}{} % nmos right
-            \trans{nenh*}{42}{4}{R}{}{} % nmos right
-            \wire{8}{6}{8}{8}     % wire between nmos
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{0NA}$}{}
+            \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$M_{0PA}$}
+            \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$M_{0PB}$}
+            \trans[\wireUD{0.5}]{penh*}{6}{22}{R}{}{$M_{0PC}$}
+            \trans[\wireD{0.5}]{penh*}{6}{28}{R}{}{$M_{0PD}$}
+            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{0NB}$}{}
+            \trans[\wireU{0.5}]{nenh*}{30}{4}{R}{$M_{0NC}$}{}
+            \trans[\wireU{0.5}]{nenh*}{42}{4}{R}{$M_{0ND}$}{}
             \ground{8}{0.5}{D}  % ground below nmos
             \power{8}{31.5}{U}{}  % power above left pmos
             \ground{20}{0.5}{D}  % ground below nmos
             \ground{32}{0.5}{D}  % ground below nmos
             \ground{44}{0.5}{D}  % ground below nmos
-            \wire{8}{12}{8}{14}     % wire between nmos
-            \wire{8}{18}{8}{20}     % wire between nmos and pmos
-            \wire{20}{7}{20}{6}
-            \wire{32}{7}{32}{6}
             \wire{8}{7}{51}{7}    % wire before inverter gates
             \wire{51}{2.5}{51}{11.5}  % wire on inverter gates
             \junct{8}{7}
@@ -70,12 +65,11 @@
             \junct{32}{7}
             \junct{44}{7}
             \junct{51}{7}
-            \trans{nenh*}{54}{4}{R}{}{} % nmos right
-            \trans{penh*}{54}{10}{R}{}{} % pmos below
+            \trans[\wireU{0.5}]{nenh*}{54}{4}{R}{$M_{1N0}$}{}
+            \trans[\wireD{0.5}]{penh*}{54}{10}{R}{}{$M_{1P0}$}
             \power{56}{13.5}{U}{}  % power above left pmos
             \ground{56}{0.5}{D}  % ground below nmos
             \wire{56}{7}{58}{7}    % wire before pin
-            \wire{56}{6}{56}{8}    % wire before pin
             \junct{56}{7}
             \pin{59}{7}{R}{Z}  % pin Z
             \end{circuitdiagram}
