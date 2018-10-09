@@ -1,0 +1,50 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/circuit_OR4.tex
+%%
+%%  Purpose:        Circuit File for OR4
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h] %\caption{Circuit}
+        \begin{center}
+            \begin{circuitdiagram}{17}{8}
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{3}{L}{B}    % pin B
+            \pin{1}{5}{L}{C}    % pin C
+            \pin{1}{7}{L}{D}    % pin D
+            \gate[\inputs{4}]{nor}{5}{4}{R}{}{}    % OR gate -> right
+            \gate{not}{12}{4}{R}{}{}    % NOT gate -> right
+            \pin{16}{4}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

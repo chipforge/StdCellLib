@@ -1,0 +1,49 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/schematic_FILL.tex
+%%
+%%  Purpose:        Schematic File for FILL
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Schematic (one stage, 2T total)
+    \begin{figure}[h] %\caption{Schematic}
+        \begin{center}
+            \begin{circuitdiagram}{10}{15}
+            \trans{nenh*}{6}{4}{R}{$M_{N}$}{}
+            \trans{penh*}{5}{10}{L}{}{$M_{P}$}
+            \ground{8}{0.5}{D}  % ground below nmos
+            \power{3}{13.5}{U}{}  % power above pmos
+            \wire{8}{6}{8}{11.5}  % wire between pmos gate and nmos
+            \wire{3}{2.5}{3}{8}   % wire between nmos gate and pmos
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

@@ -1,292 +1,293 @@
-\documentclass[12pt, a4paper, twoside, titlepage]{article}
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/stdcelllib.tex
+%%
+%%  Purpose:        Top Level File for Standard Cell Library Documentation
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\documentclass[10pt,a4paper,twoside]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amsmath}
-\usepackage{amsfonts}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{gensymb}
-\usepackage{graphicx}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{tikz}
-\usetikzlibrary{arrows,automata,shapes}
-\tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em, text badly centered, node distance=2.5cm, inner sep=0pt]
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em]
-\tikzstyle{line} = [draw, very thick, color=black!50, -latex']
-\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=2.5cm,minimum height=2em]
+%\usepackage{gensymb}
+%\usepackage{graphicx}
+\usepackage[digital,srcmeas,semicon]{circdia}
+% \usepackage[dvipsnames]{xcolor}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
-\definecolor{LightGray}{gray}{0.9}
-\definecolor{NormalGray}{gray}{0.8}
-\definecolor{DarkGray}{gray}{0.7}
-
-\title{Libre Silicon 180nm Standard Cell Library}
+\title{LibreSilicon's Standard Cell Library}
 \author{Hagen Sankowski}
 \date{\today}
 
+\setlength{\parindent}{0pt} % get rid of annoying indents
+
 \begin{document}
 \maketitle
-
-\section{Design Decisions}
-
-\section{Common Combinatorial Gates}
-
-\subsection{AND2}
-2-input AND gate
-
-\subsection{AND3}
-3-input AND gate
-
-\subsection{EQ2}
-2-input Equality gate (aka XNOR)
-
-\subsection{EQ3}
-3-input Equality gate (aka XNOR)
-
-\subsection{OR2}
-2-input OR gate
-
-\subsection{OR3}
-3-input OR gate
-
-\subsection{NAND2}
-2-input NAND
-
-\subsection{NAND3}
-3-input NAND
-
-\subsection{NOR2}
-2-input NOR
-
-\subsection{NOR3}
-3-input NOR
-
-\subsection{XOR2}
-2-input Exclusive-OR
-
-\subsection{XOR3}
-3-input Exclusive-OR
-
-
-\section{Complex Logic Gates}
-
-\subsection{AOI21}
-2-1-input AND-OR-Invert complex gate
-
-\subsection{AOI211}
-2-1-1-input AND-OR-Invert complex gate
-
-\subsection{AOI22}
-2-2-input AND-OR-Invert complex gate
-
-\subsection{AOI221}
-2-2-1-input AND-OR-Invert complex gate
-
-\subsection{AOI222}
-2-2-2-input AND-OR-Invert complex gate
-
-\subsection{AOI31}
-3-1-input AND-OR-Invert complex gate
-
-\subsection{AOI311}
-3-1-1-input AND-OR-Invert complex gate
-
-\subsection{AOI32}
-3-2-input AND-OR-Invert complex gate
-
-\subsection{AOI321}
-3-2-1-input AND-OR-Invert complex gate
-
-\subsection{AOI322}
-3-2-2-input AND-OR-Invert complex gate
-
-\subsection{AOI33}
-3-3-input AND-OR-Invert complex gate
-
-\subsection{AOI331}
-3-3-1-input AND-OR-Invert complex gate
-
-\subsection{AOI332}
-3-3-2-input AND-OR-Invert complex gate
-
-\subsection{AOI333}
-3-3-3-input AND-OR-Invert complex gate
-
-\subsection{OAI21}
-2-1-input OR-AND-Invert complex gate
-
-\subsection{OAI211}
-2-1-1-input OR-AND-Invert complex gate
-
-\subsection{OAI22}
-2-2-input OR-AND-Invert complex gate
-
-\subsection{OAI221}
-2-2-1-input OR-AND-Invert complex gate
-
-\subsection{OAI222}
-2-2-2-input OR-AND-Invert complex gate
-
-\subsection{OAI31}
-3-1-input OR-AND-Invert complex gate
-
-\subsection{OAI311}
-3-1-1-input OR-AND-Invert complex gate
-
-\subsection{OAI32}
-3-2-input OR-AND-Invert complex gate
-
-\subsection{OAI321}
-3-2-1-input OR-AND-Invert complex gate
-
-\subsection{OAI322}
-3-2-2-input OR-AND-Invert complex gate
-
-\subsection{OAI33}
-3-3-input OR-AND-Invert complex gate
-
-\subsection{OAI331}
-3-3-1-input OR-AND-Invert complex gate
-
-\subsection{OAI332}
-3-3-2-input OR-AND-Invert complex gate
-
-\subsection{OAI333}
-3-3-3-input OR-AND-Invert complex gate
-
-
-\section{Dedicated Function Gates}
-
-\subsection{MUX2}
-2-input Multipexer
-
-\subsection{MUX4}
-4-input Multipexer
-
-
-\subsection{FA2}
-2-input Full Adder
-
-\subsection{HA2}
-2-input Half Adder
-
-
-\section{Inverter}
-
-\subsection{INV}
-Inverter
-
-\subsection{INV2}
-Inverter with strength 2
-
-\subsection{INV4}
-Inverter with strength 4
-
-\subsection{INV8}
-Inverter with strength 8
-
-\subsection{INV16}
-Inverter with strength 16
-
-
-\section{Additionals}
-
-\subsection{TIE0}
-Tie-to-Zero cell
-
-\subsection{TIE1}
-Tie-to-One cell
-
-\subsection{BUF}
-non-inverting Buffer
-
-\subsection{BUF2}
-non-inverting Buffer with strength 2
-
-\subsection{BUF4}
-non-inverting Buffer with strength 4
-
-\subsection{BUF8}
-non-inverting Buffer with strength 8
-
-\subsection{BUF16}
-non-inverting Buffer with strength 16
-
-
-\section{Global Clock-/Long Line Buffer}
-
-\subsection{GBUF}
-Global Buffer
-
-\subsection{GBUF2}
-Global Buffer with strength 2
-
-\subsection{GBUF4}
-Global Buffer with strength 4
-
-\subsection{GBUF8}
-Global Buffer with strength 8
-
-\subsection{GBUF16}
-Global Buffer with strength 16
-
-
-\section{Sequentials}
-
-\subsection{SFFR}
-Scanable D-FlipFlop with Reset
-
-\subsection{SFFS}
-Scanable D-FlipFlop with Set
-
-\subsection{SLAR}
-Scanable D-Latch with Reset
-
-\subsection{SLAS}
-Scanable D-Latch with Set
-
-
-\section{Core Layout Additives}
-
-\subsection{FILL1}
-Filler Cell with capacitance
-
-\subsection{FILL2}
-Filler Cell with capacitance
-
-\subsection{FILL4}
-Filler Cell with capacitance
-
-\subsection{FILL8}
-Filler Cell with capacitance
-
-\subsection{FILL16}
-Filler Cell with capacitance
-
-
-\section{Boundary Layout Cells}
-
-\subsection{PADIN}
-Boundary Scan Input Pad
-
-\subsection{PADOUT}
-Boundary Scan Output Pad
-
-\subsection{PADIO}
-Boundary Scan (bi-directional) Input/Output Pad
-
-\subsection{PADVDD}
-Power Supply Input Pad
-
-\subsection{PADGND}
-Power Supply Ground Pad
-
-\subsection{IOGAP1}
-IO-Ring Gap cell
-
-\subsection{IOGAP2}
-IO-Ring Gap cell
-
-\subsection{IOCORNER}
-IO-Ring Corner cell
-
-
+\begin{abstract}
+\begin{quote}
+Copyright \textcopyright  2018 CHIPFORGE.ORG. All rights reserved.
+
+This process is licensed under the Libre Silicon public license; you can redistribute it and/or modify it under the terms of the Libre Silicon public license as published by the Libre Silicon alliance either version 2 of the License, or (at your option) any later version.
+
+This design is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Libre Silicon Public License for more details.
+
+For further clarification consult the complete documentation of the process.
+\end{quote}
+\end{abstract}
+\input{revision.tex}
+\clearpage
+
+\pagestyle{headings}
+
+\chapter{CMOS in a nutshell}
+\input{cmos_in_a_nutshell.tex}
+\clearpage
+
+\chapter{Considerations}
+\newcommand{\stacktfour}{YES}
+%\newcommand{\stacktfour}{NO}
+\clearpage
+
+\chapter{Logical Cells}
+\clearpage
+\twocolumn
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AND4}
+    \input{manpage_AND4.tex}
+    \clearpage
+}{}
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AO2111}
+    \input{manpage_AO2111.tex}
+    \clearpage
+}{}
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{AO3111}
+    \input{manpage_AO3111.tex}
+    \clearpage
+}{}
+
+\section{AOI21}
+\input{manpage_AOI21.tex}
+\clearpage
+
+\section{AOI22}
+\input{manpage_AOI22.tex}
+\clearpage
+
+\section{AOI31}
+\input{manpage_AOI31.tex}
+\clearpage
+
+\section{AOI32}
+\input{manpage_AOI32.tex}
+\clearpage
+
+\section{AOI33}
+\input{manpage_AOI33.tex}
+\clearpage
+
+\section{AOI211}
+\input{manpage_AOI211.tex}
+\clearpage
+
+\section{AOI221}
+\input{manpage_AOI221.tex}
+\clearpage
+
+\section{AOI222}
+\input{manpage_AOI222.tex}
+\clearpage
+
+\section{AOI311}
+\input{manpage_AOI311.tex}
+\clearpage
+
+\section{AOI321}
+\input{manpage_AOI321.tex}
+\clearpage
+
+\section{AOI322}
+\input{manpage_AOI322.tex}
+\clearpage
+
+\section{AOI331}
+\input{manpage_AOI331.tex}
+\clearpage
+
+\section{AOI332}
+\input{manpage_AOI332.tex}
+\clearpage
+
+\section{AOI333}
+\input{manpage_AOI333.tex}
+\clearpage
+
+\section{BUF}
+\input{manpage_BUF.tex}
+\clearpage
+
+\section{EQ2}
+\input{manpage_EQ2.tex}
+\clearpage
+
+\section{INV}
+\input{manpage_INV.tex}
+\clearpage
+
+\section{MUXI2}
+\input{manpage_MUXI2.tex}
+\clearpage
+
+\section{NAND2}
+\input{manpage_NAND2.tex}
+\clearpage
+
+\section{NAND3}
+\input{manpage_NAND3.tex}
+\clearpage
+
+\section{NOR2}
+\input{manpage_NOR2.tex}
+\clearpage
+
+\section{NOR3}
+\input{manpage_NOR3.tex}
+\clearpage
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OA2111}
+    \input{manpage_OA2111.tex}
+    \clearpage
+}{}
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OA3111}
+    \input{manpage_OA3111.tex}
+    \clearpage
+}{}
+
+\section{OAI21}
+\input{manpage_OAI21.tex}
+\clearpage
+
+\section{OAI22}
+\input{manpage_OAI22.tex}
+\clearpage
+
+\section{OAI31}
+\input{manpage_OAI31.tex}
+\clearpage
+
+\section{OAI32}
+\input{manpage_OAI32.tex}
+\clearpage
+
+\section{OAI33}
+\input{manpage_OAI33.tex}
+\clearpage
+
+\section{OAI211}
+\input{manpage_OAI211.tex}
+\clearpage
+
+\section{OAI221}
+\input{manpage_OAI221.tex}
+\clearpage
+
+\section{OAI222}
+\input{manpage_OAI222.tex}
+\clearpage
+
+\section{OAI311}
+\input{manpage_OAI311.tex}
+\clearpage
+
+\section{OAI321}
+\input{manpage_OAI321.tex}
+\clearpage
+
+\section{OAI322}
+\input{manpage_OAI322.tex}
+\clearpage
+
+\section{OAI331}
+\input{manpage_OAI331.tex}
+\clearpage
+
+\section{OAI332}
+\input{manpage_OAI332.tex}
+\clearpage
+
+\section{OAI333}
+\input{manpage_OAI333.tex}
+\clearpage
+
+\ifthenelse{\equal{\stacktfour}{YES}}{
+    \section{OR4}
+    \input{manpage_OR4.tex}
+    \clearpage
+}{}
+
+\section{XOR2}
+\input{manpage_XOR2.tex}
+\clearpage
+
+\onecolumn
+
+\chapter{Physical Cells}
+\clearpage
+
+\twocolumn
+
+\section{TIE0}
+\input{manpage_TIE0.tex}
+\clearpage
+
+\section{TIE1}
+\input{manpage_TIE1.tex}
+\clearpage
+
+\section{FILL}
+\input{manpage_FILL.tex}
+\clearpage
+
+VDDIO \\
+GND \\
+ANA
+
+\onecolumn
+\
 \end{document}
