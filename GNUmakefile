@@ -45,6 +45,7 @@ SIMULATIONDIR = Simulation
 SOURCESDIR =    Sources
 SYNTHESISDIR =  Synthesis
 TBENCHDIR =     TBench
+TOOLSDIR =      Tools
 
 #   tool variables
 
@@ -55,6 +56,7 @@ TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
 LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR)
+POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
 
 #   default
 
@@ -89,6 +91,7 @@ help:
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
 	$(ECHO) "    alf        - generate generate ALF export"
+	$(ECHO) "    catalog    - re-generate combinatoral catalog (DON'T DO THAT!!)"
 	$(ECHO) "    doc        - generate complete documentation"
 	$(ECHO) "    spice      - generate SPICE models"
 	$(ECHO) "    verilog    - generate VERILOG models"
@@ -120,6 +123,10 @@ clean:
 
 #.PHONY: cells
 #cells: $(CELLS)
+
+.PHONY: catalog
+catalog:
+	$(POPCORN) -s $(T)
 
 .PHONY: doc
 doc:

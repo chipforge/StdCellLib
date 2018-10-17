@@ -1,0 +1,170 @@
+#!/usr/bin/env tclsh
+#   ************    LibreSilicon's StdCellLibrary   *******************
+#
+#   Organisation:   Chipforge
+#                   Germany / European Union
+#
+#   Profile:        Chipforge focus on fine System-on-Chip Cores in
+#                   Verilog HDL Code which are easy understandable and
+#                   adjustable. For further information see
+#                           www.chipforge.org
+#                   there are projects from small cores up to PCBs, too.
+#
+#   File:           popcorn
+#
+#   Purpose:        Generates a bunch of combinatorial cells
+#
+#   ************    Tcl 8.6 Shell Script    ***************************
+#
+#   ///////////////////////////////////////////////////////////////////
+#
+#       Copyright (c)   2018 by
+#                       SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+#
+#   This source file may be used and distributed without restriction
+#   provided that this copyright statement is not removed from the
+#   file and that any derivative work contains the original copyright
+#   notice and the associated disclaimer.
+#
+#   This source is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This source is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#    (__)  You should have received a copy of the GNU General Public
+#    oo )  License along with this program; if not, write to the
+#    /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+#          Boston, MA 02110-1301, USA
+#
+#   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+#   ///////////////////////////////////////////////////////////////////
+
+
+#   -------------------------------------------------------------------
+#                       DESCRIPTION
+#   -------------------------------------------------------------------
+
+#   -------------------------------------------------------------------
+#                       DEFINITIONS
+#   -------------------------------------------------------------------
+
+# seed library (a dict) with know cells
+set library {
+    {INV     {{pmos {Z A vdd}} \
+             {nmos {Z A gnd}}}} 
+    {NOR2    {{pmos {1 B vdd}} \
+             {pmos {Z A 1}} \
+             {nmos {Z A gnd}} {nmos {Z B gnd}}}}
+    {NOR3    {{pmos {2 C vdd}} \
+             {pmos {1 B 2}} \
+             {pmos {Z A 1}} \
+             {nmos {Z A gnd}} {nmos {Z B gnd}} {nmos {Z C gnd}}}}
+}
+
+#   -------------------------------------------------------------------
+#                       FUNCTIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'export'   -----------------------------------
+
+# write into fresh cell file
+proc export {path cell netlist} {
+
+    global verbose
+
+    # open cell output file
+    set datafile [file join $path $cell\.func]
+    set f [open $datafile w]
+
+    # verbose message
+    if {$verbose} {
+        puts "export: $datafile"
+    }
+
+    # write out
+    puts $f "# type {drain gate source}"
+    foreach mosfet $netlist {
+        puts $f $mosfet
+    }
+
+    # done
+    close $f
+}
+
+#   ------------    proc 'list_gates'   -------------------------------
+
+# list all gates in netlist
+proc list_gates {netlist} {
+
+    global verbose
+
+    # work out
+    set gates {}
+    foreach mosfet $netlist {
+        lappend gates [lindex [lindex $mosfet 1] 1]
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "list_gates: $gates"
+    }
+
+    # done
+    return $gates
+}
+
+#   -------------------------------------------------------------------
+#                       MAIN
+#   -------------------------------------------------------------------
+
+#   ------------    Command line parsing     --------------------------
+
+package require cmdline;
+
+# define program options
+set options {
+    {s.arg "4"          "reduce number of stacked transistors - default" }
+    {o.arg "./"         "specify output directory - default" }
+    {v                  "verbose" }
+}
+# define program usage
+set usage "- Generate a bunch of combinatorial cells"
+
+# error trap
+try {
+    array set params [cmdline::getoptions argv $options $usage]
+} trap {CMDLINE USAGE} {msg o} {
+    # Trap the usage signal, print the massage, and exit the application.
+    # Note: Others errors are not caught and passed through to higher levels!
+    puts $msg
+    exit -1 
+}
+
+# set argv from command lines
+set option_stacked $params(s) ; # number of stacked transistors
+set option_path $params(o) ; # output directory
+set verbose $params(v); 
+
+# verbose message
+if {$verbose} {
+    puts "option_stacked (-s): $option_stacked"
+    puts "option_path (-o): $option_path"
+    puts "seed library: $library"
+}
+
+
+
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   FIXME
+
+# call exporter
+foreach cell $library {
+    #puts [list_gates [lindex $cell 1]]  ; # !!
+    export $option_path [lindex $cell 0] [lindex $cell 1]
+}
