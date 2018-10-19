@@ -44,26 +44,45 @@
 #   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 #   ///////////////////////////////////////////////////////////////////
 
-
 #   -------------------------------------------------------------------
 #                       DESCRIPTION
 #   -------------------------------------------------------------------
+
+#   This tool generates transistor networks for Standard Cells.
+#   Usually - for CMOS - this transistor networks are
+#       * one pull-up network, build with pmos transistors, and
+#       * one pull-down network, build with nmos transistors.
+
+#   --------*---------  vdd
+#        ___|___
+#       |       |
+#       | pull- |
+#       |  up   |
+#       |_______|
+#           |
+#           *-------->  Z
+#        ___|___
+#       |       |
+#       | pull- |
+#       | down  |
+#       |_______|
+#           |
+#   --------*---------  gnd
 
 #   -------------------------------------------------------------------
 #                       DEFINITIONS
 #   -------------------------------------------------------------------
 
-# seed library (a dict) with know cells
+# seed library with know cells {cell {{ pull-up network } { pull-down network }}}
 set library {
-    {INV     {{pmos {Z A vdd}} \
-             {nmos {Z A gnd}}}} 
-    {NOR2    {{pmos {1 B vdd}} \
-             {pmos {Z A 1}} \
-             {nmos {Z A gnd}} {nmos {Z B gnd}}}}
-    {NOR3    {{pmos {2 C vdd}} \
-             {pmos {1 B 2}} \
-             {pmos {Z A 1}} \
-             {nmos {Z A gnd}} {nmos {Z B gnd}} {nmos {Z C gnd}}}}
+    {INV     {{pmos {A Z vdd}} \
+              {nmos {A Z gnd}}}}
+    {NOR2    {{pmos {B 1 vdd}} \
+              {pmos {A Z 1}} \
+              {nmos {A Z gnd}} {nmos {B Z gnd}}}}
+    {NAND2   {{pmos {A Z vdd}} {pmos {B Z vdd}} \
+              {nmos {A Z 2}} \
+              {nmos {B 2 gnd}}}}
 }
 
 #   -------------------------------------------------------------------
@@ -87,7 +106,7 @@ proc export {path cell netlist} {
     }
 
     # write out
-    puts $f "# type {drain gate source}"
+    puts $f "# type {gate drain source}"
     foreach mosfet $netlist {
         puts $f $mosfet
     }
@@ -96,27 +115,108 @@ proc export {path cell netlist} {
     close $f
 }
 
-#   ------------    proc 'list_gates'   -------------------------------
+#   ------------    proc 'list_inputs'  -------------------------------
 
-# list all gates in netlist
-proc list_gates {netlist} {
+# list all inputs in netlist
+proc list_inputs {netlist} {
 
     global verbose
 
     # work out
-    set gates {}
+    set inputs {}
     foreach mosfet $netlist {
-        lappend gates [lindex [lindex $mosfet 1] 1]
+        lappend inputs [lindex [lindex $mosfet 1] 0]
     }
 
     # verbose message
     if {$verbose} {
-        puts "list_gates: $gates"
+        puts "list_inputs: $inputs"
     }
 
     # done
-    return $gates
+    return [lsort -decreasing -unique $inputs]
 }
+
+#   ------------    proc 'list_nodes'   -------------------------------
+
+# list all nodes in netlist, sorted, grouped for pullup and pulldown
+proc list_nodes {netlist} {
+
+    global verbose
+
+    # work out
+    set pullup {}
+    set pulldown {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 0] == {pmos}} {
+            lappend pullup [lindex [lindex $mosfet 1] 1]
+            lappend pullup [lindex [lindex $mosfet 1] 2]
+        } elseif {[lindex $mosfet 0] == {nmos}} {
+            lappend pulldown [lindex [lindex $mosfet 1] 1]
+            lappend pulldown [lindex [lindex $mosfet 1] 2]
+        }
+    }
+
+    # combine pull-up and pull-down networks
+    set nodes [list [lsort -decreasing -unique -dictionary $pullup] [lsort -decreasing -unique -dictionary $pulldown]]
+
+    # verbose message
+    if {$verbose} {
+        puts "list_nodes: $pullup $pulldown"
+    }
+
+    # done
+    return $nodes
+}
+
+#   ------------    proc 'pullup_node'  -------------------------------
+
+# get highest pullup node
+proc pullup_node {nodes} {
+
+    global verbose
+
+    set node -1 
+    foreach item [lindex $nodes 0] {
+        if {[string is entier $item]} {
+            set node $item
+            break
+        }
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "pullup_node: $node"
+    }
+
+    # done
+    return $node
+}
+
+#   ------------    proc 'pulldown_node'    ---------------------------
+
+# get highest pulldown node
+proc pulldown_node {nodes} {
+
+    global verbose
+
+    set node 0
+    foreach item [lindex $nodes 1] {
+        if {[string is entier $item]} {
+            set node $item
+            break
+        }
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "pulldown_node: $node"
+    }
+
+    # done
+    return $node
+}
+
 
 #   -------------------------------------------------------------------
 #                       MAIN
@@ -163,8 +263,15 @@ if {$verbose} {
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   FIXME
 
-# call exporter
+#foreach cell $library {
+#    puts [list_nodes [lindex $cell 1]]  ; # !!
+#}
+
 foreach cell $library {
-    #puts [list_gates [lindex $cell 1]]  ; # !!
-    export $option_path [lindex $cell 0] [lindex $cell 1]
+    puts [pullup_node [list_nodes [lindex $cell 1]]]
+    puts [pulldown_node [list_nodes [lindex $cell 1]]]
 }
+# call exporter
+#foreach cell $library {
+#    export $option_path [lindex $cell 0] [lindex $cell 1]
+#}
