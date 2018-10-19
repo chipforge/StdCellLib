@@ -112,6 +112,8 @@ dist: clean
 	$(ECHO) "---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
 
+#   well, 'clean' directories before distributing
+
 .PHONY: clean
 clean:
 	$(ECHO) "---- clean up all intermediate files ----"
@@ -124,9 +126,15 @@ clean:
 #.PHONY: cells
 #cells: $(CELLS)
 
+#   re-generates 'functional, switch-level based' descriptions for
+#   almost all combinatorial cells - ATTENTION! USE this with CAUTION
+#   while following steps might overwrite your manual efforts
+
 .PHONY: catalog
 catalog:
 	$(POPCORN) -s $(T)
+
+#   grep all hierarchichal LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
 doc:
