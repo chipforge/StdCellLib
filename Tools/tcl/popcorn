@@ -268,6 +268,101 @@ proc highest_pulldown? {nodes} {
     return $node
 }
 
+#   ------------    proc 'path_pullup?'     ---------------------------
+
+#   find first path in pullup network which is shorter than 'stacked' option
+
+proc path_pullup? {node depth netlist} {
+
+    global verbose
+    global option_stacked
+
+    # work out
+    set path {}
+    if {$depth > $option_stacked} {
+        # maximum depth reached, abort
+        set path {}
+    } else {
+        # still space to evaluate
+        set network [lindex $netlist 0] ; # pullup network is the 1st element in list
+        # check network for $node on transistor as drain
+        foreach mosfet $network {
+            # check all transistors which start with $node
+            if {[lindex $mosfet 1] eq $node} {
+
+                # check all transistor sources as next nodes
+                set next_node [lindex $mosfet 2]
+                if {$next_node eq "vdd"} {
+                    # found last transistor in chain
+                    set path [list $mosfet]
+                    break
+                } else {
+                    # current node is intermediate, go deeper
+                    set path [path_pullup? $next_node [incr $depth] $netlist]
+                }
+                if {$path ne {}} {
+                    set path [lappend path $mosfet]
+                }
+            }
+        }
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "path_pullup?: $path"
+    }
+
+    # done
+    return $path
+}
+
+#   ------------    proc 'path_pulldown?'   ---------------------------
+
+#   find first path in pulldown network which is shorter than 'stacked' option
+
+proc path_pulldown? {node depth netlist} {
+
+    global verbose
+    global option_stacked
+
+    # work out
+    set path {}
+    if {$depth > $option_stacked} {
+        # maximum depth reached, abort
+        set path {}
+    } else {
+        # still space to evaluate
+        set network [lindex $netlist 1] ; # pulldown network is the 1st element in list
+        # check network for $node on transistor as drain
+        foreach mosfet $network {
+            # check all transistors which start with $node
+            if {[lindex $mosfet 1] eq $node} {
+
+                # check all transistor sources as next nodes
+                set next_node [lindex $mosfet 2]
+                if {$next_node eq "gnd"} {
+                    # found last transistor in chain
+                    set path [list $mosfet]
+                    break
+                } else {
+                    # current node is intermediate, go deeper
+                    set path [path_pulldown? $next_node [incr $depth] $netlist]
+                }
+                if {$path ne {}} {
+                    set path [lappend path $mosfet]
+                }
+            }
+        }
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "path_pulldown?: $path"
+    }
+
+    # done
+    return $path
+}
 
 #   -------------------------------------------------------------------
 #                       MAIN
@@ -322,33 +417,9 @@ if {$verbose} {
 #    puts [input_nodes? $library($cellid)]
 #}
 
-
-#   ------------    generate loop   -----------------------------------
-
-set seedid INV
-set seed library(INV)
-set newid 1
-set new {}
-
-set T 1
-
-#   main loop
-
-while {$T <= $option_stacked} {
-
-    #
-    #
-    set T 5 ; # !!
-
-    # verbose message
-    if {$verbose} {
-        puts "generate!: $new"
-    }
-
-    # store new cell into library
-    set library($newid) $new
-
-    # call exporter
-    export! $option_path $newid $library($newid)
-}
-# done
+puts [path_pullup? Z 1 $library(INV)]
+puts [path_pullup? Z 1 $library(NOR2)]
+puts [path_pullup? Z 1 $library(NAND2)]
+puts [path_pulldown? Z 1 $library(INV)]
+puts [path_pulldown? Z 1 $library(NOR2)]
+puts [path_pulldown? Z 1 $library(NAND2)]
