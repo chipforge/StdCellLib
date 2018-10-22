@@ -268,20 +268,20 @@ proc highest_pulldown? {nodes} {
     return $node
 }
 
-#   ------------    proc 'path_pullup?'     ---------------------------
+#   ------------    proc 'column_pullup?'   ---------------------------
 
-#   find first path in pullup network which is shorter than 'stacked' option
+#   find first column in pullup network which is shorter than 'stacked' option
 
-proc path_pullup? {node depth netlist} {
+proc column_pullup? {node depth netlist} {
 
     global verbose
     global option_stacked
 
     # work out
-    set path {}
+    set column {}
     if {$depth > $option_stacked} {
         # maximum depth reached, abort
-        set path {}
+        set column {}
     } else {
         # still space to evaluate
         set network [lindex $netlist 0] ; # pullup network is the 1st element in list
@@ -294,14 +294,14 @@ proc path_pullup? {node depth netlist} {
                 set next_node [lindex $mosfet 2]
                 if {$next_node eq "vdd"} {
                     # found last transistor in chain
-                    set path [list $mosfet]
+                    set column [list $mosfet]
                     break
                 } else {
                     # current node is intermediate, go deeper
-                    set path [path_pullup? $next_node [incr $depth] $netlist]
+                    set column [column_pullup? $next_node [incr $depth] $netlist]
                 }
-                if {$path ne {}} {
-                    set path [lappend path $mosfet]
+                if {$column ne {}} {
+                    set column [lappend column $mosfet]
                 }
             }
         }
@@ -309,27 +309,27 @@ proc path_pullup? {node depth netlist} {
 
     # verbose message
     if {$verbose} {
-        puts "path_pullup?: $path"
+        puts "column_pullup?: $column"
     }
 
     # done
-    return $path
+    return $column
 }
 
-#   ------------    proc 'path_pulldown?'   ---------------------------
+#   ------------    proc 'column_pulldown?'     -----------------------
 
-#   find first path in pulldown network which is shorter than 'stacked' option
+#   find first column in pulldown network which is shorter than 'stacked' option
 
-proc path_pulldown? {node depth netlist} {
+proc column_pulldown? {node depth netlist} {
 
     global verbose
     global option_stacked
 
     # work out
-    set path {}
+    set column {}
     if {$depth > $option_stacked} {
         # maximum depth reached, abort
-        set path {}
+        set column {}
     } else {
         # still space to evaluate
         set network [lindex $netlist 1] ; # pulldown network is the 1st element in list
@@ -342,14 +342,14 @@ proc path_pulldown? {node depth netlist} {
                 set next_node [lindex $mosfet 2]
                 if {$next_node eq "gnd"} {
                     # found last transistor in chain
-                    set path [list $mosfet]
+                    set column [list $mosfet]
                     break
                 } else {
                     # current node is intermediate, go deeper
-                    set path [path_pulldown? $next_node [incr $depth] $netlist]
+                    set column [column_pulldown? $next_node [incr $depth] $netlist]
                 }
-                if {$path ne {}} {
-                    set path [lappend path $mosfet]
+                if {$column ne {}} {
+                    set column [lappend column $mosfet]
                 }
             }
         }
@@ -357,11 +357,11 @@ proc path_pulldown? {node depth netlist} {
 
     # verbose message
     if {$verbose} {
-        puts "path_pulldown?: $path"
+        puts "column_pulldown?: $column"
     }
 
     # done
-    return $path
+    return $column
 }
 
 #   -------------------------------------------------------------------
@@ -417,9 +417,9 @@ if {$verbose} {
 #    puts [input_nodes? $library($cellid)]
 #}
 
-puts [path_pullup? Z 1 $library(INV)]
-puts [path_pullup? Z 1 $library(NOR2)]
-puts [path_pullup? Z 1 $library(NAND2)]
-puts [path_pulldown? Z 1 $library(INV)]
-puts [path_pulldown? Z 1 $library(NOR2)]
-puts [path_pulldown? Z 1 $library(NAND2)]
+puts [column_pullup? Z 1 $library(INV)]
+puts [column_pullup? Z 1 $library(NOR2)]
+puts [column_pullup? Z 1 $library(NAND2)]
+puts [column_pulldown? Z 1 $library(INV)]
+puts [column_pulldown? Z 1 $library(NOR2)]
+puts [column_pulldown? Z 1 $library(NAND2)]
