@@ -78,14 +78,9 @@
 #   array index is cellid, the content structure is a list with
 #   { { pull-up network } { pull-down network } }, where every pullup/pulldown network
 #   is a list of transistors itself {{ gate drain source mosfet }..}
-set library(INV)        { {{A Z vdd pmos}} \
-                          {{A Z gnd nmos}} }
-set library(NOR2)       { {{B 1 vdd pmos} \
-                           {A Z 1 pmos}} \
-                          {{A Z gnd nmos} {B Z gnd nmos}} }
-set library(NAND2)      { {{A Z vdd pmos} {B Z vdd pmos}} \
-                          {{A Z 2 nmos} \
-                           {B 2 gnd nmos}} }
+set library(INV)        {{{A Z vdd pmos}} {{A Z gnd nmos}}}
+set library(NOR2)       {{{B 1 vdd pmos} {A Z 1 pmos}} {{A Z gnd nmos} {B Z gnd nmos}}}
+set library(NAND2)      {{{B Z vdd pmos} {A Z vdd pmos}} {{A Z 2 nmos} {B 2 gnd nmos}}}
 
 #   ------------    proc 'export!'  -----------------------------------
 
@@ -122,17 +117,16 @@ proc export! {path cellid netlist} {
 #                       FUNCTIONS
 #   -------------------------------------------------------------------
 
-#   ------------    proc 'pullup_nodes?'    ---------------------------
+#   ------------    proc 'nodes?'   -----------------------------------
 
-#   list all nodes involved in pullup network in a decreasing order
+#   list all nodes involved in any network in a decreasing order
 
-proc pullup_nodes? {netlist} {
+proc nodes? {network} {
 
     global verbose
 
     # work out
     set unsorted {}
-    set network [lindex $netlist 0] ; # pullup network is the 1st element in list
     foreach mosfet $network {
         lappend unsorted [lindex $mosfet 1] ; # drain is 2nd element in list
         lappend unsorted [lindex $mosfet 2] ; # source is 3rd element in list
@@ -143,11 +137,21 @@ proc pullup_nodes? {netlist} {
 
     # verbose message
     if {$verbose} {
-        puts "pullup_nodes?: $unsorted > $nodes"
+        puts "nodes?: $unsorted > $nodes"
     }
 
     # done
     return $nodes
+}
+
+#   ------------    proc 'pullup_nodes?'    ---------------------------
+
+#   list all nodes involved in pullup network in a decreasing order
+
+proc pullup_nodes? {netlist} {
+
+    # wrapper
+    return [nodes? [lindex $netlist 0]] ; # pullup network is the 1st element in list
 }
 
 #   ------------    proc 'pulldown_nodes?'  ---------------------------
@@ -156,212 +160,335 @@ proc pullup_nodes? {netlist} {
 
 proc pulldown_nodes? {netlist} {
 
+    # wrapper
+    return [nodes? [lindex $netlist 1]] ; # pulldown network is the 2nd element in list
+}
+
+#   ------------    proc 'maxnode?' -----------------------------------
+
+#   get highest node in network (w/ maximum number)
+
+proc maxnode? {network} {
+
     global verbose
 
     # work out
-    set unsorted {}
-    set network [lindex $netlist 1] ; # pulldown network is the 2nd element in list
-    foreach mosfet $network {
-        lappend unsorted [lindex $mosfet 1] ; # drain is 2nd element in list
-        lappend unsorted [lindex $mosfet 2] ; # source is 3rd element in list
+    set nodes [nodes? $network] 
+    set maxnode -1
+    foreach item $nodes {
+        if {[string is entier $item]} {
+            set maxnode $item
+            break
+        }
     }
-
-    # sort list decreasing and unique
-    set nodes [lsort -decreasing -unique -dictionary $unsorted]
 
     # verbose message
     if {$verbose} {
-        puts "pulldown_nodes?: $unsorted > $nodes"
+        puts "maxnode?: $maxnode"
     }
 
     # done
-    return $nodes
+    return $maxnode
 }
 
-#   ------------    proc 'input_nodes?'     ---------------------------
+#   ------------    proc 'pullup_maxnode?'  ---------------------------
 
-#   list all inputs involved in pullup/pulldown networks and compare them
+#   get highest node in pullup network (w/ maximum number)
 
-proc input_nodes? {netlist} {
+proc pullup_maxnode? {netlist} {
+
+    # wrapper
+    return [maxnode? [lindex $netlist 0]] ; # pulldown network is the 1st element in list
+}
+
+#   ------------    proc 'pulldown_maxnode?'    -----------------------
+
+#   get highest node in pulldown network (w/ maximum number)
+
+proc pulldown_maxnode? {netlist} {
+
+    # wrapper
+    set maxnode [maxnode? [lindex $netlist 1]] ; # pullup network is the 2nd element in list
+    if {$maxnode eq -1} {
+        return 0
+    } else {
+        return $maxnode
+    }
+}
+
+#   ------------    proc 'inputs?'  -----------------------------------
+
+#   list all inputs involved in any network in a decreasing order
+
+proc inputs? {network} {
 
     global verbose
 
     # collect all inputs form pullup network
-    set unsorted_up {}
-    set network [lindex $netlist 0] ; # pullup network is the 1st element in list
+    set unsorted {}
     foreach mosfet $network {
-        lappend unsorted_up [lindex [lindex $mosfet 0] 0] ; # gate is 1st element in list
+        lappend unsorted [lindex [lindex $mosfet 0] 0] ; # gate is 1st element in list
     }
-    # sort pullup
-    set pullup [lsort -decreasing -unique -dictionary $unsorted_up]
-
-    # collect all inputs form pulldown network
-    set unsorted_down {}
-    set network [lindex $netlist 1] ; # pulldown network is the 2nd element in list
-    foreach mosfet $network {
-        lappend unsorted_down [lindex [lindex $mosfet 0] 0]; # gate is 1st element in list
-    }
-    # sort pulldown
-    set pulldown [lsort -decreasing -unique -dictionary $unsorted_down]
-
-    # ?? compare both lists here!
-    set nodes $pulldown ; # !!
+    # sort inputs
+    set inputs [lsort -decreasing -unique -dictionary $unsorted_up]
 
     # verbose message
     if {$verbose} {
-        puts "input_nodes?: $pullup $pulldown"
+        puts "inputs?: $inputs"
     }
 
     # done
-    return $nodes
+    return $inputs
 }
 
-#   ------------    proc 'highest_pullup?'  ---------------------------
+#   ------------    proc 'pullup_inputs?'   ---------------------------
 
-#   get highest pullup node
+#   list all inputs involved in pullup network in a decreasing order
 
-proc highest_pullup? {nodes} {
+proc pullup_inputs? {netlist} {
+
+    # wrapper
+    return [inputs? [lindex $netlist 0]] ; # pullup network is the 1st element in list
+}
+
+#   ------------    proc 'pulldown_inputs?'     -----------------------
+
+#   list all inputs involved in pulldown network in a decreasing order
+
+proc pulldown_inputs? {netlist} {
+
+    # wrapper
+    return [inputs? [lindex $netlist 1]] ; # pulldown network is the 2nd element in list
+}
+
+#   ------------    proc 'column?'  -----------------------------------
+
+#   find first column in any network which is shorter than 'stacked' option
+
+proc column? {from to depth network} {
 
     global verbose
+    global option_stacked
 
     # work out
-    set node -1 
-    foreach item $nodes {
-        if {[string is entier $item]} {
-            set node $item
-            break
+    set column {}
+    if {$option_stacked eq $depth} {
+        # maximum depth reached, abort
+        set column {}
+    } else {
+        foreach mosfet $network {
+            # check network for $from on mosfet as drain
+            if {[lindex $mosfet 1] eq $from} {
+
+                # check all transistor sources as next nodes
+                set next_node [lindex $mosfet 2]
+                if {$next_node eq $to} {
+                    # found last transistor in chain
+                    set column [list $mosfet]
+                    break
+                } else {
+                    # current node is intermediate, go deeper
+                    set column [column? $next_node $to [incr depth] $network]
+                }
+                if {$column ne {}} {
+                    set column [lappend column $mosfet]
+                }
+            }
         }
     }
 
     # verbose message
     if {$verbose} {
-        puts "highest_pullup?: $node"
+        puts "column?: $depth $option_stacked $column"
     }
 
     # done
-    return $node
-}
-
-#   ------------    proc 'highest_pulldown?'    -----------------------
-
-#   get highest pulldown node
-
-proc highest_pulldown? {nodes} {
-
-    global verbose
-
-    # work out
-    set node 0
-    foreach item $nodes {
-        if {[string is entier $item]} {
-            set node $item
-            break
-        }
-    }
-
-    # verbose message
-    if {$verbose} {
-        puts "highest_pulldown?: $node"
-    }
-
-    # done
-    return $node
+    return $column
 }
 
 #   ------------    proc 'column_pullup?'   ---------------------------
 
 #   find first column in pullup network which is shorter than 'stacked' option
 
-proc column_pullup? {node depth netlist} {
+proc column_pullup? {from to depth netlist} {
 
-    global verbose
-    global option_stacked
-
-    # work out
-    set column {}
-    if {$depth > $option_stacked} {
-        # maximum depth reached, abort
-        set column {}
-    } else {
-        # still space to evaluate
-        set network [lindex $netlist 0] ; # pullup network is the 1st element in list
-        # check network for $node on transistor as drain
-        foreach mosfet $network {
-            # check all transistors which start with $node
-            if {[lindex $mosfet 1] eq $node} {
-
-                # check all transistor sources as next nodes
-                set next_node [lindex $mosfet 2]
-                if {$next_node eq "vdd"} {
-                    # found last transistor in chain
-                    set column [list $mosfet]
-                    break
-                } else {
-                    # current node is intermediate, go deeper
-                    set column [column_pullup? $next_node [incr $depth] $netlist]
-                }
-                if {$column ne {}} {
-                    set column [lappend column $mosfet]
-                }
-            }
-        }
-    }
-
-    # verbose message
-    if {$verbose} {
-        puts "column_pullup?: $column"
-    }
-
-    # done
-    return $column
+    # wraper
+    return [column? $from $to $depth [lindex $netlist 0]] ; # pullup network is the 1st element in list
 }
 
 #   ------------    proc 'column_pulldown?'     -----------------------
 
-#   find first column in pulldown network which is shorter than 'stacked' option
+#   find first column in pullup network which is shorter than 'stacked' option
 
-proc column_pulldown? {node depth netlist} {
+proc column_pulldown? {from to depth netlist} {
+
+    # wraper
+    return [column? $from $to $depth [lindex $netlist 1]] ; # pulldown network is the 2nd element in list
+}
+
+#   ------------    proc 'input_number!'    ---------------------------
+
+#   generate input (gate) name from $input following the numbers
+
+proc input_number! {input} {
 
     global verbose
-    global option_stacked
 
     # work out
-    set column {}
-    if {$depth > $option_stacked} {
-        # maximum depth reached, abort
-        set column {}
-    } else {
-        # still space to evaluate
-        set network [lindex $netlist 1] ; # pulldown network is the 1st element in list
-        # check network for $node on transistor as drain
-        foreach mosfet $network {
-            # check all transistors which start with $node
-            if {[lindex $mosfet 1] eq $node} {
-
-                # check all transistor sources as next nodes
-                set next_node [lindex $mosfet 2]
-                if {$next_node eq "gnd"} {
-                    # found last transistor in chain
-                    set column [list $mosfet]
-                    break
-                } else {
-                    # current node is intermediate, go deeper
-                    set column [column_pulldown? $next_node [incr $depth] $netlist]
-                }
-                if {$column ne {}} {
-                    set column [lappend column $mosfet]
-                }
-            }
-        }
+    set number 1
+    set char [string range $input 0 0]
+    if {[string length $input] > 1} {
+        # input (gate) name already has a number
+        set number [expr [string range $input 1 end] +1]
     }
+    # combine char and number
+    set input [string cat $char $number]
 
     # verbose message
     if {$verbose} {
-        puts "column_pulldown?: $column"
+        puts "input_number!: $input"
     }
 
     # done
-    return $column
+    return $input
+}
+
+#   ------------    proc 'input_char!'  -------------------------------
+
+#   generate input (gate) name from $input following the alphabet
+
+proc input_char! {input} {
+
+    global verbose
+
+    # usable inputs
+    set table {A B C D E F G H J K L M N P T U V W}
+
+    # work out
+    set input [lindex $table [expr [lsearch -exact $table $input] +1]]
+
+    # verbose message
+    if {$verbose} {
+        puts "input_char!: $input"
+    }
+
+    # done
+    return $input
+}
+
+#   ------------    proc 'enlarge_nand!'    ---------------------------
+
+#   find not fully filled column in pulldown network and enlarge both networks
+
+proc enlarge_nand! {netlist} {
+
+    global verbose
+
+    # start with pulldown network
+    set network [lindex $netlist 1] ; # pulldown network is the 2nd element in list
+    set column [column? "Z" "gnd" 1 $network] ; # find free column
+
+    if {$column eq {}} {
+        set netlist $column
+    } else {
+        # identify mosfet to replace with higher node number
+        set orgfet [lindex $column 0] ; # mosfet on most-left position on column
+
+        set index [lsearch $network $orgfet] ; # network position where to replace
+
+        # prepare replacement
+        set node [expr [pulldown_maxnode? $netlist] +2] ; # get highest node number, add 2, for connectivity
+        set patch [lreplace $orgfet 2 2 $node] ; # path original mosfet with new node number
+        set gate [lindex $orgfet 0] ; # get current input / gate name
+        set newgate [input_char! $gate] ; # generate next input / gate name
+        set newfet [list $newgate $node gnd nmos]; # combine new mosfet to add
+
+        # extend pulldown column
+        set pulldown [concat [lreplace $network $index $index $patch] [list $newfet]] ; # patch original mosfet and add new one
+
+        # follow up with pullup network
+        set network [lindex $netlist 0] ; # pulldown network is the 1st element in list
+
+        # identify mosfet to "double"
+        foreach mosfet $network {
+            if {[lindex $mosfet 0] eq $gate} {
+                set orgfet $mosfet
+                break
+            }
+        }
+
+        # prepare addition
+        set newfet [lreplace $orgfet 0 0 $newgate]
+
+        # extend pullup row
+        set pullup [concat $network [list $newfet]]
+
+        set netlist [list [lsort -decreasing $pullup] [lsort $pulldown]]
+    }
+    # verbose message
+    if {$verbose} {
+        puts "enlarge_nand!: $netlist"
+    }
+
+    # done
+    return $netlist
+}
+
+#   ------------    proc 'enlarge_nor!'     ---------------------------
+
+#   find not fully developed column in pullup network and enlarge both networks
+
+proc enlarge_nor! {netlist} {
+
+    global verbose
+
+    # start with pullup network
+    set network [lindex $netlist 0] ; # pullup network is the 1st element in list
+    set column [column? "Z" "vdd" 1 $network] ; # find free column
+
+    if {$column eq {}} {
+        set netlist $column
+    } else {
+        # identify mosfet to replace with higher node number
+        set orgfet [lindex $column 0] ; # mosfet on most-left position on column
+
+        set index [lsearch $network $orgfet] ; # network position where to replace
+
+        # prepare replacement
+        set node [expr [pullup_maxnode? $netlist] +2] ; # get highest node number, add 2, for connectivity
+        set patch [lreplace $orgfet 2 2 $node] ; # path original mosfet with new node number
+        set gate [lindex $orgfet 0] ; # get current input / gate name
+        set newgate [input_number! $gate] ; # generate next input / gate name
+        set newfet [list $newgate $node vdd pmos]; # combine new mosfet to add
+
+        # extend pulldown column
+        set pullup [concat [lreplace $network $index $index $patch] [list $newfet]] ; # patch original mosfet and add new one
+
+        # follow up with pulldown network
+        set network [lindex $netlist 1] ; # pullup network is the 1st element in list
+
+        # identify mosfet to "double"
+        foreach mosfet $network {
+            if {[lindex $mosfet 0] eq $gate} {
+                set orgfet $mosfet
+                break
+            }
+        }
+
+        # prepare addition
+        set newfet [lreplace $orgfet 0 0 $newgate]
+
+        # extend pullup row
+        set pulldown [concat $network [list $newfet]]
+
+        set netlist [list [lsort -decreasing $pullup] [lsort $pulldown]]
+    }
+    # verbose message
+    if {$verbose} {
+        puts "enlarge_nor!: $netlist"
+    }
+
+    return $netlist
 }
 
 #   -------------------------------------------------------------------
@@ -410,16 +537,21 @@ if {$verbose} {
 #   SANDBOX
 
 
-# 
-#foreach cellid [array names library *] {
-#    puts [highest_pullup? [pullup_nodes? $library($cellid)]]
-#    puts [highest_pulldown? [pulldown_nodes? $library($cellid)]]
-#    puts [input_nodes? $library($cellid)]
-#}
+set seed $library(INV)
+set cellid 1
+export! $option_path INV $seed
 
-puts [column_pullup? Z 1 $library(INV)]
-puts [column_pullup? Z 1 $library(NOR2)]
-puts [column_pullup? Z 1 $library(NAND2)]
-puts [column_pulldown? Z 1 $library(INV)]
-puts [column_pulldown? Z 1 $library(NOR2)]
-puts [column_pulldown? Z 1 $library(NAND2)]
+set seed [enlarge_nand! $library(NAND2)]
+while {$seed ne {} } {
+    incr cellid
+    export! $option_path $cellid $seed
+    set seed [enlarge_nand! $seed]
+}
+
+set seed [enlarge_nor! $library(INV)]
+while {$seed ne {} } {
+    incr cellid
+    export! $option_path $cellid $seed
+    set seed [enlarge_nor! $seed]
+}
+
