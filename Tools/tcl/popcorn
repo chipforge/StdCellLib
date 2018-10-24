@@ -79,8 +79,11 @@
 #   { { pull-up network } { pull-down network } }, where every pullup/pulldown network
 #   is a list of transistors itself {{ gate drain source mosfet }..}
 set library(INV)        {{{A Z vdd pmos}} {{A Z gnd nmos}}}
-set library(NOR2)       {{{B 1 vdd pmos} {A Z 1 pmos}} {{A Z gnd nmos} {B Z gnd nmos}}}
-set library(NAND2)      {{{B Z vdd pmos} {A Z vdd pmos}} {{A Z 2 nmos} {B 2 gnd nmos}}}
+set library(NOR2)       {{{B 1 vdd pmos} {A Z 1 pmos}} {{B Z gnd nmos} {A Z gnd nmos}}}
+set library(NAND2)      {{{B Z vdd pmos} {A Z vdd pmos}} {{B 2 gnd nmos} {A Z 2 nmos}}}
+
+# usable inputs
+set table {A B C D E F G H J K L M N P T U V W}
 
 #   ------------    proc 'export!'  -----------------------------------
 
@@ -230,7 +233,7 @@ proc inputs? {network} {
         lappend unsorted [lindex [lindex $mosfet 0] 0] ; # gate is 1st element in list
     }
     # sort inputs
-    set inputs [lsort -decreasing -unique -dictionary $unsorted_up]
+    set inputs [lsort -decreasing -unique -dictionary $unsorted]
 
     # verbose message
     if {$verbose} {
@@ -360,9 +363,7 @@ proc input_number! {input} {
 proc input_char! {input} {
 
     global verbose
-
-    # usable inputs
-    set table {A B C D E F G H J K L M N P T U V W}
+    global table
 
     # work out
     set input [lindex $table [expr [lsearch -exact $table $input] +1]]
@@ -380,7 +381,7 @@ proc input_char! {input} {
 
 #   find not fully filled column in pulldown network and enlarge both networks
 
-proc enlarge_nand! {netlist} {
+proc enlarge_nand! {nameing netlist} {
 
     global verbose
 
@@ -400,7 +401,12 @@ proc enlarge_nand! {netlist} {
         set node [expr [pulldown_maxnode? $netlist] +2] ; # get highest node number, add 2, for connectivity
         set patch [lreplace $orgfet 2 2 $node] ; # path original mosfet with new node number
         set gate [lindex $orgfet 0] ; # get current input / gate name
-        set newgate [input_char! $gate] ; # generate next input / gate name
+        # generate next input / gate name regarding 'proc -naming'
+        if {$nameing eq "number"} {
+            set newgate [input_number! $gate]
+        } else {
+            set newgate [input_char! $gate]
+        }
         set newfet [list $newgate $node gnd nmos]; # combine new mosfet to add
 
         # extend pulldown column
@@ -423,7 +429,7 @@ proc enlarge_nand! {netlist} {
         # extend pullup row
         set pullup [concat $network [list $newfet]]
 
-        set netlist [list [lsort -decreasing $pullup] [lsort $pulldown]]
+        set netlist [list [lsort -decreasing $pullup] [lsort -decreasing $pulldown]]
     }
     # verbose message
     if {$verbose} {
@@ -438,7 +444,7 @@ proc enlarge_nand! {netlist} {
 
 #   find not fully developed column in pullup network and enlarge both networks
 
-proc enlarge_nor! {netlist} {
+proc enlarge_nor! {nameing netlist} {
 
     global verbose
 
@@ -458,7 +464,12 @@ proc enlarge_nor! {netlist} {
         set node [expr [pullup_maxnode? $netlist] +2] ; # get highest node number, add 2, for connectivity
         set patch [lreplace $orgfet 2 2 $node] ; # path original mosfet with new node number
         set gate [lindex $orgfet 0] ; # get current input / gate name
-        set newgate [input_number! $gate] ; # generate next input / gate name
+        # generate next input / gate name regarding 'proc -naming'
+        if {$nameing eq "number"} {
+            set newgate [input_number! $gate]
+        } else {
+            set newgate [input_char! $gate]
+        }
         set newfet [list $newgate $node vdd pmos]; # combine new mosfet to add
 
         # extend pulldown column
@@ -481,14 +492,134 @@ proc enlarge_nor! {netlist} {
         # extend pullup row
         set pulldown [concat $network [list $newfet]]
 
-        set netlist [list [lsort -decreasing $pullup] [lsort $pulldown]]
+        set netlist [list [lsort -decreasing $pullup] [lsort -decreasing $pulldown]]
     }
     # verbose message
     if {$verbose} {
         puts "enlarge_nor!: $netlist"
     }
 
+    # done
     return $netlist
+}
+
+#   ------------    proc 'cellnames!'   -------------------------------
+
+#   evaluate namespace for cells
+
+proc cellnames! {nameing cellid netlist} {
+
+    global verbose
+    global table
+
+    # cut out and store group header
+    switch -glob -- $cellid {
+        NAND*   {set index 3}
+        NOR*    {set index 2}
+        AOI*    {set index 2}
+        XOR*    {set index 2}
+        OAI*    {set index 2}
+        AO*     {set index 1}
+        EQ*     {set index 1}
+        OA*     {set index 1}
+        default break
+    }
+    set header [string range $cellid 0 $index]
+
+    # evaluate numbering
+
+    set number ""
+    if {$nameing eq "number"} {
+
+        # initialize scoreboard
+        foreach char $table {
+            set scoreboard($char) 0
+        }
+        # count up input occurances
+        foreach item [pullup_inputs? $netlist] {
+            incr scoreboard([string range $item 0 0])
+        }
+        # concatinate
+        foreach item $table {
+            if {$scoreboard($item) > 0} {
+                set number [string cat $scoreboard($item) $number]
+            }
+        }
+    } else {
+        set number [llength [pullup_inputs? $netlist]]
+    }
+
+    # combine char and number
+    set cellid [string cat $header $number]
+
+    # verbose message
+    if {$verbose} {
+        puts "cellname!: $cellid"
+    }
+
+    # done
+    return $cellid
+}
+
+#   ------------    proc 'nor_group!'   -------------------------------
+
+#   generate recursive NOR + AOI complex gates
+
+proc nor_group! {nameing netlist} {
+
+    global verbose
+
+    #   enlarge left-hand -> NOR
+    set norgroup [enlarge_nor! char $netlist]
+    set norid [cellnames! char "NOR" $norgroup]
+
+    if {$norgroup ne {}} {
+        puts "$norid $norgroup"
+        set enter [gets stdin]
+        set library($norid) $norgroup
+        [nor_group! "NOR" $norgroup]
+    }
+    #   enlarge right-hand -> AOI
+    set nandgroup [enlarge_nand! number $netlist]
+    set nandid [cellnames! number "AOI" $nandgroup]
+
+    if {$nandgroup ne {}} {
+        puts "$nandid $nandgroup"
+        set enter [gets stdin]
+        set library($nandid) $nandgroup
+        [nand_group! "AOI" $nandgroup]
+    }
+}
+
+#   ------------    proc 'nand_group!'  -------------------------------
+
+#   generate recursive OAI + NAND complex gates
+
+proc nand_group! {nameing netlist} {
+
+    global verbose
+
+    #   enlarge left-hand -> OAI
+    set norgroup [enlarge_nor! number $netlist]
+    set norid [cellnames! number "OAI" $norgroup]
+
+    if {$norgroup ne {}} {
+        puts "$norid $norgroup"
+        set enter [gets stdin]
+        set library($norid) $norgroup
+        [nor_group! "OAI" $norgroup]
+    }
+
+    #   enlarge right-hand -> NAND
+    set nandgroup [enlarge_nand! char $netlist]
+    set nandid [cellnames! char "NAND" $nandgroup]
+
+    if {$nandgroup ne {}} {
+        puts "$nandid $nandgroup"
+        set enter [gets stdin]
+        set library($nandid) $nandgroup
+        [nand_group! "NAND" $nandgroup]
+    }
 }
 
 #   -------------------------------------------------------------------
@@ -531,27 +662,26 @@ if {$verbose} {
     puts "option_path (-o): $option_path"
 }
 
+#   ------------    cell generation     -------------------------------
 
-#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   SANDBOX
-
-
+#   set first seed
 set seed $library(INV)
-set cellid 1
-export! $option_path INV $seed
 
-set seed [enlarge_nand! $library(NAND2)]
-while {$seed ne {} } {
-    incr cellid
-    export! $option_path $cellid $seed
-    set seed [enlarge_nand! $seed]
+#   enlarge seed w/ NAND2
+set nandgroup [enlarge_nand! char $seed]
+set library(NAND2) $nandgroup
+
+#   enlarge seed w/ NOR2
+set norgroup [enlarge_nor! char $seed]
+set library(NOR2) $norgroup
+
+#   generate groups
+nor_group! "NOR2" $library(NOR2)
+nand_group! "NAND2" $library(NAND2)
+
+#   export results
+foreach cellid [array names library] {
+    export! $option_path $cellid $library($cellid)
 }
 
-set seed [enlarge_nor! $library(INV)]
-while {$seed ne {} } {
-    incr cellid
-    export! $option_path $cellid $seed
-    set seed [enlarge_nor! $seed]
-}
-
+#   thanks for all the fish!
