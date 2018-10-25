@@ -132,7 +132,7 @@ clean:
 
 .PHONY: catalog
 catalog:
-	$(POPCORN) -s $(T)
+	$(POPCORN) -t $(T)
 
 #   grep all hierarchichal LaTeX files and build the up-to-date PDF
 
