@@ -267,66 +267,60 @@ proc pulldown_inputs? {netlist} {
 #   ------------    proc 'column?'  -----------------------------------
 
 #   find first column in any network which is shorter than 'stacked' option
+#   needs current path in column, returns full path
 
-proc column? {from to depth network} {
+proc column? {column from to network} {
 
     global verbose
     global option_stacked
 
     # work out
-    set column {}
-    if {$option_stacked eq $depth} {
-        # maximum depth reached, abort
-        set column {}
-    } else {
+    if {[llength $column] < $option_stacked} {
         foreach mosfet $network {
             # check network for $from on mosfet as drain
             if {[lindex $mosfet 1] eq $from} {
 
                 # check all transistor sources as next nodes
-                set next_node [lindex $mosfet 2]
-                if {$next_node eq $to} {
+                if {[lindex $mosfet 2] eq $to} {
                     # found last transistor in chain
-                    set column [list $mosfet]
-                    break
+                    set column [lappend column $mosfet]
                 } else {
                     # current node is intermediate, go deeper
-                    set column [column? $next_node $to [incr depth] $network]
-                }
-                if {$column ne {}} {
-                    set column [lappend column $mosfet]
+                    set column [column? [lappend column $mosfet] [lindex $mosfet 2] $to $network]
                 }
             }
         }
+    } else {
+        set column {}
     }
 
     # verbose message
     if {$verbose} {
-        puts "column?: $depth $option_stacked $column"
+        puts "column?: [llength $column] $option_stacked [lsort -decreasing $column]"
     }
 
     # done
-    return $column
+    return [lsort -decreasing $column]
 }
 
 #   ------------    proc 'column_pullup?'   ---------------------------
 
 #   find first column in pullup network which is shorter than 'stacked' option
 
-proc column_pullup? {from to depth netlist} {
+proc column_pullup? {netlist} {
 
     # wraper
-    return [column? $from $to $depth [lindex $netlist 0]] ; # pullup network is the 1st element in list
+    return [column? {} "Z" "vdd" [lindex $netlist 0]] ; # pullup network is the 1st element in list
 }
 
 #   ------------    proc 'column_pulldown?'     -----------------------
 
 #   find first column in pullup network which is shorter than 'stacked' option
 
-proc column_pulldown? {from to depth netlist} {
+proc column_pulldown? {netlist} {
 
     # wraper
-    return [column? $from $to $depth [lindex $netlist 1]] ; # pulldown network is the 2nd element in list
+    return [column? {} "Z" "gnd" [lindex $netlist 1]] ; # pulldown network is the 2nd element in list
 }
 
 #   ------------    proc 'input_number!'    ---------------------------
@@ -366,15 +360,15 @@ proc input_char! {input} {
     global table
 
     # work out
-    set input [lindex $table [expr [lsearch -exact $table $input] +1]]
+    set new_input [lindex $table [expr [lsearch -exact $table $input] +1]]
 
     # verbose message
     if {$verbose} {
-        puts "input_char!: $input"
+        puts "input_char!: $input > $new_input"
     }
 
     # done
-    return $input
+    return $new_input
 }
 
 #   ------------    proc 'enlarge_nand!'    ---------------------------
@@ -387,7 +381,7 @@ proc enlarge_nand! {nameing netlist} {
 
     # start with pulldown network
     set network [lindex $netlist 1] ; # pulldown network is the 2nd element in list
-    set column [column? "Z" "gnd" 1 $network] ; # find free column
+    set column [column_pulldown? $netlist] ; # find free column
 
     if {$column eq {}} {
         set netlist $column
@@ -410,7 +404,7 @@ proc enlarge_nand! {nameing netlist} {
         set newfet [list $newgate $node gnd nmos]; # combine new mosfet to add
 
         # extend pulldown column
-        set pulldown [concat [lreplace $network $index $index $patch] [list $newfet]] ; # patch original mosfet and add new one
+        set pulldown [concat [list $newfet] [lreplace $network $index $index $patch]] ; # patch original mosfet and add new one
 
         # follow up with pullup network
         set network [lindex $netlist 0] ; # pulldown network is the 1st element in list
@@ -419,7 +413,6 @@ proc enlarge_nand! {nameing netlist} {
         foreach mosfet $network {
             if {[lindex $mosfet 0] eq $gate} {
                 set orgfet $mosfet
-                break
             }
         }
 
@@ -427,7 +420,7 @@ proc enlarge_nand! {nameing netlist} {
         set newfet [lreplace $orgfet 0 0 $newgate]
 
         # extend pullup row
-        set pullup [concat $network [list $newfet]]
+        set pullup [concat [list $newfet] $network]
 
         set netlist [list [lsort -decreasing $pullup] [lsort -decreasing $pulldown]]
     }
@@ -450,7 +443,7 @@ proc enlarge_nor! {nameing netlist} {
 
     # start with pullup network
     set network [lindex $netlist 0] ; # pullup network is the 1st element in list
-    set column [column? "Z" "vdd" 1 $network] ; # find free column
+    set column [column_pullup? $netlist] ; # find free column
 
     if {$column eq {}} {
         set netlist $column
@@ -473,7 +466,7 @@ proc enlarge_nor! {nameing netlist} {
         set newfet [list $newgate $node vdd pmos]; # combine new mosfet to add
 
         # extend pulldown column
-        set pullup [concat [lreplace $network $index $index $patch] [list $newfet]] ; # patch original mosfet and add new one
+        set pullup [concat [list $newfet] [lreplace $network $index $index $patch]] ; # patch original mosfet and add new one
 
         # follow up with pulldown network
         set network [lindex $netlist 1] ; # pullup network is the 1st element in list
@@ -490,7 +483,7 @@ proc enlarge_nor! {nameing netlist} {
         set newfet [lreplace $orgfet 0 0 $newgate]
 
         # extend pullup row
-        set pulldown [concat $network [list $newfet]]
+        set pulldown [concat [list $newfet] $network]
 
         set netlist [list [lsort -decreasing $pullup] [lsort -decreasing $pulldown]]
     }
@@ -563,62 +556,100 @@ proc cellnames! {nameing cellid netlist} {
 
 #   ------------    proc 'nor_group!'   -------------------------------
 
-#   generate recursive NOR + AOI complex gates
+#   generate recursive NOR gates
 
-proc nor_group! {nameing netlist} {
+proc nor_group! {cellid netlist} {
 
     global verbose
+    global stepmode
+    global library
 
-    #   enlarge left-hand -> NOR
-    set norgroup [enlarge_nor! char $netlist]
-    set norid [cellnames! char "NOR" $norgroup]
-
-    if {$norgroup ne {}} {
-        puts "$norid $norgroup"
-        set enter [gets stdin]
-        set library($norid) $norgroup
-        [nor_group! "NOR" $norgroup]
+    #   work out
+    set nor [enlarge_nor! char $netlist]
+    if {$nor ne {}} {
+        set norid [cellnames! char $cellid $nor]
+        puts "nor_group/nor"
+        puts "$cellid $netlist ->"
+        puts "$norid $nor"
+        set library($norid) $nor
+        if {$stepmode} {
+            set enter [gets stdin]
+        }
+        nor_group! $norid $nor
     }
-    #   enlarge right-hand -> AOI
-    set nandgroup [enlarge_nand! number $netlist]
-    set nandid [cellnames! number "AOI" $nandgroup]
+}
 
-    if {$nandgroup ne {}} {
-        puts "$nandid $nandgroup"
-        set enter [gets stdin]
-        set library($nandid) $nandgroup
-        [nand_group! "AOI" $nandgroup]
+#   ------------    proc 'aoi_group!'   -------------------------------
+
+#   generate recursive AOI complex gates
+
+proc aoi_group! {cellid netlist} {
+
+    global verbose
+    global stepmode
+    global library
+
+    #   work out
+    set nand [enlarge_nand! number $netlist]
+    if {$nand ne {}} {
+        set nandid [cellnames! number $cellid $nand]
+        puts "aoi_group/nand"
+        puts "$cellid $netlist ->"
+        puts "$nandid $nand"
+        set library($nandid) $nand
+        if {$stepmode} {
+            set enter [gets stdin]
+        }
+        aoi_group! $nandid $nand
     }
 }
 
 #   ------------    proc 'nand_group!'  -------------------------------
 
-#   generate recursive OAI + NAND complex gates
+#   generate recursive NAND gates
 
-proc nand_group! {nameing netlist} {
+proc nand_group! {cellid netlist} {
 
     global verbose
+    global stepmode
+    global library
 
-    #   enlarge left-hand -> OAI
-    set norgroup [enlarge_nor! number $netlist]
-    set norid [cellnames! number "OAI" $norgroup]
-
-    if {$norgroup ne {}} {
-        puts "$norid $norgroup"
-        set enter [gets stdin]
-        set library($norid) $norgroup
-        [nor_group! "OAI" $norgroup]
+    #   work out
+    set nand [enlarge_nand! char $netlist]
+    if {$nand ne {}} {
+        set nandid [cellnames! char $cellid $nand]
+        puts "nand_group/nand"
+        puts "$cellid $netlist ->"
+        puts "$nandid $nand"
+        set library($nandid) $nand
+        if {$stepmode} {
+            set enter [gets stdin]
+        }
+        nand_group! $nandid $nand
     }
+}
+#   ------------    proc 'oai_group!'   -------------------------------
 
-    #   enlarge right-hand -> NAND
-    set nandgroup [enlarge_nand! char $netlist]
-    set nandid [cellnames! char "NAND" $nandgroup]
+#   generate recursive OAI complex gates
 
-    if {$nandgroup ne {}} {
-        puts "$nandid $nandgroup"
-        set enter [gets stdin]
-        set library($nandid) $nandgroup
-        [nand_group! "NAND" $nandgroup]
+proc oai_group! {cellid netlist} {
+
+    global verbose
+    global stepmode
+    global library
+
+    #   work out
+    set nor [enlarge_nor! number $netlist]
+    if {$nor ne {}} {
+        set norid [cellnames! number "OAI" $nor]
+        puts "oai_group/nor"
+        puts "$cellid $netlist ->"
+        puts "$norid $nor"
+        set library($norid) $nor
+        if {$stepmode} {
+            set enter [gets stdin]
+        }
+        oai_group! $norid $nor
     }
 }
 
@@ -632,8 +663,9 @@ package require cmdline;
 
 #   define program options
 set options {
-    {s.arg "4"          "reduce number of stacked transistors - default" }
     {o.arg "./"         "specify output directory - default" }
+    {t.arg "4"          "reduce number of stacked transistors - default" }
+    {s                  "single step mode" }
     {v                  "verbose" }
 }
 
@@ -651,14 +683,15 @@ try {
 }
 
 #   set argv from command lines
-set option_stacked $params(s) ; # number of stacked transistors
+set option_stacked [expr $params(t) -1] ; # number of stacked transistors
 set option_path $params(o) ; # output directory
+set stepmode $params(s); 
 set verbose $params(v); 
 
 #   verbose message
 if {$verbose} {
     puts "[clock format [clock seconds] -gmt 1]"
-    puts "option_stacked (-s): $option_stacked"
+    puts "option_stacked (-s): [expr $option_stacked +1]"
     puts "option_path (-o): $option_path"
 }
 
@@ -667,17 +700,22 @@ if {$verbose} {
 #   set first seed
 set seed $library(INV)
 
-#   enlarge seed w/ NAND2
 set nandgroup [enlarge_nand! char $seed]
 set library(NAND2) $nandgroup
 
-#   enlarge seed w/ NOR2
 set norgroup [enlarge_nor! char $seed]
 set library(NOR2) $norgroup
 
-#   generate groups
 nor_group! "NOR2" $library(NOR2)
 nand_group! "NAND2" $library(NAND2)
+
+set aoigroup [enlarge_nand! number $library(NOR2)]
+set library(AOI21) $aoigroup
+aoi_group! "AOI21" $library(AOI21)
+
+set oaigroup [enlarge_nor! number $library(NAND2)]
+set library(OAI21) $aoigroup
+oai_group! "OAI21" $library(OAI21)
 
 #   export results
 foreach cellid [array names library] {
