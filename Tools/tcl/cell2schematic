@@ -1,0 +1,454 @@
+#!/usr/bin/env tclsh
+#   ************    LibreSilicon's StdCellLibrary   *******************
+#
+#   Organisation:   Chipforge
+#                   Germany / European Union
+#
+#   Profile:        Chipforge focus on fine System-on-Chip Cores in
+#                   Verilog HDL Code which are easy understandable and
+#                   adjustable. For further information see
+#                           www.chipforge.org
+#                   there are projects from small cores up to PCBs, too.
+#
+#   File:           StdCellLib/Tool/tcl/cell2schematic
+#
+#   Purpose:        Generates schematic file formats from cell description
+#
+#   ************    Tcl 8.6 Shell Script    ***************************
+#
+#   ///////////////////////////////////////////////////////////////////
+#
+#       Copyright (c)   2018 by
+#                       SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+#
+#   This source file may be used and distributed without restriction
+#   provided that this copyright statement is not removed from the
+#   file and that any derivative work contains the original copyright
+#   notice and the associated disclaimer.
+#
+#   This source is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This source is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#    (__)  You should have received a copy of the GNU General Public
+#    oo )  License along with this program; if not, write to the
+#    /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+#          Boston, MA 02110-1301, USA
+#
+#   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+#   ///////////////////////////////////////////////////////////////////
+
+#   -------------------------------------------------------------------
+#                       DESCRIPTION
+#   -------------------------------------------------------------------
+
+#   -------------------------------------------------------------------
+#                       DEFINITIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'import'   -----------------------------------
+
+#   read cell file
+
+proc import {f} {
+
+    global verbose
+
+    set netlist {}
+    # read in
+    while {[gets $f Zeile] >= 0} {
+        if {[lsearch -glob [split $Zeile] ".*"] == -1} {
+            set netlist [lappend netlist $Zeile]
+        }
+    }
+
+    # done
+    return $netlist
+}
+
+#   -------------------------------------------------------------------
+#                       FUNCTIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'fopen'    -----------------------------------
+
+#   open export file
+
+proc fopen {path cellid} {
+
+    global verbose
+    global option_graphic
+
+    # open cell output file
+    if {$option_graphic == "LaTeX"} {
+        set datafile [file join $path $cellid\_schematic.tex]
+    } else {
+        puts stderr "$option_graphic not supported"
+        exit
+    }
+    set f [open $datafile w]
+
+    # verbose message
+    if {$verbose} {
+        puts "fopen: $datafile"
+    }
+
+puts $f "%%  ************    LibreSilicon's StdCellLibrary   *******************"
+puts $f "%%"
+puts $f "%%  Organisation:   Chipforge"
+puts $f "%%                  Germany / European Union"
+puts $f "%%"
+puts $f "%%  Profile:        Chipforge focus on fine System-on-Chip Cores in"
+puts $f "%%                  Verilog HDL Code which are easy understandable and"
+puts $f "%%                  adjustable. For further information see"
+puts $f "%%                          www.chipforge.org"
+puts $f "%%                  there are projects from small cores up to PCBs, too."
+puts $f "%%"
+puts $f "%%  File:           StdCellLib/Documents/LaTeX/$cellid\_schematic.tex"
+puts $f "%%"
+puts $f "%%  Purpose:        Auto-generated Schematic File for $cellid"
+puts $f "%%"
+puts $f "%%  ************    LaTeX with circdia.sty package      ***************"
+puts $f "%%"
+puts $f "%%  ///////////////////////////////////////////////////////////////////"
+puts $f "%%"
+puts $f "%%  Copyright (c) [clock format [clock seconds] -format %Y] by chipforge <hsank@nospam.chipforge.org>"
+puts $f "%%  All rights reserved."
+puts $f "%%"
+puts $f "%%      This Standard Cell Library is licensed under the Libre Silicon"
+puts $f "%%      public license; you can redistribute it and/or modify it under"
+puts $f "%%      the terms of the Libre Silicon public license as published by"
+puts $f "%%      the Libre Silicon alliance, either version 1 of the License, or"
+puts $f "%%      (at your option) any later version."
+puts $f "%%"
+puts $f "%%      This design is distributed in the hope that it will be useful,"
+puts $f "%%      but WITHOUT ANY WARRANTY; without even the implied warranty of"
+puts $f "%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+puts $f "%%      See the Libre Silicon Public License for more details."
+puts $f "%%"
+puts $f "%%  ///////////////////////////////////////////////////////////////////"
+puts $f "\\begin\{center\}"
+
+    # done
+    return $f
+}
+
+#   ------------    proc 'fexport'      -------------------------------
+
+#   write LaTeX figure
+
+proc fexport {f cellid netlist} {
+
+    # proc 'caption' - write out 'caption' line
+    proc caption {f nstages tpmos tnmos ttotal} {
+
+        # conversation table: number -> word
+        set table {zero one two three four five six seven eigth}
+
+puts $f [format "    Schematic (%s stage, %d \$T_\{p\}\$ / %d \$T_\{n\}\$ stacked, %d \$T\$ total)" [lindex $table $nstages] $tpmos $tnmos $ttotal]
+    }
+
+    # proc 'figure_header' - write out 'figure' header
+    proc figure_header {f xsize ysize} {
+puts $f "    \\begin\{figure\}\[h\]"
+puts $f "        \\begin\{center\}"
+puts $f "            \\begin\{circuitdiagram\}\[draft*\]\{$xsize\}\{$ysize\}"
+    }
+
+    # proc 'figure_footer' - write out 'figure' footer
+    proc figure_footer {f} {
+puts $f "            \\end\{circuitdiagram\}"
+puts $f "        \\end\{center\}"
+puts $f "    \\end\{figure\}"
+    }
+
+    # proc 'puts_nmos' - template for nmos transistor
+    proc puts_nmos {f gate name x y} {
+        # all coordinates are relative to the junction grid, nmos below
+puts $f "            \% ---- 'M$name' nmos pattern ----"
+puts $f "            \\trans\[\\wireUD\{0.5\}\]\{nenh*\}\{[expr $x -2]\}\{[expr $y -3]\}\{R\}\{\}\{\$M\_\{$name\}\$\}\{\}"
+puts $f "            \\pin\{[expr $x -5]\}\{[expr $y -4.5]\}\{L\}\{$gate\}"
+    }
+
+    # proc 'puts_pmos' - template for pmos transistor
+    proc puts_pmos {f gate name x y} {
+        # all coordinates are relative to the junction grid, pmos above
+puts $f "            \% ---- 'M$name' pmos pattern ----"
+puts $f "            \\trans\[\\wireUD\{0.5\}\]\{penh*\}\{[expr $x -2]\}\{[expr $y +3]\}\{R\}\{\$M\_\{$name\}\$\}\{\}"
+puts $f "            \\pin\{[expr $x -5]\}\{[expr $y +4.5]\}\{L\}\{$gate\}"
+    }
+
+    # proc 'puts_gnd' - template for ground symbol
+    proc puts_gnd {f x y} {
+        # all coordinates are relative to the junction grid
+puts $f "            \% ---- ground symbol pattern ----"
+puts $f "            \\ground\{$x\}\{$y\}\{D\}"
+    }
+
+    # proc 'puts_vdd' - template for power symbol
+    proc puts_vdd {f x y} {
+        # all coordinates are relative to the junction grid
+puts $f "            \% ---- power symbol pattern ----"
+puts $f "            \\power\{$x\}\{$y\}\{U\}\{\}"
+    }
+
+    # proc 'puts_junc' - template for junction
+    proc puts_junc {f x y} {
+        # all coordinates are relative to the junction grid
+puts $f "            \% ---- junction pattern ----"
+puts $f "            \\junct\{$x\}\{$y\}"
+    }
+
+    # proc 'puts_out' - template for output
+    proc puts_out {f out x y} {
+        # all coordinates are relative to the junction grid (right off)
+puts $f "            \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
+puts $f "            \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
+    }
+
+    # proc 'xsize' - get size on the x-axis
+    proc xsize {xgrid tpmos tnmos} {
+        # the width on X is the longest path for pullup nets also
+        return [expr ($tpmos * $xgrid) + $xgrid]
+    }
+
+    # proc 'ysize' - get size on the y-axis
+    proc ysize {ygrid tpmos tnmos} {
+        # the higth on Y is sum of longest path on both nets
+        return [expr ($tpmos + $tnmos) * $ygrid]
+    }
+
+    # proc 'ymid' - calculate middle point on y-axis
+    proc ymid {ygrid tpmos tnmos} {
+        # literaly the higth of pulldown net
+        return [expr $tnmos * $ygrid]
+    }
+
+
+    set xgrid 7
+    set ygrid 7
+
+    set tpmos [tpmos $netlist]
+    set tnmos [tnmos $netlist]
+    set ttotal [ttotal $netlist]
+
+    set xsize [xsize $xgrid $tpmos $tnmos]
+    set ysize [ysize $ygrid $tpmos $tnmos]
+    set ymid  [ymid  $ygrid $tpmos $tnmos]
+
+    # start with figure header
+    caption $f 1 $tpmos $tnmos $ttotal
+    figure_header $f $xsize $ysize
+
+    # place seed pair first, which are always this with input A
+    puts_pmos $f A PA 7 $ymid
+    puts_nmos $f A NA 7 $ymid
+    puts_junc $f      7 $ymid
+#    puts_out  $f Z    [expr $tpmos * $xgrid] $ymid
+
+#    foreach mosfet $netlist {
+#        puts_vdd  $f      7 14
+#        puts_gnd  $f      7 0
+#    }
+
+    # end with figure footer
+    figure_footer $f
+
+    # done
+}
+
+#   ------------    proc 'fclose'   -----------------------------------
+
+#   close export file
+
+proc fclose {f} {
+
+puts $f "\\end\{center\}"
+
+    # done
+    close $f
+}
+
+#   ------------    proc 'length'   -----------------------------------
+
+#   find longest column in netlist between two points
+
+proc length? {path from to netlist} {
+
+    set length 0
+    set result 0
+    foreach mosfet $netlist {
+        # check mosfet type
+        if {[lindex $mosfet 1] eq $from} {
+            if {[lindex $mosfet 2] eq $to} {
+                if {$length == 0} {
+                    # 1st founding
+                    set length 1
+                }
+            } else {
+                # while current $to does not match target, go deeper and check result
+                set result [expr [length? [list $path $mosfet] [lindex $mosfet 2] $to $netlist] +1]
+                if {$result > $length} {
+                    # means, last recursive call gots a longer path
+                    set length $result
+                }
+            }
+        }
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'tpmos'    -----------------------------------
+
+#   calculate number of stacked pmos transistors
+
+proc tpmos {netlist} {
+
+    global verbose
+
+    # collect pmos transistors
+    set net {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 3] eq "pmos"} {
+            set net [lappend net $mosfet]
+        }
+    }
+
+    # work out
+    set length [length? {} "Z" "vdd" $net]
+
+    # verbose message
+    if {$verbose} {
+        puts "tpmos: $length"
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'tnmos'    -----------------------------------
+
+#   calculate number of stacked nmos transistors
+
+proc tnmos {netlist} {
+
+    global verbose
+
+    # collect nmos transistor
+    set net {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 3] eq "nmos"} {
+            set net [lappend net $mosfet]
+        }
+    }
+
+    # work out
+    set length [length? {} "Z" "gnd" $net]
+
+    # verbose message
+    if {$verbose} {
+        puts "tnmos: $length"
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'ttotal'   -----------------------------------
+
+#   count number of all transistors
+
+proc ttotal {netlist} {
+
+    global verbose
+
+    # work out
+    set length [llength $netlist]
+
+    # verbose message
+    if {$verbose} {
+        puts "ttotal: $length = llength $netlist"
+    }
+
+    # done
+    return $length
+}
+
+#   -------------------------------------------------------------------
+#                       MAIN
+#   -------------------------------------------------------------------
+
+#   ------------    Command line parsing     --------------------------
+
+package require cmdline;
+
+#   define program options
+set options {
+    {i.arg "./INV.cell" "specify cell input - default" }
+    {o.arg "./"         "specify output directory - default" }
+    {g.arg "LaTeX"      "which output graphic format use - default" }
+    {v                  "verbose" }
+}
+
+#   define program usage
+set usage "- Generate schematic file formats from cell description"
+
+#   error trap
+try {
+    array set params [cmdline::getoptions argv $options $usage]
+} trap {CMDLINE USAGE} {msg o} {
+    # Trap the usage signal, print the massage, and exit the application.
+    # Note: Others errors are not caught and passed through to higher levels!
+    puts $msg
+    exit -1 
+}
+
+#   set argv from command lines
+set option_cell $params(i) ; # input file
+set option_path $params(o) ; # output directory
+set option_graphic $params(g) ; # file format
+set verbose $params(v); 
+
+#   verbose message
+if {$verbose} {
+    puts "[clock format [clock seconds] -gmt 1]"
+    puts "option_cell (-i): $option_cell"
+    puts "option_path (-o): $option_path"
+    puts "option_graphic (-g):  $option_graphic"
+}
+
+#   ------------    generate    ---------------------------------------
+
+if {[file exist $option_cell]} {
+
+    # unplug cellid
+    set cellid [lindex [split [file tail $option_cell] "."] 0]
+
+    # open cell input file
+    set fin [open $option_cell r]
+
+    set netlist [import $fin]
+    close $fin
+
+    # verbose message
+    if {$verbose} {
+        puts "cell: $cellid $netlist"
+    }
+
+    set fout [fopen $option_path $cellid]
+    fexport $fout $cellid $netlist
+    fclose $fout
+
+
+} else {
+    puts stderr "Oops. $option_cell does not exist!"
+}
+
