@@ -55,8 +55,10 @@ MV ?=           mv
 TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
-LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR)
+#   project tools
+
 POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
+SCHEMATIC ?=    $(TOOLSDIR)/tcl/cell2schematic -o $(DOCUMENTSDIR)/LaTeX -g LaTeX
 
 #   default
 
@@ -72,7 +74,7 @@ DISTRIBUTION =  ./GNUmakefile \
 #               DEFINITIONS
 #   ----------------------------------------------------------------
 
-CELLS =         $(patsubst %.func,%,$(notdir $(wildcard $(CATALOGDIR)/*.func)))
+CELLS =         $(patsubst %.func,%,$(notdir $(wildcard $(CATALOGDIR)/*.cell)))
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -139,3 +141,6 @@ catalog:
 .PHONY: doc
 doc:
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f build.mk $@
+
+%_schematic.tex: $(CATALOGDIR)/%.cell
+	$(SCHEMATIC) $<
