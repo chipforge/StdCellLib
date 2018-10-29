@@ -73,7 +73,188 @@ proc import {f} {
 }
 
 #   -------------------------------------------------------------------
-#                       FUNCTIONS
+#                       Auxilary FUNCTIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'length'   -----------------------------------
+
+#   find longest column in netlist between two points
+
+proc length? {path from to netlist} {
+
+    set length 0
+    set result 0
+    foreach mosfet $netlist {
+        # check mosfet type
+        if {[lindex $mosfet 2] eq $from} {
+            if {[lindex $mosfet 1] eq $to} {
+                if {$length == 0} {
+                    # 1st founding
+                    set length 1
+                }
+            } else {
+                # while current $to does not match target, go deeper and check result
+                set result [expr [length? [list $path $mosfet] [lindex $mosfet 1] $to $netlist] +1]
+                if {$result > $length} {
+                    # means, last recursive call gots a longer path
+                    set length $result
+                }
+            }
+        }
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'tpmos'    -----------------------------------
+
+#   calculate number of stacked pmos transistors
+
+proc tpmos {netlist} {
+
+    global verbose
+
+    # collect pmos transistors
+    set net {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 3] eq "pmos"} {
+            set net [lappend net $mosfet]
+        }
+    }
+
+    # work out
+    set length [length? {} "vdd" "Z" $net]
+
+    # verbose message
+    if {$verbose} {
+        puts "tpmos: $length"
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'tnmos'    -----------------------------------
+
+#   calculate number of stacked nmos transistors
+
+proc tnmos {netlist} {
+
+    global verbose
+
+    # collect nmos transistor
+    set net {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 3] eq "nmos"} {
+            set net [lappend net $mosfet]
+        }
+    }
+
+    # work out
+    set length [length? {} "gnd" "Z" $net]
+
+    # verbose message
+    if {$verbose} {
+        puts "tnmos: $length"
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'ttotal'   -----------------------------------
+
+#   count number of all transistors
+
+proc ttotal {netlist} {
+
+    global verbose
+
+    # work out
+    set length [llength $netlist]
+
+    # verbose message
+    if {$verbose} {
+        puts "ttotal: $length = llength $netlist"
+    }
+
+    # done
+    return $length
+}
+
+#   ------------    proc 'eval_mosfets  -------------------------------
+
+#   evaluate netlist - get parallel mosfets for one node (which has 'node' on drain)
+
+proc eval_mosfets {node ttype netlist} {
+
+    global verbose
+
+    # collect 'ttype' transistor
+    set unsorted {}
+    foreach mosfet $netlist {
+        if {[lindex $mosfet 3] eq $ttype} {
+            if {[lindex $mosfet 1] eq $node} {
+                set unsorted [lappend unsorted $mosfet]
+            }
+        }
+    }
+
+    # sort
+    set sorted [lsort -increasing $unsorted]
+
+    # verbose message
+    if {$verbose} {
+        puts "eval_mosfets: $sorted"
+    }
+
+    # done
+    return $sorted
+}
+
+#   ------------    proc 'eval_nodes    -------------------------------
+
+#   evaluate netlist - get intermediate nodes (collected via source pin)
+
+proc eval_nodes {netlist} {
+
+    global verbose
+
+    set nodes {}
+    foreach mosfet $netlist {
+        set nodes [lappend nodes [lindex $mosfet 2]]
+    }
+
+    # verbose message
+    if {$verbose} {
+        puts "eval_inodes: $nodes"
+    }
+    return $nodes
+}
+
+#   ------------    stuff on grid  ------------------------------------
+
+    # proc 'xsize' - get size on the x-axis
+    proc xsize {xgrid tpmos tnmos} {
+        # the width on X is the longest path for pullup nets also
+        return [expr ($tpmos * $xgrid) + $xgrid]
+    }
+
+    # proc 'ysize' - get size on the y-axis
+    proc ysize {ygrid tpmos tnmos} {
+        # the higth on Y is sum of longest path on both nets
+        return [expr ($tpmos + $tnmos) * $ygrid]
+    }
+
+    # proc 'ymid' - calculate middle point on y-axis
+    proc ymid {ygrid tpmos tnmos} {
+        # literaly the higth of pulldown net
+        return [expr $tnmos * $ygrid]
+    }
+
+#   -------------------------------------------------------------------
+#                       LaTeX FUNCTIONS
 #   -------------------------------------------------------------------
 
 #   ------------    proc 'fopen'    -----------------------------------
@@ -145,6 +326,17 @@ puts $f "\\begin\{center\}"
 
 proc fexport {f cellid netlist} {
 
+    global xgrid
+    global ygrid
+
+    global tpmos
+    global tnmos
+    global ttotal
+
+    global xsize
+    global ysize
+    global ymid
+
     # proc 'caption' - write out 'caption' line
     proc caption {f nstages tpmos tnmos ttotal} {
 
@@ -212,44 +404,16 @@ puts $f "            \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
 puts $f "            \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
     }
 
-    # proc 'xsize' - get size on the x-axis
-    proc xsize {xgrid tpmos tnmos} {
-        # the width on X is the longest path for pullup nets also
-        return [expr ($tpmos * $xgrid) + $xgrid]
-    }
-
-    # proc 'ysize' - get size on the y-axis
-    proc ysize {ygrid tpmos tnmos} {
-        # the higth on Y is sum of longest path on both nets
-        return [expr ($tpmos + $tnmos) * $ygrid]
-    }
-
-    # proc 'ymid' - calculate middle point on y-axis
-    proc ymid {ygrid tpmos tnmos} {
-        # literaly the higth of pulldown net
-        return [expr $tnmos * $ygrid]
-    }
-
-
-    set xgrid 7
-    set ygrid 7
-
-    set tpmos [tpmos $netlist]
-    set tnmos [tnmos $netlist]
-    set ttotal [ttotal $netlist]
-
-    set xsize [xsize $xgrid $tpmos $tnmos]
-    set ysize [ysize $ygrid $tpmos $tnmos]
-    set ymid  [ymid  $ygrid $tpmos $tnmos]
-
     # start with figure header
     caption $f 1 $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
-    # place seed pair first, which are always this with input A
-    puts_pmos $f A PA 7 $ymid
-    puts_nmos $f A NA 7 $ymid
-    puts_junc $f      7 $ymid
+    puts "[pulldown! $f $xgrid $ygrid "Z" $netlist]"
+
+#    # place seed pair first, which are always this with input A
+#    puts_pmos $f A PA 7 $ymid
+#    puts_nmos $f A NA 7 $ymid
+#    puts_junc $f      7 $ymid
 #    puts_out  $f Z    [expr $tpmos * $xgrid] $ymid
 
 #    foreach mosfet $netlist {
@@ -275,112 +439,6 @@ puts $f "\\end\{center\}"
     close $f
 }
 
-#   ------------    proc 'length'   -----------------------------------
-
-#   find longest column in netlist between two points
-
-proc length? {path from to netlist} {
-
-    set length 0
-    set result 0
-    foreach mosfet $netlist {
-        # check mosfet type
-        if {[lindex $mosfet 1] eq $from} {
-            if {[lindex $mosfet 2] eq $to} {
-                if {$length == 0} {
-                    # 1st founding
-                    set length 1
-                }
-            } else {
-                # while current $to does not match target, go deeper and check result
-                set result [expr [length? [list $path $mosfet] [lindex $mosfet 2] $to $netlist] +1]
-                if {$result > $length} {
-                    # means, last recursive call gots a longer path
-                    set length $result
-                }
-            }
-        }
-    }
-
-    # done
-    return $length
-}
-
-#   ------------    proc 'tpmos'    -----------------------------------
-
-#   calculate number of stacked pmos transistors
-
-proc tpmos {netlist} {
-
-    global verbose
-
-    # collect pmos transistors
-    set net {}
-    foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "pmos"} {
-            set net [lappend net $mosfet]
-        }
-    }
-
-    # work out
-    set length [length? {} "Z" "vdd" $net]
-
-    # verbose message
-    if {$verbose} {
-        puts "tpmos: $length"
-    }
-
-    # done
-    return $length
-}
-
-#   ------------    proc 'tnmos'    -----------------------------------
-
-#   calculate number of stacked nmos transistors
-
-proc tnmos {netlist} {
-
-    global verbose
-
-    # collect nmos transistor
-    set net {}
-    foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "nmos"} {
-            set net [lappend net $mosfet]
-        }
-    }
-
-    # work out
-    set length [length? {} "Z" "gnd" $net]
-
-    # verbose message
-    if {$verbose} {
-        puts "tnmos: $length"
-    }
-
-    # done
-    return $length
-}
-
-#   ------------    proc 'ttotal'   -----------------------------------
-
-#   count number of all transistors
-
-proc ttotal {netlist} {
-
-    global verbose
-
-    # work out
-    set length [llength $netlist]
-
-    # verbose message
-    if {$verbose} {
-        puts "ttotal: $length = llength $netlist"
-    }
-
-    # done
-    return $length
-}
 
 #   -------------------------------------------------------------------
 #                       MAIN
@@ -392,7 +450,6 @@ package require cmdline;
 
 #   define program options
 set options {
-    {i.arg "./INV.cell" "specify cell input - default" }
     {o.arg "./"         "specify output directory - default" }
     {g.arg "LaTeX"      "which output graphic format use - default" }
     {v                  "verbose" }
@@ -412,7 +469,7 @@ try {
 }
 
 #   set argv from command lines
-set option_cell $params(i) ; # input file
+set option_cell [lindex $argv end end] ; # input file
 set option_path $params(o) ; # output directory
 set option_graphic $params(g) ; # file format
 set verbose $params(v); 
@@ -420,9 +477,9 @@ set verbose $params(v);
 #   verbose message
 if {$verbose} {
     puts "[clock format [clock seconds] -gmt 1]"
-    puts "option_cell (-i): $option_cell"
     puts "option_path (-o): $option_path"
     puts "option_graphic (-g):  $option_graphic"
+    puts "option_cell: $option_cell"
 }
 
 #   ------------    generate    ---------------------------------------
@@ -438,6 +495,55 @@ if {[file exist $option_cell]} {
     set netlist [import $fin]
     close $fin
 
+    set xgrid 7
+    set ygrid 7
+
+    set tpmos [tpmos $netlist]
+    set tnmos [tnmos $netlist]
+    set ttotal [ttotal $netlist]
+
+    set xsize [xsize $xgrid $tpmos $tnmos]
+    set ysize [ysize $ygrid $tpmos $tnmos]
+    set ymid  [ymid  $ygrid $tpmos $tnmos]
+
+    # layout pulldown network, returns next junct coordinate on x-axis
+    proc pulldown! {f xjunct yjunct node netlist} {
+
+        global xgrid
+        global ygrid
+        global ymid
+
+        # chunk of work
+        set todo [eval_mosfets $node "nmos" $netlist]
+        set length [llength $todo]
+
+        # layout known mosfet for 'node'
+        for {set i 0} {$i < $length} {incr i} {
+            set mosfet [lindex $todo $i]
+            puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunct ] $yjunct
+        }
+
+        set xnext [expr $xjunct + ($length * $xgrid)]
+
+        # evaluate row below
+        set nodes [eval_nodes $todo]
+        set ynext [expr $yjunct - $ygrid]
+        for {set i 0} {$i < [llength $nodes]} {incr i} {
+            set node [lindex $nodes $i]
+            if {$node eq "gnd"} {
+                puts_gnd $f [expr ($i * $xgrid) + $xjunct] $ynext
+            } else {
+                set result [pulldown! $f $xjunct $ynext $node $netlist]
+                if {$result > $xnext} {
+                    set xnext $result
+                }
+            }
+        }
+
+        # done
+        return $xnext
+    }
+
     # verbose message
     if {$verbose} {
         puts "cell: $cellid $netlist"
@@ -449,6 +555,6 @@ if {[file exist $option_cell]} {
 
 
 } else {
-    puts stderr "Oops. $option_cell does not exist!"
+    puts stderr "Oops. '$option_cell' does not exist!"
 }
 
