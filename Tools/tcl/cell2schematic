@@ -244,13 +244,13 @@ proc eval_nodes {netlist} {
     # proc 'ysize' - get size on the y-axis
     proc ysize {ygrid tpmos tnmos} {
         # the higth on Y is sum of longest path on both nets
-        return [expr ($tpmos + $tnmos) * $ygrid]
+        return [expr ($tpmos + $tnmos) * $ygrid +2]
     }
 
     # proc 'ymid' - calculate middle point on y-axis
     proc ymid {ygrid tpmos tnmos} {
         # literaly the higth of pulldown net
-        return [expr $tnmos * $ygrid]
+        return [expr ($tnmos * $ygrid) + 1]
     }
 
 #   -------------------------------------------------------------------
@@ -348,9 +348,13 @@ puts $f [format "    Schematic (%s stage, %d \$T_\{p\}\$ / %d \$T_\{n\}\$ stacke
 
     # proc 'figure_header' - write out 'figure' header
     proc figure_header {f xsize ysize} {
+
+        global option_squared
+        if {$option_squared} {set squared "\[draft*\]"} else {set squared ""}
+
 puts $f "    \\begin\{figure\}\[h\]"
 puts $f "        \\begin\{center\}"
-puts $f "            \\begin\{circuitdiagram\}\[draft*\]\{$xsize\}\{$ysize\}"
+puts $f "            \\begin\{circuitdiagram\}$squared\{$xsize\}\{$ysize\}"
     }
 
     # proc 'figure_footer' - write out 'figure' footer
@@ -363,58 +367,66 @@ puts $f "    \\end\{figure\}"
     # proc 'puts_nmos' - template for nmos transistor
     proc puts_nmos {f gate name x y} {
         # all coordinates are relative to the junction grid, nmos below
-puts $f "            \% ---- 'M$name' nmos pattern ----"
-puts $f "            \\trans\[\\wireUD\{0.5\}\]\{nenh*\}\{[expr $x -2]\}\{[expr $y -3]\}\{R\}\{\}\{\$M\_\{$name\}\$\}\{\}"
-puts $f "            \\pin\{[expr $x -5]\}\{[expr $y -4.5]\}\{L\}\{$gate\}"
+puts $f "                \% ---- '*$name' nmos pattern ----"
+puts $f "                \\trans\[\\wireUD\{0.5\}\]\{nenh*\}\{[expr $x -2]\}\{[expr $y -3]\}\{R\}\{\$*\_\{$name\}\$\}\{\}"
+puts $f "                \\pin\{[expr $x -5]\}\{[expr $y -4.5]\}\{L\}\{$gate\}"
     }
 
     # proc 'puts_pmos' - template for pmos transistor
     proc puts_pmos {f gate name x y} {
         # all coordinates are relative to the junction grid, pmos above
-puts $f "            \% ---- 'M$name' pmos pattern ----"
-puts $f "            \\trans\[\\wireUD\{0.5\}\]\{penh*\}\{[expr $x -2]\}\{[expr $y +3]\}\{R\}\{\$M\_\{$name\}\$\}\{\}"
-puts $f "            \\pin\{[expr $x -5]\}\{[expr $y +4.5]\}\{L\}\{$gate\}"
+puts $f "                \% ---- '*$name' pmos pattern ----"
+puts $f "                \\trans\[\\wireUD\{0.5\}\]\{penh*\}\{[expr $x -2]\}\{[expr $y +3]\}\{R\}\{\}\{\$*\_\{$name\}\$\}"
+puts $f "                \\pin\{[expr $x -5]\}\{[expr $y +4.5]\}\{L\}\{$gate\}"
     }
 
     # proc 'puts_gnd' - template for ground symbol
     proc puts_gnd {f x y} {
         # all coordinates are relative to the junction grid
-puts $f "            \% ---- ground symbol pattern ----"
-puts $f "            \\ground\{$x\}\{$y\}\{D\}"
+#puts $f "                \% ---- ground symbol pattern ----"
+puts $f "                \\ground\{$x\}\{$y\}\{D\}"
     }
 
     # proc 'puts_vdd' - template for power symbol
     proc puts_vdd {f x y} {
         # all coordinates are relative to the junction grid
-puts $f "            \% ---- power symbol pattern ----"
-puts $f "            \\power\{$x\}\{$y\}\{U\}\{\}"
+#puts $f "                 \% ---- power symbol pattern ----"
+puts $f "                 \\power\{$x\}\{$y\}\{U\}\{\}"
     }
 
     # proc 'puts_junc' - template for junction
     proc puts_junc {f x y} {
         # all coordinates are relative to the junction grid
-puts $f "            \% ---- junction pattern ----"
-puts $f "            \\junct\{$x\}\{$y\}"
+#puts $f "                \% ---- junction pattern ----"
+puts $f "                \\junct\{$x\}\{$y\}"
     }
 
     # proc 'puts_out' - template for output
     proc puts_out {f out x y} {
         # all coordinates are relative to the junction grid (right off)
-puts $f "            \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
-puts $f "            \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
+puts $f "                \% ---- output pattern ----"
+puts $f "                \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
+puts $f "                \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
+    }
+
+    # proc 'puts_wire' - template for output
+    proc puts_wire {f xstart ystart xend yend} {
+        # all coordinates are relative to the junction grid (right off)
+puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     }
 
     # start with figure header
     caption $f 1 $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
-    puts "[pulldown! $f $xgrid $ygrid "Z" $netlist]"
+    puts "[pullup!   $f $xgrid $ymid "Z" $netlist]"
+    puts "[pulldown! $f $xgrid $ymid "Z" $netlist]"
+    puts "[center! $f "Z" $xgrid [expr $xsize - $xgrid]]"
 
 #    # place seed pair first, which are always this with input A
 #    puts_pmos $f A PA 7 $ymid
 #    puts_nmos $f A NA 7 $ymid
 #    puts_junc $f      7 $ymid
-#    puts_out  $f Z    [expr $tpmos * $xgrid] $ymid
 
 #    foreach mosfet $netlist {
 #        puts_vdd  $f      7 14
@@ -450,6 +462,7 @@ package require cmdline;
 
 #   define program options
 set options {
+    {d                  "draft / draw on squared paper" }
     {o.arg "./"         "specify output directory - default" }
     {g.arg "LaTeX"      "which output graphic format use - default" }
     {v                  "verbose" }
@@ -470,8 +483,9 @@ try {
 
 #   set argv from command lines
 set option_cell [lindex $argv end end] ; # input file
-set option_path $params(o) ; # output directory
+set option_squared $params(d) ; # draft / draw on squared paper
 set option_graphic $params(g) ; # file format
+set option_path $params(o) ; # output directory
 set verbose $params(v); 
 
 #   verbose message
@@ -480,6 +494,7 @@ if {$verbose} {
     puts "option_path (-o): $option_path"
     puts "option_graphic (-g):  $option_graphic"
     puts "option_cell: $option_cell"
+    puts "option_squared: $option_squared"
 }
 
 #   ------------    generate    ---------------------------------------
@@ -495,8 +510,8 @@ if {[file exist $option_cell]} {
     set netlist [import $fin]
     close $fin
 
-    set xgrid 7
-    set ygrid 7
+    set xgrid 8
+    set ygrid 6
 
     set tpmos [tpmos $netlist]
     set tnmos [tnmos $netlist]
@@ -507,7 +522,7 @@ if {[file exist $option_cell]} {
     set ymid  [ymid  $ygrid $tpmos $tnmos]
 
     # layout pulldown network, returns next junct coordinate on x-axis
-    proc pulldown! {f xjunct yjunct node netlist} {
+    proc pulldown! {f xjunc yjunc node netlist} {
 
         global xgrid
         global ygrid
@@ -520,20 +535,20 @@ if {[file exist $option_cell]} {
         # layout known mosfet for 'node'
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
-            puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunct ] $yjunct
+            puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
         }
 
-        set xnext [expr $xjunct + ($length * $xgrid)]
+        set xnext [expr $xjunc + ($length * $xgrid)]
 
         # evaluate row below
         set nodes [eval_nodes $todo]
-        set ynext [expr $yjunct - $ygrid]
+        set ynext [expr $yjunc - $ygrid]
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
             if {$node eq "gnd"} {
-                puts_gnd $f [expr ($i * $xgrid) + $xjunct] $ynext
+                puts_gnd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
-                set result [pulldown! $f $xjunct $ynext $node $netlist]
+                set result [pulldown! $f $xjunc $ynext $node $netlist]
                 if {$result > $xnext} {
                     set xnext $result
                 }
@@ -547,6 +562,55 @@ if {[file exist $option_cell]} {
     # verbose message
     if {$verbose} {
         puts "cell: $cellid $netlist"
+    }
+
+    # layout pullup network, returns next junct coordinate on x-axis
+    proc pullup! {f xjunc yjunc node netlist} {
+
+        global xgrid
+        global ygrid
+        global ymid
+
+        # chunk of work
+        set todo [eval_mosfets $node "pmos" $netlist]
+        set length [llength $todo]
+
+        # layout known mosfet for 'node'
+        for {set i 0} {$i < $length} {incr i} {
+            set mosfet [lindex $todo $i]
+            puts_pmos $f [lindex $mosfet 0] [string cat "P" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+        }
+
+        set xnext [expr $xjunc + ($length * $xgrid)]
+
+        # evaluate row below
+        set nodes [eval_nodes $todo]
+        set ynext [expr $yjunc + $ygrid]
+        for {set i 0} {$i < [llength $nodes]} {incr i} {
+            set node [lindex $nodes $i]
+            if {$node eq "vdd"} {
+                puts_vdd $f [expr ($i * $xgrid) + $xjunc] $ynext
+            } else {
+                set result [pullup! $f $xjunc $ynext $node $netlist]
+                if {$result > $xnext} {
+                    set xnext $result
+                }
+            }
+        }
+
+        # done
+        return $xnext
+    }
+
+    # layout center line and output
+    proc center! {f out xstart xend} {
+
+        global xgrid
+        global ymid
+
+        # work out
+        puts_out  $f $out $xend $ymid
+        puts_wire $f $xstart $ymid $xend $ymid
     }
 
     set fout [fopen $option_path $cellid]
