@@ -48,6 +48,7 @@
 \author{Hagen Sankowski}
 \date{\today}
 
+\makeindex  % usefull for ToC
 \setlength{\parindent}{0pt} % get rid of annoying indents
 
 \begin{document}
@@ -64,224 +65,227 @@ For further clarification consult the complete documentation of the process.
 \end{quote}
 \end{abstract}
 \input{revision.tex}
+
+\clearpage
+\tableofcontents
 \clearpage
 
 \pagestyle{headings}
 
-\chapter{CMOS in a nutshell}
+\section{CMOS in a nutshell}
 \input{cmos_in_a_nutshell.tex}
 \clearpage
 
-\chapter{Considerations}
+\section{Considerations}
 \newcommand{\stacktfour}{YES}
 %\newcommand{\stacktfour}{NO}
 \clearpage
 
-\chapter{Logical Cells}
+\section{Logical Cells}
 \clearpage
 \twocolumn
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{AND4}
-    \input{manpage_AND4.tex}
+    \subsection{AND4}
+    \input{AND4_manpage.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{AO2111}
-    \input{manpage_AO2111.tex}
+    \subsection{AO2111}
+    \input{AO2111_manpage.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{AO3111}
-    \input{manpage_AO3111.tex}
+    \subsection{AO3111}
+    \input{AO3111_manpage.tex}
     \clearpage
 }{}
 
-\section{AOI21}
-\input{manpage_AOI21.tex}
+\subsection{AOI21}
+\input{AOI21_manpage.tex}
 \clearpage
 
-\section{AOI22}
-\input{manpage_AOI22.tex}
+\subsection{AOI22}
+\input{AOI22_manpage.tex}
 \clearpage
 
-\section{AOI31}
-\input{manpage_AOI31.tex}
+\subsection{AOI31}
+\input{AOI31_manpage.tex}
 \clearpage
 
-\section{AOI32}
-\input{manpage_AOI32.tex}
+\subsection{AOI32}
+\input{AOI32_manpage.tex}
 \clearpage
 
-\section{AOI33}
-\input{manpage_AOI33.tex}
+\subsection{AOI33}
+\input{AOI33_manpage.tex}
 \clearpage
 
-\section{AOI211}
-\input{manpage_AOI211.tex}
+\subsection{AOI211}
+\input{AOI211_manpage.tex}
 \clearpage
 
-\section{AOI221}
-\input{manpage_AOI221.tex}
+\subsection{AOI221}
+\input{AOI221_manpage.tex}
 \clearpage
 
-\section{AOI222}
-\input{manpage_AOI222.tex}
+\subsection{AOI222}
+\input{AOI222_manpage.tex}
 \clearpage
 
-\section{AOI311}
-\input{manpage_AOI311.tex}
+\subsection{AOI311}
+\input{AOI311_manpage.tex}
 \clearpage
 
-\section{AOI321}
-\input{manpage_AOI321.tex}
+\subsection{AOI321}
+\input{AOI321_manpage.tex}
 \clearpage
 
-\section{AOI322}
-\input{manpage_AOI322.tex}
+\subsection{AOI322}
+\input{AOI322_manpage.tex}
 \clearpage
 
-\section{AOI331}
-\input{manpage_AOI331.tex}
+\subsection{AOI331}
+\input{AOI331_manpage.tex}
 \clearpage
 
-\section{AOI332}
-\input{manpage_AOI332.tex}
+\subsection{AOI332}
+\input{AOI332_manpage.tex}
 \clearpage
 
-\section{AOI333}
-\input{manpage_AOI333.tex}
+\subsection{AOI333}
+\input{AOI333_manpage.tex}
 \clearpage
 
-\section{BUF}
-\input{manpage_BUF.tex}
+\subsection{BUF}
+\input{BUF_manpage.tex}
 \clearpage
 
-\section{EQ2}
-\input{manpage_EQ2.tex}
+\subsection{EQ2}
+\input{EQ2_manpage.tex}
 \clearpage
 
-\section{INV}
-\input{manpage_INV.tex}
+\subsection{INV}
+\input{INV_manpage.tex}
 \clearpage
 
-\section{MUXI2}
-\input{manpage_MUXI2.tex}
+\subsection{MUXI2}
+\input{MUXI2_manpage.tex}
 \clearpage
 
-\section{NAND2}
-\input{manpage_NAND2.tex}
+\subsection{NAND2}
+\input{NAND2_manpage.tex}
 \clearpage
 
-\section{NAND3}
-\input{manpage_NAND3.tex}
+\subsection{NAND3}
+\input{NAND3_manpage.tex}
 \clearpage
 
-\section{NOR2}
-\input{manpage_NOR2.tex}
+\subsection{NOR2}
+\input{NOR2_manpage.tex}
 \clearpage
 
-\section{NOR3}
-\input{manpage_NOR3.tex}
+\subsection{NOR3}
+\input{NOR3_manpage.tex}
 \clearpage
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{OA2111}
-    \input{manpage_OA2111.tex}
+    \subsection{OA2111}
+    \input{OA2111_manpage.tex}
     \clearpage
 }{}
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{OA3111}
-    \input{manpage_OA3111.tex}
+    \subsection{OA3111}
+    \input{OA3111_manpage.tex}
     \clearpage
 }{}
 
-\section{OAI21}
-\input{manpage_OAI21.tex}
+\subsection{OAI21}
+\input{OAI21_manpage.tex}
 \clearpage
 
-\section{OAI22}
-\input{manpage_OAI22.tex}
+\subsection{OAI22}
+\input{OAI22_manpage.tex}
 \clearpage
 
-\section{OAI31}
-\input{manpage_OAI31.tex}
+\subsection{OAI31}
+\input{OAI31_manpage.tex}
 \clearpage
 
-\section{OAI32}
-\input{manpage_OAI32.tex}
+\subsection{OAI32}
+\input{OAI32_manpage.tex}
 \clearpage
 
-\section{OAI33}
-\input{manpage_OAI33.tex}
+\subsection{OAI33}
+\input{OAI33_manpage.tex}
 \clearpage
 
-\section{OAI211}
-\input{manpage_OAI211.tex}
+\subsection{OAI211}
+\input{OAI211_manpage.tex}
 \clearpage
 
-\section{OAI221}
-\input{manpage_OAI221.tex}
+\subsection{OAI221}
+\input{OAI221_manpage.tex}
 \clearpage
 
-\section{OAI222}
-\input{manpage_OAI222.tex}
+\subsection{OAI222}
+\input{OAI222_manpage.tex}
 \clearpage
 
-\section{OAI311}
-\input{manpage_OAI311.tex}
+\subsection{OAI311}
+\input{OAI311_manpage.tex}
 \clearpage
 
-\section{OAI321}
-\input{manpage_OAI321.tex}
+\subsection{OAI321}
+\input{OAI321_manpage.tex}
 \clearpage
 
-\section{OAI322}
-\input{manpage_OAI322.tex}
+\subsection{OAI322}
+\input{OAI322_manpage.tex}
 \clearpage
 
-\section{OAI331}
-\input{manpage_OAI331.tex}
+\subsection{OAI331}
+\input{OAI331_manpage.tex}
 \clearpage
 
-\section{OAI332}
-\input{manpage_OAI332.tex}
+\subsection{OAI332}
+\input{OAI332_manpage.tex}
 \clearpage
 
-\section{OAI333}
-\input{manpage_OAI333.tex}
+\subsection{OAI333}
+\input{OAI333_manpage.tex}
 \clearpage
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
-    \section{OR4}
-    \input{manpage_OR4.tex}
+    \subsection{OR4}
+    \input{OR4_manpage.tex}
     \clearpage
 }{}
 
-\section{XOR2}
-\input{manpage_XOR2.tex}
+\subsection{XOR2}
+\input{XOR2_manpage.tex}
 \clearpage
 
 \onecolumn
 
-\chapter{Physical Cells}
+\section{Physical Cells}
 \clearpage
 
 \twocolumn
 
-\section{TIE0}
-\input{manpage_TIE0.tex}
+\subsection{TIE0}
+\input{TIE0_manpage.tex}
 \clearpage
 
-\section{TIE1}
-\input{manpage_TIE1.tex}
+\subsection{TIE1}
+\input{TIE1_manpage.tex}
 \clearpage
 
-\section{FILL}
-\input{manpage_FILL.tex}
+\subsection{FILL}
+\input{FILL_manpage.tex}
 \clearpage
 
 VDDIO \\
