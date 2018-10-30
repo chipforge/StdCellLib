@@ -62,9 +62,9 @@ proc import {f} {
 
     set netlist {}
     # read in
-    while {[gets $f Zeile] >= 0} {
-        if {[lsearch -glob [split $Zeile] ".*"] == -1} {
-            set netlist [lappend netlist $Zeile]
+    while {[gets $f line] >= 0} {
+        if {[lsearch -glob [split $line] ".*"] == -1} {
+            set netlist [lappend netlist $line]
         }
     }
 
@@ -391,7 +391,7 @@ puts $f "                \\ground\{$x\}\{$y\}\{D\}"
     proc puts_vdd {f x y} {
         # all coordinates are relative to the junction grid
 #puts $f "                 \% ---- power symbol pattern ----"
-puts $f "                 \\power\{$x\}\{$y\}\{U\}\{\}"
+puts $f "                \\power\{$x\}\{$y\}\{U\}\{\}"
     }
 
     # proc 'puts_junc' - template for junction
