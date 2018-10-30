@@ -1,0 +1,5 @@
+.DESCRIPTION "a Not (or Inverter) gate"
+.SEE_ALSO "BUF - a Buffer gate"
+.ORDER "Gate Drain Source MOSFET"
+A Z vdd pmos
+A Z gnd nmos
