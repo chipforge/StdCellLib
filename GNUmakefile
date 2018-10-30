@@ -60,6 +60,7 @@ DATE :=         $(shell date +%Y%m%d)
 LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR) $(OUTPUTDIR)
 POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
 SCHEMATIC ?=    $(TOOLSDIR)/tcl/cell2schematic -d -o $(DOCUMENTSDIR)/LaTeX -g LaTeX
+MANUAL ?=       $(TOOLSDIR)/tcl/cell2manpage -o $(DOCUMENTSDIR)/LaTeX
 
 #   default
 
@@ -169,8 +170,9 @@ _manpages: $(MANPAGES)
 %_files.tex:
 	$(ECHO) "files still missing"
 
-#%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex $(DOCUMENTSDIR)/LaTeX/%_manpage.tex
-%_manpage.tex:
+%_manpage.tex: $(CATALOGDIR)/%.cell
+	$(MANUAL) $<
 	$(ECHO) "---- includes for $@ done ----"
 
+#%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex $(DOCUMENTSDIR)/LaTeX/%_manpage.tex
 #%_manpage.tex:  %_circuits.tex %_schematic.tex %_truthtable.tex    !!
