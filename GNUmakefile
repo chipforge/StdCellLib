@@ -57,8 +57,9 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
+LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR) $(OUTPUTDIR)
 POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
-SCHEMATIC ?=    $(TOOLSDIR)/tcl/cell2schematic -o $(DOCUMENTSDIR)/LaTeX -g LaTeX
+SCHEMATIC ?=    $(TOOLSDIR)/tcl/cell2schematic -d -o $(DOCUMENTSDIR)/LaTeX -g LaTeX
 
 #   default
 
@@ -70,11 +71,13 @@ DISTRIBUTION =  ./GNUmakefile \
                 $(SYNTHESISDIR) \
                 $(TBENCHDIR)
 
+.SUFFIXES:      # delate all defaul suffix rules
 #   ----------------------------------------------------------------
 #               DEFINITIONS
 #   ----------------------------------------------------------------
 
-CELLS =         $(patsubst %.func,%,$(notdir $(wildcard $(CATALOGDIR)/*.cell)))
+CELLS =         $(patsubst %.cell,%,$(notdir $(wildcard $(CATALOGDIR)/*.cell)))
+MANPAGES =      $(patsubst %,%_manpage.tex,$(CELLS))
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -122,11 +125,8 @@ clean:
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f build.mk $@
 
 #   ----------------------------------------------------------------
-#               DETAILED TARGETS
+#               CATATLOG TARGETS
 #   ----------------------------------------------------------------
-
-#.PHONY: cells
-#cells: $(CELLS)
 
 #   re-generates 'functional, switch-level based' descriptions for
 #   almost all combinatorial cells - ATTENTION! USE this with CAUTION
@@ -136,11 +136,41 @@ clean:
 catalog:
 	$(POPCORN) -t $(T)
 
+#   ----------------------------------------------------------------
+#               DOCUMENTATION TARGETS
+#   ----------------------------------------------------------------
+
+#.PHONY: cells
+#cells: $(CELLS)
+
 #   grep all hierarchichal LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
-doc:
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f build.mk $@
+doc:    $(DOCUMENTSDIR)/LaTeX/$(PROJECT).tex $(DOCUMENTSDIR)/LaTeX/revision.tex $(DOCUMENTSDIR)/LaTeX/cmos_in_a_nutshell.tex _manpages
+	TEXINPUTS=$$TEXINPUT:./$(DOCUMENTSDIR)/LaTeX $(LATEX) $(<F)
+
+.PHONY: _manpages
+_manpages: $(MANPAGES)
+
+#   ----------------------------------------------------------------
+#               OTHER DEPENDENCIES
+#   ----------------------------------------------------------------
+
+%_circuits.tex: $(CATALOGDIR)/%.cell
+	$(ECHO) "cell -> circuits still missing"
 
 %_schematic.tex: $(CATALOGDIR)/%.cell
+	$(ECHO) "---- generate $@ ----"
 	$(SCHEMATIC) $<
+
+%_truthtable.tex: $(CATALOGDIR)/%.cell
+	$(ECHO) "cell -> truthtable still missing"
+
+%_files.tex:
+	$(ECHO) "files still missing"
+
+#%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex $(DOCUMENTSDIR)/LaTeX/%_manpage.tex
+%_manpage.tex:
+	$(ECHO) "---- includes for $@ done ----"
+
+#%_manpage.tex:  %_circuits.tex %_schematic.tex %_truthtable.tex    !!
