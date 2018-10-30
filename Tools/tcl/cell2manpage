@@ -1,0 +1,413 @@
+#!/usr/bin/env tclsh
+#   ************    LibreSilicon's StdCellLibrary   *******************
+#
+#   Organisation:   Chipforge
+#                   Germany / European Union
+#
+#   Profile:        Chipforge focus on fine System-on-Chip Cores in
+#                   Verilog HDL Code which are easy understandable and
+#                   adjustable. For further information see
+#                           www.chipforge.org
+#                   there are projects from small cores up to PCBs, too.
+#
+#   File:           StdCellLib/Tool/tcl/cell2manual
+#
+#   Purpose:        Generates LaTeX manpage regarding cell description
+#
+#   ************    Tcl 8.6 Shell Script    ***************************
+#
+#   ///////////////////////////////////////////////////////////////////
+#
+#       Copyright (c)   2018 by
+#                       SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+#
+#   This source file may be used and distributed without restriction
+#   provided that this copyright statement is not removed from the
+#   file and that any derivative work contains the original copyright
+#   notice and the associated disclaimer.
+#
+#   This source is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This source is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#    (__)  You should have received a copy of the GNU General Public
+#    oo )  License along with this program; if not, write to the
+#    /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+#          Boston, MA 02110-1301, USA
+#
+#   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+#   ///////////////////////////////////////////////////////////////////
+
+#   -------------------------------------------------------------------
+#                       DESCRIPTION
+#   -------------------------------------------------------------------
+
+#   -------------------------------------------------------------------
+#                       DEFINITIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'import'   -----------------------------------
+
+#   read cell file
+
+proc import {f} {
+
+    global verbose
+
+    set netlist {}
+    # read in
+    seek $f 0 start
+    while {[gets $f line] >= 0} {
+        if {[lsearch -glob [split $line] ".*"] == -1} {
+            set netlist [lappend netlist $line]
+        }
+    }
+
+    # done
+    return $netlist
+}
+
+#   ------------    proc 'desc'     -----------------------------------
+
+#   read cell file
+
+proc desc {f} {
+
+    global verbose
+
+    set result "???"
+    # read in
+    seek $f 0 start
+    while {[gets $f line] >= 0} {
+        if {[lsearch -glob [split $line] ".DESCRIPTION"] == 0} {
+            set result [lindex $line 1]
+            break
+        }
+    }
+
+    # done
+    return $result
+}
+
+#   ------------    proc 'see'      -----------------------------------
+
+#   read cell file
+
+proc see {f} {
+
+    global verbose
+
+    set result "???"
+    # read in
+    seek $f 0 start
+    while {[gets $f line] >= 0} {
+        if {[lsearch -glob [split $line] ".SEE_ALSO"] == 0} {
+            set result [lindex $line 1]
+            break
+        }
+    }
+
+    # done
+    return $result
+}
+
+#   -------------------------------------------------------------------
+#                       Auxilary FUNCTIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'inputs?'  -----------------------------------
+
+#   list all inputs involved in any network in a drecreasing order
+
+proc inputs? {netlist} {
+
+    global verbose
+
+    # collect all inputs from all networks
+    set unsorted {}
+    foreach mosfet $netlist {
+        lappend unsorted [lindex $mosfet 0]
+    }
+
+    # sort inputs
+    set inputs [lsort -decreasing -unique -dictionary $unsorted]
+
+    # verbose message
+    if {$verbose} {
+        puts "inputs?: $inputs"
+    }
+
+    # done
+    return $inputs
+}
+#   ------------    proc 'outputs?' -----------------------------------
+
+#   list (all?) outputs involved in any network in a drecreasing order
+
+proc outputs? {netlist} {
+
+    global verbose
+
+    # collect nodes on drain
+    set unsorted {}
+    foreach mosfet $netlist {
+        set drain [lindex $mosfet 1]
+        if {![string is entier $drain]} {
+            lappend unsorted $drain
+        }
+    }
+
+    # sort inputs
+    set outputs [lsort -decreasing -unique -dictionary $unsorted]
+
+    # verbose message
+    if {$verbose} {
+        puts "outputs?: $outputs"
+    }
+
+    # done
+    return $outputs
+}
+
+#   -------------------------------------------------------------------
+#                       LaTeX FUNCTIONS
+#   -------------------------------------------------------------------
+
+#   ------------    proc 'fopen'    -----------------------------------
+
+#   open export file
+
+proc fopen {path cellid} {
+
+    global verbose
+    global option_graphic
+
+    # open cell output file
+    set datafile [file join $path $cellid\_manpage.tex]
+    set f [open $datafile w]
+
+    # verbose message
+    if {$verbose} {
+        puts "fopen: $datafile"
+    }
+
+puts $f "%%  ************    LibreSilicon's StdCellLibrary   *******************"
+puts $f "%%"
+puts $f "%%  Organisation:   Chipforge"
+puts $f "%%                  Germany / European Union"
+puts $f "%%"
+puts $f "%%  Profile:        Chipforge focus on fine System-on-Chip Cores in"
+puts $f "%%                  Verilog HDL Code which are easy understandable and"
+puts $f "%%                  adjustable. For further information see"
+puts $f "%%                          www.chipforge.org"
+puts $f "%%                  there are projects from small cores up to PCBs, too."
+puts $f "%%"
+puts $f "%%  File:           StdCellLib/Documents/LaTeX/$cellid\_manpage.tex"
+puts $f "%%"
+puts $f "%%  Purpose:        Auto-generated Manual Page for $cellid"
+puts $f "%%"
+puts $f "%%  ************    LaTeX with circdia.sty package      ***************"
+puts $f "%%"
+puts $f "%%  ///////////////////////////////////////////////////////////////////"
+puts $f "%%"
+puts $f "%%  Copyright (c) [clock format [clock seconds] -format %Y] by chipforge <hsank@nospam.chipforge.org>"
+puts $f "%%  All rights reserved."
+puts $f "%%"
+puts $f "%%      This Standard Cell Library is licensed under the Libre Silicon"
+puts $f "%%      public license; you can redistribute it and/or modify it under"
+puts $f "%%      the terms of the Libre Silicon public license as published by"
+puts $f "%%      the Libre Silicon alliance, either version 1 of the License, or"
+puts $f "%%      (at your option) any later version."
+puts $f "%%"
+puts $f "%%      This design is distributed in the hope that it will be useful,"
+puts $f "%%      but WITHOUT ANY WARRANTY; without even the implied warranty of"
+puts $f "%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+puts $f "%%      See the Libre Silicon Public License for more details."
+puts $f "%%"
+puts $f "%%  ///////////////////////////////////////////////////////////////////"
+puts $f "\\subsection\{$cellid\} \\label\{logical:$cellid\}"
+puts $f ""
+
+    # done
+    return $f
+}
+
+#   ------------    proc 'fexport'      -------------------------------
+
+#   write LaTeX figure
+
+proc fexport {f cellid description see_also netlist} {
+
+    # proc 'cell!' - write out cell paragraph
+    proc cell! {f cellid description} {
+
+puts $f "\\paragraph\{Cell\}"
+puts $f "\\begin\{quote\}"
+puts $f "    \\textbf\{$cellid\} - $description"
+puts $f "\\end\{quote\}"
+puts $f ""
+    }
+
+    # proc 'synopsys!' - write out synopsys paragraph
+    proc synopsys! {f cellid ins outs} {
+
+puts $f "\\paragraph\{Synopsys\}"
+puts $f "\\begin\{quote\}"
+puts $f "    $cellid \($outs $ins\)"
+puts $f "\\end\{quote\}"
+puts $f ""
+    }
+
+    # proc 'description!' - write out desciption paragraph
+    proc description! {f cellid} {
+
+puts $f "\\paragraph\{Description\}"
+puts $f "\\input\{$cellid\_circuit.tex\}"
+puts $f "\\input\{$cellid\_schematic.tex\}"
+puts $f ""
+    }
+
+    # proc 'truthtable!' - write out truth table paragraph
+    proc truthtable! {f cellid} {
+
+puts $f "\\paragraph\{Truth Table\}"
+puts $f "\\input\{$cellid\_truthtable.tex\}"
+puts $f ""
+    }
+
+    # proc 'usage!' - write out usage paragraph
+    proc usage! {f cellid} {
+
+puts $f "\\paragraph\{Usage\}"
+puts $f ""
+    }
+
+    # proc 'fanin!' - write out fan-in / fan-out paragraph
+    proc fanin! {f cellid} {
+
+puts $f "\\paragraph\{Fan-in / Fan-out\}"
+puts $f ""
+    }
+
+    # proc 'layout!' - write out layout paragraph
+    proc layout! {f cellid} {
+
+puts $f "\\paragraph\{Layout\}"
+puts $f ""
+    }
+
+    # proc 'files!' - write out files paragraph
+    proc files! {f cellid} {
+
+puts $f "\\paragraph\{Files\}"
+puts $f ""
+    }
+
+    # proc 'see-also!' - write out see_also paragraph
+    proc see_also! {f cellid see_also} {
+
+puts $f "\\paragraph\{See also\}"
+puts $f "\\begin{quote}"
+puts $f "    $see_also"
+puts $f "\\end\{quote\}"
+puts $f ""
+    }
+
+
+    # start with header
+    cell! $f $cellid $description
+    synopsys! $f $cellid [inputs? $netlist] [outputs? $netlist]
+    description! $f $cellid
+    truthtable! $f $cellid
+    usage! $f $cellid
+    fanin! $f $cellid
+    layout! $f $cellid
+    files! $f $cellid
+    see_also! $f $cellid $see_also
+}
+
+#   ------------    proc 'fclose'   -----------------------------------
+
+#   close export file
+
+proc fclose {f} {
+
+puts $f "\\clearpage"
+
+    # done
+    close $f
+}
+
+
+#   -------------------------------------------------------------------
+#                       MAIN
+#   -------------------------------------------------------------------
+
+#   ------------    Command line parsing     --------------------------
+
+package require cmdline;
+
+#   define program options
+set options {
+    {o.arg "./"         "specify output directory - default" }
+    {g.arg "LaTeX"      "which output graphic format use - default" }
+    {v                  "verbose" }
+}
+
+#   define program usage
+set usage "- Collects manpage sheet from cell description"
+
+#   error trap
+try {
+    array set params [cmdline::getoptions argv $options $usage]
+} trap {CMDLINE USAGE} {msg o} {
+    # Trap the usage signal, print the massage, and exit the application.
+    # Note: Others errors are not caught and passed through to higher levels!
+    puts $msg
+    exit -1 
+}
+
+#   set argv from command lines
+set option_cell [lindex $argv end end] ; # input file
+set option_graphic $params(g) ; # file format
+set option_path $params(o) ; # output directory
+set verbose $params(v); 
+
+#   verbose message
+if {$verbose} {
+    puts "[clock format [clock seconds] -gmt 1]"
+    puts "option_path (-o): $option_path"
+    puts "option_graphic (-g):  $option_graphic"
+    puts "option_cell: $option_cell"
+}
+
+#   ------------    generate    ---------------------------------------
+
+if {[file exist $option_cell]} {
+
+    # unplug cellid
+    set cellid [lindex [split [file tail $option_cell] "."] 0]
+
+    # open cell input file
+    set fin [open $option_cell r]
+
+    set description [desc $fin]
+    set see_also [see $fin]
+    set netlist [import $fin]
+    close $fin
+
+    set fout [fopen $option_path $cellid]
+    fexport $fout $cellid $description $see_also $netlist
+    fclose $fout
+
+
+} else {
+    puts stderr "Oops. '$option_cell' does not exist!"
+}
+
