@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_NOR3.tex
+%%  File:           StdCellLib/Documents/LaTeX/NOR3_schematic.tex
 %%
-%%  Purpose:        Schematic File for NOR2
+%%  Purpose:        Auto-generated Schematic File for NOR3
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,31 +33,36 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 3$T_{p}$/1$T_{n}$ stacked, 6T total)
-    \begin{figure}[h] %\caption{Schematic}
+    Schematic (one stage, 3 $T_{p}$ / 1 $T_{n}$ stacked, 6 $T$ total)
+    \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{36}{27}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel left
-            \pin{2}{11.5}{L}{A}  % pin A, p-channel below
-            \pin{2}{17.5}{L}{B}  % pin B, p-channel middle
-            \pin{2}{23.5}{L}{C} % pin C, p-channel above
-            \pin{14}{2.5}{L}{B} % pin B, n-channel middle
-            \pin{26}{2.5}{L}{C} % pin A, n-channel right
-            \pin{35}{7}{R}{Z}  % pin Z
-            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NA}$}{}
-            \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$M_{PA}$}
-            \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$M_{PB}$}
-            \trans[\wireD{0.5}]{penh*}{6}{22}{R}{}{$M_{PC}$}
-            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NB}$}{}
-            \trans[\wireU{0.5}]{nenh*}{30}{4}{R}{$M_{NC}$}{}
-            \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{25.5}{U}{}  % power above left pmos
-            \ground{20}{0.5}{D}  % ground below nmos
-            \ground{32}{0.5}{D}  % ground below nmos
-            \wire{8}{7}{34}{7}    % wire before pin Z
-            \junct{8}{7}
-            \junct{20}{7}
-            \junct{32}{7}
+            \begin{circuitdiagram}{32}{26}
+                % ---- '*PA' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$*_{PA}$}
+                \pin{3}{11.5}{L}{A}
+                % ---- '*PB' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$*_{PB}$}
+                \pin{3}{17.5}{L}{B}
+                % ---- '*PC' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{22}{R}{}{$*_{PC}$}
+                \pin{3}{23.5}{L}{C}
+                 \power{8}{25}{U}{}
+                % ---- '*NA' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{6}{4}{R}{$*_{NA}$}{}
+                \pin{3}{2.5}{L}{A}
+                % ---- '*NB' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{14}{4}{R}{$*_{NB}$}{}
+                \pin{11}{2.5}{L}{B}
+                % ---- '*NC' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{22}{4}{R}{$*_{NC}$}{}
+                \pin{19}{2.5}{L}{C}
+                \ground{8}{1}{D}
+                \ground{16}{1}{D}
+                \ground{24}{1}{D}
+                % ---- output pattern ----
+                \pin{28}{7}{R}{Z}
+                \wire{24}{7}{27}{7}
+                \wire{8}{7}{24}{7}
             \end{circuitdiagram}
         \end{center}
     \end{figure}

@@ -1,0 +1,9 @@
+.DESCRIPTION "a 3-input Not-OR (or NOR) gate"
+.SEE_ALSO "NOR2 - a 2-input Not-OR (or NOR) gate"
+.ORDER "Gate Drain Source MOSFET"
+C 3 vdd pmos
+B 1 3 pmos
+A Z 1 pmos
+C Z gnd nmos
+B Z gnd nmos
+A Z gnd nmos

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_NOR2.tex
+%%  File:           StdCellLib/Documents/LaTeX/NOR2_schematic.tex
 %%
-%%  Purpose:        Schematic File for NOR2
+%%  Purpose:        Auto-generated Schematic File for NOR2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,25 +33,29 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2$T_{p}$/1$T_{n}$ stacked, 4T total)
-    \begin{figure}[h] %\caption{Schematic}
+    Schematic (one stage, 2 $T_{p}$ / 1 $T_{n}$ stacked, 4 $T$ total)
+    \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{24}{22}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel left
-            \pin{2}{11.5}{L}{A}  % pin A, p-channel below
-            \pin{2}{17.5}{L}{B}  % pin B, p-channel above
-            \pin{14}{2.5}{L}{B} % pin B, n-channel right
-            \pin{23}{7}{R}{Z}  % pin Z
-            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NA}$}{}
-            \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$M_{PA}$}
-            \trans[\wireD{0.5}]{penh*}{6}{16}{R}{}{$M_{PB}$}
-            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NB}$}{}
-            \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{19.5}{U}{}  % power above left pmos
-            \ground{20}{0.5}{D}  % ground below nmos
-            \wire{8}{7}{22}{7}    % wire before pin Z
-            \junct{8}{7}
-            \junct{20}{7}
+            \begin{circuitdiagram}{24}{20}
+                % ---- '*PA' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$*_{PA}$}
+                \pin{3}{11.5}{L}{A}
+                % ---- '*PB' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$*_{PB}$}
+                \pin{3}{17.5}{L}{B}
+                 \power{8}{19}{U}{}
+                % ---- '*NA' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{6}{4}{R}{$*_{NA}$}{}
+                \pin{3}{2.5}{L}{A}
+                % ---- '*NB' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{14}{4}{R}{$*_{NB}$}{}
+                \pin{11}{2.5}{L}{B}
+                \ground{8}{1}{D}
+                \ground{16}{1}{D}
+                % ---- output pattern ----
+                \pin{20}{7}{R}{Z}
+                \wire{16}{7}{19}{7}
+                \wire{8}{7}{16}{7}
             \end{circuitdiagram}
         \end{center}
     \end{figure}

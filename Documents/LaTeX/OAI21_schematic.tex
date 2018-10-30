@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_OAI21.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI21_schematic.tex
 %%
-%%  Purpose:        Schematic File for OAI21
+%%  Purpose:        Auto-generated Schematic File for OAI21
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,33 +33,36 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2$T_{p}$/2$T_{n}$ stacked, 6T total)
-    \begin{figure}[h] %\caption{Schematic}
+    Schematic (one stage, 2 $T_{p}$ / 2 $T_{n}$ stacked, 6 $T$ total)
+    \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{24}{27}
-            \pin{2}{2.5}{L}{B0}  % pin B0, n-channel left-below
-            \pin{2}{8.5}{L}{A}  % pin A, n-channel left-above
-            \pin{14}{2.5}{L}{B1}  % pin B1, n-channel right-below
-            \pin{2}{17.5}{L}{A} % pin A, p-channel left-below
-            \pin{14}{17.5}{L}{B0} % pin B0, p-channel right-below
-            \pin{14}{23.5}{L}{B1} % pin B1, p-channel right-above
-            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NB0}$}{}
-            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NA}$}{}
-            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NB1}$}{}
-            \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$M_{PA}$}
-            \trans[\wireUD{0.5}]{penh*}{18}{16}{R}{}{$M_{PB0}$}
-            \trans[\wireD{0.5}]{penh*}{18}{22}{R}{}{$M_{PB1}$}
-            \ground{8}{0.5}{D}  % ground below nmos
-            \ground{20}{0.5}{D}  % ground below nmos
-            \power{8}{25.5}{U}{}  % power above left pmos
-            \power{20}{25.5}{U}{}  % power above left pmos
-            \wire{8}{19}{8}{25}
-            \wire{8}{7}{20}{7}    % wire short between pmos
-            \wire{8}{13}{22}{13}    % wire before pin Z
-            \junct{8}{13}
-            \junct{8}{7}
-            \junct{20}{13}
-            \pin{23}{13}{R}{Z}  % pin Z
+            \begin{circuitdiagram}{24}{26}
+                % ---- '*PA' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$*_{PA}$}
+                \pin{3}{17.5}{L}{A}
+                % ---- '*PB' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{22}{R}{}{$*_{PB}$}
+                \pin{3}{23.5}{L}{B}
+                % ---- '*PB1' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{14}{22}{R}{}{$*_{PB1}$}
+                \pin{11}{23.5}{L}{B1}
+                 \power{8}{25}{U}{}
+                 \power{16}{25}{U}{}
+                % ---- '*NA' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$*_{NA}$}{}
+                \pin{3}{8.5}{L}{A}
+                % ---- '*NB' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{14}{10}{R}{$*_{NB}$}{}
+                \pin{11}{8.5}{L}{B}
+                \ground{8}{7}{D}
+                % ---- '*NB1' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{6}{4}{R}{$*_{NB1}$}{}
+                \pin{3}{2.5}{L}{B1}
+                \ground{8}{1}{D}
+                % ---- output pattern ----
+                \pin{20}{13}{R}{Z}
+                \wire{16}{13}{19}{13}
+                \wire{8}{13}{16}{13}
             \end{circuitdiagram}
         \end{center}
     \end{figure}

@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_INV.tex
+%%  File:           StdCellLib/Documents/LaTeX/INV_schematic.tex
 %%
-%%  Purpose:        Schematic File for INV
+%%  Purpose:        Auto-generated Schematic File for INV
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,19 +33,22 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 1$T_{p}$/1$T_{n}$ stacked, 2T total)
-    \begin{figure}[h] %\caption{Schematic}
+    Schematic (one stage, 1 $T_{p}$ / 1 $T_{n}$ stacked, 2 $T$ total)
+    \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{12}{15}
-            \pin{2}{2.5}{L}{A}  % pin A, n-channel
-            \pin{2}{11.5}{L}{A} % pin A, p-channel
-            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NA}$}{}
-            \trans[\wireD{0.5}]{penh*}{6}{10}{R}{}{$M_{PA}$}
-            \ground{8}{0.5}{D}  % ground below nmos
-            \power{8}{13.5}{U}{}  % power above pmos
-            \wire{8}{7}{10}{7}    % wire before pin Z
-            \junct{8}{7}
-            \pin{11}{7}{R}{Z}  % pin Z
+            \begin{circuitdiagram}{16}{14}
+                % ---- '*PA' pmos pattern ----
+                \trans[\wireUD{0.5}]{penh*}{6}{10}{R}{}{$*_{PA}$}
+                \pin{3}{11.5}{L}{A}
+                 \power{8}{13}{U}{}
+                % ---- '*NA' nmos pattern ----
+                \trans[\wireUD{0.5}]{nenh*}{6}{4}{R}{$*_{NA}$}{}
+                \pin{3}{2.5}{L}{A}
+                \ground{8}{1}{D}
+                % ---- output pattern ----
+                \pin{12}{7}{R}{Z}
+                \wire{8}{7}{11}{7}
+                \wire{8}{7}{8}{7}
             \end{circuitdiagram}
         \end{center}
     \end{figure}
