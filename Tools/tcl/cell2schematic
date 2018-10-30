@@ -548,7 +548,7 @@ if {[file exist $option_cell]} {
             if {$node eq "gnd"} {
                 puts_gnd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
-                set result [pulldown! $f $xjunc $ynext $node $netlist]
+                set result [pulldown! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
                 if {$result > $xnext} {
                     set xnext $result
                 }
@@ -591,7 +591,7 @@ if {[file exist $option_cell]} {
             if {$node eq "vdd"} {
                 puts_vdd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
-                set result [pullup! $f $xjunc $ynext $node $netlist]
+                set result [pullup! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
                 if {$result > $xnext} {
                     set xnext $result
                 }
