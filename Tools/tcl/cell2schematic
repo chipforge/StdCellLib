@@ -343,7 +343,7 @@ proc fexport {f cellid netlist} {
         # conversation table: number -> word
         set table {zero one two three four five six seven eigth}
 
-puts $f [format "    Schematic (%s stage, %d \$T_\{p\}\$ / %d \$T_\{n\}\$ stacked, %d \$T\$ total)" [lindex $table $nstages] $tpmos $tnmos $ttotal]
+puts $f [format "    Schematic (%s stage, %d\$T_\{p\}\$/%d\$T_\{n\}\$ stacked, %d\$T\$ total)" [lindex $table $nstages] $tpmos $tnmos $ttotal]
     }
 
     # proc 'figure_header' - write out 'figure' header

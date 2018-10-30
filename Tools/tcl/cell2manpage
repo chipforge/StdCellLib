@@ -231,8 +231,6 @@ puts $f "%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 puts $f "%%      See the Libre Silicon Public License for more details."
 puts $f "%%"
 puts $f "%%  ///////////////////////////////////////////////////////////////////"
-puts $f "\\subsection\{$cellid\} \\label\{logical:$cellid\}"
-puts $f ""
 
     # done
     return $f
@@ -245,12 +243,9 @@ puts $f ""
 proc fexport {f cellid description see_also netlist} {
 
     # proc 'cell!' - write out cell paragraph
-    proc cell! {f cellid description} {
+    proc subsection! {f cellid description} {
 
-puts $f "\\paragraph\{Cell\}"
-puts $f "\\begin\{quote\}"
-puts $f "    \\textbf\{$cellid\} - $description"
-puts $f "\\end\{quote\}"
+puts $f "\\subsection\{$cellid - $description\} \\label\{logical:$cellid\}"
 puts $f ""
     }
 
@@ -321,7 +316,8 @@ puts $f ""
 
 
     # start with header
-    cell! $f $cellid $description
+#    cell! $f $cellid $description
+    subsection! $f $cellid $description
     synopsys! $f $cellid [inputs? $netlist] [outputs? $netlist]
     description! $f $cellid
     truthtable! $f $cellid
