@@ -245,6 +245,7 @@ proc fexport {f cellid description see_also netlist} {
     # proc 'cell!' - write out cell paragraph
     proc subsection! {f cellid description} {
 
+puts $f "\\twocolumn"
 puts $f "\\subsection\{$cellid - $description\} \\label\{logical:$cellid\}"
 puts $f ""
     }
@@ -334,6 +335,7 @@ puts $f ""
 
 proc fclose {f} {
 
+puts $f "\\onecolumn"
 puts $f "\\clearpage"
 
     # done
@@ -351,6 +353,7 @@ package require cmdline;
 
 #   define program options
 set options {
+    {i.arg "./"         "specify input directory - default" }
     {o.arg "./"         "specify output directory - default" }
     {g.arg "LaTeX"      "which output graphic format use - default" }
     {v                  "verbose" }
@@ -370,7 +373,7 @@ try {
 }
 
 #   set argv from command lines
-set option_cell [lindex $argv end end] ; # input file
+set option_cell [string cat $params(i) "/" [lindex $argv end end] ".cell"] ; # input file
 set option_graphic $params(g) ; # file format
 set option_path $params(o) ; # output directory
 set verbose $params(v); 
