@@ -73,25 +73,11 @@
 #                       DEFINITIONS
 #   -------------------------------------------------------------------
 
-#   seed library with know cells
-set library {
-    INV {   pullup {
-                A { g A d Z s vdd t pmos } }
-            pulldown {
-                A { g A d Z s gnd t nmos } } }
-    NOR2 {  pullup {
-                B { g B d 1 s vdd t pmos }
-                A { g A d Z s 1   t pmos } }
-            pulldown {
-                B { g B d Z s gnd t nmos }
-                A { g A d Z s gnd t nmos } } }
-    NAND2 { pullup {
-                B { g B d Z s vdd t pmos }
-                A { g A d Z s vdd t pmos } }
-            pulldown {
-                B { g B d 2 s gnd t nmos }
-                A { g A d Z s 2   t nmos } } }
-}
+#   dictionary structure for cells
+#   CELL {   pullup {
+#                A { g A d Z s vdd t pmos } }
+#            pulldown {
+#                A { g A d Z s gnd t nmos } } }
 
 # usable inputs
 set table {A B C D E F G H J K L M N P T U V W}
@@ -103,7 +89,7 @@ set cellindex 0
 
 #   write into fresh cell file
 
-#   use $library list structure
+#   use dictionary structure
 proc export! {path cellid library} {
 
     global verbose
@@ -139,6 +125,44 @@ proc export! {path cellid library} {
 
     # done
     close $f
+}
+
+#   ------------    proc 'import'   -----------------------------------
+
+#   read cell file
+
+proc import {f} {
+
+    global verbose
+
+    dict set netlist pullup {}
+    dict set netlist pulldown {}
+    # read in
+    seek $f 0 start
+    while {[gets $f line] >= 0} {
+        if {[lsearch -glob [split $line] ".*"] == -1} {
+            if {[lindex $line 3] == "pmos"} {
+                # pullup network
+                set mosfet [lindex $line 0]
+                dict set netlist pullup $mosfet {}
+                dict set netlist pullup $mosfet g [lindex $line 0]
+                dict set netlist pullup $mosfet d [lindex $line 1]
+                dict set netlist pullup $mosfet s [lindex $line 2]
+                dict set netlist pullup $mosfet t [lindex $line 3]
+            } elseif {[lindex $line 3] == "nmos"} {
+                # pulldown network
+                set mosfet [lindex $line 0]
+                dict set netlist pulldown $mosfet {}
+                dict set netlist pulldown $mosfet g [lindex $line 0]
+                dict set netlist pulldown $mosfet d [lindex $line 1]
+                dict set netlist pulldown $mosfet s [lindex $line 2]
+                dict set netlist pulldown $mosfet t [lindex $line 3]
+            }
+        }
+    }
+
+    # done
+    return $netlist
 }
 
 #   -------------------------------------------------------------------
@@ -179,7 +203,6 @@ proc maxnode? {network} {
 proc anchor? {start end network} {
 
     global verbose
-    global option_stacked
 
     proc length? {path from to network} {
 
@@ -213,18 +236,12 @@ proc anchor? {start end network} {
     # work out
     set anchor A
     set result 0
-    set depth $option_stacked
     foreach mosfet [dict keys $network] {
         # check network for mosfet with $start as source
         foreach node [dict get [dict get $network $mosfet] s] {
             if {$node eq $start} {
-                # check path depth
                 set result [length? {} $node $end $network]
-                if {$result < $depth} {
-                    # find shorter path
-                    set depth $result
-                    set anchor $mosfet
-                }
+                set anchor $mosfet
             }
         }
     }
@@ -521,8 +538,9 @@ package require cmdline;
 #   define program options
 set options {
     {o.arg "./"         "specify output directory - default" }
-    {t.arg "4"          "reduce number of stacked transistors - default" }
-    {s                  "single step mode" }
+    {c.arg "CELL"       "specify new cell name - default" }
+    {t.arg "4"          "reduce # of stacked mosfets - default" }
+    {n.arg "nand"       "enlarge cell - nand nor aoi oai not - default"}
     {v                  "verbose" }
 }
 
@@ -540,16 +558,19 @@ try {
 }
 
 #   set argv from command lines
-set option_stacked $params(t) ; # number of stacked transistors
+set option_original [lindex $argv end end] ; # input file
 set option_path $params(o) ; # output directory
-set stepmode $params(s); 
+set option_newcell $params(c) ; # new cellid
+set option_enlarge $params(n) ; 
 set verbose $params(v); 
 
 #   verbose message
 if {$verbose} {
     puts "[clock format [clock seconds] -gmt 1]"
-    puts "option_stacked (-s): $option_stacked"
+    puts "option_original: $option_original"
+    puts "option_newcell (-c):  $option_newcell"
     puts "option_path (-o): $option_path"
+    puts "option_enlarge (-n): $option_enlarge"
 }
 
 #   ------------    cell generation     -------------------------------
@@ -609,81 +630,29 @@ if {$verbose} {
         return $cell
     }
 
-    proc norgroup! {cellid netlist} {
-
-        global option_stacked
-        global library
-
-        # work out
-        for { set i 1 } {$i < $option_stacked } { incr i} {
-            set newcell [enlarge_nor! "char" [dict get $library $cellid]]
-            set cellid [cellname! "char" $cellid "NOR"]
-            dict set library $cellid $newcell
-        }
-    }
-
-    proc nandgroup! {cellid netlist} {
-
-        global option_stacked
-        global library
-
-        # work out
-        for { set i 1 } {$i < $option_stacked } { incr i} {
-            set newcell [enlarge_nand! "char" [dict get $library $cellid]]
-            set cellid [cellname! "char" $cellid "NAND"]
-            dict set library $cellid $newcell
-        }
-    }
-
-    proc aoigroup! {cellid netlist} {
-
-        global option_stacked
-        global library
-
-        # work out
-        for { set i 1 } {$i < $option_stacked } { incr i} {
-            set newcell [enlarge_nand! "number" [dict get $library $cellid]]
-            set cellid [cellname! "number" $cellid "AOI"]
-            dict set library $cellid $newcell
-        }
-    }
-
-    proc oaigroup! {cellid netlist} {
-
-        global option_stacked
-        global library
-
-        # work out
-        for { set i 1 } {$i < $option_stacked } { incr i} {
-            set newcell [enlarge_nor! "number" [dict get $library $cellid]]
-            set cellid [cellname! "number" $cellid "OAI"]
-            dict set library $cellid $newcell
-        }
-    }
-
-set cellid NOR2
-norgroup! NOR2 [dict get $library $cellid]
-
-set cellid NAND2
-nandgroup! NAND2 [dict get $library $cellid]
-
-set cellid NOR2
-aoigroup! NOR2 [dict get $library $cellid]
-
-set cellid NOR3
-aoigroup! NOR3 [dict get $library $cellid]
-
-#set cellid NOR4
-#aoigroup! NOR4 [dict get $library $cellid]
-
-set cellid NAND2
-oaigroup! NAND2 [dict get $library $cellid]
-
-set cellid NAND3
-oaigroup! NAND3 [dict get $library $cellid]
-
-#set cellid NAND4
-#oaigroup! NAND4 [dict get $library $cellid]
+#set cellid NOR2
+#norgroup! NOR2 [dict get $library $cellid]
+#
+#set cellid NAND2
+#nandgroup! NAND2 [dict get $library $cellid]
+#
+#set cellid NOR2
+#aoigroup! NOR2 [dict get $library $cellid]
+#
+#set cellid NOR3
+#aoigroup! NOR3 [dict get $library $cellid]
+#
+##set cellid NOR4
+##aoigroup! NOR4 [dict get $library $cellid]
+#
+#set cellid NAND2
+#oaigroup! NAND2 [dict get $library $cellid]
+#
+#set cellid NAND3
+#oaigroup! NAND3 [dict get $library $cellid]
+#
+##set cellid NAND4
+##oaigroup! NAND4 [dict get $library $cellid]
 
 
 
@@ -699,19 +668,47 @@ oaigroup! NAND3 [dict get $library $cellid]
 #dict set library AOI31 [enlarge_nand! "number" [dict get $library AOI21]]
 #dict set library AOI41 [enlarge_nand! "number" [dict get $library AOI31]]
 
+#   ------------    main    -------------------------------------------
 
-#   ------------    cell export     -----------------------------------
+if {[file exist $option_original]} {
 
-set counter 0
+    # unplug cellid
+    set cellid [lindex [split [file tail $option_original] "."] 0]
 
-#   export results
-puts -nonewline "generated... "
-foreach cellid [dict keys $library] {
-    export! $option_path $cellid $library
-    puts -nonewline "$cellid "
-    incr counter
+    # open cell input file
+    set fin [open $option_original r]
+
+    set netlist [import $fin]
+    close $fin
+
+    # store original cell
+    dict set original $cellid $netlist
+    switch -glob $option_enlarge {
+        "nand"  {set netlist [enlarge_nand! "char" [dict get $original $cellid]]}
+        "nor"   {set netlist [enlarge_nor!  "char" [dict get $original $cellid]]}
+        "aoi"   {set netlist [enlarge_nand! "number" [dict get $original $cellid]]}
+        "oai"   {set netlist [enlarge_nor!  "number" [dict get $original $cellid]]}
+        default {break}
+    }
+    dict set newcells $option_newcell $netlist
+
+##"not"   {set netlist [enlarge_not!  "number" [dict get $library $cellid]}
+
+    # export results
+    set counter 0
+
+    puts -nonewline "generated... "
+    foreach cellid [dict keys $newcells] {
+        export! $option_path $cellid $newcells
+        puts -nonewline "$cellid "
+        incr counter
+    }
+
+    # thanks for all the fish!
+    puts ""
+    puts "total: $counter cells"
+
+} else {
+    puts stderr "Oops. '$option_original' does not exist!"
 }
-puts ""
-puts "total: $counter cells"
 
-#   thanks for all the fish!
