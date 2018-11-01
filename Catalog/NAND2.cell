@@ -1,7 +1,7 @@
 .DESCRIPTION "a 2-input Not-AND (or NAND) gate"
 .SEE_ALSO "NAND3 - a 3-input Not-AND (or NAND) gate"
 .ORDER "Gate Drain Source MOSFET"
-B Z vdd pmos
 A Z vdd pmos
-B 2 gnd nmos
+B Z vdd pmos
 A Z 2 nmos
+B 2 gnd nmos
