@@ -464,6 +464,7 @@ package require cmdline;
 #   define program options
 set options {
     {d                  "draft / draw on squared paper" }
+    {i.arg "./"         "specify input directory - default" }
     {o.arg "./"         "specify output directory - default" }
     {g.arg "LaTeX"      "which output graphic format use - default" }
     {v                  "verbose" }
@@ -483,7 +484,7 @@ try {
 }
 
 #   set argv from command lines
-set option_cell [lindex $argv end end] ; # input file
+set option_cell [string cat $params(i) "/" [lindex $argv end end] ".cell"] ; # input file
 set option_squared $params(d) ; # draft / draw on squared paper
 set option_graphic $params(g) ; # file format
 set option_path $params(o) ; # output directory
