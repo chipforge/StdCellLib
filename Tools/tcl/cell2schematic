@@ -62,6 +62,7 @@ proc import {f} {
 
     set netlist {}
     # read in
+    seek $f 0 start
     while {[gets $f line] >= 0} {
         if {[lsearch -glob [split $line] ".*"] == -1} {
             set netlist [lappend netlist $line]
