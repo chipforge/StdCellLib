@@ -60,7 +60,7 @@
 #       |  up   |
 #       |_______|
 #           |
-#           *-------->  Z
+#           *-------->  Y
 #        ___|___
 #       |       |
 #       | pull- |
@@ -75,9 +75,9 @@
 
 #   dictionary structure for cells
 #   CELL {   pullup {
-#                A { g A d Z s vdd t pmos } }
+#                A { g A d Y s vdd t pmos } }
 #            pulldown {
-#                A { g A d Z s gnd t nmos } } }
+#                A { g A d Y s gnd t nmos } } }
 
 # usable inputs
 set table {A B C D E F G H J K L M N P T U V W}
@@ -268,7 +268,7 @@ proc anchor? {start end network} {
 proc anchor_pullup? {netlist} {
 
     # wraper
-    return [anchor? "vdd" "Z" [dict get $netlist pullup]]
+    return [anchor? "vdd" "Y" [dict get $netlist pullup]]
 }
 
 #   ------------    proc 'anchor_pulldown?'     -----------------------
@@ -278,7 +278,7 @@ proc anchor_pullup? {netlist} {
 proc anchor_pulldown? {netlist} {
 
     # wraper
-    return [anchor? "gnd" "Z" [dict get $netlist pulldown]]
+    return [anchor? "gnd" "Y" [dict get $netlist pulldown]]
 }
 
 #   ------------    proc 'input_number!'    ---------------------------
@@ -531,6 +531,56 @@ proc enlarge_nor! {nameing netlist} {
     return $netlist
 }
 
+#   ------------    proc 'enlarge_inv!'     ---------------------------
+
+#   insert buffering inverter before output
+
+proc enlarge_inv! {netlist} {
+
+    global verbose
+
+    # start with pullup network
+    set network [dict get $netlist pullup]
+
+    # generate next pullup mosfet
+    dict set newfet g "Y"
+    dict set newfet d "Z"
+    dict set newfet s "vdd"
+    dict set newfet t "pmos"
+
+    # build new pulldown network
+    dict set pullup "Y" $newfet
+    dict for {key value} $network {
+        dict set pullup $key $value
+    }
+
+    # follow up with pulldown network
+    set network [dict get $netlist pulldown]
+
+    # generate next pulldown mosfet
+    dict set newfet g "Y"
+    dict set newfet d "Z"
+    dict set newfet s "gnd"
+    dict set newfet t "nmos"
+
+    # build new pulldown network
+    dict set pulldown "Y" $newfet
+    dict for {key value} $network {
+        dict set pulldown $key $value
+    }
+
+    dict set netlist pullup $pullup
+    dict set netlist pulldown $pulldown
+
+    # verbose message
+    if {$verbose} {
+        puts "enlarge_inv!: $netlist"
+    }
+
+    # done
+    return $netlist
+}
+
 #   -------------------------------------------------------------------
 #                       MAIN
 #   -------------------------------------------------------------------
@@ -543,8 +593,8 @@ package require cmdline;
 set options {
     {o.arg "./"         "specify output directory - default" }
     {c.arg "CELL"       "specify new cell name - default" }
-    {t.arg "4"          "reduce # of stacked mosfets - default" }
-    {n.arg "nand"       "enlarge cell - nand nor aoi oai not - default"}
+    {n.arg "nand"       "enlarge cell - nand nor aoi oai - default"}
+    {b                  "enlarge cell - add inverting buffer"}
     {v                  "verbose" }
 }
 
@@ -566,6 +616,7 @@ set option_original [lindex $argv end end] ; # input file
 set option_path $params(o) ; # output directory
 set option_newcell $params(c) ; # new cellid
 set option_enlarge $params(n) ; 
+set option_buffer $params(b) ; 
 set verbose $params(v); 
 
 #   verbose message
@@ -575,6 +626,7 @@ if {$verbose} {
     puts "option_newcell (-c):  $option_newcell"
     puts "option_path (-o): $option_path"
     puts "option_enlarge (-n): $option_enlarge"
+    puts "option_buffer (-b): $option_buffer"
 }
 
 #   ------------    cell generation     -------------------------------
@@ -692,11 +744,10 @@ if {[file exist $option_original]} {
         "nor"   {set netlist [enlarge_nor!  "char" [dict get $original $cellid]]}
         "aoi"   {set netlist [enlarge_nand! "number" [dict get $original $cellid]]}
         "oai"   {set netlist [enlarge_nor!  "number" [dict get $original $cellid]]}
-        default {break}
+        default {}
     }
+    set netlist [enlarge_inv! $netlist]
     dict set newcells $option_newcell $netlist
-
-##"not"   {set netlist [enlarge_not!  "number" [dict get $library $cellid]}
 
     # export results
     set counter 0
