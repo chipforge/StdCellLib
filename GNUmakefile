@@ -59,8 +59,8 @@ DATE :=         $(shell date +%Y%m%d)
 
 LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR) $(OUTPUTDIR)
 POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
-SCHEMATIC ?=    $(TOOLSDIR)/tcl/cell2schematic -d -o $(DOCUMENTSDIR)/LaTeX -g LaTeX
-MANUAL ?=       $(TOOLSDIR)/tcl/cell2manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR)
+SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
+MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 
 #   default
 

@@ -125,7 +125,7 @@ proc tpmos {netlist} {
     }
 
     # work out
-    set length [length? {} "vdd" "Z" $net]
+    set length [length? {} "vdd" "Y" $net]
 
     # verbose message
     if {$verbose} {
@@ -153,7 +153,7 @@ proc tnmos {netlist} {
     }
 
     # work out
-    set length [length? {} "gnd" "Z" $net]
+    set length [length? {} "gnd" "Y" $net]
 
     # verbose message
     if {$verbose} {
@@ -232,6 +232,35 @@ proc eval_nodes {netlist} {
         puts "eval_inodes: $nodes"
     }
     return $nodes
+}
+
+#   ------------    proc 'outputs?' -----------------------------------
+
+#   list (all?) outputs involved in any network in a drecreasing order
+
+proc outputs? {netlist} {
+
+    global verbose
+
+    # collect nodes on drain
+    set unsorted {}
+    foreach mosfet $netlist {
+        set drain [lindex $mosfet 1]
+        if {![string is entier $drain]} {
+            lappend unsorted $drain
+        }
+    }
+
+    # sort inputs
+    set outputs [lsort -decreasing -unique -dictionary $unsorted]
+
+    # verbose message
+    if {$verbose} {
+        puts "outputs?: $outputs"
+    }
+
+    # done
+    return $outputs
 }
 
 #   ------------    stuff on grid  ------------------------------------
@@ -420,9 +449,9 @@ puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     caption $f 1 $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
-    puts "[pullup!   $f $xgrid $ymid "Z" $netlist]"
-    puts "[pulldown! $f $xgrid $ymid "Z" $netlist]"
-    puts "[center! $f "Z" $xgrid [expr $xsize - $xgrid]]"
+    puts "[pullup!   $f $xgrid $ymid "Y" $netlist]"
+    puts "[pulldown! $f $xgrid $ymid "Y" $netlist]"
+    puts "[center! $f [lindex [outputs? $netlist] 0] $xgrid [expr $xsize - $xgrid]]"
 
 #    # place seed pair first, which are always this with input A
 #    puts_pmos $f A PA 7 $ymid
