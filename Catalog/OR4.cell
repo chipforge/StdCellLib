@@ -1,0 +1,13 @@
+.DESCRIPTION "a 4-input OR gate"
+.SEE_ALSO "NOR3 - a 3-input Not-OR (or NOR) gate"
+.ORDER "Gate Drain Source MOSFET"
+A Y 1 pmos
+B 1 3 pmos
+C 3 5 pmos
+D 5 vdd pmos
+Y Z vdd pmos
+A Y gnd nmos
+B Y gnd nmos
+C Y gnd nmos
+D Y gnd nmos
+Y Z gnd nmos
