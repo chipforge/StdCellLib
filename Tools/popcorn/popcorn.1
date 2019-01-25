@@ -1,0 +1,116 @@
+.Dd January 24, 2019
+.Dt POPCORN 1 "Standard Cell Library"
+.Os LibreSilicon
+.Sh NAME
+.Nm popcorn
+.Nd generate almost all combinatorial cells
+.Sh SYNOPSIS
+.Nm
+.Op Fl v
+.Op Fl b Ar number
+.Op Fl e Ar format
+.Op Fl l Ar number
+.Op Fl m Ar method
+.Ar cell-file
+.Sh DESCRIPTION
+.Nm
+enlarges a combinatorial cell by different methods (
+.Em nand ,
+.Em nor ,
+.Em aoi ,
+.Em oai
+) and write out new derived cell information on
+.Dv stdout .
+.Pp
+In Principle every combinatorial cell (in CMOS technology) contains two
+functional complementary networks. The pull-up network - build with pmos
+transistors - as well as the pull-down network - build with nmos transistors.
+In both networks all inputs are used to determine the output functionality.
+.Pp
+.Bd -literal
+            ^ Vdd           Example Schematic for INV
+            |
+            |
+        | --+
+   A --o| |     pmos
+        | --+
+            |
+            |
+            +-------> Y
+            |
+            |
+        | --+
+   A ---| |     nmos
+        | --+
+            |
+           _|_ Gnd
+.Ed
+.Pp
+.Nm
+functionality is to take one combinatorial cell and enlarge both networks
+by adding one transistor per network. The new combinatorial cell can be
+exported in different file formats for documentation, layout and simulation.
+.Pp
+.Nm
+can be used recursively. This implies that one new generated cell becomes the
+seed for at least 2 more generated cells.
+.Sh OPTIONS
+.Ss \-b number
+Append inverting buffer to current cell description, when one path exist
+which has at least
+.Em number
+of stacked transistors between output and any supply line.
+This will sharpen the maximum LOW and minimum HIGH output levels of the
+cell output.
+.Ss \-e format
+Export cell description in one of the following file formats:
+.Bl -tag -width 14n -compact -offset indent
+.It Em alf
+IEEE 1603 / IEC 62265 (ALF 2.0)
+.It Em liberty
+Liberty file format (UC Berkeley, Synopsys)
+.It Em model_verilog
+`celldefine Model in Verilog (Verilog '95)
+.It Em schematic_gaf
+Schematic (gEDA and friends)
+.It Em schematic_tex
+Schematic (TeX with Circdia package)
+.It Em truthtable_tex
+Truth Table (TeX)
+.El
+.Ss \-l number
+Limit the longest path of stacked transistors between output and any supply line to
+.Em number .
+.Ss \-m method
+Enlarge cell with following methods:
+.Bl -tag -width 14n -compact -offset indent
+.It Em nand
+Add nmos transistor in serial into pull-down path.
+.It Em nor
+Add pmos transistor in serial into pull-up path.
+.It Em aoi
+Add nmos transistor in serial into highest free pull-down path.
+.It Em oai
+Add pmos transistor in serial into highest free pull-up path.
+.El
+.Pp
+An addition in one network implies an addition in the other network also.
+.Ss \-v
+Print verbose messages at
+.Dv stderr .
+.Sh SEE ALSO
+.UR
+https://github.com/chipforge/StdCellLib
+.UE
+for current version.
+.Sh AUTHORS
+.An Hagen SANKOWSKI Aq hsank@nospam.chipforge.org
+.Sh BUGS
+Not yet known.
+.Sh COPYRIGHT
+Copyright (c) 2018-2019 Author and Contributors.
+.Pp
+GNU General Public License v3.0
+.UR
+http://www.gnu.org/licenses/gpl-3.0.html
+.UE
