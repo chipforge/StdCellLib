@@ -57,10 +57,10 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-LATEX ?=        pdflatex -output-directory $(DOCUMENTSDIR) $(OUTPUTDIR)
 POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
 SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
+SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
 
 #   default
 
@@ -123,7 +123,7 @@ dist: clean
 .PHONY: clean
 clean:
 	$(ECHO) "---- clean up all intermediate files ----"
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f build.mk $@
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
 #               CATATLOG TARGETS
@@ -147,15 +147,11 @@ catalog:
 #   grep all hierarchichal LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
-doc:    $(DOCUMENTSDIR)/LaTeX/$(PROJECT).tex $(DOCUMENTSDIR)/LaTeX/revision.tex $(DOCUMENTSDIR)/LaTeX/cmos_in_a_nutshell.tex _manpages
-	TEXINPUTS=$$TEXINPUT:./$(DOCUMENTSDIR)/LaTeX $(LATEX) $(<F)
+doc:
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 
 .PHONY: _manpages
 _manpages: $(MANPAGES)
-
-#   ----------------------------------------------------------------
-#               OTHER DEPENDENCIES
-#   ----------------------------------------------------------------
 
 %_circuits.tex: $(CATALOGDIR)/%.cell
 	$(ECHO) "cell -> circuits still missing"
@@ -177,3 +173,13 @@ _manpages: $(MANPAGES)
 #%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex $(DOCUMENTSDIR)/LaTeX/%_manpage.tex
 #%_manpage.tex: $(CATALOGDIR)/%.cell $(DOCUMENTSDIR)/LaTeX/%_schematic.tex
 #%_manpage.tex:  %_circuits.tex %_schematic.tex %_truthtable.tex    !!
+
+#   ----------------------------------------------------------------
+#               OTHER DEPENDENCIES
+#   ----------------------------------------------------------------
+
+%_switch.v:
+	$(ECHO) "---- generate $@ ----"
+	$(SWITCH) $(*F)
+
+
