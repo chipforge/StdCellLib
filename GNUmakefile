@@ -37,7 +37,7 @@
 
 PROJECT =       StdCellLib
 
-#   directory pathes
+#   directory paths
 
 CATALOGDIR =    Catalog
 DOCUMENTSDIR =  Documents
@@ -72,7 +72,7 @@ DISTRIBUTION =  ./GNUmakefile \
                 $(SYNTHESISDIR) \
                 $(TBENCHDIR)
 
-.SUFFIXES:      # delate all defaul suffix rules
+.SUFFIXES:      # delete all default suffix rules
 #   ----------------------------------------------------------------
 #               DEFINITIONS
 #   ----------------------------------------------------------------
@@ -96,8 +96,8 @@ help:
 	$(ECHO) "    dist       - build a tarball with all important files"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    alf        - generate generate ALF export"
-	$(ECHO) "    catalog    - re-generate combinatoral catalog (DON'T DO THAT!!)"
+	$(ECHO) "    alf        - generate ALF export"
+	$(ECHO) "    catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)"
 	$(ECHO) "    doc        - generate complete documentation"
 	$(ECHO) "    spice      - generate SPICE models"
 	$(ECHO) "    verilog    - generate VERILOG models"
@@ -111,7 +111,7 @@ help:
 	$(ECHO) "$(CELLS)"
 	$(ECHO) ""
 
-#   make archiv by building a tarball with all important files
+#   make archive by building a tarball with all important files
 
 .PHONY: dist
 dist: clean
@@ -144,7 +144,7 @@ catalog:
 #.PHONY: cells
 #cells: $(CELLS)
 
-#   grep all hierarchichal LaTeX files and build the up-to-date PDF
+#   grep all hierarchical LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
 doc:
