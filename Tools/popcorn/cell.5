@@ -1,0 +1,120 @@
+.\" ************    LibreSilicon's StdCellLibrary   *******************
+.\"
+.\" Organisation:   Chipforge
+.\"                 Germany / European Union
+.\"
+.\" Profile:        Chipforge focus on fine System-on-Chip Cores in
+.\"                 Verilog HDL Code which are easy understandable and
+.\"                 adjustable. For further information see
+.\"                         www.chipforge.org
+.\"                 there are projects from small cores up to PCBs, too.
+.\"
+.\" File:           cell.5
+.\"
+.\" Purpose:        man 5 cell - classical Manual Page
+.\"
+.\" ************    `groff -t -mdoc`    *******************************
+.\"
+.\" ///////////////////////////////////////////////////////////////////
+.\"
+.\"     Copyright (c)   2019 by
+.\"                     SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+.\"
+.\" This source file may be used and distributed without restriction
+.\" provided that this copyright statement is not removed from the
+.\" file and that any derivative work contains the original copyright
+.\" notice and the associated disclaimer.
+.\"
+.\" This source is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This source is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\"
+.\"  (__)  You should have received a copy of the GNU General Public
+.\"  oo )  License along with this program; if not, write to the
+.\"  /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+.\"        Boston, MA 02110-1301, USA
+.\"
+.\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+.\" ///////////////////////////////////////////////////////////////////
+.Dd January 26, 2019
+.Dt CELL 5 "Standard Cell Library"
+.Os LibreSilicon
+.Sh NAME
+.Nm cell
+.Nd description file format for popcorn
+.Sh DESCRIPTION
+This is the essential file format for the
+.Xr popcorn 1
+utility, inspired by the Berkeley Logic Interchange Format (BLIF) and Simulation Program with Integrated Circuit Emphasis (SPICE) - both from UC Berkeley.
+.Pp
+The
+.Nm
+file consists of newline separated ASCII records.
+.Pp
+Every line starts with a comment, a dot-command, or would be interpreted as one circuit becomming part of the cell netlist; except the first line which becomes the cell description.
+.Ss #
+A hash mark indicates the beginning of a comment; subsequent characters up to the end of the line are not interpreted by the routines which search the file.
+.Ss .cell
+This dot-command is a string giving the unique cell identifier inside the Standard Cell Library.
+E.g.
+.Em INV ,
+.Em NAND2 ,
+.Em NOR2 ,
+.Em XOR2 ...
+.Pp
+When missing, the filename of the cell description becomes the cell identifier.
+.Ss .inputs
+This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the formal input terminals for the cell being declared.
+.Ss .outputs
+This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the formatl output signals for the cell being delared.
+.Ss .clock
+This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the clocks for the model being declared.
+This command is optional; e.g., for purely combinational circuits.
+.Ss .end
+indicates the end of file.
+.Ss <circuit lines>
+All circuit lines are an ordered, white-space-separated list of strings (also terminated by the end of the line) describing one circuit (a pMOS or nMOS transistor) with some arguments.
+.Pp
+Every circuits line contains this arguments in the following order:
+.Bl -ohang
+.It Em gate
+(Input-) Node connected to the gate of the circuit.
+.It Em drain
+Node connected to the drain pin of the circuit.
+.It Em source
+Node connected to the source pin of the circuit.
+.It Em type
+The transistor type used for this circuit (e.g., pmos or nmos).
+.It Em xgrid
+X-position (as integer) inside the grid; always positive.
+This coordinates rising up from left (1st grid position is 1) to right.
+.It Em ygrid
+Y-position (as integer) inside the grid; always positive for pMOS transistors and always negative for nMOS transistors.
+This coordinates are aligned to the output with zero.
+.El
+.Sh SEE ALSO
+.Xr popcorn 1
+.Sh AUTHORS
+.An Hagen SANKOWSKI Aq hsank@nospam.chipforge.org
+.Sh BUGS
+Not yet known.
+.Sh COPYRIGHT
+Copyright (c) 2018-2019 Author and Contributors.
+.Pp
+GNU General Public License v3.0
+.UR
+http://www.gnu.org/licenses/gpl-3.0.html
+.UE
+.Sh SEE ALSO
+.Xr popcorn 1
+and
+.UR
+https://github.com/chipforge/StdCellLib
+.UE
+for current version and others auxilary tools around.
