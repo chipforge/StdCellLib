@@ -1,5 +1,22 @@
-.DESCRIPTION "a Not (or Inverter) gate"
-.SEE_ALSO "BUF - a Buffer gate"
-.ORDER "Gate Drain Source MOSFET"
-A Y vdd pmos
-A Y gnd nmos
+"a Not (or Inverter) gate"
+.cell INV
+.inputs A
+.outputs Y
+#           ^ Vdd
+#           |
+#       | +-'
+#  A --o| |     pMOS
+#       | +-.
+#           |
+#           |
+#           *---- Y
+#           |
+#           |
+#       | +-'
+#  A ---| |     nMOS
+#       | +-.
+#           |
+#          _|_ Gnd
+A Y Vdd pmos 1  1
+A Y Gnd nmos 1 -1
+.end
