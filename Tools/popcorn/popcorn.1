@@ -17,8 +17,8 @@
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
-.\"     Copyright (c)   2019 by
-.\"                     SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+.\" Copyright (c)   2019 by
+.\"                 SANKOWSKI, Hagen - hsank@nospam.chipforge.org
 .\"
 .\" This source file may be used and distributed without restriction
 .\" provided that this copyright statement is not removed from the
@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd January 25, 2019
+.Dd January 27, 2019
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -56,6 +56,10 @@
 .Op Fl l Ar number
 .Op Fl m Ar method
 .Ar cell-file
+.Nm
+.Fl h | \-help
+.Nm
+.Fl \-version
 .Sh DESCRIPTION
 The
 .Nm
@@ -68,7 +72,7 @@ utility enlarges a given combinatorial cell by different methods (
 ,
 .Em oai
 ) and writes out the new derived cell information on
-.Dv stdout .
+.Dv STDOUT .
 .Pp
 In principle every combinatorial cell (in CMOS technology) contains two functional complementary networks.
 The pull-up network - build with pMOS transistors - as well as the pull-down network - build with nMOS transistors.
@@ -77,7 +81,6 @@ In both networks all inputs are used to determine the output functionality.
 .RS
 .Bd -literal
             ^ Vdd
-            |
             |
         | +-'
    A --o| |     pMOS
@@ -104,6 +107,8 @@ The new combinatorial cell can be exported in different file formats for documen
 can be used recursively.
 This implies that one new generated cell becomes the seed for at least 2 more generated cells.
 .Sh OPTIONS
+.Ss \-h, \-\-help
+Display help message and exit.
 .Ss \-b number
 Append inverting buffer to current cell description, when one path exist
 which has at least
@@ -111,7 +116,8 @@ which has at least
 of stacked transistors between output and any supply line.
 This will sharpen the maximum LOW and minimum HIGH output levels of the cell output.
 .Ss \-e format
-Export cell description in one of the following file formats:
+Export cell description in one of the following file
+.Em formats :
 .Bl -tag -width 14n -compact
 .It Em alf
 IEEE 1603 / IEC 62265 (ALF 2.0)
@@ -145,7 +151,11 @@ Add pMOS transistor in serial into highest free pull-up path.
 An addition in one network implies an addition in the other network also.
 .Ss \-v
 Print verbose messages at
-.Dv stderr .
+.Dv STDERR .
+.Ss \-\-version
+Print
+.Nm Ns 's
+version number and exit.
 .Ss cell-file
 describes the cell itself beside the netlist with some other informations.
 For the exact file format, see
