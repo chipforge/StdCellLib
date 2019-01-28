@@ -102,8 +102,6 @@ help:
 	$(ECHO) "    spice      - generate SPICE models"
 	$(ECHO) "    verilog    - generate VERILOG models"
 	$(ECHO) ""
-	$(ECHO) "    cells      - generate almost all cell files (cell list below)"
-	$(ECHO) ""
 	$(ECHO) "-------------------------------------------------------------------"
 	$(ECHO) "    available cells:"
 	$(ECHO) "-------------------------------------------------------------------"
@@ -135,14 +133,11 @@ clean:
 
 .PHONY: catalog
 catalog:
-	$(POPCORN) -t $(T)
+	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
-
-#.PHONY: cells
-#cells: $(CELLS)
 
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
