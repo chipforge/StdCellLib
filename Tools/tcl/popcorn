@@ -616,6 +616,7 @@ set options {
     {o.arg "./"         "specify output directory - default" }
     {c.arg "CELL"       "specify new cell name - default" }
     {n.arg "nand"       "enlarge cell - nand nor aoi oai - default"}
+    {l.arg "4"          "limit the number of transistors from power/gnd to output" }
     {b                  "enlarge cell - add inverting buffer"}
     {v                  "verbose" }
 }
@@ -636,9 +637,10 @@ try {
 #   set argv from command lines
 set option_original [lindex $argv end end] ; # input file
 set option_path $params(o) ; # output directory
-set option_newcell $params(c) ; # new cellid
+set option_newcell [string map {".cell" ""} $params(c)]; # new cellid
 set option_enlarge $params(n) ; 
 set option_buffer $params(b) ; 
+set option_limit $params(l) ; # maximum number of transistors
 set verbose $params(v); 
 
 #   verbose message
