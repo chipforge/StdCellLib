@@ -225,10 +225,10 @@ proc anchor? {start end network} {
         foreach mosfet [dict keys $network] {
             # check network for mosfet with $start as source
             foreach node [dict get [dict get $network $mosfet] s] {
-                if {$node eq $from} {
+                if {[string compare -nocase $node $from] == 0} {
                     # collect node on drain side of mosfet
                     set new [dict get [dict get $network $mosfet] d]
-                    if {[dict get [dict get $network $mosfet] d] eq $to} {
+                    if {[string compare -nocase [dict get [dict get $network $mosfet] d] $to] == 0} {
                         if {$length == 0} {
                             # 1st founding
                             set length 1
@@ -253,7 +253,7 @@ proc anchor? {start end network} {
     foreach mosfet [dict keys $network] {
         # check network for mosfet with $start as source
         foreach node [dict get [dict get $network $mosfet] s] {
-            if {$node eq $start} {
+            if {[string compare -nocase $node $start] == 0} {
                 set result [length? {} $node $end $network]
                 set anchor $mosfet
             }
