@@ -87,8 +87,8 @@ proc length? {path from to netlist} {
     set result 0
     foreach mosfet $netlist {
         # check mosfet type
-        if {[lindex $mosfet 2] eq $from} {
-            if {[lindex $mosfet 1] eq $to} {
+        if {[string compare -nocase [lindex $mosfet 2] $from] == 0} {
+            if {[string compare -nocase [lindex $mosfet 1] $to] == 0} {
                 if {$length == 0} {
                     # 1st founding
                     set length 1
@@ -119,7 +119,7 @@ proc tpmos {netlist} {
     # collect pmos transistors
     set net {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "pmos"} {
+        if {[string compare -nocase [lindex $mosfet 3] "pmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -147,7 +147,7 @@ proc tnmos {netlist} {
     # collect nmos transistor
     set net {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "nmos"} {
+        if {[string compare -nocase [lindex $mosfet 3] "nmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -195,8 +195,8 @@ proc eval_mosfets {node ttype netlist} {
     # collect 'ttype' transistor
     set unsorted {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq $ttype} {
-            if {[lindex $mosfet 1] eq $node} {
+        if {[string compare -nocase [lindex $mosfet 3] $ttype] == 0} {
+            if {[string compare -nocase [lindex $mosfet 1] $node] == 0} {
                 set unsorted [lappend unsorted $mosfet]
             }
         }
@@ -576,7 +576,7 @@ if {[file exist $option_cell]} {
         set ynext [expr $yjunc - $ygrid]
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
-            if {$node eq "gnd"} {
+            if {[string compare -nocase $node "gnd"] == 0} {
                 puts_gnd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
                 set result [pulldown! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
@@ -619,7 +619,7 @@ if {[file exist $option_cell]} {
         set ynext [expr $yjunc + $ygrid]
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
-            if {$node eq "vdd"} {
+            if {[string compare -nocase $node "vdd"] == 0} {
                 puts_vdd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
                 set result [pullup! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
