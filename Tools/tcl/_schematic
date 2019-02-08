@@ -251,8 +251,8 @@ proc outputs? {netlist} {
 
     # proc 'xsize' - get size on the x-axis
     proc xsize {xgrid tpmos tnmos} {
-        # the width on X is the longest path for pullup nets also
-        return [expr ($tpmos * $xgrid) + $xgrid]
+        # the width on X is the longest path for pullup and pulldown nets
+        return [expr ([expr $tpmos > $tnmos? $tpmos : $tnmos] * $xgrid) + $xgrid]
     }
 
     # proc 'ysize' - get size on the y-axis
@@ -415,6 +415,7 @@ puts $f "                \\junct\{$x\}\{$y\}"
     # proc 'puts_out' - template for output
     proc puts_out {f out x y} {
         # all coordinates are relative to the junction grid (right off)
+verb "puts_out $f $out $x $y"
 puts $f "                \% ---- output pattern ----"
 puts $f "                \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
 puts $f "                \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
