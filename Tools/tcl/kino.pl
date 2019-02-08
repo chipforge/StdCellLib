@@ -10,13 +10,16 @@ sub handleRecursive($$)
 {
   my $output1=$_[0]; $output1=~s/^Catalog/Pool/;
   print "Handling $_[0]\n";
-  foreach(0 .. 2)
+  foreach("nand","nor","aoi","oai")
   {
     my $output=$output1;
     $output=~s/\.cell$/-$_.cell/;
     my $pop=$output; $pop=~s/\.cell$//; $pop=~s/^Pool\///; $pop=~s/^Catalog\///;
-    print "\n\nTools/tcl/popcorn -o Pool -c $pop $_[0] -n $_\n";
-    system "Tools/tcl/popcorn -o Pool -c $pop $_[0] -n $_";
+
+
+    my $cmd="Tools/tcl/popcorn -o Pool -c $pop $_[0] -n $_ $_[0]";
+    print "\n\n$cmd\n";
+    system $cmd;
     if(-f $output)
     {
       print G "$_[0] -> $output\n";
@@ -30,7 +33,7 @@ sub handleRecursive($$)
   }
 }
 
-foreach(<Catalog/*.cell>)
+foreach(<Catalog/INV.cell>)
 {
   handleRecursive($_,0);
 }
