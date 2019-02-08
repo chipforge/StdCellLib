@@ -52,13 +52,20 @@
 #                       DEFINITIONS
 #   -------------------------------------------------------------------
 
+#   ------------    proc 'verbose!' -----------------------------------
+proc verb {str} {
+     global verbose
+     if {$verbose} {
+        puts $str
+     }
+}
+
+
 #   ------------    proc 'import'   -----------------------------------
 
 #   read cell file
 
 proc import {f} {
-
-    global verbose
 
     set netlist {}
     # read in
@@ -114,8 +121,6 @@ proc length? {path from to netlist} {
 
 proc tpmos {netlist} {
 
-    global verbose
-
     # collect pmos transistors
     set net {}
     foreach mosfet $netlist {
@@ -128,9 +133,7 @@ proc tpmos {netlist} {
     set length [length? {} "vdd" "Y" $net]
 
     # verbose message
-    if {$verbose} {
-        puts "tpmos: $length"
-    }
+    verb "tpmos: $length"
 
     # done
     return $length
@@ -141,8 +144,6 @@ proc tpmos {netlist} {
 #   calculate number of stacked nmos transistors
 
 proc tnmos {netlist} {
-
-    global verbose
 
     # collect nmos transistor
     set net {}
@@ -156,9 +157,7 @@ proc tnmos {netlist} {
     set length [length? {} "gnd" "Y" $net]
 
     # verbose message
-    if {$verbose} {
-        puts "tnmos: $length"
-    }
+    verb "tnmos: $length"
 
     # done
     return $length
@@ -170,15 +169,10 @@ proc tnmos {netlist} {
 
 proc ttotal {netlist} {
 
-    global verbose
-
     # work out
     set length [llength $netlist]
 
-    # verbose message
-    if {$verbose} {
-        puts "ttotal: $length = llength $netlist"
-    }
+    verb "ttotal: $length = llength $netlist"
 
     # done
     return $length
@@ -189,8 +183,6 @@ proc ttotal {netlist} {
 #   evaluate netlist - get parallel mosfets for one node (which has 'node' on drain)
 
 proc eval_mosfets {node ttype netlist} {
-
-    global verbose
 
     # collect 'ttype' transistor
     set unsorted {}
@@ -206,9 +198,7 @@ proc eval_mosfets {node ttype netlist} {
     set sorted [lsort -increasing $unsorted]
 
     # verbose message
-    if {$verbose} {
-        puts "eval_mosfets: $sorted"
-    }
+    verb "eval_mosfets: $sorted"
 
     # done
     return $sorted
@@ -220,17 +210,14 @@ proc eval_mosfets {node ttype netlist} {
 
 proc eval_nodes {netlist} {
 
-    global verbose
-
     set nodes {}
     foreach mosfet $netlist {
         set nodes [lappend nodes [lindex $mosfet 2]]
     }
 
     # verbose message
-    if {$verbose} {
-        puts "eval_inodes: $nodes"
-    }
+    verb "eval_inodes: $nodes"
+    
     return $nodes
 }
 
@@ -239,8 +226,6 @@ proc eval_nodes {netlist} {
 #   list (all?) outputs involved in any network in a drecreasing order
 
 proc outputs? {netlist} {
-
-    global verbose
 
     # collect nodes on drain
     set unsorted {}
@@ -255,9 +240,7 @@ proc outputs? {netlist} {
     set outputs [lsort -decreasing -unique -dictionary $unsorted]
 
     # verbose message
-    if {$verbose} {
-        puts "outputs?: $outputs"
-    }
+    verb "outputs?: $outputs"
 
     # done
     return $outputs
@@ -293,7 +276,6 @@ proc outputs? {netlist} {
 
 proc fopen {path cellid} {
 
-    global verbose
     global option_graphic
 
     # open cell output file
@@ -306,9 +288,7 @@ proc fopen {path cellid} {
     set f [open $datafile w]
 
     # verbose message
-    if {$verbose} {
-        puts "fopen: $datafile"
-    }
+    verb "fopen: $datafile"
 
 puts $f "%%  ************    LibreSilicon's StdCellLibrary   *******************"
 puts $f "%%"
@@ -591,9 +571,7 @@ if {[file exist $option_cell]} {
     }
 
     # verbose message
-    if {$verbose} {
-        puts "cell: $cellid $netlist"
-    }
+    verb "cell: $cellid $netlist"
 
     # layout pullup network, returns next junct coordinate on x-axis
     proc pullup! {f xjunc yjunc node netlist} {
