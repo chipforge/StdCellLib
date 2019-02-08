@@ -444,9 +444,9 @@ puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     caption $f [stages $netlist] $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
-    puts "[pullup!   $f $xgrid $ymid "Y" $netlist]"
-    puts "[pulldown! $f $xgrid $ymid "Y" $netlist]"
-    puts "[center! $f [lindex [outputs? $netlist] 0] $xgrid [expr $xsize - $xgrid]]"
+    verb "pullup:[pullup!   $f $xgrid $ymid "Y" $netlist]"
+    verb "pulldown:[pulldown! $f $xgrid $ymid "Y" $netlist]"
+    verb "center:[center! $f [lindex [outputs? $netlist] 0] $xgrid [expr $xsize - $xgrid]]"
 
 #    # place seed pair first, which are always this with input A
 #    puts_pmos $f A PA 7 $ymid
@@ -580,7 +580,7 @@ if {[file exist $option_cell]} {
                 }
             }
         }
-
+        verb "Laying out the Pulldown network xjunc:$xjunc yjunc:$yjunc node:$node resulting xnext:$xnext"
         # done
         return $xnext
     }
@@ -621,6 +621,7 @@ if {[file exist $option_cell]} {
                 }
             }
         }
+        verb "Laying out the Pullup network xjunc:$xjunc yjunc:$yjunc node:$node resulting xnext:$xnext"
 
         # done
         return $xnext
