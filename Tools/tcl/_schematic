@@ -111,6 +111,7 @@ proc length? {path from to netlist} {
         }
     }
 
+    verb "length from $from to $to is $length"
     # done
     return $length
 }
@@ -198,7 +199,7 @@ proc eval_mosfets {node ttype netlist} {
     set sorted [lsort -increasing $unsorted]
 
     # verbose message
-    verb "eval_mosfets: $sorted"
+    verb "eval_mosfets for node $node and ttype $ttype: $sorted"
 
     # done
     return $sorted
@@ -422,11 +423,24 @@ puts $f "                \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
     # proc 'puts_wire' - template for output
     proc puts_wire {f xstart ystart xend yend} {
         # all coordinates are relative to the junction grid (right off)
+verb "puts_wire $f $xstart $ystart $xend $yend"
 puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     }
 
+    # proc 'stages' - guesses the stages of the design - simplified version just recognizes one and 2 stages
+    proc stages {netlist} {
+        foreach mosfet $netlist {
+            # If there is a transistor with Y as input we definitely have at least 2 stages
+            verb "Searching for Y: [lindex $mosfet 0]"
+            if {[string compare -nocase [lindex $mosfet 0] "Y"] == 0} {
+                 return 2
+            }
+        }
+        return 1
+    }
+
     # start with figure header
-    caption $f 1 $tpmos $tnmos $ttotal
+    caption $f [stages $netlist] $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
     puts "[pullup!   $f $xgrid $ymid "Y" $netlist]"
