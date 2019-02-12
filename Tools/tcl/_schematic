@@ -537,7 +537,7 @@ if {[file exist $option_cell]} {
     set netlist [import $fin]
     close $fin
 
-    set xgrid 8
+    set xgrid 9
     set ygrid 6
 
     set tpmos [tpmos $netlist]
@@ -565,6 +565,10 @@ if {[file exist $option_cell]} {
             set mosfet [lindex $todo $i]
 	    verb "pulldown nmos i:$i xgrid:$xgrid xjunc:$xjunc yjunc:$yjunc mosfet:$mosfet"
             puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+	    if {$i >= 1} {
+                # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
+                puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc
+            }
         }
 
         set xnext [expr $xjunc + ($length * $xgrid)]
@@ -615,6 +619,11 @@ if {[file exist $option_cell]} {
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
             puts_pmos $f [lindex $mosfet 0] [string cat "P" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+	    if {$i >= 1} {
+                # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
+                puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc
+            }
+
         }
 
         set xnext [expr $xjunc + ($length * $xgrid)]
