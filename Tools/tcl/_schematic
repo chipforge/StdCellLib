@@ -378,6 +378,7 @@ puts $f "    \\end\{figure\}"
     # proc 'puts_nmos' - template for nmos transistor
     proc puts_nmos {f gate name x y} {
         # all coordinates are relative to the junction grid, nmos below
+verb "puts_nmos gate:$gate name:$name x:$x y:$y"
 puts $f "                \% ---- '*$name' nmos pattern ----"
 puts $f "                \\trans\[\\wireUD\{0.5\}\]\{nenh*\}\{[expr $x -2]\}\{[expr $y -3]\}\{R\}\{\$*\_\{$name\}\$\}\{\}"
 puts $f "                \\pin\{[expr $x -5]\}\{[expr $y -4.5]\}\{L\}\{$gate\}"
@@ -553,29 +554,40 @@ if {[file exist $option_cell]} {
         global xgrid
         global ygrid
         global ymid
-
+        verb "pulldown()"
         # chunk of work
         set todo [eval_mosfets $node "nmos" $netlist]
         set length [llength $todo]
+	verb "pulldown length: $length todo: $todo"
 
         # layout known mosfet for 'node'
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
+	    verb "pulldown nmos i:$i xgrid:$xgrid xjunc:$xjunc yjunc:$yjunc mosfet:$mosfet"
             puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
         }
 
         set xnext [expr $xjunc + ($length * $xgrid)]
+        verb "pulldown xnext $xnext"
 
         # evaluate row below
         set nodes [eval_nodes $todo]
+	verb "pulldown nodes $nodes"
         set ynext [expr $yjunc - $ygrid]
+	verb "pulldown ynext $ynext"
+
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
+	    verb "pulldown i:$i node:$node"
             if {[string compare -nocase $node "gnd"] == 0} {
+		verb "pulldown to gnd"
                 puts_gnd $f [expr ($i * $xgrid) + $xjunc] $ynext
-            } else {
+	    } else {
+		verb "pulldown recursive..."
                 set result [pulldown! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
+		verb "pulldown recursive result $result"
                 if {$result > $xnext} {
+		    verb "pulldown xnext is changed from $xnext to $result"
                     set xnext $result
                 }
             }
