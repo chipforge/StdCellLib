@@ -38,4 +38,7 @@ foreach(<Catalog/INV.cell>)
   handleRecursive($_,0);
 }
 
+close G;
+
 print "Total cells generated: $ncells\n";
+
