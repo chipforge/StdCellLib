@@ -191,14 +191,17 @@ proc import {f} {
 
 #   get highest node number in network (w/ maximum number)
 
-proc maxnode? {network} {
+proc maxnode? {netlist} {
 
     # work out
-    set maxnode -1
-    foreach mosfet [dict keys [dict get $network]] { 
-        foreach node [dict get $network $mosfet] {
-            if {[string is entier $node] && $node > $maxnode} {
+    set maxnode 0
+    foreach pull [dict keys $netlist] {
+	set network [dict get $netlist $pull]
+        foreach mosfet [dict keys [dict get $netlist $pull]] { 
+            foreach node [dict get $network $mosfet] {
+                if {[string is entier $node] && $node > $maxnode} {
                     set maxnode $node
+                }
             }
         }
     }
@@ -406,7 +409,7 @@ proc enlarge_nand! {nameing netlist} {
     } else {
 
         # prepare replacement
-        set inode  [expr [maxnode? $network] +2] ; # get highest node, add 2, for connectivity
+        set inode  [expr [maxnode? $netlist] +1] ; # get highest node, add 2, for connectivity
         set gate   [dict get [dict get $network $original] g] ; # get gate name
         set drain  [dict get [dict get $network $original] d] ; # get drain side node name / number
         set src    [dict get [dict get $network $original] s] ; # get source side node name / number
@@ -489,7 +492,7 @@ proc enlarge_nor! {nameing netlist} {
     } else {
 
         # prepare replacement
-        set inode  [expr [maxnode? $network] +2] ; # get highest node, add 2, for connectivity
+        set inode  [expr [maxnode? $netlist] +1] ; # get highest node, add 2, for connectivity
         set gate   [dict get [dict get $network $original] g] ; # get gate name
         set drain  [dict get [dict get $network $original] d] ; # get drain side node name / number
         set src    [dict get [dict get $network $original] s] ; # get source side node name / number
