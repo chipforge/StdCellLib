@@ -6,6 +6,6 @@ B 1 vdd pmos
 B1 1 vdd pmos
 B2 1 vdd pmos
 A Y gnd nmos
-B Y 1 nmos
-B1 1 3 nmos
+B Y 2 nmos
+B1 2 3 nmos
 B2 3 gnd nmos
