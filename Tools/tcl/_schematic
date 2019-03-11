@@ -52,13 +52,20 @@
 #                       DEFINITIONS
 #   -------------------------------------------------------------------
 
+#   ------------    proc 'verbose!' -----------------------------------
+proc verb {str} {
+     global verbose
+     if {$verbose} {
+        puts $str
+     }
+}
+
+
 #   ------------    proc 'import'   -----------------------------------
 
 #   read cell file
 
 proc import {f} {
-
-    global verbose
 
     set netlist {}
     # read in
@@ -87,8 +94,8 @@ proc length? {path from to netlist} {
     set result 0
     foreach mosfet $netlist {
         # check mosfet type
-        if {[lindex $mosfet 2] eq $from} {
-            if {[lindex $mosfet 1] eq $to} {
+        if {[string compare -nocase [lindex $mosfet 2] $from] == 0} {
+            if {[string compare -nocase [lindex $mosfet 1] $to] == 0} {
                 if {$length == 0} {
                     # 1st founding
                     set length 1
@@ -104,6 +111,7 @@ proc length? {path from to netlist} {
         }
     }
 
+    verb "length from $from to $to is $length"
     # done
     return $length
 }
@@ -114,12 +122,10 @@ proc length? {path from to netlist} {
 
 proc tpmos {netlist} {
 
-    global verbose
-
     # collect pmos transistors
     set net {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "pmos"} {
+        if {[string compare -nocase [lindex $mosfet 3] "pmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -128,9 +134,7 @@ proc tpmos {netlist} {
     set length [length? {} "vdd" "Y" $net]
 
     # verbose message
-    if {$verbose} {
-        puts "tpmos: $length"
-    }
+    verb "tpmos: $length"
 
     # done
     return $length
@@ -142,12 +146,10 @@ proc tpmos {netlist} {
 
 proc tnmos {netlist} {
 
-    global verbose
-
     # collect nmos transistor
     set net {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq "nmos"} {
+        if {[string compare -nocase [lindex $mosfet 3] "nmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -156,9 +158,7 @@ proc tnmos {netlist} {
     set length [length? {} "gnd" "Y" $net]
 
     # verbose message
-    if {$verbose} {
-        puts "tnmos: $length"
-    }
+    verb "tnmos: $length"
 
     # done
     return $length
@@ -170,15 +170,10 @@ proc tnmos {netlist} {
 
 proc ttotal {netlist} {
 
-    global verbose
-
     # work out
     set length [llength $netlist]
 
-    # verbose message
-    if {$verbose} {
-        puts "ttotal: $length = llength $netlist"
-    }
+    verb "ttotal: $length = llength $netlist"
 
     # done
     return $length
@@ -190,13 +185,11 @@ proc ttotal {netlist} {
 
 proc eval_mosfets {node ttype netlist} {
 
-    global verbose
-
     # collect 'ttype' transistor
     set unsorted {}
     foreach mosfet $netlist {
-        if {[lindex $mosfet 3] eq $ttype} {
-            if {[lindex $mosfet 1] eq $node} {
+        if {[string compare -nocase [lindex $mosfet 3] $ttype] == 0} {
+            if {[string compare -nocase [lindex $mosfet 1] $node] == 0} {
                 set unsorted [lappend unsorted $mosfet]
             }
         }
@@ -206,9 +199,7 @@ proc eval_mosfets {node ttype netlist} {
     set sorted [lsort -increasing $unsorted]
 
     # verbose message
-    if {$verbose} {
-        puts "eval_mosfets: $sorted"
-    }
+    verb "eval_mosfets for node $node and ttype $ttype: $sorted"
 
     # done
     return $sorted
@@ -220,17 +211,14 @@ proc eval_mosfets {node ttype netlist} {
 
 proc eval_nodes {netlist} {
 
-    global verbose
-
     set nodes {}
     foreach mosfet $netlist {
         set nodes [lappend nodes [lindex $mosfet 2]]
     }
 
     # verbose message
-    if {$verbose} {
-        puts "eval_inodes: $nodes"
-    }
+    verb "eval_inodes: $nodes"
+    
     return $nodes
 }
 
@@ -239,8 +227,6 @@ proc eval_nodes {netlist} {
 #   list (all?) outputs involved in any network in a drecreasing order
 
 proc outputs? {netlist} {
-
-    global verbose
 
     # collect nodes on drain
     set unsorted {}
@@ -255,9 +241,7 @@ proc outputs? {netlist} {
     set outputs [lsort -decreasing -unique -dictionary $unsorted]
 
     # verbose message
-    if {$verbose} {
-        puts "outputs?: $outputs"
-    }
+    verb "outputs?: $outputs"
 
     # done
     return $outputs
@@ -267,8 +251,8 @@ proc outputs? {netlist} {
 
     # proc 'xsize' - get size on the x-axis
     proc xsize {xgrid tpmos tnmos} {
-        # the width on X is the longest path for pullup nets also
-        return [expr ($tpmos * $xgrid) + $xgrid]
+        # the width on X is the longest path for pullup and pulldown nets
+        return [expr ([expr $tpmos > $tnmos? $tpmos : $tnmos] * $xgrid) + $xgrid]
     }
 
     # proc 'ysize' - get size on the y-axis
@@ -293,7 +277,6 @@ proc outputs? {netlist} {
 
 proc fopen {path cellid} {
 
-    global verbose
     global option_graphic
 
     # open cell output file
@@ -306,9 +289,7 @@ proc fopen {path cellid} {
     set f [open $datafile w]
 
     # verbose message
-    if {$verbose} {
-        puts "fopen: $datafile"
-    }
+    verb "fopen: $datafile"
 
 puts $f "%%  ************    LibreSilicon's StdCellLibrary   *******************"
 puts $f "%%"
@@ -397,6 +378,7 @@ puts $f "    \\end\{figure\}"
     # proc 'puts_nmos' - template for nmos transistor
     proc puts_nmos {f gate name x y} {
         # all coordinates are relative to the junction grid, nmos below
+verb "puts_nmos gate:$gate name:$name x:$x y:$y"
 puts $f "                \% ---- '*$name' nmos pattern ----"
 puts $f "                \\trans\[\\wireUD\{0.5\}\]\{nenh*\}\{[expr $x -2]\}\{[expr $y -3]\}\{R\}\{\$*\_\{$name\}\$\}\{\}"
 puts $f "                \\pin\{[expr $x -5]\}\{[expr $y -4.5]\}\{L\}\{$gate\}"
@@ -434,6 +416,7 @@ puts $f "                \\junct\{$x\}\{$y\}"
     # proc 'puts_out' - template for output
     proc puts_out {f out x y} {
         # all coordinates are relative to the junction grid (right off)
+verb "puts_out $f $out $x $y"
 puts $f "                \% ---- output pattern ----"
 puts $f "                \\pin\{[expr $x +4]\}\{$y\}\{R\}\{$out\}"
 puts $f "                \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
@@ -442,16 +425,29 @@ puts $f "                \\wire\{$x\}\{$y\}\{[expr $x +3]\}\{$y\}"
     # proc 'puts_wire' - template for output
     proc puts_wire {f xstart ystart xend yend} {
         # all coordinates are relative to the junction grid (right off)
+verb "puts_wire $f $xstart $ystart $xend $yend"
 puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     }
 
+    # proc 'stages' - guesses the stages of the design - simplified version just recognizes one and 2 stages
+    proc stages {netlist} {
+        foreach mosfet $netlist {
+            # If there is a transistor with Y as input we definitely have at least 2 stages
+            verb "Searching for Y: [lindex $mosfet 0]"
+            if {[string compare -nocase [lindex $mosfet 0] "Y"] == 0} {
+                 return 2
+            }
+        }
+        return 1
+    }
+
     # start with figure header
-    caption $f 1 $tpmos $tnmos $ttotal
+    caption $f [stages $netlist] $tpmos $tnmos $ttotal
     figure_header $f $xsize $ysize
 
-    puts "[pullup!   $f $xgrid $ymid "Y" $netlist]"
-    puts "[pulldown! $f $xgrid $ymid "Y" $netlist]"
-    puts "[center! $f [lindex [outputs? $netlist] 0] $xgrid [expr $xsize - $xgrid]]"
+    verb "pullup:[pullup!   $f $xgrid $ymid "Y" $netlist]"
+    verb "pulldown:[pulldown! $f $xgrid $ymid "Y" $netlist]"
+    verb "center:[center! $f [lindex [outputs? $netlist] 0] $xgrid [expr $xsize - $xgrid]]"
 
 #    # place seed pair first, which are always this with input A
 #    puts_pmos $f A PA 7 $ymid
@@ -513,7 +509,7 @@ try {
 }
 
 #   set argv from command lines
-set option_cell [string cat $params(i) "/" [lindex $argv end end] ".cell"] ; # input file
+set option_cell [string cat $params(i) "/" [regsub {\.cell$} [lindex $argv end end] ""] ".cell"] ; # input file
 set option_squared $params(d) ; # draft / draw on squared paper
 set option_graphic $params(g) ; # file format
 set option_path $params(o) ; # output directory
@@ -541,7 +537,7 @@ if {[file exist $option_cell]} {
     set netlist [import $fin]
     close $fin
 
-    set xgrid 8
+    set xgrid 9
     set ygrid 6
 
     set tpmos [tpmos $netlist]
@@ -558,42 +554,55 @@ if {[file exist $option_cell]} {
         global xgrid
         global ygrid
         global ymid
-
+        verb "pulldown()"
         # chunk of work
         set todo [eval_mosfets $node "nmos" $netlist]
         set length [llength $todo]
+	verb "pulldown length: $length todo: $todo"
 
         # layout known mosfet for 'node'
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
+	    verb "pulldown nmos i:$i xgrid:$xgrid xjunc:$xjunc yjunc:$yjunc mosfet:$mosfet"
             puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+	    if {$i >= 1} {
+                # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
+                puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc
+            }
         }
 
         set xnext [expr $xjunc + ($length * $xgrid)]
+        verb "pulldown xnext $xnext"
 
         # evaluate row below
         set nodes [eval_nodes $todo]
+	verb "pulldown nodes $nodes"
         set ynext [expr $yjunc - $ygrid]
+	verb "pulldown ynext $ynext"
+
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
-            if {$node eq "gnd"} {
+	    verb "pulldown i:$i node:$node"
+            if {[string compare -nocase $node "gnd"] == 0} {
+		verb "pulldown to gnd"
                 puts_gnd $f [expr ($i * $xgrid) + $xjunc] $ynext
-            } else {
+	    } else {
+		verb "pulldown recursive..."
                 set result [pulldown! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
+		verb "pulldown recursive result $result"
                 if {$result > $xnext} {
+		    verb "pulldown xnext is changed from $xnext to $result"
                     set xnext $result
                 }
             }
         }
-
+        verb "Laying out the Pulldown network xjunc:$xjunc yjunc:$yjunc node:$node resulting xnext:$xnext"
         # done
         return $xnext
     }
 
     # verbose message
-    if {$verbose} {
-        puts "cell: $cellid $netlist"
-    }
+    verb "cell: $cellid $netlist"
 
     # layout pullup network, returns next junct coordinate on x-axis
     proc pullup! {f xjunc yjunc node netlist} {
@@ -610,6 +619,11 @@ if {[file exist $option_cell]} {
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
             puts_pmos $f [lindex $mosfet 0] [string cat "P" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+	    if {$i >= 1} {
+                # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
+                puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc
+            }
+
         }
 
         set xnext [expr $xjunc + ($length * $xgrid)]
@@ -619,7 +633,7 @@ if {[file exist $option_cell]} {
         set ynext [expr $yjunc + $ygrid]
         for {set i 0} {$i < [llength $nodes]} {incr i} {
             set node [lindex $nodes $i]
-            if {$node eq "vdd"} {
+            if {[string compare -nocase $node "vdd"] == 0} {
                 puts_vdd $f [expr ($i * $xgrid) + $xjunc] $ynext
             } else {
                 set result [pullup! $f [expr $xjunc + ($i * $xgrid)] $ynext $node $netlist]
@@ -628,6 +642,7 @@ if {[file exist $option_cell]} {
                 }
             }
         }
+        verb "Laying out the Pullup network xjunc:$xjunc yjunc:$yjunc node:$node resulting xnext:$xnext"
 
         # done
         return $xnext

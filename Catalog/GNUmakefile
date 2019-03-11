@@ -53,7 +53,7 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-POPCORN ?=      ../Tools/popcorn/popcorn
+POPCORN ?=      ../Tools/tcl/popcorn
 CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell
 LIMIT =         4
 
@@ -88,20 +88,20 @@ clean:
 catalog:    $(CELLS)
 
 AND4.cell: NAND3.cell
-	$(POPCORN) -l $(LIMIT) -m nand -b $(LIMIT) $< > $@
+	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
 
 NAND2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -m nand $< > $@
+	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
 
 NAND3.cell: NAND2.cell
-	$(POPCORN) -l $(LIMIT) -m nand $< > $@
+	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
 
 NOR2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -m nor $< > $@
+	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
 
 NOR3.cell: NOR2.cell
-	$(POPCORN) -l $(LIMIT) -m nor $< > $@
+	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
 
 OR4.cell: NOR3.cell
-	$(POPCORN) -l $(LIMIT) -m nor -b $(LIMIT) $< > $@
+	$(POPCORN) -l $(LIMIT) -n nor -b $(LIMIT) -c $@ $<
 

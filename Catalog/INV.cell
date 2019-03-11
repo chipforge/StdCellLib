@@ -17,6 +17,6 @@
 #       | +-.
 #           |
 #          _|_ Gnd
-A Y Vdd pmos 1  1
-A Y Gnd nmos 1 -1
+A Y vdd pmos 1  1
+A Y gnd nmos 1 -1
 .end
