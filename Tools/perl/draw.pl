@@ -153,8 +153,10 @@ foreach my $i (1 .. $number_of_nsc)
   #box move right $nsc_spacing
 }
 
-
-
 print MAG "<< end >>\n";
 close MAG;
-system "magic $fnout";
+system "magic -d XR $fnout";
+open MAGIC "|magic -d XR $fnout -noconsole";
+print MAGIC "plot svg $fnsvg\nquit\n";
+close MAGIC;
+
