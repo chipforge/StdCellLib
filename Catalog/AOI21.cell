@@ -1,5 +1,7 @@
 .DESCRIPTION "a 2-1-input AND-OR-Invert gate"
 .SEE_ALSO "AOI21 - a 2-1-input AND-OR-Invert gate"
+.inputs A B B1
+.outputs Y
 .ORDER "Gate Drain Source MOSFET"
 A Y 1 pmos
 B 1 vdd pmos
