@@ -2,13 +2,16 @@
 use strict;
 use Getopt::Long;
 
+# Parameters and their default values:
 our $debug=0;
 our $format="text"; # html latex
 
+# Parsing the commandline parameters:
 GetOptions ("debug" => \$debug,
 	    "v" => \$debug,
             "format=s" => \$format);
 
+# Convert a value to the gray code value:
 sub bin2gray
 {
     return $_[0] ^ ($_[0] >> 1);
@@ -19,6 +22,7 @@ sub verb # verbose debug output
   print $_[0] if($debug);
 }
 
+# Calculating the truth table for
 sub truth
 {
   my @l=@{$_[0]};
@@ -101,38 +105,44 @@ sub truth
   return %iv;
 }
 
-if(!scalar(@ARGV))
+
+if(!scalar(@ARGV)) # no parameters were given
 {
   print "Calculates the truthtable for a given cell\n";
   print "Usage: truthtable.pl <filename.cell>\n";
 }
 
+# Take all the given filenames from the commandline
 foreach my $file(@ARGV)
 {
+  # Open each file
   if(open(IN,"<$file"))
   {
     print STDERR "Analyzing $file\n";
-    my @lines=<IN>;
+    my @lines=<IN>; # Read all lines into an array
     close IN;
 
     my %inputs=();
     my %intermediates=();
     my %outputs=();
  
+    # Here we are parsing all transistor lines for input-, output- and intermediate nets
     foreach(@lines)
     {
-      next if(m/^#/);
+      next if(m/^#/); # Ignore comment lines
       $inputs{$1}=1 if(m/^([A-W]\d*) .*[pn]mos/);
       $intermediates{$1}=1 if(m/^([X-Y]\d*) .*[pn]mos/);
       $outputs{$1}=1 if(m/^\w+ ([X-Z]\d*) .*[pn]mos/);
     }
-    delete($outputs{"Y"}) if(defined($outputs{"Z"}));
+    delete($outputs{"Y"}) if(defined($outputs{"Z"})); # If we have Z, then Y is an internal net and Z is the output net
 
     my @ins=sort keys %inputs;
     my @outs=sort keys %outputs;
 
-    my $ninputs=scalar(keys %inputs); my $combinations=2**$ninputs;
+    my $ninputs=scalar(keys %inputs);
     my $noutputs=scalar(keys %outputs);
+    my $combinations=2**$ninputs; # We calculate the number of possible combinations in the truthtable
+
     verb "Number of Inputs: $ninputs (".join(",",@ins).") -> Combinations: $combinations\n";
     verb "Number of Outputs: $noutputs (".join(",",@outs).")\n";
 
@@ -141,6 +151,7 @@ foreach my $file(@ARGV)
       die "ERROR: A cell without an input!\n";
     }
 
+    # Now we start with the header of the output files:
     if($format eq "text")
     {
       print join(" ",@ins)."->".join(" ",@outs); print "\n";
@@ -201,11 +212,14 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
     {
       print "<table border='1'><th>".join("</th><th>",@ins)."</th><th><b>".join("</b></th><th><b>",@outs)."</b></th></tr>";
     }
+
     my %values=();
     our %sum=();
     our %results=();
+    # Now we calculate all the truth-table values:
     foreach my $i(0 .. 2**$ninputs-1)
     {
+      # We count from 0 .. 2^n-1 and take the graycode, and then interpret that as a binary value for the input stimulus:
       my $gray=bin2gray($i); 
       print "            " if($format eq "latex");
       foreach(0 .. $ninputs-1)
@@ -214,17 +228,20 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
         print "".($gray&(1<<$_))?"1 ":"0 ";
 	$values{$ins[$_]}=($gray&(1<<$_))?1:0;
       }
+      # Here we are using the truth function to calculate all network states for the given inputs:
       my %res=truth(\@lines,\%values);
-      
+      # The result is a hash with the intermediate/output netnames as keys and the resulting values as values
+     
+      # Now we are analyzing the results
       foreach my $out (@outs)
       {
-        $sum{$out}{$res{$out}}++;
+        $sum{$out}{$res{$out}}++; # We are counting the occurance of all output values of the whole truthtable to decide, which value is more often used, which helps to decide whether the function can be represented in a shorter way with a negation
 	my @a=();
 	foreach(@ins)
 	{
-          push @a,$res{$_}?"$_":"!$_";
+          push @a,$res{$_}?"$_":"!$_"; # Here we are collecting all values for a AO representation, e.g. (A && !B && C) || (!A && B && C))
 	}
-	push @{$results{$out}{$res{$out}}},join(" && ",@a);
+	push @{$results{$out}{$res{$out}}},join(" && ",@a); # Here the single values are put together: (A && !B && C)
       }
 
       if($format eq "text")
@@ -242,9 +259,11 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
       print "\\\\ \\hline" if($format eq "latex");
       print "\n";
     }
-      foreach my $out (@outs)
+
+      foreach my $out (@outs) # We might have more than one output of a cell
       {
         my $not=$sum{$out}{0}>$sum{$out}{1}?1:0;
+        # If we have more 0 than 1 results, then the negated inverse is shorted: 
 	if($not)
 	{
           print "FUNCTION: $out = (".join(" || ",@{$results{$out}{$not}}).")";
@@ -253,6 +272,7 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
 	{
           print "FUNCTION: $out = ! (".join(" || ",@{$results{$out}{$not}}).")";
         }
+        # TODO: We should try more functional representations like AOI, OAI, OR, NOR and see which one is the shortest representation
       }
 
     print "\n" if($format eq "text");

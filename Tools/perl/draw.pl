@@ -38,6 +38,8 @@ my $fnout=$ARGV[1] || "output.mag";
 my @inputs=();
 my @outputs=();
 
+# Loading the cell file and parsing the inputs and outputs:
+# TODO: This does not work when the inputs and ouputs are not added in the header!
 if(open(IN,"<$fnin"))
 {
   print "Parsing $fnin\n";
@@ -49,13 +51,15 @@ if(open(IN,"<$fnin"))
   close IN;
 }
 
+# Generating the euler path from the cell netlist. We need the nmos transistors and we need the VDD+GND nets.
+# TODO: The pmos euler network might not work for the calculated nmos network. How do we want to handle that?
 my $euler=`perl euler.pl --network nmos --power $fnin`;
 my @eulerp=split ",",$euler;
 
 my @eulers=();
 foreach(@eulerp)
 {
-  push @eulers,$_ if(m/^[A-W]\d*$/);
+  push @eulers,$_ if(m/^[A-W]\d*$/); # We extract only the inputs from the euler path which also contained the nets
 }
 
 
@@ -71,21 +75,22 @@ if($number_of_inputs==0)
   exit;
 }
 
+# Now the graphical dimensions are calculated, primarily based on the number of inputs:
 my $poly_spacing= $ndc_width + $poly_to_ndc_spacing*2 ; # =6
 my $ndiff_width=$poly_width*$number_of_inputs+$poly_spacing*($number_of_inputs+1); # 12+42=54;
 my $ground_strip_width=$nwell_over_active+$ndiff_width+$nwell_over_active; # =66
 my $nwell_width=$ground_strip_width; # 66
 my $nwell_height=$extension_over_active+$psc_height+$poly_over_active+$ndiff_height+$nwell_over_active; # =35
 my $pdiff_width=$ndiff_width;
-my $poly_height=52; # $extension_over_active+$ndiff_height+$nwell_over_active+?+$pdiff_height+$nwell_over_active
+my $poly_height=52; # TODO this hardcoded value needs to be made dynamic # $extension_over_active+$ndiff_height+$nwell_over_active+?+$pdiff_height+$nwell_over_active
 my $power_strip_width=$ground_strip_width; # 66
 
 
-
+# Now generate the file for the tool magic:
 open MAG,">$fnout";
 print MAG "magic\ntech scmos\ntimestamp ".time()."\n";
 
-#box position $x $y
+#box draws a box at position ($x $y $sizex $sizey label)
 sub box
 {
   print MAG "<< $_[4] >>\nrect $_[0] $_[1] ".($_[0]+$_[2])." ".($_[1]+$_[3])."\n";
@@ -156,6 +161,7 @@ foreach my $i (1 .. $number_of_nsc)
 print MAG "<< end >>\n";
 close MAG;
 system "magic -d XR $fnout";
+# Now we need magic 4.2 with kairos support compiled in for SVG export:
 open MAGIC "|magic -d XR $fnout -noconsole";
 print MAGIC "plot svg $fnsvg\nquit\n";
 close MAGIC;
