@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd January 26, 2019
+.Dd April 12, 2019
 .Dt CELL 5 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -83,14 +83,18 @@ All circuit lines are an ordered, white-space-separated list of strings (also te
 .Pp
 Every circuits line contains this arguments in the following order:
 .Bl -ohang
+.It Em type
+The transistor type used for this circuit (e.g., pmos or nmos).
 .It Em gate
 (Input-) Node connected to the gate of the circuit.
 .It Em drain
-Node connected to the drain pin of the circuit.
+Node connected to the drain of the circuit.
 .It Em source
-Node connected to the source pin of the circuit.
-.It Em type
-The transistor type used for this circuit (e.g., pmos or nmos).
+Node connected to the source of the circuit.
+.It Em bulk
+Node connected to the bulk of the circuit, mostly a power supply like VDD or Ground.
+.It Em stacked
+Order of stacked transistor in the row up/down to power supply.
 .It Em xgrid
 X-position (as integer) inside the grid; always positive.
 This coordinates rising up from left (1st grid position is 1) to right.
