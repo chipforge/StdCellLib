@@ -57,7 +57,6 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-POPCORN ?=      $(TOOLSDIR)/tcl/popcorn -o $(CATALOGDIR)
 SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
@@ -99,7 +98,10 @@ help:
 	$(ECHO) "    alf        - generate ALF export"
 	$(ECHO) "    catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)"
 	$(ECHO) "    doc        - generate complete documentation"
+	$(ECHO) "    magic      - generate MAGIC layout"
+	$(ECHO) "    popcorn    - generate POPCORN tool"
 	$(ECHO) "    spice      - generate SPICE models"
+	$(ECHO) "    svg        - generate SVG layout"
 	$(ECHO) "    verilog    - generate VERILOG models"
 	$(ECHO) ""
 	$(ECHO) "-------------------------------------------------------------------"
@@ -122,6 +124,7 @@ dist: clean
 clean:
 	$(ECHO) "---- clean up all intermediate files ----"
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
 #               CATATLOG TARGETS
@@ -170,11 +173,9 @@ _manpages: $(MANPAGES)
 #%_manpage.tex:  %_circuits.tex %_schematic.tex %_truthtable.tex    !!
 
 #   ----------------------------------------------------------------
-#               OTHER DEPENDENCIES
+#               TOOLS
 #   ----------------------------------------------------------------
 
-%_switch.v:
-	$(ECHO) "---- generate $@ ----"
-	$(SWITCH) $(*F)
-
-
+.PHONY: popcorn
+popcorn:
+	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@

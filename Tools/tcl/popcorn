@@ -654,6 +654,7 @@ if {$verbose} {
     puts "option_path (-o): $option_path"
     puts "option_enlarge (-n): $option_enlarge"
     puts "option_buffer (-b): $option_buffer"
+    puts "option_limit (-l): $option_limit"
 }
 
 #   ------------    cell generation     -------------------------------
