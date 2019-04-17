@@ -17,20 +17,30 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2019 by chipforge <hsank@nospam.chipforge.org>
-#   All rights reserved.
+#   Copyright (c)   2019 by
+#                   chipforge - <popcorn@nospam.chipforge.org>
 #
-#       This Standard Cell Library is licensed under the Libre Silicon
-#       public license; you can redistribute it and/or modify it under
-#       the terms of the Libre Silicon public license as published by
-#       the Libre Silicon alliance, either version 1 of the License, or
-#       (at your option) any later version.
+#   This source file may be used and distributed without restriction
+#   provided that this copyright statement is not removed from the
+#   file and that any derivative work contains the original copyright
+#   notice and the associated disclaimer.
 #
-#       This design is distributed in the hope that it will be useful,
-#       but WITHOUT ANY WARRANTY; without even the implied warranty of
-#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#       See the Libre Silicon Public License for more details.
+#   This source is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License, or
+#   (at your option) any later version.
 #
+#   This source is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#    (__)  You should have received a copy of the GNU General Public
+#    oo )  License along with this program; if not, write to the
+#    /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+#          Boston, MA 02110-1301, USA
+#
+#   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 #   ////////////////////////////////////////////////////////////////////
 
 #   project name
@@ -66,7 +76,7 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    manpages   - generate Manual Page for Popcorn"
+	$(ECHO) "    manual     - generate Manual Page for Popcorn"
 	$(ECHO) "    popcorn    - generate all dependencies"
 	$(ECHO) ""
 

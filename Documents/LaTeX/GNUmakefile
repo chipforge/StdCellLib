@@ -17,7 +17,7 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+#   Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -54,7 +54,6 @@ DATE :=         $(shell date +%Y%m%d)
 #   project tools
 
 LATEX ?=        pdflatex # -output-directory $(OUTPUTDIR)
-RUBBER ?=       rubber
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -90,6 +89,3 @@ doc:    pdf clean
 pdf:    $(PROJECT).tex revision.tex
 	$(LATEX) $<
 	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
-
-%.pdf: %.tex
-	$(RUBBER) -m pdftex $<
