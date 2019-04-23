@@ -13,7 +13,7 @@
 ;;
 ;;  Purpose:        Scheme Module - popcorn functional library
 ;;
-;;  ************    Revised^5 Report on Scheme (R5RS)   ***************
+;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
@@ -43,6 +43,50 @@
 ;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 ;;  ///////////////////////////////////////////////////////////////////
 
+(define-library (popcorn-lib)
+  (import (scheme base) (scheme write))
+  (export input-space output-space supply-symbol-space
+          mosfet-nmos?)
+  (begin
+
+;;  ------------    build-in self test  -------------------------------
+
+    ; use this switch during development only
+    (define build-in-self-test #t)
+
+;;  -------------------------------------------------------------------
+;;                      DESCRIPTION
+;;  -------------------------------------------------------------------
+
+;;  In principle every combinatorial cell (in CMOS technology) contains
+;;  two functional complementary networks. The pull-up network - build
+;;  with pmos transistors - as well as the pull-down network - build
+;;  with nmos transistors.
+
+;;  so every netlist becomes, well, a list of transistors
+
+;;  ------------    Example : INV   -----------------------------------
+
+;;              ^ Vdd
+;;              |
+;;          | --+
+;;     A --o| |     pmos
+;;          | --+
+;;              |
+;;              |
+;;              *---- Y
+;;              |
+;;              |
+;;          | --+
+;;     A ---| |     nmos
+;;          | --+
+;;              |
+;;             _|_ Gnd
+
+    (define INV '(#(pmos A Y VDD VDD 1 1  1)
+                  #(nmos A Y GND GND 1 1 -1))
+    )
+
 ;;  -------------------------------------------------------------------
 ;;                  NODE SPACES
 ;;  -------------------------------------------------------------------
@@ -58,7 +102,7 @@
 ;;  ------------    output node names   -------------------------------
 
 ;   Purpose:
-;   defeine output node names which are used for combinatorial cells
+;   define output node names which are used for combinatorial cells
 
 ;   Definition:
     (define output-space '(X Y Z))
@@ -89,15 +133,34 @@
 ;;                  TRANSISTOR DATA STRUCTURE
 ;;  -------------------------------------------------------------------
 
-;   define transistor as vector:
-;   +-------+-------+-------+-------+-------+-------+-------+
-;   | mosfet| gate  | drain | source| bulk  | x-axis| y-axis|
-;   | type  | node  | node  | node  | node  | point | point |
-;   +-------+-------+-------+-------+-------+-------+-------+
-;      #0      #1      #2      #3      #4      #5      #6
+;   define transistor as vector:        Example:
+;       +---------------+
+;    #0 |  circuit type |               'nmos
+;       +---------------+
+;    #1 |  gate node    |               'A
+;       +---------------+
+;    #2 |  drain node   |               'X
+;       +---------------+
+;    #3 |  source node  |               'VDD
+;       +---------------+
+;    #4 |  bulk node    |               'VDD
+;       +---------------+
+;    #5 |  stucked      |               1
+;       +---------------+
+;    #6 |  x-axis point |               1
+;       +---------------+
+;    #7 |  y-axis point |               1
+;       +---------------+
 
-;   Example:
-;   #('nmos 'A 'X 'VDD 'VDD 1 1 1)
+;   define constants for vector indices
+    (define |circuit-type#| 0)
+    (define |gate-node#| 1)
+    (define |drain-node#| 2)
+    (define |source-node#| 3)
+    (define |bulk-node#| 4)
+    (define |stucked#| 5)
+    (define |xaxis-point#| 6)
+    (define |yaxis-point#| 7)
 
 ;;  ------------    getter function : mosfet-nmos?  -------------------
 
@@ -113,7 +176,7 @@
 ;   Definition:
     (define mosfet-nmos?
         (lambda (transistor)
-            (equal? (vector-ref transistor 0) 'nmos)
+            (equal? (vector-ref transistor |circuit-type#|) 'nmos)
         )
     )
 
@@ -142,7 +205,7 @@
 ;   Definition:
     (define mosfet-pmos?
         (lambda (transistor)
-            (equal? (vector-ref transistor 0) 'pmos)
+            (equal? (vector-ref transistor |circuit-type#|) 'pmos)
         )
     )
 
@@ -171,7 +234,7 @@
 ;   Definition:
     (define mosfet-gate
         (lambda (transistor)
-            (vector-ref transistor 1)
+            (vector-ref transistor |gate-node#|)
         )
     )
 
@@ -200,7 +263,7 @@
 ;   Definition:
     (define mosfet-drain
         (lambda (transistor)
-            (vector-ref transistor 2)
+            (vector-ref transistor |drain-node#|)
         )
     )
 
@@ -229,7 +292,7 @@
 ;   Definition:
     (define mosfet-source
         (lambda (transistor)
-            (vector-ref transistor 3)
+            (vector-ref transistor |source-node#|)
         )
     )
 
@@ -258,7 +321,7 @@
 ;   Definition:
     (define mosfet-bulk
         (lambda (transistor)
-            (vector-ref transistor 4)
+            (vector-ref transistor |bulk-node#|)
         )
     )
 
@@ -287,7 +350,7 @@
 ;   Definition:
     (define mosfet-stacked
         (lambda (transistor)
-            (vector-ref transistor 5)
+            (vector-ref transistor |stucked#|)
         )
     )
 
@@ -316,7 +379,7 @@
 ;   Definition:
     (define mosfet-xaxis
         (lambda (transistor)
-            (vector-ref transistor 6)
+            (vector-ref transistor |xaxis-point#|)
         )
     )
 
@@ -345,7 +408,7 @@
 ;   Definition:
     (define mosfet-yaxis
         (lambda (transistor)
-            (vector-ref transistor 7)
+            (vector-ref transistor |yaxis-point#|)
         )
     )
 
@@ -418,7 +481,7 @@
     (define get-pulldown-network
         (lambda (netlist)
             (cond
-                ; emtpy list?
+                ; empty list?
                 [(null? netlist) netlist]
 
                 ; if nMOS than add mosfet to netlist, go down recursive
@@ -457,7 +520,7 @@
     (define get-vdd-mosfets
         (lambda (netlist)
             (cond
-                ; emtpy list?
+                ; empty list?
                 [(null? netlist) netlist]
 
                 ; if mosfet connected to supply power symbol, add them to netlist and go down recursive
@@ -592,3 +655,6 @@
             (newline (current-error-port))
         )
     )
+
+  )
+)

@@ -13,7 +13,7 @@
 ;;
 ;;  Purpose:        Popcorn Main functionality
 ;;
-;;  ************    Revised^5 Report on Scheme (R5RS)   ***************
+;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
@@ -43,24 +43,51 @@
 ;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 ;;  ///////////////////////////////////////////////////////////////////
 
-;;  ------------    Version Strings     -------------------------------
+;   R7RS-type library usage declaration
+    (import (scheme base)
+            (scheme write)              ; display
+            (scheme process-context)    ; exit
+            (srfi 28)                   ; format
+            ; popcorn libs also
+            (popcorn-lib)
+            (popcorn-cell)
+    )
 
-    (define version-screen (list
-"Popcorn 2019-04-12" ""
-"This source is free software; you can redistribute it and/or modify"
-"it under the terms of the GNU General Public License as published by"
-"the Free Software Foundation; either version 3 of the License, or"
-"(at your option) any later version." ""
-"This source is distributed in the hope that it will be useful,"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the"
-"GNU General Public License for more details." ""
-"Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
-    ))
+;;  -------------------------------------------------------------------
+;;                       PROGRAM
+;;  -------------------------------------------------------------------
+
+;;  ------------    Program Name    -----------------------------------
+
+    ; use this as default
+    (define eigen-name "popcorn")
+
+;;  ------------    version "screen"    -------------------------------
+
+    (define +version+
+        (lambda (eigen-name at-port)
+            (format (at-port)
+"~a (\"Popcorn\") - Version 2019-04-12
+
+This source is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This source is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
+            eigen-name)
+            (newline (at-port))
+        )
+    )
 
 ;;  ------------    build-in self test  -------------------------------
 
-    ; use this switch during development
+    ; use this switch during development only
     (define build-in-self-test #t)
 
 ;;  -------------------------------------------------------------------
@@ -100,34 +127,24 @@
 ;;                       GLOBAL OPTIONS
 ;;  -------------------------------------------------------------------
 
-;;  ------------    help screen     -----------------------------------
+;;  ------------    usage "screen"  -----------------------------------
 
-    (define help-screen (list
-"popcorn - Generate new combinatorial cells"
-"   -b number           set threshold value for output buffer"
-"   -e format           specify cell export format"
-"   -h | --help         print help screen and exit"
-"   -H number           set cell high in metal tracks"
-"   -l number           set maximum number of stacked transistors"
-"   -m method           enlarge cell - nand nor aoi oia"
-"   -T file             specify technology file"
-"   -v                  print verbose messages"
-"   --version           print version and exit"
-    ))
-
-;;  ------------    print-list-of-strings   ---------------------------
-
-    (define print-list-of-strings
-        (lambda (string-list at-port)
-            (cond
-                ; empty list?
-                [(null? string-list) (newline (at-port))]
-
-                ; print line, call next
-                [else (begin (display (car string-list) (at-port))
-                             (newline (at-port))
-                             (print-list-of-strings (cdr string-list) (current-error-port)))]
-            )
+    (define +usage+
+        (lambda (eigen-name at-port)
+            (format (at-port)
+"Usage: ~a - Generate new combinatorial cells
+   -b number           set threshold value for output buffer
+   -e format           specify cell export format
+   -h | --help         print help screen and exit
+   -H number           set cell high in metal tracks
+   -l number           set maximum number of stacked transistors
+   -m method           enlarge cell - nand nor aoi oia
+   -T file             specify technology file
+   -v                  print verbose messages
+   --version           print version and exit"
+             eigen-name)
+            (newline (at-port))
+            (exit 2)
         )
     )
 
@@ -152,7 +169,7 @@
     (define technology-file "scmos.tech")
 
 ;   -v
-    (define verbose-mode #f)
+    (define verbose-mode #t)
 
 ;   cell desciption
     (define cell-file "")
@@ -170,151 +187,156 @@
     )
 
     (define set-parameters-with-args!
-        (lambda (args)
+        (lambda (eigen-name arguments)
             (cond
                 ; empty list?
-                [(null? args) args] ; all done
-
-                ; file name
-                [(null? (cdr args))
-                    (set! cell-file (car args))
-                ]
+                [(null? (car arguments)) arguments]
 
                 ; -b number
-                [(equal? (car args) "-b")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-b")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! buffer-limit value)   ; !! value check missing
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -e format
-                [(equal? (car args) "-e")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-e")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! export-format value)  ; !! value check missing)]
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -h
-                [(equal? (car args) "-h")
+                [(equal? (car arguments) "-h")
                     (begin
-                        (print-list-of-strings help-screen (current-error-port))
-                        (exit) ; done, do not parse further
+                        (+usage+ eigen-name current-error-port)
+                        (exit 2) ; done, do not parse further
                     )
                 ]
                 ; --help
-                [(equal? (car args) "--help")
+                [(equal? (car arguments) "--help")
                     (begin
-                        (print-list-of-strings help-screen (current-error-port))
-                        (exit) ; done, do not parse further
+                        (+usage+ eigen-name current-error-port)
+                        (exit 2) ; done, do not parse further
                     )
                 ]
 
                 ; -H number
-                [(equal? (car args) "-H")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-H")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! track-high value)  ; !! value check missing)]
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -l number
-                [(equal? (car args) "-l")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-l")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! stacked-limit value)  ; !! value check missing)]
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -m method
-                [(equal? (car args) "-m")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-m")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! extension-method value)  ; !! value check missing)]
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -T file
-                [(equal? (car args) "-T")
-                    (let ((value (car (cdr args)))
-                          (tail (cddr args)))
+                [(equal? (car arguments) "-T")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
                         (set! technology-file value)  ; !! value check missing)]
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; -v
-                [(equal? (car args) "-v")
-                    (let ((tail (cdr args)))
+                [(equal? (car arguments) "-v")
+                    (let ([tail (cdr arguments)])
                         (set! verbose-mode #t)
-                        (set-parameters-with-args! tail)
+                        (set-parameters-with-args! eigen-name tail)
                     )
                 ]
 
                 ; --version
-                [(equal? (car args) "--version")
+                [(equal? (car arguments) "--version")
                     (begin
-                        (print-list-of-strings version-screen (current-error-port))
-                        (exit) ; done, do not parse further
+                        (+version+ eigen-name current-error-port)
+                        (exit 3) ; done, do not parse further
                     )
                 ]
-                [else (parsing-error (car args)) ]
+
+                ; file name
+                [(null? (cdr arguments))
+                    (set! cell-file (car arguments))
+                ]
+
+                [else (parsing-error (car arguments)) ]
             )
         )
     )
 
     (define print-parameters
-        (lambda ()
-            (begin  (command-line) ; !! R7RS
-;;            (begin  (command-line-arguments) ; Chicken )-:
-
+        (lambda (at-port)
+            (begin
                     ; -b number
-                    (display "Buffer Limit: " (current-error-port))
-                    (display buffer-limit (current-error-port))
-                    (display " stacked transistors" (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Buffer Limit: ~a stacked transistors"
+                     buffer-limit)
+                    (newline (at-port))
 
                     ; -e format
-                    (display "Export Format: " (current-error-port))
-                    (display export-format (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Export Format: ~a"
+                     export-format)
+                    (newline (at-port))
 
                     ; -H number
-                    (display "Cell High: " (current-error-port))
-                    (display track-high (current-error-port))
-                    (display " metal tracks" (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Cell High: ~a metal tracks"
+                     track-high)
+                    (newline (at-port))
 
                     ; -l number
-                    (display "Stacked Transistor Limit: " (current-error-port))
-                    (display stacked-limit (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Stacked Transistor Limit: ~a"
+                     stacked-limit)
+                    (newline (at-port))
 
                     ; -m method
-                    (display "Extension Method: " (current-error-port))
-                    (display extension-method (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Extension Method: ~a"
+                     extension-method)
+                    (newline (at-port))
 
                     ; -T file
-                    (display "Technology File: " (current-error-port))
-                    (display technology-file (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Technology File: ~a"
+                     technology-file)
+                    (newline (at-port))
 
                     ; -v
-                    (display "Verbose Mode: " (current-error-port))
-                    (display verbose-mode (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Verbose Mode: ~a"
+                     verbose-mode)
+                    (newline (at-port))
 
                     ; cell decription
-                    (display "Cell Description: " (current-error-port))
-                    (display cell-file (current-error-port))
-                    (newline (current-error-port))
+                    (format (at-port)
+"Cell Description: ~a"
+                     cell-file)
+                    (newline (at-port))
             )
         )
     )
@@ -362,17 +384,20 @@
 ;;                       MAIN
 ;;  -------------------------------------------------------------------
 
-;   use Popcorn Library
-    (load "popcorn-lib.scm")
-
 ;;  ------------    main function   -----------------------------------
 
-    (begin
-        ; parse command line and set values / modes
-        (set-parameters-with-args! (cdr (command-line)))
-        (if verbose-mode (print-parameters))
+    (define (main args)
+        (begin
+            ; parse command line and set values / modes
+            (let ((eigen-name (car args)))
+            (set-parameters-with-args! eigen-name (cdr args))
+            (if verbose-mode (print-parameters current-error-port))
 
-        (load "popcorn-cell.scm")
-        (display (read-cell-file cell-file))
+;        (+usage+ eigen-name current-error-port)
+            (format (current-error-port) "~S" (read-cell-file cell-file))
+;            (display (read-cell-file cell-file))
+            0
+            )
+        )
     )
 

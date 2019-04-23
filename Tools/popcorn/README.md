@@ -2,7 +2,7 @@
 
 This Repository contains the Source Code for the Standard Cell Generator, called Popcorn.
 Started once as a Tcl Script, Popcorn is now rewritten in R^5RS-Scheme.
-The code was developed with *GNU guile 4.12* and is still Work-in-Progress.
+The code was developed with *Gauche scheme shell, version 0.9.5* and is still Work-in-Progress.
 Please stay tuned.
 
 Do not hesitate to contact the Authors of Popcorn for Patches, Feature additions or Questions.
