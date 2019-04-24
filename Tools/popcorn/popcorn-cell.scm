@@ -44,8 +44,11 @@
 ;;  ///////////////////////////////////////////////////////////////////
 
 (define-library (popcorn-cell)
-  (import (scheme base) (scheme write) (scheme file))
-  (export read-cell-file)
+  (import (scheme base)
+          (scheme write)            ; display
+          (scheme file)             ; file io
+          (srfi 28))                ; format
+  (export read-cell-file write-cell-file)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
@@ -54,7 +57,7 @@
     (define build-in-self-test #t)
 
 ;;  -------------------------------------------------------------------
-;;                      DESCRIPTION
+;;                  DESCRIPTION
 ;;  -------------------------------------------------------------------
 
 ;;  In principle every combinatorial cell (in CMOS technology) contains
@@ -82,8 +85,8 @@
 ;;              |
 ;;             _|_ Gnd
 
-    (define INV-cell '#(INV "a Not (or Inverter) gate" (A) (Y) (#(pmos A Y VDD VDD 1 1  1)
-                                                                #(nmos A Y GND GND 1 1 -1)))
+    (define INV-cell '#(INV "a Not (or Inverter) gate" (A) (Y) () (#(pmos A Y VDD VDD 1 1  1)
+                                                                   #(nmos A Y GND GND 1 1 -1)) ())
     )
 
 ;;  -------------------------------------------------------------------
@@ -98,17 +101,23 @@
 ;       +---------------+
 ;    #2 |  cell inputs  |               '(A)
 ;       +---------------+
-;    #3 |  cell outputs |               '(Y)
+;    #3 |  cell outputs |               '() ; for Latches
 ;       +---------------+
-;    #4 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
+;    #4 |  cell clocks  |               '(CLK)
+;       +---------------+
+;    #5 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
 ;       +---------------+                 #(nmos A Y GND GND 1 1 -1))
+;    #6 |  additional   |               '() ; e.g. handover ASCII-Art
+;       +---------------+
 
 ;   define constants for vector indices
     (define |cell-id#| 0)
     (define |cell-text#| 1)
     (define |cell-inputs#| 2)
     (define |cell-outputs#| 3)
-    (define |cell-netlist#| 4)
+    (define |cell-clocks#| 4)
+    (define |cell-netlist#| 5)
+    (define |cell-additional#| 6)
 
 ;;  ------------    getter function : cell-id   -----------------------
 
@@ -226,6 +235,35 @@
         )
     )
 
+;;  ------------    getter function : cell-clocks   -------------------
+
+;   Contract:
+;   cell-clocks : cell -> list-of-symbols
+
+;   Purpose:
+;   get the cell clock list out of a cell description vector
+
+;   Example:
+;   (cell-clocks INV-cell) => '()
+
+;   Definition:
+    (define cell-clocks
+        (lambda (cell)
+            (vector-ref cell |cell-clocks#|)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (cell-clocks INV-cell) '())
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " cell-clocks test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
 ;;  ------------    getter function : cell-netlist  -------------------
 
 ;   Contract:
@@ -256,6 +294,35 @@
         )
     )
 
+;;  ------------    getter function : cell-additional   ---------------
+
+;   Contract:
+;   cell-additional : cell -> list-of-string
+
+;   Purpose:
+;   get additional informations for the cell out of a cell description vector
+
+;   Example:
+;   (cell-additional INV-cell) => '()
+
+;   Definition:
+    (define cell-additional
+        (lambda (cell)
+            (vector-ref cell |cell-additional#|)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (cell-additional INV-cell) '())
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " cell-additional test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
 ;;  -------------------------------------------------------------------
 ;;                  READING CELL DESCRIPTIONS
 ;;  -------------------------------------------------------------------
@@ -272,23 +339,10 @@
 ;   (read-cell-file file) => INV-cell
 
 ;   Definition:
-;    (define (read-cell-file file-name)
-;        (let ((file (open-input-file file-name)))
-;            (let function ((x (read-line file)))
-;                (if (eof-object? x)
-;                    (begin
-;                        (close-input-port file)
-;                        '()
-;                    ); else
-;                    (cons x (function (read-line file)))
-;                )
-;            )
-;        )
-;    )
-
     (define (read-cell-file file-name)
         (let ((file (open-input-file file-name))
-              (return (make-vector 5 "")))
+              (return (make-vector 7 '()))
+              (netlist '()))
             (let x ((line (read-line file)))
                 (if (eof-object? line)
                     '()
@@ -307,34 +361,42 @@
                                         (eof-object)
                                     ]
 
+                                    ; .clocks annotated line, get list
+                                    [(equal? (substring line 0 4) ".clo")
+                                        (begin
+                                            (vector-set! return |cell-clocks#| (string->list line 7))
+                                            (function (read-line file))
+                                        )
+                                    ]
+
                                     ; .cell annotated line, get name
                                     [(equal? (substring line 0 4) ".cel")
                                         (begin
-                                            (vector-set! return |cell-id#| line) ; !! parsing
+                                            (vector-set! return |cell-id#| (string-copy line 6))
                                             (function (read-line file))
                                         )
                                     ]
 
-                                    ; .inputs annotated line, get name
+                                    ; .inputs annotated line, get list
                                     [(equal? (substring line 0 4) ".inp")
                                         (begin
-                                            (vector-set! return |cell-inputs#| line) ; !! parsing
+                                            (vector-set! return |cell-inputs#| (string->list line 8))
                                             (function (read-line file))
                                         )
                                     ]
 
-                                    ; .outputs annotated line, get name
+                                    ; .outputs annotated line, get list
                                     [(equal? (substring line 0 4) ".out")
                                         (begin
-                                            (vector-set! return |cell-outputs#| line) ; !! parsing
+                                            (vector-set! return |cell-outputs#| (string->list line 9))
                                             (function (read-line file))
                                         )
                                     ]
 
-                                    ; take line as netlist circuit
+                                    ; collect netlist lines
                                     [else
                                         (begin
-                                            (vector-set! return |cell-netlist#| line) ; !! parse & append
+                                            (set! netlist (append netlist (list (vector (string->symbol line)))))
                                             (function (read-line file))
                                         )
                                     ]
@@ -343,6 +405,8 @@
                         )
                     )
                 )
+            ; attach netlist to cell, close file
+            (vector-set! return |cell-netlist#| netlist)
             (close-input-port file)
             return
             )
@@ -356,41 +420,64 @@
 ;;  ------------    write description line  ---------------------------
 
 ;   Contract:
-;   write-cell-decription : string -> --
+;   write-cell-file : cell -> --
 
 ;   Purpose:
 ;   write cell description to STDOUT
 
 ;   Example:
-;   (cell-description "cell" => "cell"
+;   (write-cell-file INV-cell" => --"
 
 ;   Definition:
-    (define cell-description
-        (lambda (description)
-            (format description)
-            (newline)
-        )
-    )
-
-;;  ------------    write out cell file     ---------------------------
-
-;   Contract:
-;   print-whole-cell : "list of strings" -> --
-
-;   Example:
-;   (print-whole-cell list-of-strings) => cell
-
-;   Definition:
-    (define print-whole-cell
-        (lambda (description cell-id input-list output-list netlist)
-            (format
+    (define write-cell-file
+        (lambda (cell)
+            (let ((at-port current-output-port))
+                (begin
+                    ; first line header
+                    (if (null? (cell-text cell))
+                        (format (at-port)
+"proudly AUTOGENERATED by \"Popcorn\" R7RS Scheme tool
+"                       )
+                        (format (at-port)
 "~a
-.cell ~a
-.input ~a
-.output ~a
-"
-             description cell-id input-list output-list netlist)
+"                           (cell-text cell)))
+                    ; next mandantory lines
+                    (format (at-port)
+".cell ~a
+.inputs ~a
+.outputs ~a
+"                       (cell-id cell)
+                        (list->string (cell-inputs cell))
+                        (list->string (cell-outputs cell)))
+                    ; optional clock line
+                    (if (null? (cell-clocks cell))
+                        '()
+                        (format (at-port)
+".clocks ~a
+"                           (list->string (cell-clocks cell)))
+                    )
+                    ; additional, e.g. schematic
+                    (if (null? (cell-additional cell))
+                        '()
+                        (format (at-port)
+"~a
+"                           (cell-additional cell))
+                    )
+                    ; netlist
+                    (format (at-port)
+"~a
+"                       (cell-netlist cell))
+                    ; done
+                    (format (at-port)
+".end
+"                   )
+                )
+            )
         )
     )
+
+;;  ===================================================================
+;;                  END OF R7RS LIBRARY
+;;  ===================================================================
   )
 )

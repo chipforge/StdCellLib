@@ -169,7 +169,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
     (define technology-file "scmos.tech")
 
 ;   -v
-    (define verbose-mode #t)
+    (define verbose-mode #f)
 
 ;   cell desciption
     (define cell-file "")
@@ -394,7 +394,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
             (if verbose-mode (print-parameters current-error-port))
 
 ;        (+usage+ eigen-name current-error-port)
-            (format (current-error-port) "~S" (read-cell-file cell-file))
+            (write-cell-file (read-cell-file cell-file))
 ;            (display (read-cell-file cell-file))
             0
             )
