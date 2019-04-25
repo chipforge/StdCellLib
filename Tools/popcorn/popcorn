@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+POPCORNDIR=`dirname $0`
+
 #   wrap Gauche/gosh exec call
-gosh -I . -r 7 -m r7rs.user popcorn.scm $*
+gosh -I $POPCORNDIR -r 7 -m r7rs.user popcorn.scm $*
