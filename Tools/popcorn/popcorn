@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+#   wrap Gauche/gosh exec call
+gosh -I . -r 7 -m r7rs.user popcorn.scm $*
