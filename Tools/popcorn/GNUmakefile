@@ -93,10 +93,14 @@ clean:
 cell.5.ps: cell.5
 	$(TROFF) $< > $@
 
+.PHONY: table.5.ps
+table.5.ps: table.5
+	$(TROFF) $< > $@
+
 .PHONY: popcorn.1.ps
 popcorn.1.ps: popcorn.1
 	$(TROFF) $< > $@
 
-manual: cell.5.ps popcorn.1.ps
+manual: cell.5.ps table.5.ps popcorn.1.ps
 
 popcorn: manual
