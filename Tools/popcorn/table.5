@@ -1,0 +1,107 @@
+.\" ************    LibreSilicon's StdCellLibrary   *******************
+.\"
+.\" Organisation:   Chipforge
+.\"                 Germany / European Union
+.\"
+.\" Profile:        Chipforge focus on fine System-on-Chip Cores in
+.\"                 Verilog HDL Code which are easy understandable and
+.\"                 adjustable. For further information see
+.\"                         www.chipforge.org
+.\"                 there are projects from small cores up to PCBs, too.
+.\"
+.\" File:           StdCellLib/Tools/popcorn/table.5
+.\"
+.\" Purpose:        man 5 table - classical Manual Page
+.\"
+.\" ************    `groff -t -mdoc`    *******************************
+.\"
+.\" ///////////////////////////////////////////////////////////////////
+.\"
+.\" Copyright (c)   2019 by
+.\"                 chipforge - <popcorn@nospam.chipforge.org>
+.\"
+.\" This source file may be used and distributed without restriction
+.\" provided that this copyright statement is not removed from the
+.\" file and that any derivative work contains the original copyright
+.\" notice and the associated disclaimer.
+.\"
+.\" This source is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This source is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\"
+.\"  (__)  You should have received a copy of the GNU General Public
+.\"  oo )  License along with this program; if not, write to the
+.\"  /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+.\"        Boston, MA 02110-1301, USA
+.\"
+.\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+.\" ///////////////////////////////////////////////////////////////////
+.Dd Mai 9, 2019
+.Dt TABLE 5 "Standard Cell Library"
+.Os LibreSilicon
+.Sh NAME
+.Nm table
+.Nd description file format for popcorn
+.Sh DESCRIPTION
+This is a secondary file format for the
+.Xr popcorn 1
+utility, inspired by tables from User-defined Primitives (UDP) in Verilog, defined as IEEE Std 1394-1995 and IEEE Std 1394-2001.
+.Pp
+The
+.Nm
+file consists of newline separated ASCII records.
+.Pp
+Every line starts with comment, an identifier, or forms a table entry.
+.Ss // 
+Two slash signs mark the beginning of a comment line; subsequent characters up to the end of the line are not interpreted by the routines which search the file.
+.Ss table
+This identifier trigger all table entry lines which are following, until the
+.Em endtable
+identifier.
+.Ss endtable
+This identifier indicates the end of table entry line section.
+.Pp
+Every table line contains this arguments in the following order:
+.Bl -ohang
+.It Em inputs
+A list of space-separeted input values.
+.It Em :
+The colon sign devided the Input Node side of table from the following Output Node side.
+.It Em outputs
+Behind the colon sign all output values are listed.
+.El
+.Pp
+Valid values for every Input or Output Node are:
+.Bl -column -offset indent ".Sy Value" ".Sy Description"
+.It Sy Value Ta Sy Description
+.It Li  0 Ta logical '0'
+.It Li  1 Ta logical '1'
+.It Li  ? Ta don't care
+.It Li  x Ta unknown
+.It Li (01) Ta rising edge
+.It Li (10) Ta falling edge
+.El
+.Sh AUTHORS
+.An chipforge Aq popcorn@nospam.chipforge.org
+.Sh BUGS
+Not yet known.
+.Sh COPYRIGHT
+Copyright (c) 2018-2019 Author and Contributors.
+.Pp
+GNU General Public License v3.0
+.UR
+http://www.gnu.org/licenses/gpl-3.0.html
+.UE
+.Sh SEE ALSO
+.Xr popcorn 1
+and
+.UR
+https://github.com/chipforge/StdCellLib
+.UE
+for current version and others auxilary tools around.
