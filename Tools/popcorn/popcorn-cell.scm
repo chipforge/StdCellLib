@@ -48,7 +48,15 @@
           (scheme write)            ; display
           (scheme file)             ; file io
           (srfi 28))                ; format
-  (export read-cell-file write-cell-file)
+  (export  cell-id
+           cell-text
+           cell-inputs
+           cell-outputs
+           cell-clocks
+           cell-netlist
+           cell-additional
+           read-cell-file
+           write-cell-file)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
