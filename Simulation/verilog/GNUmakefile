@@ -1,71 +1,70 @@
-##  *******************************************************************
-##
-##  Organisation:   Chipforge
-##                  Germany / European Union
-##
-##  Profile:        Chipforge focus on fine System-on-Chip Cores in
-##                  Verilog HDL Code which are easy understandable and
-##                  adjustable. For further information see
-##                          www.chipforge.org
-##                  there are projects from small cores up to PCBs, too.
-##
-##  File:           StdCellLib/Sources/verilog/GNUmakefile
-##
-##  Purpose:        (GNU)Makefile for Verilog stuff
-##
-##  ************    GNU Make 3.80 Source Code   ***********************
-##
-##  ///////////////////////////////////////////////////////////////////
-##
-##  Copyright (c) 2018 by chipforge <stdcelllib@nospam.chipforge.org>
-##  All rights reserved.
-##
-##      This Standard Cell Library is licensed under the Libre Silicon
-##      public license; you can redistribute it and/or modify it under
-##      the terms of the Libre Silicon public license as published by
-##      the Libre Silicon alliance, either version 1 of the License, or
-##      (at your option) any later version.
-##
-##      This design is distributed in the hope that it will be useful,
-##      but WITHOUT ANY WARRANTY; without even the implied warranty of
-##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-##      See the Libre Silicon Public License for more details.
-##
-##  ///////////////////////////////////////////////////////////////////
+#   ************    LibreSilicon's StdCellLibrary   *******************
+#
+#   Organisation:   Chipforge
+#                   Germany / European Union
+#
+#   Profile:        Chipforge focus on fine System-on-Chip Cores in
+#                   Verilog HDL Code which are easy understandable and
+#                   adjustable. For further information see
+#                           www.chipforge.org
+#                   there are projects from small cores up to PCBs, too.
+#
+#   File:           StdCellLib/Simulation/verilog/GNUmakefile
+#
+#   Purpose:        Makefile for Verilog stuff
+#
+#   ************    GNU Make 3.80 Source Code   ***********************
+#
+#   ///////////////////////////////////////////////////////////////////
+#
+#   Copyright (c) 2018 by chipforge <stdcelllib@nospam.chipforge.org>
+#   All rights reserved.
+#
+#       This Standard Cell Library is licensed under the Libre Silicon
+#       public license; you can redistribute it and/or modify it under
+#       the terms of the Libre Silicon public license as published by
+#       the Libre Silicon alliance, either version 1 of the License, or
+#       (at your option) any later version.
+#
+#       This design is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#       See the Libre Silicon Public License for more details.
+#
+#   ///////////////////////////////////////////////////////////////////
 
 #   ----------------------------------------------------------------
-#                       DEFINITIONS
+#                   DEFINITIONS
 #   ----------------------------------------------------------------
-
-#   Main project depending definitions, see file $(PROJECT).configuration
-#   for project name, Source configuration switches and testcases.
-#   Please change this file $(PROJECT).configuration for configuration 
-#   purposes only!
-
-TESTS =                 EQ2 MUXI2 XOR2
 
 #   make build system defines
 
-HDL ?=                  verilog
-MODE ?=                 batch
+HDL ?=              verilog
+MODE ?=             batch
 
 #   directory pathes
 
-SOURCESDIR =            ../../Sources/$(HDL)
-TBENCHDIR =             ../../TBench/$(HDL)
+SOURCESDIR =        ../../Sources/$(HDL)
+TBENCHDIR =         ../../TBench/$(HDL)
 
 #   tool variables
 
-SIMULATOR1 ?=           iverilog -g2 # -Wall
-SIMULATOR2 ?=           vvp # -v
-INCLUDEDIRS ?=          -I$(SOURCESDIR)
-WAVEVIEWER ?=           gtkwave
+SIMULATOR1 ?=       iverilog -g2 # -Wall
+SIMULATOR2 ?=       vvp # -v
+INCLUDEDIRS ?=      -I$(SOURCESDIR)
+WAVEVIEWER ?=       gtkwave
 
-ECHO ?=                 @echo # -e
-RM ?=                   /bin/rm -f
+ECHO ?=             @echo # -e
+RM ?=               /bin/rm -f
+GREP ?=             grep -e
+SED ?=              sed
+
+#   collect all tests
+
+TESTS =             $(patsubst %_stim.v,%,$(notdir $(wildcard $(TBENCHDIR)/*_stim.v)))
 
 #   ----------------------------------------------------------------
-#                       DEFAULT TARGETS
+#                   DEFAULT TARGETS
 #   ----------------------------------------------------------------
 
 #   display help screen if no target is specified
@@ -96,21 +95,20 @@ help:
 clean:
 	-$(RM) *.vcd
 	-$(RM) *.vpp
+	-$(RM) *.table
 
 #   ----------------------------------------------------------------
-#                       RUN TESTCASES
+#                   RUN TESTCASES
 #   ----------------------------------------------------------------
 
 .PHONY: tests
 tests: $(TESTS)
 
 %: PROJECT_DEFINES += -DDUMPFILE=\"$@.vcd\"
-%: $(TBENCHDIR)/tb_%.v $(SOURCESDIR)/%*.v
-#	$(ECHO) "test: $@"
-#	$(ECHO) "test: $^"
+%: $(TBENCHDIR)/%_stim.v $(SOURCESDIR)/%*_switch.v
 	$(SIMULATOR1) $(PROJECT_DEFINES) $(INCLUDEDIRS) -o $@.vpp $^
 	$(ECHO) "----    Run Test: $@    ----"
-	$(SIMULATOR2) $@.vpp
+	$(SIMULATOR2) $@.vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $@.table
 ifeq ($(MODE), gui)
 	$(WAVEVIEWER) -f $@.vcd -a $@.do
 endif
