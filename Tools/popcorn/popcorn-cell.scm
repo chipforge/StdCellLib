@@ -369,14 +369,6 @@
                                         (eof-object)
                                     ]
 
-                                    ; .clocks annotated line, get list
-                                    [(equal? (substring line 0 4) ".clo")
-                                        (begin
-                                            (vector-set! return |cell-clocks#| (string->list line 7))
-                                            (function (read-line file))
-                                        )
-                                    ]
-
                                     ; .cell annotated line, get name
                                     [(equal? (substring line 0 4) ".cel")
                                         (begin
@@ -385,10 +377,18 @@
                                         )
                                     ]
 
+                                    ; .clocks annotated line, get list
+                                    [(equal? (substring line 0 4) ".clo")
+                                        (begin
+                                            (vector-set! return |cell-clocks#| (vector->list (vector (string->symbol (string-copy line 7)))))
+                                            (function (read-line file))
+                                        )
+                                    ]
+
                                     ; .inputs annotated line, get list
                                     [(equal? (substring line 0 4) ".inp")
                                         (begin
-                                            (vector-set! return |cell-inputs#| (string->list line 8))
+                                            (vector-set! return |cell-inputs#| (vector->list (vector (string->symbol (string-copy line 8)))))
                                             (function (read-line file))
                                         )
                                     ]
@@ -396,7 +396,7 @@
                                     ; .outputs annotated line, get list
                                     [(equal? (substring line 0 4) ".out")
                                         (begin
-                                            (vector-set! return |cell-outputs#| (string->list line 9))
+                                            (vector-set! return |cell-outputs#| (vector->list (vector (string->symbol (string-copy line 9)))))
                                             (function (read-line file))
                                         )
                                     ]

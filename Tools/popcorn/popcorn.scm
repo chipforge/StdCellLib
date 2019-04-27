@@ -51,6 +51,7 @@
             ; popcorn libs also
             (popcorn-lib)
             (popcorn-cell)
+            (popcorn-verilog)
     )
 
 ;;  -------------------------------------------------------------------
@@ -394,8 +395,8 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
             (if verbose-mode (print-parameters current-error-port))
 
 ;        (+usage+ eigen-name current-error-port)
-            (write-cell-file (read-cell-file cell-file))
-;            (display (read-cell-file cell-file))
+            (display (read-cell-file cell-file))
+            (export-verilog-switch (read-cell-file cell-file))
             0
             )
         )

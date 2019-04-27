@@ -44,9 +44,15 @@
 ;;  ///////////////////////////////////////////////////////////////////
 
 (define-library (popcorn-lib)
-  (import (scheme base) (scheme write))
-  (export input-space output-space supply-symbol-space
-          mosfet-nmos?)
+  (import (scheme base)
+          (scheme write)
+          (scheme time))
+  (export  input-space
+           output-space
+           supply-symbol-space
+           mosfet-nmos?
+           copyleft-year
+           list->csv)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
@@ -55,7 +61,7 @@
     (define build-in-self-test #t)
 
 ;;  -------------------------------------------------------------------
-;;                      DESCRIPTION
+;;                  DESCRIPTION
 ;;  -------------------------------------------------------------------
 
 ;;  In principle every combinatorial cell (in CMOS technology) contains
@@ -652,6 +658,119 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-mosfet-ascending test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  -------------------------------------------------------------------
+;;                  AUXILARY STUFF
+;;  -------------------------------------------------------------------
+
+;;  ------------    calculate (c) Copyleft year -----------------------
+
+;   Contract:
+;   copyleft-year : -> number
+
+;   Purpose:
+;   use current epoche time to calculate the year inside Copyleft lines
+
+;   Example:
+;   (copyleft-year) => 2019
+
+;   Definition:
+    (define second 1)
+    (define minute (* 60 second))
+    (define hour (* 60 minute))
+    (define day (* 24 hour))
+    (define calendar-year (* 365 day))
+    (define copyleft-year
+        (lambda ()
+            (let ((tropical-year (+ calendar-year (* 5 hour) (* 48 minute) (* 45 second)))) ; !!
+                ; This is estimated! There is a delta around new-year regarding leap years.
+                ; Do you like to use Popcorn around New Year? Really??
+                (+ 1970 (exact (floor (/ (current-second) tropical-year))))
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (> (copyleft-year) 2018)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " copyleft-year test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    parse character list for symbol     ---------------
+
+;   Contract:
+;   parse->symbol : list-of-characters -> symbol
+
+;   Purpose
+;   parse a list of characters for a spaces-seperated symbol,
+;   while (string->list) gets list of characters
+
+;   Example:
+;   (parse->symbol '(#\A #\l #\p #\h #\a #\space) => '(Alpha)
+
+;   Definition:
+    (define parse->symbol
+        (lambda (character-list)
+            (cond
+                ; empty list
+                [(equal? (character-list) '())
+                    ""
+                ]
+
+                ; separator: space tab newline
+                [(equal? (car character-list) #\space)
+                    ""
+                ]
+                [(equal? (car character-list) #\tab)
+                    ""
+                ]
+                [(equal? (car character-list) #\newline)
+                    ""
+                ]
+
+                [else
+                    (string-append (car character-list) (parse->symbol (cdr character-list)))
+                ]
+            )
+        )
+    )
+
+;;;  ------------    list for comma-seperated values     ---------------
+;
+;;   Contract:
+;;   list->csv : list -> string
+;
+;;   Purpose:
+;;   transfer a list of symbols into a string with comma-seperated values
+;
+;;   Example
+;;   (list->csv '(A B C)) => "A, B, C"
+;
+;;   Definition:
+    (define list->csv
+        (lambda (list-of-symbols)
+            (if (equal? (cdr list-of-symbols) ())
+                (symbol->string (car list-of-symbols))
+                (string-append (symbol->string (car list-of-symbols)) ", " (list->csv (cdr list-of-symbols)))
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (list->csv '(C2 B1 A0)) "C2, B1, A0")
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " list->csv test" (current-error-port))
             (newline (current-error-port))
         )
     )
