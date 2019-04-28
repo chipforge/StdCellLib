@@ -13,6 +13,7 @@ Any feedback welcome under [Email](mailto://stdcelllib@nospam.chipforge.org "std
 ### LaTeX
 
 The Standard Cell Library uses LaTeX for Documentation. On Debian based system LaTeX can be installed with
+
 ```
 apt-get install texlive-latex-extra texlive-extra-utils texlive-latex-recommended
 ```
@@ -24,7 +25,7 @@ apt-get install textlive-full
 ```
 
 which installs the complete (and usefull) LaTeX Environment.
-Additionally we use the great CirDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). You'll find them under [http://www.taylorgruppe.de/circdia] (http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), please download and unzip it, then run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
+Additionally we use the great CirDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CirDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
 
 ### Scheme
 
@@ -44,7 +45,7 @@ some more "conservative" distributions with Long-time support (LTS) probably stu
 
 ### Magic
 
-Another software for the Popcorn tool, which should be installed before usage, is [Magic] (http://opencircuitdesign.com/magic "http://opencircuitdesign.com/magic"). Magic is Open Source, but not part of all Linux distributions (lacks on OpenSuse, Arch Linux etc). On Debian based systems
+Another software for the Popcorn tool, which should be installed before usage, is [Magic](http://opencircuitdesign.com/magic "http://opencircuitdesign.com/magic"). Magic is Open Source, but not part of all Linux distributions (lacks on OpenSuse, Arch Linux etc). On Debian based systems
 
 ```
 apt-get install magic
