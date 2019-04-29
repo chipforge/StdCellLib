@@ -50,9 +50,21 @@
   (export  input-space
            output-space
            supply-symbol-space
+           ground-symbol-space
+           mosfet-type
            mosfet-nmos?
+           mosfet-pmos?
+           mosfet-gate
+           mosfet-drain
+           mosfet-source
+           mosfet-bulk
+           mosfet-stacked
+           mosfet-xaxis
+           mosfet-yaxis
            copyleft-year
-           list->csv)
+           stringlist->csv
+           stringlist->symbollist
+           symbollist->stringlist)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
@@ -167,6 +179,35 @@
     (define |stucked#| 5)
     (define |xaxis-point#| 6)
     (define |yaxis-point#| 7)
+
+;;  ------------    getter function : mosfet-type   -------------------
+
+;   Contract:
+;   mosfet-type : mosfet -> node
+
+;   Purpose:
+;   get the mosfet type out of mosfet transistor vector
+
+;   Example:
+;   (mosfet-type '#(nmos A Y VDD substrate 1 1 -1)) => 'nmos
+
+;   Definition:
+    (define mosfet-type
+        (lambda (transistor)
+            (vector-ref transistor |circuit-type#|)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (mosfet-type '#(nmos A Y VDD substrate 1 1 -1)) 'nmos)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-type test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 
 ;;  ------------    getter function : mosfet-nmos?  -------------------
 
@@ -704,62 +745,23 @@
         )
     )
 
-;;  ------------    parse character list for symbol     ---------------
+;;  ------------    list of strings into comma-separated values -------
 
 ;   Contract:
-;   parse->symbol : list-of-characters -> symbol
+;   stringlist->csv : list-of-strings -> string
 
-;   Purpose
-;   parse a list of characters for a spaces-seperated symbol,
-;   while (string->list) gets list of characters
+;   Purpose:
+;   transfer a list of strings into a string with comma-seperated values
 
-;   Example:
-;   (parse->symbol '(#\A #\l #\p #\h #\a #\space) => '(Alpha)
+;   Example
+;   (stringlist->csv ("A" "B" "C")) => "A, B, C"
 
 ;   Definition:
-    (define parse->symbol
-        (lambda (character-list)
-            (cond
-                ; empty list
-                [(equal? (character-list) '())
-                    ""
-                ]
-
-                ; separator: space tab newline
-                [(equal? (car character-list) #\space)
-                    ""
-                ]
-                [(equal? (car character-list) #\tab)
-                    ""
-                ]
-                [(equal? (car character-list) #\newline)
-                    ""
-                ]
-
-                [else
-                    (string-append (car character-list) (parse->symbol (cdr character-list)))
-                ]
-            )
-        )
-    )
-
-;;;  ------------    list for comma-seperated values     ---------------
-;
-;;   Contract:
-;;   list->csv : list -> string
-;
-;;   Purpose:
-;;   transfer a list of symbols into a string with comma-seperated values
-;
-;;   Example
-;;   (list->csv '(A B C)) => "A, B, C"
-;
-;;   Definition:
-    (define list->csv
-        (lambda (list-of-symbols)
-            (if (equal? (cdr list-of-symbols) ())
-                (symbol->string (car list-of-symbols))
-                (string-append (symbol->string (car list-of-symbols)) ", " (list->csv (cdr list-of-symbols)))
+    (define stringlist->csv
+        (lambda (string-list)
+            (if (equal? (cdr string-list) ())
+                (car string-list)   ; last value in list
+                (string-append (car string-list) ", " (stringlist->csv (cdr string-list)))
             )
         )
     )
@@ -767,10 +769,68 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (list->csv '(C2 B1 A0)) "C2, B1, A0")
+            (if (equal? (stringlist->csv '("C2" "B1" "A0")) "C2, B1, A0")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " list->csv test" (current-error-port))
+            (display " stringlist->csv test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    list of strings into list of symbols    -----------
+
+;   Contract:
+;   stringlist->symbollist : list-of-strings -> list-of-symbols
+
+;   Purpose:
+;   convert list of strings (e.g. ports) into list of symbols
+
+;   Example:
+;   (stringlist->symbollist ("C" "B" "A") => ('C 'B 'A)
+
+;   Definition:
+    (define stringlist->symbollist
+        (lambda (string-list)
+            (map string->symbol string-list)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (stringlist->symbollist (list "C2" "B1" "A0")) '(C2 B1 A0))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " stringlist->symbollist test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    list of symbols into list of strings    -----------
+
+;   Contract:
+;   symbollist->stringlist : list-of-symbols -> list-of-strings
+
+;   Purpose:
+;   convert list of symbols (e.g. ports) into list of strings
+
+;   Example:
+;   (symbollist->stringlist '(C B A) => ("C" "B" "A")
+
+;   Definition:
+    (define symbollist->stringlist
+        (lambda (symbol-list)
+            (map symbol->string symbol-list)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (symbollist->stringlist '(C2 B1 A0)) (list "C2" "B1" "A0"))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " symbollist->stringlist test" (current-error-port))
             (newline (current-error-port))
         )
     )

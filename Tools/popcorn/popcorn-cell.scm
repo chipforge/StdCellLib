@@ -47,7 +47,10 @@
   (import (scheme base)
           (scheme write)            ; display
           (scheme file)             ; file io
-          (srfi 28))                ; format
+          (srfi 28)                 ; format
+          (srfi 152)                ; string-split
+          ; popcorn lib als
+          (popcorn-lib))
   (export  cell-id
            cell-text
            cell-inputs
@@ -109,9 +112,9 @@
 ;       +---------------+
 ;    #2 |  cell inputs  |               '(A)
 ;       +---------------+
-;    #3 |  cell outputs |               '() ; for Latches
+;    #3 |  cell outputs |               '(Y)
 ;       +---------------+
-;    #4 |  cell clocks  |               '(CLK)
+;    #4 |  cell clocks  |               '() ; for latches
 ;       +---------------+
 ;    #5 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
 ;       +---------------+                 #(nmos A Y GND GND 1 1 -1))
@@ -364,11 +367,6 @@
                                         (function (read-line file))
                                     ]
 
-                                    ; .end annotated line, done
-                                    [(equal? (substring line 0 4) ".end")
-                                        (eof-object)
-                                    ]
-
                                     ; .cell annotated line, get name
                                     [(equal? (substring line 0 4) ".cel")
                                         (begin
@@ -380,7 +378,7 @@
                                     ; .clocks annotated line, get list
                                     [(equal? (substring line 0 4) ".clo")
                                         (begin
-                                            (vector-set! return |cell-clocks#| (vector->list (vector (string->symbol (string-copy line 7)))))
+                                            (vector-set! return |cell-clocks#| (stringlist->symbollist (string-split (string-copy line 7) #[ ])))
                                             (function (read-line file))
                                         )
                                     ]
@@ -388,7 +386,7 @@
                                     ; .inputs annotated line, get list
                                     [(equal? (substring line 0 4) ".inp")
                                         (begin
-                                            (vector-set! return |cell-inputs#| (vector->list (vector (string->symbol (string-copy line 8)))))
+                                            (vector-set! return |cell-inputs#| (stringlist->symbollist (string-split (string-copy line 8) #[ ])))
                                             (function (read-line file))
                                         )
                                     ]
@@ -396,15 +394,23 @@
                                     ; .outputs annotated line, get list
                                     [(equal? (substring line 0 4) ".out")
                                         (begin
-                                            (vector-set! return |cell-outputs#| (vector->list (vector (string->symbol (string-copy line 9)))))
+                                            (vector-set! return |cell-outputs#| (stringlist->symbollist (string-split (string-copy line 9) #[ ])))
                                             (function (read-line file))
+                                        )
+                                    ]
+
+                                    ; .end annotated line, clean up
+                                    [(equal? (substring line 0 4) ".end")
+                                        (begin
+                                            (vector-set! return |cell-netlist#| (append netlist '()))
+                                            (eof-object)
                                         )
                                     ]
 
                                     ; collect netlist lines
                                     [else
                                         (begin
-                                            (set! netlist (append netlist (list (vector (string->symbol line)))))
+                                            (set! netlist (append netlist (list (list->vector (stringlist->symbollist (string-split line #[ ]))))))
                                             (function (read-line file))
                                         )
                                     ]
@@ -413,8 +419,7 @@
                         )
                     )
                 )
-            ; attach netlist to cell, close file
-            (vector-set! return |cell-netlist#| netlist)
+            ; done, close file
             (close-input-port file)
             return
             )

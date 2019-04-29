@@ -45,14 +45,13 @@
 
 (define-library (popcorn-verilog)
   (import (scheme base)
+          (scheme write)    ; !!
           (scheme char)            ; string-upcase
-          (scheme write)           ; display
           (scheme file)            ; file io
           (srfi 28)                ; format
           ; popcorn libs also
           (popcorn-lib)
-          (popcorn-cell)
-  )
+          (popcorn-cell))
   (export  export-verilog-switch)
           ;export-verilog-stim)
   (begin
@@ -145,12 +144,62 @@ module "           (cell-id cell) purpose-string (copyleft-year) (string-upcase 
         (lambda (cell)
             (let ((at-port current-output-port))
                 (format (at-port)
-"(~a)
-"                   (list->csv (append ((cell-outputs cell) (cell-inputs cell) (cell-clocks cell))))
+"(~a);
+
+    output      ~a;
+    input       ~a;
+
+"                   (stringlist->csv (symbollist->stringlist (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell))))
+                    (stringlist->csv (symbollist->stringlist (cell-outputs cell)))
+                    (stringlist->csv (symbollist->stringlist (cell-inputs cell)))
                 )
             )
         )
     )
+
+;;  ------------    export verilog mosfet   ---------------------------
+
+;   Contract:
+;   export-verilog-mosfet : transistor -> --
+
+;   Purpose:
+;   generate Verilog '95 transistor line on STDOUT
+
+;   Example:
+;   (export-verilog-mosfet '#(nmos A Y VDD substrate 1 1 -1)) => --
+
+;   Definition:
+    (define export-verilog-mosfet
+        (lambda (mosfet)
+            (let ((at-port current-output-port))
+                (format (at-port)
+"    ~a (~a, ~a, ~a);
+"                   (mosfet-type mosfet) (mosfet-drain mosfet) (mosfet-source mosfet) (mosfet-gate mosfet)
+                )
+            )
+        )
+    )
+
+;;  ------------    export verilog netlist  ---------------------------
+
+;   Contract:
+;   export-verilog-netlist : cell -> --
+
+;   Purpose:
+;   generate Verilog '95 netlist frame on STDOUT
+
+;   Example:
+;   (export-verilog-netlist INV-cell) => --
+
+;   Definition:
+    (define export-verilog-netlist
+        (lambda (cell)
+            (let ((at-port current-output-port))
+                (map (lambda (n) (export-verilog-mosfet n)) (cell-netlist cell))
+            )
+        )
+    )
+
 ;;  ------------    export verilog footer   ---------------------------
 
 ;   Contract:
@@ -168,7 +217,8 @@ module "           (cell-id cell) purpose-string (copyleft-year) (string-upcase 
             (let ((at-port current-output-port))
                 (begin
                     (format (at-port)
-"endmodule
+"
+endmodule
 "                   )
                 )
             )
@@ -193,8 +243,10 @@ module "           (cell-id cell) purpose-string (copyleft-year) (string-upcase 
                 (begin
                     ; header
                     (export-verilog-header cell "Verilog Switch Model")
+                    ; module
                     (export-verilog-module cell)
                     ; stages
+                    (export-verilog-netlist cell)
                     ; footer
                     (export-verilog-footer)
                 )
