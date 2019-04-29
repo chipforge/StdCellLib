@@ -63,9 +63,8 @@ SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR
 
 #   default
 
-DISTRIBUTION =  ./GNUmakefile \
-                $(CATALOGDIR) \
-                $(DOCUMENTSDIR) \
+DISTRIBUTION =  $(CATALOGDIR)/*.cell \
+                $(DOCUMENTSDIR)/*.pdf \
                 $(SIMULATIONDIR) \
                 $(SOURCESDIR) \
                 $(SYNTHESISDIR) \
