@@ -10,11 +10,12 @@ Any feedback welcome under [Email](mailto://popcorn@nospam.chipforge.org "popcor
 
 The tool functionality is divided into a couple of files:
 
-- *popcorn-lib.scm*   ; library with essential functionality
-- *popcorn-cell.scm*  ; functions regarding cell read-in/write-out
-- *popcorn-sch.scm*   ; functions regarding schematic generations
-- *popcorn.scm*       ; Popcorn itself
-- *README.md*         ; this file
+- *popcorn-lib.scm*     ; library with essential functionality
+- *popcorn-cell.scm*    ; functions regarding cell read-in/write-out
+- *popcorn-verilog.scm* ; functions regarding verilog generation
+- *popcorn-sch.scm*     ; functions regarding schematic generations
+- *popcorn.scm*         ; Popcorn itself
+- *README.md*           ; this file
 
 The most basic features are:
 
