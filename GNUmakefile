@@ -33,35 +33,9 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
-#   project name
+#   common definitions
 
-PROJECT =       StdCellLib
-
-#   directory paths
-
-CATALOGDIR =    Catalog
-DOCUMENTSDIR =  Documents
-SIMULATIONDIR = Simulation
-SOURCESDIR =    Sources
-SYNTHESISDIR =  Synthesis
-TBENCHDIR =     TBench
-TOOLSDIR =      Tools
-
-#   tool variables
-
-CAT ?=          @cat
-ECHO ?=         @echo # -e
-MV ?=           mv
-TAR ?=          tar -zh
-DATE :=         $(shell date +%Y%m%d)
-
-#   project tools
-
-SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
-MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
-SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
-
-#   default
+include include.mk
 
 DISTRIBUTION =  $(CATALOGDIR)/*.cell \
                 $(DOCUMENTSDIR)/*.pdf \
@@ -69,14 +43,6 @@ DISTRIBUTION =  $(CATALOGDIR)/*.cell \
                 $(SOURCESDIR) \
                 $(SYNTHESISDIR) \
                 $(TBENCHDIR)
-
-.SUFFIXES:      # delete all default suffix rules
-#   ----------------------------------------------------------------
-#               DEFINITIONS
-#   ----------------------------------------------------------------
-
-CELLS =         $(patsubst %.cell,%,$(notdir $(wildcard $(CATALOGDIR)/*.cell)))
-MANPAGES =      $(patsubst %,%_manpage.tex,$(CELLS))
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -94,14 +60,15 @@ help:
 	$(ECHO) "    dist       - build a tarball with all important files"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    alf        - generate ALF export"
+	$(ECHO) "    tools      - generate POPCORN tool"
 	$(ECHO) "    catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)"
-	$(ECHO) "    doc        - generate complete documentation"
-	$(ECHO) "    magic      - generate MAGIC layout"
-	$(ECHO) "    popcorn    - generate POPCORN tool"
-	$(ECHO) "    spice      - generate SPICE models"
-	$(ECHO) "    svg        - generate SVG layout"
-	$(ECHO) "    verilog    - generate VERILOG models"
+	$(ECHO) "    doc        - generate data book"
+	$(ECHO) ""
+	$(ECHO) "    alf [CELL=<cell>]      - generate ALF export"
+	$(ECHO) "    magic [CELL=<cell>]    - generate MAGIC layout"
+	$(ECHO) "    spice [CELL=<cell>]    - generate SPICE models"
+	$(ECHO) "    svg [CELL=<cell>]      - generate SVG layout"
+	$(ECHO) "    verilog [CELL=<cell>]  - generate VERILOG cell models"
 	$(ECHO) ""
 	$(ECHO) "-------------------------------------------------------------------"
 	$(ECHO) "    available cells:"
@@ -122,7 +89,18 @@ dist: clean
 .PHONY: clean
 clean:
 	$(ECHO) "---- clean up all intermediate files ----"
+	$(MAKE) -f simulation.mk $@
+	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+
+#   ----------------------------------------------------------------
+#               TOOLS
+#   ----------------------------------------------------------------
+
+#   prepare Popcorn before usage
+
+.PHONY: tools 
+tools:
 	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
@@ -134,8 +112,16 @@ clean:
 #   while following steps might overwrite your manual efforts
 
 .PHONY: catalog
-catalog:
+catalog:   tools
 	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
+
+#   ----------------------------------------------------------------
+#               GENERATION TARGETS
+#   ----------------------------------------------------------------
+
+.PHONY: table-file
+table-file:
+	$(MAKE) -f simulation.mk CELL=$(CELL) table-file
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
@@ -147,34 +133,3 @@ catalog:
 doc:
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 
-.PHONY: _manpages
-_manpages: $(MANPAGES)
-
-%_circuits.tex: $(CATALOGDIR)/%.cell
-	$(ECHO) "cell -> circuits still missing"
-
-%_schematic.tex:
-	$(ECHO) "---- generate $@ ----"
-	$(SCHEMATIC) $(*F)
-
-%_truthtable.tex: $(CATALOGDIR)/%.cell
-	$(ECHO) "cell -> truthtable still missing"
-
-%_files.tex:
-	$(ECHO) "files still missing"
-
-%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex
-	$(MANUAL) $(*F)
-	$(ECHO) "---- includes for $@ done ----"
-
-#%_manpage.tex: $(DOCUMENTSDIR)/LaTeX/%_schematic.tex $(DOCUMENTSDIR)/LaTeX/%_manpage.tex
-#%_manpage.tex: $(CATALOGDIR)/%.cell $(DOCUMENTSDIR)/LaTeX/%_schematic.tex
-#%_manpage.tex:  %_circuits.tex %_schematic.tex %_truthtable.tex    !!
-
-#   ----------------------------------------------------------------
-#               TOOLS
-#   ----------------------------------------------------------------
-
-.PHONY: popcorn
-popcorn:
-	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@

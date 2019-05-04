@@ -58,7 +58,6 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-#TROFF ?=        groff -m mandoc -T ps
 TROFF ?=        groff -t -mdoc
 
 #   ----------------------------------------------------------------
@@ -76,31 +75,41 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    manual     - generate Manual Page for Popcorn"
-	$(ECHO) "    popcorn    - generate all dependencies"
+	$(ECHO) "    manual     - generate Manual Pages for Popcorn"
+	$(ECHO) "    tools      - generate all dependencies"
 	$(ECHO) ""
 
 
 .PHONY: clean
 clean:
-	$(RM) *.ps
+	$(RM) ../*.ps
 
 #   ----------------------------------------------------------------
 #               MANUAL PAGES
 #   ----------------------------------------------------------------
 
-.PHONY: cell.5.ps
-cell.5.ps: cell.5
+#   man 5 cell
+
+.PHONY: ../cell.5.ps
+../cell.5.ps: ../cell.5
 	$(TROFF) $< > $@
 
-.PHONY: table.5.ps
-table.5.ps: table.5
+#   man 5 table
+
+.PHONY: ../table.5.ps
+../table.5.ps: ../table.5
 	$(TROFF) $< > $@
 
-.PHONY: popcorn.1.ps
-popcorn.1.ps: popcorn.1
+#   man 1 popcorn
+
+.PHONY: ../popcorn.1.ps
+../popcorn.1.ps: ../popcorn.1
 	$(TROFF) $< > $@
 
-manual: cell.5.ps table.5.ps popcorn.1.ps
+manual: ../cell.5.ps ../table.5.ps ../popcorn.1.ps
 
-popcorn: manual
+#   ----------------------------------------------------------------
+#               TOOLING
+#   ----------------------------------------------------------------
+
+tools: manual

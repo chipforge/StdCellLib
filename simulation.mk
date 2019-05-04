@@ -9,9 +9,9 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Simulation/verilog/GNUmakefile
+#   File:           StdCellLib/simulation.mk
 #
-#   Purpose:        Makefile for Verilog stuff
+#   Purpose:        Makefile for Simulation stuff
 #
 #   ************    GNU Make 3.80 Source Code   ***********************
 #
@@ -33,82 +33,39 @@
 #
 #   ///////////////////////////////////////////////////////////////////
 
-#   ----------------------------------------------------------------
-#                   DEFINITIONS
-#   ----------------------------------------------------------------
+#   common definitions
 
-#   make build system defines
+include include.mk
 
-HDL ?=              verilog
-MODE ?=             batch
-
-#   directory pathes
-
-SOURCESDIR =        ../../Sources/$(HDL)
-TBENCHDIR =         ../../TBench/$(HDL)
-
-#   tool variables
+#   simulation tool variables
 
 SIMULATOR1 ?=       iverilog -g2 # -Wall
 SIMULATOR2 ?=       vvp # -v
-INCLUDEDIRS ?=      -I$(SOURCESDIR)
+INCLUDEDIRS ?=      -I $(SOURCESDIR)/verilog
 WAVEVIEWER ?=       gtkwave
-
-ECHO ?=             @echo # -e
-RM ?=               /bin/rm -f
-GREP ?=             grep -e
-SED ?=              sed
-
-#   collect all tests
-
-TESTS =             $(patsubst %_stim.v,%,$(notdir $(wildcard $(TBENCHDIR)/*_stim.v)))
-
-#   ----------------------------------------------------------------
-#                   DEFAULT TARGETS
-#   ----------------------------------------------------------------
-
-#   display help screen if no target is specified
-
-.PHONY: help
-help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) ""
-	$(ECHO) "    <testcase> - run this specified test case (see list below)"
-	$(ECHO) "    [MODE=batch|report|gui] <testcase>"
-	$(ECHO) "               - run test in batch | report | gui mode (default: $(MODE))"
-	$(ECHO) "    [STEP=rtl|pre|post] <testcase>"
-	$(ECHO) "               - run test on rtl | pre-routed | post-routed (default: $(STEP))"
-	$(ECHO) "    tests      - run all test cases (see list below)"
-	$(ECHO) ""
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available testcases:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    $(TESTS)"
-	$(ECHO) ""
 
 .PHONY: clean
 clean:
 	-$(RM) *.vcd
-	-$(RM) *.vpp
-	-$(RM) *.table
+	-$(RM) $(SIMULATIONDIR)/verilog/*_stim.v
+	-$(RM) $(SIMULATIONDIR)/verilog/*.vpp
+	-$(RM) $(SIMULATIONDIR)/verilog/*.table
 
 #   ----------------------------------------------------------------
-#                   RUN TESTCASES
+#                   RUN VERILOG SIMULATION
 #   ----------------------------------------------------------------
 
-.PHONY: tests
-tests: $(TESTS)
+verilog-slm:
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SOURCESDIR)/verilog/$(CELL)_switch.v
 
-%: PROJECT_DEFINES += -DDUMPFILE=\"$@.vcd\"
-%: $(TBENCHDIR)/%_stim.v $(SOURCESDIR)/%*_switch.v
-	$(SIMULATOR1) $(PROJECT_DEFINES) $(INCLUDEDIRS) -o $@.vpp $^
-	$(ECHO) "----    Run Test: $@    ----"
-	$(SIMULATOR2) $@.vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $@.table
+verilog-stim:
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL)_stim.v
+
+.PHONY: table-file
+table-file: PROJECT_DEFINES += -DDUMPFILE=\"$@.vcd\"
+table-file: verilog-slm verilog-stim
+	$(SIMULATOR1) $(PROJECT_DEFINES) $(INCLUDEDIRS) -o $(SIMULATIONDIR)/verilog/$(CELL).vpp $(SIMULATIONDIR)/verilog/$(CELL)_stim.v
+	$(SIMULATOR2) $(SIMULATIONDIR)/verilog/$(CELL).vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $(TEMPDIR)/$(CELL).table
 ifeq ($(MODE), gui)
-	$(WAVEVIEWER) -f $@.vcd -a $@.do
+	$(WAVEVIEWER) -f $@.vcd -a $(SIMULATIONDIR)/verilog/$(CELL).do
 endif
