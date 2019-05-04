@@ -206,7 +206,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-e")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! export-format value)  ; !! value check missing)]
+                        (set! export-format (string->symbol value))
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -391,13 +391,35 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
         (begin
             ; parse command line and set values / modes
             (let ((eigen-name (car args)))
-            (set-parameters-with-args! eigen-name (cdr args))
-            (if verbose-mode (print-parameters current-error-port))
+                (set-parameters-with-args! eigen-name (cdr args))
+                (if verbose-mode (print-parameters current-error-port))
 
-;        (+usage+ eigen-name current-error-port)
-            (display (read-cell-file cell-file))
-            (export-verilog-switch (read-cell-file cell-file))
-            0
+                ; select work load
+                (cond
+                    ; generate verilog switch-level model
+                    [(equal? export-format 'verilog-slm)
+                        (begin
+                            (export-verilog-switch (read-cell-file cell-file))
+                            0   ; exit value
+                        )
+                    ]
+
+                    ; generate verilog stimulus work bench
+                    [(equal? export-format 'verilog-stim)
+                        (begin
+                            (export-verilog-stim (read-cell-file cell-file))
+                            0   ; exit value
+                        )
+                    ]
+
+                    ; selection failed, unknown export-format value
+                    [else
+                        (begin
+                            (+usage+ eigen-name current-error-port)
+                            2   ; exit value - wrong usage
+                        )
+                    ]
+                )
             )
         )
     )
