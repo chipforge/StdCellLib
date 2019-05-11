@@ -60,6 +60,7 @@ MV ?=           mv
 TAR ?=          tar -zh
 GREP ?=         grep
 SED ?=          sed
+MKDIR ?=        mkdir -p
 DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
