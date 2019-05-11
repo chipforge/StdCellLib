@@ -47,10 +47,12 @@
   (import (scheme base)
           (scheme write)
           (scheme time))
-  (export  input-space
-           output-space
-           supply-symbol-space
-           ground-symbol-space
+  (export  input-space?
+           output-space?
+           clock-space?
+           node-space?
+           supply-symbol-space?
+           ground-symbol-space?
            mosfet-type
            mosfet-nmos?
            mosfet-pmos?
@@ -109,43 +111,203 @@
 ;;                  NODE SPACES
 ;;  -------------------------------------------------------------------
 
-;;  ------------    combinatorial inputs    ---------------------------
+;;  ------------    input node names    -------------------------------
+
+    (define input-space '(A B C D E F G H I L M P R S T U V W))
+
+;   Contract:
+;   input-space? : list-of-ports -> boolean
 
 ;   Purpose:
-;   define input node names which are used for combinatorial cells
+;   check whether node is in defined input space for cells
+
+;   Example:
+;   (input-space? 'A) => #t
+;   (input-space? 'Z) => #f
 
 ;   Definition:
-    (define input-space '(A B C D E F G H I L M N P U V W))
+    (define input-space?
+        (lambda (node)
+            (if (memq node input-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (input-space? 'A) (not (input-space? 'Z)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " input-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 
 ;;  ------------    output node names   -------------------------------
 
+    (define output-space '(Q Y Z))
+
+;   Contract:
+;   output-space? list-of-ports -> boolean
+
 ;   Purpose:
-;   define output node names which are used for combinatorial cells
+;   check wether node is in defined output space for cells
+
+;   Example:
+;   (output-space? 'A) => #f
+;   (output-space? 'Z) => #t
 
 ;   Definition:
-    (define output-space '(X Y Z))
+    (define output-space?
+        (lambda (node)
+            (if (memq node output-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (output-space? 'Z) (not (output-space? 'A)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " output-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    clock node names    -------------------------------
+
+    (define clock-space '(X))
+
+;   Contract:
+;   clock-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined clock space for cells
+
+;   Example:
+;   (clock-space? 'X) => #t
+
+;   Definition:
+    (define clock-space?
+        (lambda (node)
+            (if (memq node clock-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (clock-space? 'X)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " clock-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    internal node names -------------------------------
+
+    (define node-space '(N))
+
+;   Contract:
+;   node-space? list-of-nodes -> boolean
+
+;   Purpose:
+;   check wether node is in defined node space for cells
+
+;   Example:
+;   (node-space? 'N) => #t
+
+;   Definition:
+    (define node-space?
+        (lambda (node)
+            (if (memq node node-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (node-space? 'N)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " node-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 
 ;;  ------------    supply symbol node name space   -------------------
 
-;   Purpose:
-;   define valid supply symbol names which are used for all cells
-
-;   Usually, SCHEME is case-insensitive but some implementations are not.
+;   Usually, SCHEME is case-insensitive but some implementations (and R7RS) are not.
 ;   Hence, the list of symbols contains common low-case / upper-case variations.
 
 ;   Definition:
     (define supply-symbol-space '(vcc vdd Vcc Vdd VCC VDD))
 
-;;  ------------    ground plane node name space    -------------------
+;   Contract:
+;   sypply-symbol-space? list-of-ports -> boolean
 
 ;   Purpose:
-;   define valid ground plane symbols which are used for all cells
+;   check wether node is in defined list for sypply symbols
+
+;   Example:
+;   (supply-symbol-space? 'Vdd) => #t
+;   (supply-symbol-space? 'gnd) => #f
+
+;   Definition:
+    (define supply-symbol-space?
+        (lambda (node)
+            (if (memq node supply-symbol-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (supply-symbol-space? 'Vdd) (not (supply-symbol-space? 'gnd)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " supply-symbol-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    ground plane node name space    -------------------
 
 ;   Usually, SCHEME is case-insensitive but some implementations are not.
 ;   Hence, the list of symbols contains common low-case / upper-case variations.
 
 ;   Definition:
     (define ground-symbol-space '(gnd vss Gnd Vss GND VSS))
+
+;   Contract:
+;   ground-symbol-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined list for ground symbols
+
+;   Example:
+;   (ground-symbol-space? 'Vdd) => #t
+;   (ground-symbol-space? 'gnd) => #f
+
+;   Definition:
+    (define ground-symbol-space?
+        (lambda (node)
+            (if (memq node ground-symbol-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (ground-symbol-space? 'Gnd) (not (ground-symbol-space? 'vdd)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " ground-symbol-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -571,7 +733,7 @@
                 [(null? netlist) netlist]
 
                 ; if mosfet connected to supply power symbol, add them to netlist and go down recursive
-                [(memq (mosfet-source (car netlist)) supply-symbol-space)
+                [(supply-symbol-space? (mosfet-source (car netlist)))
                     (cons (car netlist) (get-vdd-mosfets (cdr netlist)))]
 
                 ; just go down
@@ -610,7 +772,7 @@
                 [(null? netlist) netlist]
 
                 ; if mosfet connected to ground plane symbol, add them to netlist and go down recursive
-                [(memq (mosfet-source (car netlist)) ground-symbol-space)
+                [(ground-symbol-space? (mosfet-source (car netlist)))
                     (cons (car netlist) (get-gnd-mosfets (cdr netlist)))]
 
                 ; just go down
