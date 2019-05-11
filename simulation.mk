@@ -39,15 +39,15 @@ include include.mk
 
 #   simulation tool variables
 
+WORKDIR ?=          $(SIMULATIONDIR)/verilog
 SIMULATOR1 ?=       iverilog -g2 # -Wall
 SIMULATOR2 ?=       vvp # -v
-INCLUDEDIRS ?=      -I $(SOURCESDIR)/verilog
 WAVEVIEWER ?=       gtkwave
 
 .PHONY: clean
 clean:
 	-$(RM) *.vcd
-	-$(RM) $(SIMULATIONDIR)/verilog/*_stim.v
+	-$(RM) $(SIMULATIONDIR)/verilog/*_bench.v
 	-$(RM) $(SIMULATIONDIR)/verilog/*.vpp
 	-$(RM) $(SIMULATIONDIR)/verilog/*.table
 
@@ -56,16 +56,17 @@ clean:
 #   ----------------------------------------------------------------
 
 verilog-slm:
-	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SOURCESDIR)/verilog/$(CELL)_switch.v
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL).v
 
-verilog-stim:
-	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL)_stim.v
+verilog-bench:
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL)_bench.v
 
 .PHONY: table-file
 table-file: PROJECT_DEFINES += -DDUMPFILE=\"$@.vcd\"
-table-file: verilog-slm verilog-stim
-	$(SIMULATOR1) $(PROJECT_DEFINES) $(INCLUDEDIRS) -o $(SIMULATIONDIR)/verilog/$(CELL).vpp $(SIMULATIONDIR)/verilog/$(CELL)_stim.v
-	$(SIMULATOR2) $(SIMULATIONDIR)/verilog/$(CELL).vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $(TEMPDIR)/$(CELL).table
+table-file: verilog-slm verilog-bench
+	$(MKDIR) $(TEMPDIR)
+	$(SIMULATOR1) $(PROJECT_DEFINES) -o $(WORKDIR)/$(CELL)_bench.vpp $(WORKDIR)/$(CELL).v $(WORKDIR)/$(CELL)_bench.v
+	$(SIMULATOR2) $(WORKDIR)/$(CELL)_bench.vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $(TEMPDIR)/$(CELL).table
 ifeq ($(MODE), gui)
 	$(WAVEVIEWER) -f $@.vcd -a $(SIMULATIONDIR)/verilog/$(CELL).do
 endif
