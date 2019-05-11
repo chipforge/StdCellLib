@@ -405,12 +405,37 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     ]
 
                     ; generate verilog stimulus work bench
-                    [(equal? export-format 'verilog-stim)
+                    [(equal? export-format 'verilog-bench)
                         (begin
-                            (export-verilog-stim (read-cell-file cell-file))
+                            (export-verilog-bench (read-cell-file cell-file))
                             0   ; exit value
                         )
                     ]
+
+;                    ; expand cell instead
+;                    [(equal? export-format 'cell)
+;                        (cond
+;                            ; nand-wise
+;                            [(equal? extension-method 'nand)
+;                                (begin
+;                                    0   ; exit value
+;                                )
+;                            ]
+;                            ; nor-wise
+;                            [(equal? extension-method 'nor)
+;                                (begin
+;                                    0   ; exit value
+;                                )
+;                            ]
+;                            ; selection failed, unknown extension-method
+;                            [else
+;                                (begin
+;                                    (+usage+ eigen-name current-error-port)
+;                                    2   ; exit value - wrong usage
+;                                )
+;                            ]
+;                        )
+;                    ]
 
                     ; selection failed, unknown export-format value
                     [else
