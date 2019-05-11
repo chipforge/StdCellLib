@@ -21,7 +21,7 @@ apt-get install texlive-latex-extra texlive-extra-utils texlive-latex-recommende
 or shorter
 
 ```
-apt-get install textlive-full
+apt-get install texlive-full
 ```
 
 which installs the complete (and usefull) LaTeX Environment.
