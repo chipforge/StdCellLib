@@ -645,7 +645,10 @@
 ;   get network with pull-up transistors only
 
 ;   Example:
-;   (get-pullup-network INV) => #('pmos 'A 'X 'VDD 'VDD 1 1 1)
+;   (get-pullup-network INV) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+
+;   Note:
+;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
     (define get-pullup-network
@@ -684,7 +687,10 @@
 ;   get network with pull-down transistors only
 
 ;   Example:
-;   (get-pulldown-network INV) => #('nmos 'A 'X 'GND 'GND 1 1 -1)
+;   (get-pulldown-network INV) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+
+;   Note:
+;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
     (define get-pulldown-network
@@ -723,7 +729,10 @@
 ;   get all transistors which are connected to VDD
 
 ;   Example:
-;   (get-vdd-mosfets INV) => #('pmos 'A 'X 'VDD 'VDD 1 1 1)
+;   (get-vdd-mosfets INV) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+
+;   Note:
+;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
     (define get-vdd-mosfets
@@ -762,7 +771,10 @@
 ;   get all transistors which are connected to GND
 
 ;   Example:
-;   (get-gnd-mosfets INV) => #('nmos 'A 'X 'GND 'GND 1 1 -1)
+;   (get-gnd-mosfets INV) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+
+;   Note:
+;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
     (define get-gnd-mosfets
