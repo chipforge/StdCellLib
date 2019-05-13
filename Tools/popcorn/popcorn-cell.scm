@@ -51,14 +51,7 @@
           (srfi 152)                ; string-split
           ; popcorn lib als
           (popcorn-lib))
-  (export  cell-id
-           cell-text
-           cell-inputs
-           cell-outputs
-           cell-clocks
-           cell-netlist
-           cell-additional
-           read-cell-file
+  (export  read-cell-file
            write-cell-file)
   (begin
 
@@ -71,271 +64,15 @@
 ;;                  DESCRIPTION
 ;;  -------------------------------------------------------------------
 
-;;  In principle every combinatorial cell (in CMOS technology) contains
-;;  two functional complementary networks. The pull-up network - build
-;;  with pmos transistors - as well as the pull-down network - build
-;;  with nmos transistors.
+;   In principle every combinatorial cell (in CMOS technology) contains
+;   two functional complementary networks. The pull-up network - build
+;   with pmos transistors - as well as the pull-down network - build
+;   with nmos transistors.
 
-;;  so every netlist becomes, well, a list of transistors
-
-;;  ------------    Example : INV-cell  -------------------------------
-
-;;              ^ Vdd
-;;              |
-;;          | --+
-;;     A --o| |     pmos
-;;          | --+
-;;              |
-;;              |
-;;              *---- Y
-;;              |
-;;              |
-;;          | --+
-;;     A ---| |     nmos
-;;          | --+
-;;              |
-;;             _|_ Gnd
-
-    (define INV-cell '#(INV "a Not (or Inverter) gate" (A) (Y) () (#(pmos A Y VDD VDD 1 1  1)
-                                                                   #(nmos A Y GND GND 1 1 -1)) ())
-    )
+;   so every netlist becomes, well, a list of transistors
 
 ;;  -------------------------------------------------------------------
-;;                  CELL DATA STRUCTURE
-;;  -------------------------------------------------------------------
-
-;   define cell as vector:
-;       +---------------+
-;    #0 |  cell id      |               'INV
-;       +---------------+
-;    #1 |  cell text    |               "a Not (or Inverter) gate"
-;       +---------------+
-;    #2 |  cell inputs  |               '(A)
-;       +---------------+
-;    #3 |  cell outputs |               '(Y)
-;       +---------------+
-;    #4 |  cell clocks  |               '() ; for latches
-;       +---------------+
-;    #5 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
-;       +---------------+                 #(nmos A Y GND GND 1 1 -1))
-;    #6 |  additional   |               '() ; e.g. handover ASCII-Art
-;       +---------------+
-
-;   define constants for vector indices
-    (define |cell-id#| 0)
-    (define |cell-text#| 1)
-    (define |cell-inputs#| 2)
-    (define |cell-outputs#| 3)
-    (define |cell-clocks#| 4)
-    (define |cell-netlist#| 5)
-    (define |cell-additional#| 6)
-
-;;  ------------    getter function : cell-id   -----------------------
-
-;   Contract:
-;   cell-id : cell -> symbol
-
-;   Purpose:
-;   get the cell ID out of a cell description vector
-
-;   Example:
-;   (cell-id INV-cell) => 'INV
-
-;   Definitions:
-    (define cell-id
-        (lambda (cell)
-            (vector-ref cell |cell-id#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-id INV-cell) 'INV)
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-id test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-text     -------------------
-
-;   Contract:
-;   cell-text : cell -> string
-
-;   Purpose:
-;   get the cell description out of a cell description vector
-
-;   Example:
-;   (cell-text INV-cell) => "a Not (or Inverter) gate"
-
-;   Definition:
-    (define cell-text
-        (lambda (cell)
-            (vector-ref cell |cell-text#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-text INV-cell) "a Not (or Inverter) gate")
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-text test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-inputs   -------------------
-
-;   Contract:
-;   cell-inputs : cell -> list-of-symbols
-
-;   Purpose:
-;   get the cell input list out of a cell description vector
-
-;   Example:
-;   (cell-inputs INV-cell) => '(A)
-
-;   Definition:
-    (define cell-inputs
-        (lambda (cell)
-            (vector-ref cell |cell-inputs#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-inputs INV-cell) '(A))
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-inputs test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-outputs  -------------------
-
-;   Contract:
-;   cell-outputs : cell -> list-of-symbols
-
-;   Purpose:
-;   get the cell output list out of a cell description vector
-
-;   Example:
-;   (cell-outputs INV-cell) => '(Y)
-
-;   Definition:
-    (define cell-outputs
-        (lambda (cell)
-            (vector-ref cell |cell-outputs#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-outputs INV-cell) '(Y))
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-outputs test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-clocks   -------------------
-
-;   Contract:
-;   cell-clocks : cell -> list-of-symbols
-
-;   Purpose:
-;   get the cell clock list out of a cell description vector
-
-;   Example:
-;   (cell-clocks INV-cell) => '()
-
-;   Definition:
-    (define cell-clocks
-        (lambda (cell)
-            (vector-ref cell |cell-clocks#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-clocks INV-cell) '())
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-clocks test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-netlist  -------------------
-
-;   Contract:
-;   cell-netlist : cell -> netlist
-
-;   Purpose:
-;   get the netlist out of a cell description vector
-
-;   Example:
-;   (cell-outputs INV-cell) => '(Y)
-
-;   Definition:
-    (define cell-netlist
-        (lambda (cell)
-            (vector-ref cell |cell-netlist#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-netlist INV-cell) '(#(pmos A Y VDD VDD 1 1  1)
-                                                  #(nmos A Y GND GND 1 1 -1)))
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-netlist test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  ------------    getter function : cell-additional   ---------------
-
-;   Contract:
-;   cell-additional : cell -> list-of-string
-
-;   Purpose:
-;   get additional informations for the cell out of a cell description vector
-
-;   Example:
-;   (cell-additional INV-cell) => '()
-
-;   Definition:
-    (define cell-additional
-        (lambda (cell)
-            (vector-ref cell |cell-additional#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (cell-additional INV-cell) '())
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " cell-additional test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
-;;  -------------------------------------------------------------------
-;;                  READING CELL DESCRIPTIONS
+;;                  READ/WRITE CELL DESCRIPTIONS
 ;;  -------------------------------------------------------------------
 
 ;;  ------------    read in cell file   -------------------------------
@@ -358,7 +95,7 @@
                 (if (eof-object? line)
                     '()
                     (begin
-                        (vector-set! return |cell-text#| line)
+                        (cell-text! return line)
                         (let function ((line (read-line file)))
                             (unless (eof-object? line)
                                 (cond
@@ -370,7 +107,7 @@
                                     ; .cell annotated line, get name
                                     [(equal? (substring line 0 4) ".cel")
                                         (begin
-                                            (vector-set! return |cell-id#| (string-copy line 6))
+                                            (cell-id! return (string->symbol (string-copy line 6)))
                                             (function (read-line file))
                                         )
                                     ]
@@ -378,7 +115,7 @@
                                     ; .clocks annotated line, get list
                                     [(equal? (substring line 0 4) ".clo")
                                         (begin
-                                            (vector-set! return |cell-clocks#| (stringlist->symbollist (string-split (string-copy line 7) #[ ])))
+                                            (cell-clocks! return (stringlist->symbollist (string-split (string-copy line 7) #[ ])))
                                             (function (read-line file))
                                         )
                                     ]
@@ -386,7 +123,7 @@
                                     ; .inputs annotated line, get list
                                     [(equal? (substring line 0 4) ".inp")
                                         (begin
-                                            (vector-set! return |cell-inputs#| (stringlist->symbollist (string-split (string-copy line 8) #[ ])))
+                                            (cell-inputs! return (stringlist->symbollist (string-split (string-copy line 8) #[ ])))
                                             (function (read-line file))
                                         )
                                     ]
@@ -394,7 +131,7 @@
                                     ; .outputs annotated line, get list
                                     [(equal? (substring line 0 4) ".out")
                                         (begin
-                                            (vector-set! return |cell-outputs#| (stringlist->symbollist (string-split (string-copy line 9) #[ ])))
+                                            (cell-outputs! return (stringlist->symbollist (string-split (string-copy line 9) #[ ])))
                                             (function (read-line file))
                                         )
                                     ]
@@ -402,7 +139,7 @@
                                     ; .end annotated line, clean up
                                     [(equal? (substring line 0 4) ".end")
                                         (begin
-                                            (vector-set! return |cell-netlist#| (append netlist '()))
+                                            (cell-netlist! return (append netlist '()))
                                             (eof-object)
                                         )
                                     ]
@@ -426,10 +163,6 @@
         )
     )
 
-;;  -------------------------------------------------------------------
-;;                  WRITING CELL DESCRIPTIONS
-;;  -------------------------------------------------------------------
-
 ;;  ------------    write description line  ---------------------------
 
 ;   Contract:
@@ -439,7 +172,7 @@
 ;   write cell description to STDOUT
 
 ;   Example:
-;   (write-cell-file INV-cell" => --"
+;   (write-cell-file INV-cell) => --
 
 ;   Definition:
     (define write-cell-file

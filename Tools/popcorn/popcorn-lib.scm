@@ -45,14 +45,22 @@
 
 (define-library (popcorn-lib)
   (import (scheme base)
-          (scheme write)
-          (scheme time))
-  (export  input-space?
-           output-space?
-           clock-space?
-           node-space?
-           supply-symbol-space?
-           ground-symbol-space?
+          (scheme sort)     ; list-sort
+          (scheme write)    ; display
+          (scheme time))    ; current-second
+  (export  ; example cells
+           INV-cell
+           NAND2-cell
+           NOR2-cell
+           ; cell descriptions
+           cell-id cell-id!
+           cell-text cell-text!
+           cell-inputs cell-inputs!
+           cell-outputs cell-outputs!
+           cell-clocks cell-clocks!
+           cell-netlist cell-netlist!
+           cell-additional cell-additional!
+           ; mosfet descriptions
            mosfet-type
            mosfet-nmos?
            mosfet-pmos?
@@ -63,6 +71,14 @@
            mosfet-stacked
            mosfet-xaxis
            mosfet-yaxis
+           ; node descriptions
+           input-space?
+           output-space?
+           clock-space?
+           node-space?
+           supply-symbol-space?
+           ground-symbol-space?
+           ; auxilary stuff
            copyleft-year
            stringlist->csv
            stringlist->symbollist
@@ -85,227 +101,446 @@
 
 ;;  so every netlist becomes, well, a list of transistors
 
-;;  ------------    Example : INV   -----------------------------------
+;;  ------------    Example : INV-cell  -------------------------------
 
-;;              ^ Vdd
-;;              |
-;;          | --+
-;;     A --o| |     pmos
-;;          | --+
-;;              |
-;;              |
-;;              *---- Y
-;;              |
-;;              |
-;;          | --+
-;;     A ---| |     nmos
-;;          | --+
-;;              |
-;;             _|_ Gnd
+;               ^ Vdd
+;               |
+;           | --+
+;      A --o| |     pmos
+;           | --+
+;               |
+;               *---- Y
+;               |
+;           | --+
+;      A ---| |     nmos
+;           | --+
+;               |
+;              _|_ Gnd
 
-    (define INV '(#(pmos A Y VDD VDD 1 1  1)
-                  #(nmos A Y GND GND 1 1 -1))
+    (define INV-cell '#(INV "a Not (or Inverter) gate"
+                        (A) (Y) ()
+                        (#(pmos A Y VDD VDD 1 1  1)
+                         #(nmos A Y GND GND 1 1 -1))
+                        ())
+    )
+
+;;  ------------    Example : NAND2-cell    ---------------------------
+
+;               ^ Vdd               ^ Vdd
+;               |                   |
+;           | --+               | --+
+;      A --o| |     pmos   B --o| |     pmos
+;           | --+               | --+
+;               |                   |
+;               *-------------------*---- Y
+;               |
+;           | --+
+;      A ---| |     nmos
+;           | --+
+;               |
+;               |
+;           | --+
+;      B ---| |     nmos
+;           | --+
+;               |
+;              _|_ Gnd
+
+    (define NAND2-cell '#(NAND2 "a 2-input Not-AND (or NAND) gate"
+                          (B A) (Y) ()
+                          (#(pmos B Y  VDD VDD 1 2  1)
+                           #(pmos A Y  VDD VDD 1 1  1)
+                           #(nmos A Y  N2  GND 1 1 -1)
+                           #(nmos B N2 GND GND 2 1 -2))
+                          ())
+    )
+
+;;  ------------    Example : NOR2-cell     ---------------------------
+
+;               ^ Vdd
+;               |
+;           | --+
+;      B --o| |     pmos
+;           | --+
+;               |
+;               |
+;           | --+
+;      A --o| |     pmos
+;           | --+
+;               |
+;               *-------------------*---- Y
+;               |                   |
+;           | --+               | --+
+;      A ---| |     nmos   B ---| |     nmos
+;           | --+               | --+
+;               |                   |
+;              _|_ Gnd             _|_ Gnd
+
+    (define NOR2-cell '#(NAND2 "a 2-input Not-AND (or NAND) gate"
+                         (B A) (Y) ()
+                         (#(pmos B N1 VDD VDD 2 1  2)
+                          #(pmos A Z  N1  VDD 1 1  1)
+                          #(nmos A Y  GND GND 1 1 -1)
+                          #(nmos B Y  GND GND 1 2 -1))
+                         ())
     )
 
 ;;  -------------------------------------------------------------------
-;;                  NODE SPACES
+;;                  CELL DATA STRUCTURE
 ;;  -------------------------------------------------------------------
 
-;;  ------------    input node names    -------------------------------
+;   define cell as vector:
+;       +---------------+
+;    #0 |  cell id      |               'INV
+;       +---------------+
+;    #1 |  cell text    |               "a Not (or Inverter) gate"
+;       +---------------+
+;    #2 |  cell inputs  |               '(A)
+;       +---------------+
+;    #3 |  cell outputs |               '(Y)
+;       +---------------+
+;    #4 |  cell clocks  |               '() ; for latches
+;       +---------------+
+;    #5 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
+;       +---------------+                 #(nmos A Y GND GND 1 1 -1))
+;    #6 |  additional   |               '() ; e.g. handover ASCII-Art
+;       +---------------+
 
-    (define input-space '(A B C D E F G H I L M P R S T U V W))
+;   define constants for vector indices
+    (define |cell-id#| 0)
+    (define |cell-text#| 1)
+    (define |cell-inputs#| 2)
+    (define |cell-outputs#| 3)
+    (define |cell-clocks#| 4)
+    (define |cell-netlist#| 5)
+    (define |cell-additional#| 6)
+
+;;  ------------    getter function : cell-id   -----------------------
 
 ;   Contract:
-;   input-space? : list-of-ports -> boolean
+;   cell-id : cell -> symbol
 
 ;   Purpose:
-;   check whether node is in defined input space for cells
+;   get the cell ID out of a cell description vector
 
 ;   Example:
-;   (input-space? 'A) => #t
-;   (input-space? 'Z) => #f
+;   (cell-id INV-cell) => 'INV
 
-;   Definition:
-    (define input-space?
-        (lambda (node)
-            (if (memq node input-space) #t #f)
+;   Definitions:
+    (define cell-id
+        (lambda (cell)
+            (vector-ref cell |cell-id#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (and (input-space? 'A) (not (input-space? 'Z)))
+            (if (equal? (cell-id INV-cell) 'INV)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " input-space? test" (current-error-port))
+            (display " cell-id test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    output node names   -------------------------------
-
-    (define output-space '(Q Y Z))
+;;  ------------    setter function : cell-id!  -----------------------
 
 ;   Contract:
-;   output-space? list-of-ports -> boolean
+;   cell-id! : cell symbol -> cell
 
 ;   Purpose:
-;   check wether node is in defined output space for cells
+;   set the cell ID in a cell description vector
 
 ;   Example:
-;   (output-space? 'A) => #f
-;   (output-space? 'Z) => #t
+;   (cell-id! INV-cell 'INV) => 'INV-cell
+
+;   Definitions:
+    (define cell-id!
+        (lambda (cell id)
+            (vector-set! cell |cell-id#| id)
+        )
+    )
+
+;;  ------------    getter function : cell-text     -------------------
+
+;   Contract:
+;   cell-text : cell -> string
+
+;   Purpose:
+;   get the cell description out of a cell description vector
+
+;   Example:
+;   (cell-text INV-cell) => "a Not (or Inverter) gate"
 
 ;   Definition:
-    (define output-space?
-        (lambda (node)
-            (if (memq node output-space) #t #f)
+    (define cell-text
+        (lambda (cell)
+            (vector-ref cell |cell-text#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (and (output-space? 'Z) (not (output-space? 'A)))
+            (if (equal? (cell-text INV-cell) "a Not (or Inverter) gate")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " output-space? test" (current-error-port))
+            (display " cell-text test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    clock node names    -------------------------------
-
-    (define clock-space '(X))
+;;  ------------    setter function : cell-text!    -------------------
 
 ;   Contract:
-;   clock-space? list-of-ports -> boolean
+;   cell-text! : cell string -> cell
 
 ;   Purpose:
-;   check wether node is in defined clock space for cells
+;   set the cell description in a cell description vector
 
 ;   Example:
-;   (clock-space? 'X) => #t
+;   (cell-text! INV-cell "a Not (or Inverter) gate") => INV-cell
 
 ;   Definition:
-    (define clock-space?
-        (lambda (node)
-            (if (memq node clock-space) #t #f)
+    (define cell-text!
+        (lambda (cell text)
+            (vector-set! cell |cell-text#| text)
+        )
+    )
+
+;;  ------------    getter function : cell-inputs   -------------------
+
+;   Contract:
+;   cell-inputs : cell -> list-of-symbols
+
+;   Purpose:
+;   get the cell input list out of a cell description vector
+
+;   Example:
+;   (cell-inputs INV-cell) => '(A)
+
+;   Definition:
+    (define cell-inputs
+        (lambda (cell)
+            (vector-ref cell |cell-inputs#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (clock-space? 'X)
+            (if (equal? (cell-inputs INV-cell) '(A))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " clock-space? test" (current-error-port))
+            (display " cell-inputs test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    internal node names -------------------------------
-
-    (define node-space '(N))
+;;  ------------    setter function : cell-inputs!  -------------------
 
 ;   Contract:
-;   node-space? list-of-nodes -> boolean
+;   cell-inputs! : cell list-of-symbols -> cell
 
 ;   Purpose:
-;   check wether node is in defined node space for cells
+;   set the cell input list in a cell description vector
 
 ;   Example:
-;   (node-space? 'N) => #t
+;   (cell-inputs! INV-cell '(A)) => INV-cell
 
 ;   Definition:
-    (define node-space?
-        (lambda (node)
-            (if (memq node node-space) #t #f)
+    (define cell-inputs!
+        (lambda (cell list-of-inputs)
+            (vector-set! cell |cell-inputs#| list-of-inputs)
+        )
+    )
+
+;;  ------------    getter function : cell-outputs  -------------------
+
+;   Contract:
+;   cell-outputs : cell -> list-of-symbols
+
+;   Purpose:
+;   get the cell output list out of a cell description vector
+
+;   Example:
+;   (cell-outputs INV-cell) => '(Y)
+
+;   Definition:
+    (define cell-outputs
+        (lambda (cell)
+            (vector-ref cell |cell-outputs#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (node-space? 'N)
+            (if (equal? (cell-outputs INV-cell) '(Y))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " node-space? test" (current-error-port))
+            (display " cell-outputs test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    supply symbol node name space   -------------------
-
-;   Usually, SCHEME is case-insensitive but some implementations (and R7RS) are not.
-;   Hence, the list of symbols contains common low-case / upper-case variations.
-
-;   Definition:
-    (define supply-symbol-space '(vcc vdd Vcc Vdd VCC VDD))
+;;  ------------    setter function : cell-outputs! -------------------
 
 ;   Contract:
-;   sypply-symbol-space? list-of-ports -> boolean
+;   cell-outputs! : cell list-of-symbols -> cell
 
 ;   Purpose:
-;   check wether node is in defined list for sypply symbols
+;   set the cell output list of a cell description vector
 
 ;   Example:
-;   (supply-symbol-space? 'Vdd) => #t
-;   (supply-symbol-space? 'gnd) => #f
+;   (cell-outputs! INV-cell '(Y)) => INV-cell
 
 ;   Definition:
-    (define supply-symbol-space?
-        (lambda (node)
-            (if (memq node supply-symbol-space) #t #f)
+    (define cell-outputs!
+        (lambda (cell list-of-symbols)
+            (vector-set! cell |cell-outputs#| list-of-symbols)
+        )
+    )
+
+;;  ------------    getter function : cell-clocks   -------------------
+
+;   Contract:
+;   cell-clocks : cell -> list-of-symbols
+
+;   Purpose:
+;   get the cell clock list out of a cell description vector
+
+;   Example:
+;   (cell-clocks INV-cell) => '()
+
+;   Definition:
+    (define cell-clocks
+        (lambda (cell)
+            (vector-ref cell |cell-clocks#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (and (supply-symbol-space? 'Vdd) (not (supply-symbol-space? 'gnd)))
+            (if (equal? (cell-clocks INV-cell) '())
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " supply-symbol-space? test" (current-error-port))
+            (display " cell-clocks test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    ground plane node name space    -------------------
-
-;   Usually, SCHEME is case-insensitive but some implementations are not.
-;   Hence, the list of symbols contains common low-case / upper-case variations.
-
-;   Definition:
-    (define ground-symbol-space '(gnd vss Gnd Vss GND VSS))
+;;  ------------    setter function : cell-clocks!  -------------------
 
 ;   Contract:
-;   ground-symbol-space? list-of-ports -> boolean
+;   cell-clocks! : cell list-of-symbols -> cell
 
 ;   Purpose:
-;   check wether node is in defined list for ground symbols
+;   set the cell clock in a cell description vector
 
 ;   Example:
-;   (ground-symbol-space? 'Vdd) => #t
-;   (ground-symbol-space? 'gnd) => #f
+;   (cell-clocks! INV-cell '()) => INV-cell
 
 ;   Definition:
-    (define ground-symbol-space?
-        (lambda (node)
-            (if (memq node ground-symbol-space) #t #f)
+    (define cell-clocks!
+        (lambda (cell list-of-symbols)
+            (vector-set! cell |cell-clocks#| list-of-symbols)
+        )
+    )
+
+;;  ------------    getter function : cell-netlist  -------------------
+
+;   Contract:
+;   cell-netlist : cell -> netlist
+
+;   Purpose:
+;   get the netlist out of a cell description vector
+
+;   Example:
+;   (cell-outputs INV-cell) => '(Y)
+
+;   Definition:
+    (define cell-netlist
+        (lambda (cell)
+            (vector-ref cell |cell-netlist#|)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (and (ground-symbol-space? 'Gnd) (not (ground-symbol-space? 'vdd)))
+            (if (equal? (cell-netlist INV-cell) '(#(pmos A Y VDD VDD 1 1  1)
+                                                  #(nmos A Y GND GND 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " ground-symbol-space? test" (current-error-port))
+            (display " cell-netlist test" (current-error-port))
             (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : cell-netlist!     ---------------
+
+;   Contract:
+;   cell-netlist! : cell netlist -> cell
+
+;   Purpose:
+;   set the netlist in a cell description vector
+
+;   Example:
+;   (cell-outputs! INV-cell '(Y)) => INV-cell
+
+;   Definition:
+    (define cell-netlist!
+        (lambda (cell netlist)
+            (vector-set! cell |cell-netlist#| netlist)
+        )
+    )
+
+;;  ------------    getter function : cell-additional   ---------------
+
+;   Contract:
+;   cell-additional : cell -> list-of-string
+
+;   Purpose:
+;   get additional informations for the cell out of a cell description vector
+
+;   Example:
+;   (cell-additional INV-cell) => '()
+
+;   Definition:
+    (define cell-additional
+        (lambda (cell)
+            (vector-ref cell |cell-additional#|)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (equal? (cell-additional INV-cell) '())
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " cell-additional test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : cell-additional!  ---------------
+
+;   Contract:
+;   cell-additional! : cell list-of-string -> cell
+
+;   Purpose:
+;   set additional informations in a cell description vector
+
+;   Example:
+;   (cell-additional! INV-cell '()) => INV-cell
+
+;   Definition:
+    (define cell-additional!
+        (lambda (cell list-of-symbols)
+            (vector-set! cell |cell-additional#| list-of-symbols)
         )
     )
 
@@ -545,35 +780,6 @@
         )
     )
 
-;;  ------------    getter function : mosfet-stacked    ---------------
-
-;   Contract:
-;   mosfet-stacked : mosfet -> number
-
-;   Purpose:
-;   get the order of stacked transistor for this transistor
-
-;   Example:
-;   (mosfet-stacked '#(nmos A Y VDD substrate 1 1 -1)) => 1
-
-;   Definition:
-    (define mosfet-stacked
-        (lambda (transistor)
-            (vector-ref transistor |stucked#|)
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (mosfet-stacked '#(nmos A Y VDD substrate 1 1 -1)) 1)
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " mosfet-stacked test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
-
 ;;  ------------    getter function : mosfet-xaxis  -------------------
 
 ;   Contract:
@@ -633,6 +839,208 @@
     )
 
 ;;  -------------------------------------------------------------------
+;;                  NODE SPACES
+;;  -------------------------------------------------------------------
+
+;;  ------------    input node names    -------------------------------
+
+    (define input-space '(A B C D E F G H I L M P R S T U V W))
+
+;   Contract:
+;   input-space? : list-of-ports -> boolean
+
+;   Purpose:
+;   check whether node is in defined input space for cells
+
+;   Example:
+;   (input-space? 'A) => #t
+;   (input-space? 'Z) => #f
+
+;   Definition:
+    (define input-space?
+        (lambda (node)
+            (if (memq node input-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (input-space? 'A) (not (input-space? 'Z)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " input-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    output node names   -------------------------------
+
+    (define output-space '(Q Y Z))
+
+;   Contract:
+;   output-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined output space for cells
+
+;   Example:
+;   (output-space? 'A) => #f
+;   (output-space? 'Z) => #t
+
+;   Definition:
+    (define output-space?
+        (lambda (node)
+            (if (memq node output-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (output-space? 'Z) (not (output-space? 'A)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " output-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    clock node names    -------------------------------
+
+    (define clock-space '(X))
+
+;   Contract:
+;   clock-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined clock space for cells
+
+;   Example:
+;   (clock-space? 'X) => #t
+
+;   Definition:
+    (define clock-space?
+        (lambda (node)
+            (if (memq node clock-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (clock-space? 'X)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " clock-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    internal node names -------------------------------
+
+    (define node-space '(N))
+
+;   Contract:
+;   node-space? list-of-nodes -> boolean
+
+;   Purpose:
+;   check wether node is in defined node space for cells
+
+;   Example:
+;   (node-space? 'N) => #t
+
+;   Definition:
+    (define node-space?
+        (lambda (node)
+            (if (memq node node-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (node-space? 'N)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " node-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    supply symbol node name space   -------------------
+
+;   Usually, SCHEME is case-insensitive but some implementations (and R7RS) are not.
+;   Hence, the list of symbols contains common low-case / upper-case variations.
+
+;   Definition:
+    (define supply-symbol-space '(vcc vdd Vcc Vdd VCC VDD))
+
+;   Contract:
+;   sypply-symbol-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined list for sypply symbols
+
+;   Example:
+;   (supply-symbol-space? 'Vdd) => #t
+;   (supply-symbol-space? 'gnd) => #f
+
+;   Definition:
+    (define supply-symbol-space?
+        (lambda (node)
+            (if (memq node supply-symbol-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (supply-symbol-space? 'Vdd) (not (supply-symbol-space? 'gnd)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " supply-symbol-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    ground plane node name space    -------------------
+
+;   Usually, SCHEME is case-insensitive but some implementations are not.
+;   Hence, the list of symbols contains common low-case / upper-case variations.
+
+;   Definition:
+    (define ground-symbol-space '(gnd vss Gnd Vss GND VSS))
+
+;   Contract:
+;   ground-symbol-space? list-of-ports -> boolean
+
+;   Purpose:
+;   check wether node is in defined list for ground symbols
+
+;   Example:
+;   (ground-symbol-space? 'Vdd) => #t
+;   (ground-symbol-space? 'gnd) => #f
+
+;   Definition:
+    (define ground-symbol-space?
+        (lambda (node)
+            (if (memq node ground-symbol-space) #t #f)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test
+        (begin
+            (if (and (ground-symbol-space? 'Gnd) (not (ground-symbol-space? 'vdd)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " ground-symbol-space? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  -------------------------------------------------------------------
 ;;                  FUNCTIONS on NETLISTs
 ;;  -------------------------------------------------------------------
 
@@ -645,7 +1053,7 @@
 ;   get network with pull-up transistors only
 
 ;   Example:
-;   (get-pullup-network INV) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+;   (get-pullup-network (cell-netlist INV-cell)) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
@@ -670,7 +1078,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (get-pullup-network INV) '(#(pmos A Y VDD VDD 1 1 1)))
+            (if (equal? (get-pullup-network (cell-netlist INV-cell)) '(#(pmos A Y VDD VDD 1 1 1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-pullup-network test" (current-error-port))
@@ -687,7 +1095,7 @@
 ;   get network with pull-down transistors only
 
 ;   Example:
-;   (get-pulldown-network INV) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (get-pulldown-network (cell-netlist INV-cell)) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
@@ -712,7 +1120,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (get-pulldown-network INV) '(#(nmos A Y GND GND 1 1 -1)))
+            (if (equal? (get-pulldown-network (cell-netlist INV-cell)) '(#(nmos A Y GND GND 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-pulldown-network test" (current-error-port))
@@ -729,7 +1137,7 @@
 ;   get all transistors which are connected to VDD
 
 ;   Example:
-;   (get-vdd-mosfets INV) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+;   (get-vdd-mosfets (cell-netlist INV-cell)) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
@@ -754,7 +1162,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (get-vdd-mosfets INV) '(#(pmos A Y VDD VDD 1 1 1)))
+            (if (equal? (get-vdd-mosfets (cell-netlist INV-cell)) '(#(pmos A Y VDD VDD 1 1 1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-vdd-mosfets test" (current-error-port))
@@ -771,7 +1179,7 @@
 ;   get all transistors which are connected to GND
 
 ;   Example:
-;   (get-gnd-mosfets INV) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (get-gnd-mosfets (cell-netlist INV-cell)) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
@@ -796,7 +1204,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (get-gnd-mosfets INV) '(#(nmos A Y GND GND 1 1 -1)))
+            (if (equal? (get-gnd-mosfets (cell-netlist INV-cell)) '(#(nmos A Y GND GND 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-gnd-mosfets test" (current-error-port))
@@ -813,7 +1221,7 @@
 ;   get all transistors which are connected to this node
 
 ;   Example:
-;   (get-node-mosfets INV 'Y) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (get-node-mosfets (cell-netlist INV-cell) 'Y) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
 
 ;   Definition:
     (define get-node-mosfets
@@ -840,7 +1248,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (get-node-mosfets INV 'Y) INV)
+            (if (equal? (get-node-mosfets (cell-netlist INV-cell) 'Y) (cell-netlist INV-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-node-mosfets test" (current-error-port))
@@ -857,7 +1265,7 @@
 ;   sort all transistors regarding their names
 
 ;   Example:
-;   (sort-mosfets-ascending INV) => INV
+;   (sort-mosfets-ascending (cell-netlist INV-cell)) => (cell-netlist INV-cell)
 
 ;   Definition:
     (define sort-mosfet-ascending
@@ -869,7 +1277,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test
         (begin
-            (if (equal? (sort-mosfet-ascending INV) INV)
+            (if (equal? (sort-mosfet-ascending (cell-netlist INV-cell)) (cell-netlist INV-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-mosfet-ascending test" (current-error-port))
