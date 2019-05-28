@@ -45,6 +45,7 @@
 
 (define-library (popcorn-lib)
   (import (scheme base)
+          (scheme char)     ; digit-value
           (scheme sort)     ; list-sort
           (scheme write)    ; display
           (scheme time))    ; current-second
@@ -53,42 +54,51 @@
            NAND2-cell
            NOR2-cell
            ; cell descriptions
-           cell-id cell-id!
-           cell-text cell-text!
-           cell-inputs cell-inputs!
-           cell-outputs cell-outputs!
-           cell-clocks cell-clocks!
-           cell-netlist cell-netlist!
-           cell-additional cell-additional!
+           cell-id          cell-id!
+           cell-text        cell-text!
+           cell-inputs      cell-inputs!
+           cell-outputs     cell-outputs!
+           cell-clocks      cell-clocks!
+           cell-netlist     cell-netlist!
+           cell-additional  cell-additional!
            ; mosfet descriptions
            mosfet-type
-           mosfet-nmos?
-           mosfet-pmos?
-           mosfet-gate
-           mosfet-drain
-           mosfet-source
-           mosfet-bulk
-           mosfet-stacked
-           mosfet-xaxis
-           mosfet-yaxis
+           mosfet-nmos?     mosfet-nmos!
+           mosfet-pmos?     mosfet-pmos!
+           mosfet-gate      mosfet-gate!
+           mosfet-drain     mosfet-drain!
+           mosfet-source    mosfet-source!
+           mosfet-bulk      mosfet-bulk!
+           mosfet-stacked   mosfet-stacked!
+           mosfet-xaxis     mosfet-xaxis!
+           mosfet-yaxis     mosfet-yaxis!
            ; node descriptions
            input-space?
            output-space?
            clock-space?
            node-space?
-           supply-symbol-space?
-           ground-symbol-space?
+           supply-space?
+           ground-space?
+           ; functions on netlists
+           pullup-network
+           pulldown-network
+           vdd-mosfets
+           gnd-mosfets
+           ;node-mosfets
+           sort-mosfet-ascending
+           sort-mosfet-descending
            ; auxilary stuff
            copyleft-year
            stringlist->csv
-           stringlist->symbollist
-           symbollist->stringlist)
+           ;stringlist->symbollist
+           ;symbollist->stringlist
+           )
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test #t)
+    (define build-in-self-test? #t)
 
 ;;  -------------------------------------------------------------------
 ;;                  DESCRIPTION
@@ -117,10 +127,10 @@
 ;               |
 ;              _|_ Gnd
 
-    (define INV-cell '#(INV "a Not (or Inverter) gate"
-                        (A) (Y) ()
-                        (#(pmos A Y VDD VDD 1 1  1)
-                         #(nmos A Y GND GND 1 1 -1))
+    (define INV-cell '#("INV" "a Not (or Inverter) gate"
+                        ("A") ("Y") ()
+                        (#("pmos" "A" "Y" "VDD" "VDD" 1 1  1)
+                         #("nmos" "A" "Y" "GND" "GND" 1 1 -1))
                         ())
     )
 
@@ -145,12 +155,12 @@
 ;               |
 ;              _|_ Gnd
 
-    (define NAND2-cell '#(NAND2 "a 2-input Not-AND (or NAND) gate"
-                          (B A) (Y) ()
-                          (#(pmos B Y  VDD VDD 1 2  1)
-                           #(pmos A Y  VDD VDD 1 1  1)
-                           #(nmos A Y  N2  GND 1 1 -1)
-                           #(nmos B N2 GND GND 2 1 -2))
+    (define NAND2-cell '#("NAND2" "a 2-input Not-AND (or NAND) gate"
+                          ("B" "A") ("Y") ()
+                          (#("pmos" "B" "Y"  "VDD" "VDD" 1 2  1)
+                           #("pmos" "A" "Y"  "VDD" "VDD" 1 1  1)
+                           #("nmos" "A" "Y"  "N2"  "GND" 1 1 -1)
+                           #("nmos" "B" "N2" "GND" "GND" 2 1 -2))
                           ())
     )
 
@@ -175,12 +185,12 @@
 ;               |                   |
 ;              _|_ Gnd             _|_ Gnd
 
-    (define NOR2-cell '#(NAND2 "a 2-input Not-AND (or NAND) gate"
-                         (B A) (Y) ()
-                         (#(pmos B N1 VDD VDD 2 1  2)
-                          #(pmos A Z  N1  VDD 1 1  1)
-                          #(nmos A Y  GND GND 1 1 -1)
-                          #(nmos B Y  GND GND 1 2 -1))
+    (define NOR2-cell '#("NAND2" "a 2-input Not-AND (or NAND) gate"
+                         ("B" "A") ("Y") ()
+                         (#("pmos" "B" "N1" "VDD" "VDD" 2 1  2)
+                          #("pmos" "A" "Z"  "N1"  "VDD" 1 1  1)
+                          #("nmos" "A" "Y"  "GND" "GND" 1 1 -1)
+                          #("nmos" "B" "Y"  "GND" "GND" 1 2 -1))
                          ())
     )
 
@@ -190,18 +200,18 @@
 
 ;   define cell as vector:
 ;       +---------------+
-;    #0 |  cell id      |               'INV
+;    #0 |  cell id      |               "INV"
 ;       +---------------+
 ;    #1 |  cell text    |               "a Not (or Inverter) gate"
 ;       +---------------+
-;    #2 |  cell inputs  |               '(A)
+;    #2 |  cell inputs  |               '("A")
 ;       +---------------+
-;    #3 |  cell outputs |               '(Y)
+;    #3 |  cell outputs |               '("Y")
 ;       +---------------+
 ;    #4 |  cell clocks  |               '() ; for latches
 ;       +---------------+
-;    #5 |  netlist      |               '(#(pmos A Y VDD VDD 1 1  1)
-;       +---------------+                 #(nmos A Y GND GND 1 1 -1))
+;    #5 |  netlist      |               '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1)
+;       +---------------+                 #("nmos" "A" "Y" "GND" "GND" 1 1 -1))
 ;    #6 |  additional   |               '() ; e.g. handover ASCII-Art
 ;       +---------------+
 
@@ -223,7 +233,7 @@
 ;   get the cell ID out of a cell description vector
 
 ;   Example:
-;   (cell-id INV-cell) => 'INV
+;   (cell-id INV-cell) => "INV"
 
 ;   Definitions:
     (define cell-id
@@ -233,9 +243,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (cell-id INV-cell) 'INV)
+            (if (equal? (cell-id INV-cell) "INV")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell-id test" (current-error-port))
@@ -246,18 +256,19 @@
 ;;  ------------    setter function : cell-id!  -----------------------
 
 ;   Contract:
-;   cell-id! : cell symbol -> cell
+;   cell-id! : cell string -> cell
 
 ;   Purpose:
 ;   set the cell ID in a cell description vector
 
 ;   Example:
-;   (cell-id! INV-cell 'INV) => 'INV-cell
+;   (cell-id! INV-cell "INV") => INV-cell
 
 ;   Definitions:
     (define cell-id!
         (lambda (cell id)
             (vector-set! cell |cell-id#| id)
+            cell
         )
     )
 
@@ -280,7 +291,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (cell-text INV-cell) "a Not (or Inverter) gate")
                 (display "++ passed" (current-error-port))
@@ -305,19 +316,20 @@
     (define cell-text!
         (lambda (cell text)
             (vector-set! cell |cell-text#| text)
+            cell
         )
     )
 
 ;;  ------------    getter function : cell-inputs   -------------------
 
 ;   Contract:
-;   cell-inputs : cell -> list-of-symbols
+;   cell-inputs : cell -> list-of-strings
 
 ;   Purpose:
 ;   get the cell input list out of a cell description vector
 
 ;   Example:
-;   (cell-inputs INV-cell) => '(A)
+;   (cell-inputs INV-cell) => '("A")
 
 ;   Definition:
     (define cell-inputs
@@ -327,9 +339,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (cell-inputs INV-cell) '(A))
+            (if (equal? (cell-inputs INV-cell) '("A"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell-inputs test" (current-error-port))
@@ -340,31 +352,32 @@
 ;;  ------------    setter function : cell-inputs!  -------------------
 
 ;   Contract:
-;   cell-inputs! : cell list-of-symbols -> cell
+;   cell-inputs! : cell list-of-strings -> cell
 
 ;   Purpose:
 ;   set the cell input list in a cell description vector
 
 ;   Example:
-;   (cell-inputs! INV-cell '(A)) => INV-cell
+;   (cell-inputs! INV-cell '("A")) => INV-cell
 
 ;   Definition:
     (define cell-inputs!
         (lambda (cell list-of-inputs)
             (vector-set! cell |cell-inputs#| list-of-inputs)
+            cell
         )
     )
 
 ;;  ------------    getter function : cell-outputs  -------------------
 
 ;   Contract:
-;   cell-outputs : cell -> list-of-symbols
+;   cell-outputs : cell -> list-of-strings
 
 ;   Purpose:
 ;   get the cell output list out of a cell description vector
 
 ;   Example:
-;   (cell-outputs INV-cell) => '(Y)
+;   (cell-outputs INV-cell) => '("Y")
 
 ;   Definition:
     (define cell-outputs
@@ -374,9 +387,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (cell-outputs INV-cell) '(Y))
+            (if (equal? (cell-outputs INV-cell) '("Y"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell-outputs test" (current-error-port))
@@ -387,25 +400,26 @@
 ;;  ------------    setter function : cell-outputs! -------------------
 
 ;   Contract:
-;   cell-outputs! : cell list-of-symbols -> cell
+;   cell-outputs! : cell list-of-strings -> cell
 
 ;   Purpose:
 ;   set the cell output list of a cell description vector
 
 ;   Example:
-;   (cell-outputs! INV-cell '(Y)) => INV-cell
+;   (cell-outputs! INV-cell '("Y")) => INV-cell
 
 ;   Definition:
     (define cell-outputs!
-        (lambda (cell list-of-symbols)
-            (vector-set! cell |cell-outputs#| list-of-symbols)
+        (lambda (cell list-of-strings)
+            (vector-set! cell |cell-outputs#| list-of-string)
+            cell
         )
     )
 
 ;;  ------------    getter function : cell-clocks   -------------------
 
 ;   Contract:
-;   cell-clocks : cell -> list-of-symbols
+;   cell-clocks : cell -> list-of-strings
 
 ;   Purpose:
 ;   get the cell clock list out of a cell description vector
@@ -421,7 +435,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (cell-clocks INV-cell) '())
                 (display "++ passed" (current-error-port))
@@ -446,6 +460,7 @@
     (define cell-clocks!
         (lambda (cell list-of-symbols)
             (vector-set! cell |cell-clocks#| list-of-symbols)
+            cell
         )
     )
 
@@ -458,7 +473,7 @@
 ;   get the netlist out of a cell description vector
 
 ;   Example:
-;   (cell-outputs INV-cell) => '(Y)
+;   (cell-netlist INV-cell) => '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("nmos" "A" "Y" "GND" "GND" 1 1 -1))
 
 ;   Definition:
     (define cell-netlist
@@ -468,10 +483,10 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (cell-netlist INV-cell) '(#(pmos A Y VDD VDD 1 1  1)
-                                                  #(nmos A Y GND GND 1 1 -1)))
+            (if (equal? (cell-netlist INV-cell) '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1)
+                                                  #("nmos" "A" "Y" "GND" "GND" 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell-netlist test" (current-error-port))
@@ -488,12 +503,14 @@
 ;   set the netlist in a cell description vector
 
 ;   Example:
-;   (cell-outputs! INV-cell '(Y)) => INV-cell
+;   (cell-netlist! INV-cell '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1)
+;                             #("nmos" "A" "Y" "GND" "GND" 1 1 -1))) => INV-cell
 
 ;   Definition:
     (define cell-netlist!
         (lambda (cell netlist)
             (vector-set! cell |cell-netlist#| netlist)
+            cell
         )
     )
 
@@ -516,7 +533,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (cell-additional INV-cell) '())
                 (display "++ passed" (current-error-port))
@@ -541,6 +558,7 @@
     (define cell-additional!
         (lambda (cell list-of-symbols)
             (vector-set! cell |cell-additional#| list-of-symbols)
+            cell
         )
     )
 
@@ -550,17 +568,17 @@
 
 ;   define transistor as vector:        Example:
 ;       +---------------+
-;    #0 |  circuit type |               'nmos
+;    #0 |  circuit type |               "nmos"
 ;       +---------------+
-;    #1 |  gate node    |               'A
+;    #1 |  gate node    |               "A"
 ;       +---------------+
-;    #2 |  drain node   |               'X
+;    #2 |  drain node   |               "X"
 ;       +---------------+
-;    #3 |  source node  |               'VDD
+;    #3 |  source node  |               "VDD"
 ;       +---------------+
-;    #4 |  bulk node    |               'VDD
+;    #4 |  bulk node    |               "VDD"
 ;       +---------------+
-;    #5 |  stucked      |               1
+;    #5 |  stacked      |               1
 ;       +---------------+
 ;    #6 |  x-axis point |               1
 ;       +---------------+
@@ -573,7 +591,7 @@
     (define |drain-node#| 2)
     (define |source-node#| 3)
     (define |bulk-node#| 4)
-    (define |stucked#| 5)
+    (define |stacked#| 5)
     (define |xaxis-point#| 6)
     (define |yaxis-point#| 7)
 
@@ -586,7 +604,7 @@
 ;   get the mosfet type out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-type '#(nmos A Y VDD substrate 1 1 -1)) => 'nmos
+;   (mosfet-type '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => "nmos"
 
 ;   Definition:
     (define mosfet-type
@@ -596,9 +614,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-type '#(nmos A Y VDD substrate 1 1 -1)) 'nmos)
+            (if (equal? (mosfet-type '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) "nmos")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-type test" (current-error-port))
@@ -615,22 +633,53 @@
 ;   check the mosfet type out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-nmos? '#(nmos A Y VDD substrate 1 1 -1)) => #t
+;   (mosfet-nmos? '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => #t
 
 ;   Definition:
     (define mosfet-nmos?
         (lambda (transistor)
-            (equal? (vector-ref transistor |circuit-type#|) 'nmos)
+            (equal? (vector-ref transistor |circuit-type#|) "nmos")
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (mosfet-nmos? '#(nmos A Y VDD substrate 1 1 -1))
+            (if (mosfet-nmos? '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-nmos? test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : mosfet-nmos!  -------------------
+
+;   Contract:
+;   mosfet-nmos! : mosfet -> mosfet
+
+;   Purpose:
+;   set the mosfet type in a mosfet description vector to nmos
+
+;   Example:
+;   (mosfet-nmos! '#("pmos" "A" "Y" "GND" "GND" 1 1 -1)) => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-nmos!
+        (lambda (transistor)
+            (vector-set! transistor |circuit-type#| "nmos")
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-nmos! '#("pmos" "A" "Y" "GND" "GND" 1 1 -1))
+                                      '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-nmos! test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -644,19 +693,19 @@
 ;   check the mosfet type out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-pmos? '#(pmos A Y VDD substrate 1 1 -1)) => #t
+;   (mosfet-pmos? '#("pmos" "A" "Y" "VDD" "VDD" 1 1 -1)) => #t
 
 ;   Definition:
     (define mosfet-pmos?
         (lambda (transistor)
-            (equal? (vector-ref transistor |circuit-type#|) 'pmos)
+            (equal? (vector-ref transistor |circuit-type#|) "pmos")
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (mosfet-pmos? '#(pmos A Y GND substrate 1 1 1))
+            (if (mosfet-pmos? '#("pmos" "A" "Y" "VDD" "VDD" 1 1 1))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-pmos? test" (current-error-port))
@@ -664,6 +713,36 @@
         )
     )
 
+;;  ------------    setter function : mosfet-pmos!  -------------------
+
+;   Contract:
+;   mosfet-pmos! : mosfet -> mosfet
+
+;   Purpose:
+;   set the mosfet type in a mosfet description vector to pmos
+
+;   Example:
+;   (mosfet-pmos! '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => '#("pmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-pmos!
+        (lambda (transistor)
+            (vector-set! transistor |circuit-type#| "pmos")
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-pmos! '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                                      '#("pmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-pmos! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 ;;  ------------    getter function : mosfet-gate   -------------------
 
 ;   Contract:
@@ -673,7 +752,7 @@
 ;   get the mosfet gate node out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-gate '#(nmos A Y VDD substrate 1 1 -1)) => 'A
+;   (mosfet-gate '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => "A"
 
 ;   Definition:
     (define mosfet-gate
@@ -683,9 +762,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-gate '#(nmos A Y VDD substrate 1 1 -1)) 'A)
+            (if (equal? (mosfet-gate '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) "A")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-gate test" (current-error-port))
@@ -693,6 +772,36 @@
         )
     )
 
+;;  ------------    setter function : mosfet-gate!  -------------------
+
+;   Contract:
+;   mosfet-gate! : mosfet string -> mosfet
+
+;   Purpose:
+;   set the mosfet gate in a mosfet description vector
+
+;   Example:
+;   (mosfet-gate! '#("nmos" "B" "Y" "GND" "GND" 1 1 -1) "A") => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-gate!
+        (lambda (transistor gate)
+            (vector-set! transistor |gate-node#| gate)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-gate! '#("nmos" "B" "Y" "GND" "GND" 1 1 -1) "A")
+                                      '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-gate! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 ;;  ------------    getter function : mosfet-drain  -------------------
 
 ;   Contract:
@@ -702,7 +811,7 @@
 ;   get the mosfet drain node out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-drain '#(nmos A Y VDD substrate 1 1 -1)) => 'X
+;   (mosfet-drain '#("nmos" "A" "Y" "VDD" "VDD" 1 1 -1)) => "Y"
 
 ;   Definition:
     (define mosfet-drain
@@ -712,9 +821,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-drain '#(nmos A Y VDD substrate 1 1 -1)) 'Y)
+            (if (equal? (mosfet-drain '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) "Y")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-drain test" (current-error-port))
@@ -722,6 +831,36 @@
         )
     )
 
+;;  ------------    setter function : mosfet-drain! -------------------
+
+;   Contract:
+;   mosfet-drain! : mosfet string -> mosfet
+
+;   Purpose:
+;   set the mosfet drain in a mosfet description vector
+
+;   Example:
+;   (mosfet-drain! '#("nmos" "A" "Z" "GND" "GND" 1 1 -1) "Y") => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-drain!
+        (lambda (transistor drain)
+            (vector-set! transistor |drain-node#| drain)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-drain! '#("nmos" "A" "Z" "GND" "GND" 1 1 -1) "Y")
+                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-drain! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 ;;  ------------    getter function : mosfet-source -------------------
 
 ;   Contract:
@@ -731,7 +870,7 @@
 ;   get the mosfet source node out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-source '#(nmos A Y VDD substrate 1 1 -1)) => 'VDD
+;   (mosfet-source '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => "GND"
 
 ;   Definition:
     (define mosfet-source
@@ -741,9 +880,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-source '#(nmos A Y VDD substrate 1 1 -1)) 'VDD)
+            (if (equal? (mosfet-source '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) "GND")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-source test" (current-error-port))
@@ -751,6 +890,36 @@
         )
     )
 
+;;  ------------    setter function : mosfet-source!    ---------------
+
+;   Contract:
+;   mosfet-source! : mosfet string -> mosfet
+
+;   Purpose:
+;   set the mosfet source in a mosfet description vector
+
+;   Example:
+;   (mosfet-source! '#("nmos" "A" "Y" "VDD" "GND" 1 1 -1) "GND") => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-source!
+        (lambda (transistor source)
+            (vector-set! transistor |source-node#| source)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-source! '#("nmos" "A" "Y" "VDD" "GND" 1 1 -1) "GND")
+                                        '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-source! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 ;;  ------------    getter function : mosfet-bulk   -------------------
 
 ;   Contract:
@@ -760,7 +929,7 @@
 ;   get the mosfet bulk node out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-bulk '#(nmos A Y VDD substrate 1 1 -1)) => substrate
+;   (mosfet-bulk '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => "GND"
 
 ;   Definition:
     (define mosfet-bulk
@@ -770,12 +939,103 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-bulk '#(nmos A Y VDD substrate 1 1 -1)) 'substrate)
+            (if (equal? (mosfet-bulk '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) "GND")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-bulk test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : mosfet-bulk!  -------------------
+
+;   Contract:
+;   mosfet-bulk! : mosfet string -> mosfet
+
+;   Purpose:
+;   set the mosfet bulk in a mosfet description vector
+
+;   Example:
+;   (mosfet-bulk! '#("nmos" "A" "Y" "GND" "VDD" 1 1 -1) "GND") => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-bulk!
+        (lambda (transistor bulk)
+            (vector-set! transistor |bulk-node#| bulk)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-bulk! '#("nmos" "A" "Y" "GND" "VDD" 1 1 -1) "GND")
+                                      '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-bulk! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    getter function : mosfet-stacked    ---------------
+
+;   Contract:
+;   mosfet-stacked : mosfet -> number
+
+;   Purpose:
+;   get the mosfet number of stacked transistors out of mosfet transistor vector
+
+;   Example:
+;   (mosfet-stacked '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => 1
+
+;   Definition:
+    (define mosfet-stacked
+        (lambda (transistor)
+            (vector-ref transistor |stacked#|)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-stacked '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) 1)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-stacked test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : mosfet-stacked!   ---------------
+
+;   Contract:
+;   mosfet-stacked! : mosfet number -> mosfet
+
+;   Purpose:
+;   set the number of stacked transistors in a mosfet description vector
+
+;   Example:
+;   (mosfet-stacked! '#("nmos" "A" "Y" "GND" "GND" 0 1 -1) 1) => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-stacked!
+        (lambda (transistor stacked)
+            (vector-set! transistor |stacked#| stacked)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-stacked! '#("nmos" "A" "Y" "GND" "GND" 0 1 -1) 1)
+                                         '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-stacked! test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -789,7 +1049,7 @@
 ;   get the mosfet x-axis coordinate out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-xaxis '#(nmos A Y VDD substrate 1 1 -1)) => 1
+;   (mosfet-xaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => 1
 
 ;   Definition:
     (define mosfet-xaxis
@@ -799,12 +1059,43 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-xaxis '#(nmos A Y VDD substrate 1 1 -1)) 1)
+            (if (equal? (mosfet-xaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) 1)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-xaxis test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    setter function : mosfet-xaxis!     ---------------
+
+;   Contract:
+;   mosfet-xaxis! : mosfet number -> mosfet
+
+;   Purpose:
+;   set the mosfet xaxis in a mosfet description vector
+
+;   Example:
+;   (mosfet-xaxis! '#("nmos" "A" "Y" "GND" "GND" 1 0 -1) 1) => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-xaxis!
+        (lambda (transistor xaxis)
+            (vector-set! transistor |xaxis-point#| xaxis)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-xaxis! '#("nmos" "A" "Y" "GND" "GND" 1 0 -1) 1)
+                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-xaxis! test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -818,7 +1109,7 @@
 ;   get the mosfet y-axis coordinate out of mosfet transistor vector
 
 ;   Example:
-;   (mosfet-yaxis '#(nmos A Y VDD substrate 1 1 -1)) => 1
+;   (mosfet-yaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) => -1
 
 ;   Definition:
     (define mosfet-yaxis
@@ -828,9 +1119,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (mosfet-yaxis '#(nmos A Y VDD substrate 1 1 -1)) -1)
+            (if (equal? (mosfet-yaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) -1)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet-yaxis test" (current-error-port))
@@ -838,13 +1129,43 @@
         )
     )
 
+;;  ------------    setter function : mosfet-yaxis!     ---------------
+
+;   Contract:
+;   mosfet-yaxis! : mosfet number -> mosfet
+
+;   Purpose:
+;   set the mosfet yaxis in a mosfet description vector
+
+;   Example:
+;   (mosfet-yaxis! '#("nmos" "A" "Y" "GND" "GND" 1 0 -1) 1) => '#("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define mosfet-yaxis!
+        (lambda (transistor yaxis)
+            (vector-set! transistor |yaxis-point#| yaxis)
+            transistor
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-yaxis! '#("nmos" "A" "Y" "GND" "GND" 1 1  0) -1)
+                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-yaxis! test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
 ;;  -------------------------------------------------------------------
 ;;                  NODE SPACES
 ;;  -------------------------------------------------------------------
 
 ;;  ------------    input node names    -------------------------------
 
-    (define input-space '(A B C D E F G H I L M P R S T U V W))
+    (define input-space '(#\A #\B #\C #\D #\E #\F #\H #\I #\K #\L #\M #\P #\R #\S #\T #\U #\W))
 
 ;   Contract:
 ;   input-space? : list-of-ports -> boolean
@@ -853,20 +1174,20 @@
 ;   check whether node is in defined input space for cells
 
 ;   Example:
-;   (input-space? 'A) => #t
-;   (input-space? 'Z) => #f
+;   (input-space? "A0") => #t
+;   (input-space? "Z") => #f
 
 ;   Definition:
     (define input-space?
         (lambda (node)
-            (if (memq node input-space) #t #f)
+            (if (memq (string-ref node 0) input-space) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (and (input-space? 'A) (not (input-space? 'Z)))
+            (if (and (input-space? "A0") (not (input-space? "Z")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " input-space? test" (current-error-port))
@@ -876,7 +1197,7 @@
 
 ;;  ------------    output node names   -------------------------------
 
-    (define output-space '(Q Y Z))
+    (define output-space '(#\Q #\Y #\Z))
 
 ;   Contract:
 ;   output-space? list-of-ports -> boolean
@@ -885,20 +1206,20 @@
 ;   check wether node is in defined output space for cells
 
 ;   Example:
-;   (output-space? 'A) => #f
-;   (output-space? 'Z) => #t
+;   (output-space? "A0") => #f
+;   (output-space? "Z") => #t
 
 ;   Definition:
     (define output-space?
         (lambda (node)
-            (if (memq node output-space) #t #f)
+            (if (memq (string-ref node 0) output-space) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (and (output-space? 'Z) (not (output-space? 'A)))
+            (if (and (output-space? "Z") (not (output-space? "A0")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " output-space? test" (current-error-port))
@@ -908,7 +1229,7 @@
 
 ;;  ------------    clock node names    -------------------------------
 
-    (define clock-space '(X))
+    (define clock-space '(#\X))
 
 ;   Contract:
 ;   clock-space? list-of-ports -> boolean
@@ -917,19 +1238,19 @@
 ;   check wether node is in defined clock space for cells
 
 ;   Example:
-;   (clock-space? 'X) => #t
+;   (clock-space? "X0") => #t
 
 ;   Definition:
     (define clock-space?
         (lambda (node)
-            (if (memq node clock-space) #t #f)
+            (if (memq (string-ref node 0) clock-space) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (clock-space? 'X)
+            (if (clock-space? "X0")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " clock-space? test" (current-error-port))
@@ -939,7 +1260,7 @@
 
 ;;  ------------    internal node names -------------------------------
 
-    (define node-space '(N))
+    (define node-space '(#\N))
 
 ;   Contract:
 ;   node-space? list-of-nodes -> boolean
@@ -948,19 +1269,20 @@
 ;   check wether node is in defined node space for cells
 
 ;   Example:
-;   (node-space? 'N) => #t
+;   (node-space? "N2") => #t
 
 ;   Definition:
     (define node-space?
         (lambda (node)
-            (if (memq node node-space) #t #f)
+;            (if (memq (string-ref node 0) node-space) #t #f)
+            (if (member (string-ref node 0) node-space) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (node-space? 'N)
+            (if (node-space? "N2")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " node-space? test" (current-error-port))
@@ -971,10 +1293,10 @@
 ;;  ------------    supply symbol node name space   -------------------
 
 ;   Usually, SCHEME is case-insensitive but some implementations (and R7RS) are not.
-;   Hence, the list of symbols contains common low-case / upper-case variations.
+;   Hence, the member compare has a string-ci=? option.
 
 ;   Definition:
-    (define supply-symbol-space '(vcc vdd Vcc Vdd VCC VDD))
+    (define supply-space (list "vcc" "vdd"))
 
 ;   Contract:
 ;   sypply-symbol-space? list-of-ports -> boolean
@@ -983,23 +1305,23 @@
 ;   check wether node is in defined list for sypply symbols
 
 ;   Example:
-;   (supply-symbol-space? 'Vdd) => #t
-;   (supply-symbol-space? 'gnd) => #f
+;   (supply-space? "Vdd") => #t
+;   (supply-space? "GND") => #f
 
 ;   Definition:
-    (define supply-symbol-space?
+    (define supply-space?
         (lambda (node)
-            (if (memq node supply-symbol-space) #t #f)
+            (if (member node supply-space string-ci=?) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (and (supply-symbol-space? 'Vdd) (not (supply-symbol-space? 'gnd)))
+            (if (and (supply-space? "Vdd") (not (supply-space? "gnd")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " supply-symbol-space? test" (current-error-port))
+            (display " supply-space? test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1007,35 +1329,35 @@
 ;;  ------------    ground plane node name space    -------------------
 
 ;   Usually, SCHEME is case-insensitive but some implementations are not.
-;   Hence, the list of symbols contains common low-case / upper-case variations.
+;   Hence, the member compare has a string-ci=? option.
 
 ;   Definition:
-    (define ground-symbol-space '(gnd vss Gnd Vss GND VSS))
+    (define ground-space (list "gnd" "vss"))
 
 ;   Contract:
-;   ground-symbol-space? list-of-ports -> boolean
+;   ground-space? list-of-ports -> boolean
 
 ;   Purpose:
 ;   check wether node is in defined list for ground symbols
 
 ;   Example:
-;   (ground-symbol-space? 'Vdd) => #t
-;   (ground-symbol-space? 'gnd) => #f
+;   (ground-space? "gnd") => #t
+;   (ground-space? "vdd") => #f
 
 ;   Definition:
-    (define ground-symbol-space?
+    (define ground-space?
         (lambda (node)
-            (if (memq node ground-symbol-space) #t #f)
+            (if (member node ground-space string-ci=?) #t #f)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (and (ground-symbol-space? 'Gnd) (not (ground-symbol-space? 'vdd)))
+            (if (and (ground-space? "gnd") (not (ground-space? "vdd")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " ground-symbol-space? test" (current-error-port))
+            (display " ground-space? test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1047,19 +1369,19 @@
 ;;  ------------    filter network for pull-up      -------------------
 
 ;   Contract:
-;   get-pullup-network : netlist -> netlist
+;   pullup-network : netlist -> netlist
 
 ;   Purpose:
 ;   get network with pull-up transistors only
 
 ;   Example:
-;   (get-pullup-network (cell-netlist INV-cell)) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+;   (pullup-network (cell-netlist INV-cell)) => #('pmos "A" "Y" "VDD" 'VDD" 1 1 1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
-    (define get-pullup-network
+    (define pullup-network
         (lambda (netlist)
             (cond
                 ; empty list?
@@ -1067,41 +1389,41 @@
 
                 ; if pMOS than add mosfet to netlist, go down recursive
                 [(mosfet-pmos? (car netlist))
-                    (cons (car netlist) (get-pullup-network (cdr netlist)))]
+                    (cons (car netlist) (pullup-network (cdr netlist)))]
 
                 ; just go down
-                [else (get-pullup-network (cdr netlist))]
+                [else (pullup-network (cdr netlist))]
             )
         )
     )
 
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    ;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
         (begin
-            (if (equal? (get-pullup-network (cell-netlist INV-cell)) '(#(pmos A Y VDD VDD 1 1 1)))
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " get-pullup-network test" (current-error-port))
-            (newline (current-error-port))
-        )
+        (if (equal? (pullup-network (cell-netlist INV-cell)) '(#("pmos" "A" "Y" "VDD" "VDD" 1 1 1)))
+            (display "++ passed" (current-error-port))
+            (display "-- failed" (current-error-port)))
+        (display " pullup-network test" (current-error-port))
+        (newline (current-error-port))
     )
+)
 
 ;;  ------------    filter network for pull-down    -------------------
 
 ;   Contract:
-;   get-pulldown-network : netlist -> netlist
+;   pulldown-network : netlist -> netlist
 
 ;   Purpose:
 ;   get network with pull-down transistors only
 
 ;   Example:
-;   (get-pulldown-network (cell-netlist INV-cell)) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (pulldown-network (cell-netlist INV-cell)) => #("nmos" "A" "Y" "GND" "GND" 1 1 -1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
-    (define get-pulldown-network
+    (define pulldown-network
         (lambda (netlist)
             (cond
                 ; empty list?
@@ -1109,21 +1431,21 @@
 
                 ; if nMOS than add mosfet to netlist, go down recursive
                 [(mosfet-nmos? (car netlist))
-                    (cons (car netlist) (get-pulldown-network (cdr netlist)))]
+                    (cons (car netlist) (pulldown-network (cdr netlist)))]
 
                 ; just go down
-                [else (get-pulldown-network (cdr netlist))]
+                [else (pulldown-network (cdr netlist))]
             )
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (get-pulldown-network (cell-netlist INV-cell)) '(#(nmos A Y GND GND 1 1 -1)))
+            (if (equal? (pulldown-network (cell-netlist INV-cell)) '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " get-pulldown-network test" (current-error-port))
+            (display " pulldown-network test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1131,41 +1453,41 @@
 ;;  ------------    filter for VDD connected transistors    -----------
 
 ;   Contract:
-;   get-vdd-mosfets : netlist -> netlist
+;   vdd-mosfets : netlist -> netlist
 
 ;   Purpose:
 ;   get all transistors which are connected to VDD
 
 ;   Example:
-;   (get-vdd-mosfets (cell-netlist INV-cell)) => #('pmos 'A 'Y 'VDD 'VDD 1 1 1)
+;   (vdd-mosfets (cell-netlist INV-cell)) => #("pmos" "A" "Y" "VDD" "VDD" 1 1 1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
-    (define get-vdd-mosfets
+    (define vdd-mosfets
         (lambda (netlist)
             (cond
                 ; empty list?
                 [(null? netlist) netlist]
 
                 ; if mosfet connected to supply power symbol, add them to netlist and go down recursive
-                [(supply-symbol-space? (mosfet-source (car netlist)))
-                    (cons (car netlist) (get-vdd-mosfets (cdr netlist)))]
+                [(supply-space? (mosfet-source (car netlist)))
+                    (cons (car netlist) (vdd-mosfets (cdr netlist)))]
 
                 ; just go down
-                [else (get-vdd-mosfets (cdr netlist))]
+                [else (vdd-mosfets (cdr netlist))]
             )
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (get-vdd-mosfets (cell-netlist INV-cell)) '(#(pmos A Y VDD VDD 1 1 1)))
+            (if (equal? (vdd-mosfets (cell-netlist INV-cell)) '(#("pmos" "A" "Y" "VDD" "VDD" 1 1 1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " get-vdd-mosfets test" (current-error-port))
+            (display " vdd-mosfets test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1173,41 +1495,41 @@
 ;;  ------------    filter for GND connected transistors    -----------
 
 ;   Contract:
-;   get-gnd-mosfets : netlist -> netlist
+;   gnd-mosfets : netlist -> netlist
 
 ;   Purpose:
 ;   get all transistors which are connected to GND
 
 ;   Example:
-;   (get-gnd-mosfets (cell-netlist INV-cell)) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (gnd-mosfets (cell-netlist INV-cell)) => #("nmos" "A" "Y" "GND" "GND" 1 1 -1)
 
 ;   Note:
 ;   Implementation with (map) or (filter) are better?
 
 ;   Definition:
-    (define get-gnd-mosfets
+    (define gnd-mosfets
         (lambda (netlist)
             (cond
                 ; empty list?
                 [(null? netlist) netlist]
 
                 ; if mosfet connected to ground plane symbol, add them to netlist and go down recursive
-                [(ground-symbol-space? (mosfet-source (car netlist)))
-                    (cons (car netlist) (get-gnd-mosfets (cdr netlist)))]
+                [(ground-space? (mosfet-source (car netlist)))
+                    (cons (car netlist) (gnd-mosfets (cdr netlist)))]
 
                 ; just go down
-                [else (get-gnd-mosfets (cdr netlist))]
+                [else (gnd-mosfets (cdr netlist))]
             )
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (get-gnd-mosfets (cell-netlist INV-cell)) '(#(nmos A Y GND GND 1 1 -1)))
+            (if (equal? (gnd-mosfets (cell-netlist INV-cell)) '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " get-gnd-mosfets test" (current-error-port))
+            (display " gnd-mosfets test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1215,16 +1537,16 @@
 ;;  ------------    filter for node connected transistors   -----------
 
 ;   Contract:
-;   get-node-mosfets : netlist node -> netlist
+;   node-mosfets : netlist node -> netlist
 
 ;   Purpose:
 ;   get all transistors which are connected to this node
 
 ;   Example:
-;   (get-node-mosfets (cell-netlist INV-cell) 'Y) => #('nmos 'A 'Y 'GND 'GND 1 1 -1)
+;   (node-mosfets (cell-netlist INV-cell) "Y") => INV-cell
 
 ;   Definition:
-    (define get-node-mosfets
+    (define node-mosfets
         (lambda (netlist node)
             (cond
                 ; empty list?
@@ -1233,54 +1555,203 @@
                 ; if mosfet connected to node, add them to netlist and go down recursive
                 ; on source pins ..
                 [(equal? (mosfet-source (car netlist)) node)
-                    (cons (car netlist) (get-node-mosfets (cdr netlist) node))]
+                    (cons (car netlist) (node-mosfets (cdr netlist) node))]
 
                 ; .. and drain pins
                 [(equal? (mosfet-drain  (car netlist)) node)
-                    (cons (car netlist) (get-node-mosfets (cdr netlist) node))]
+                    (cons (car netlist) (node-mosfets (cdr netlist) node))]
 
                 ; just go down
-                [else (get-node-mosfets (cdr netlist) node)]
+                [else (node-mosfets (cdr netlist) node)]
             )
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (get-node-mosfets (cell-netlist INV-cell) 'Y) (cell-netlist INV-cell))
+            (if (equal? (node-mosfets (cell-netlist INV-cell) "Y") (cell-netlist INV-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " get-node-mosfets test" (current-error-port))
+            (display " node-mosfets test" (current-error-port))
             (newline (current-error-port))
+        )
+    )
+
+;;  ------------    filter for all intermediate nods    ---------------
+
+;   Contract:
+;   pullup-nodes : netlist -> list-of-nodes
+
+;   Purpose:
+;   filter all nodes from pullup network into one list
+
+;   Example:
+;   (pullup-nodes (cell-netlist INV-Cell)) => '()
+;   (pullup-nodes (cell-netlist NOR2-Cell)) => '("N1")
+
+;   Definition:
+    (define pullup-nodes
+        (lambda (netlist)
+            (let ((network (pullup-network netlist)))
+                (cond
+                    ; emtpy list?
+                    [(null? network) network]
+
+                    ; nodes on drain?
+                    [(node-space? (mosfet-drain (car network)))
+                        (cons (mosfet-drain (car network)) (pullup-nodes (cdr network)))]
+
+                    ; nodes on source?
+                    [(node-space? (mosfet-source (car network)))
+                        (cons (mosfet-source (car network)) (pullup-nodes (cdr network)))]
+
+                    ; just go down
+                    [else (pullup-nodes (cdr network))]
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (display (pullup-nodes (cell-netlist NOR2-cell)))
+            (if (equal? (pullup-nodes (cell-netlist NOR2-cell)) '("N1"))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " pullup-nodes test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    calculate next free pullup node     ---------------
+
+;   Congtract:
+;   pullup-node : cell -> node
+
+;   Purpose:
+;   search for highest used node in pullup network, calculate next
+
+;   Example:
+;   (pullup-node INV-cell) => N1
+
+;   Definition:
+    (define pullup-node
+        (lambda (cell)
+        )
+    )
+
+;;  ------------    <mosfets operator   -------------------------------
+
+    (define <mosfet
+        (lambda (kar kdr)
+            (let ((1st (mosfet-gate kar))
+                  (2nd (mosfet-gate kdr)))
+                (let ((length-1st (string-length 1st))
+                      (length-2nd (string-length 2nd)))
+                    (cond
+                        ; 1st name is shorter than 2nd
+                        [(< length-1st length-2nd) #t]
+                        ; 1st name is longer than 2nd
+                        [(> length-1st length-2nd) #f]
+                        ; character of 1st name is smaller than 2nd
+                        [(< (char->integer (string-ref 1st 0)) (char->integer (string-ref 2nd 0))) #t]
+                        [else
+                            (if (> length-1st 1)
+                                ; check numbers
+                                (< (string->number (substring 1st 1 length-1st)) (string->number (substring 2nd 1 length-2nd)))
+                                ; otherwise false
+                                #f)
+                        ]
+                    )
+                )
+            )
+        )
+    )
+
+;;  ------------    >mosfets operator   -------------------------------
+
+    (define >mosfet
+        (lambda (kar kdr)
+            (let ((1st (mosfet-gate kar))
+                  (2nd (mosfet-gate kdr)))
+                (let ((length-1st (string-length 1st))
+                      (length-2nd (string-length 2nd)))
+                    (cond
+                        ; 1st name is longer than 2nd
+                        [(> length-1st length-2nd) #t]
+                        ; 1st name is shorter than 2nd
+                        [(< length-1st length-2nd) #f]
+                        ; character of 1st name is bigger than 2nd
+                        [(> (char->integer (string-ref 1st 0)) (char->integer (string-ref 2nd 0))) #t]
+                        [else
+                            (if (> length-1st 1)
+                                ; check numbers
+                                (> (string->number (substring 1st 1 length-1st 1)) (string->number (substring 2nd 1 length-2nd)))
+                                ; otherwise false
+                                #f)
+                        ]
+                    )
+                )
+            )
         )
     )
 
 ;;  ------------    sort mosfets ascending  ---------------------------
 
 ;   Contract:
-;   sort-mosfets-ascending : netlist -> netlist
+;   sort-mosfet-ascending : netlist -> netlist
 
 ;   Purpose:
 ;   sort all transistors regarding their names
 
 ;   Example:
-;   (sort-mosfets-ascending (cell-netlist INV-cell)) => (cell-netlist INV-cell)
+;   (sort-mosfet-ascending '(#("nmos" "B" "N2" "GND" "GND" 2 1 -2) #("nmos" "A" "Y"  "N2" GND 1 1 -1))) => (pulldown-network (cell-netlist NAND2-cell))
 
 ;   Definition:
     (define sort-mosfet-ascending
         (lambda (netlist)
-            netlist ; !!
+            (list-sort <mosfet netlist)
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (sort-mosfet-ascending (cell-netlist INV-cell)) (cell-netlist INV-cell))
+            (if (equal? (sort-mosfet-ascending '(#("nmos" "B" "N2" "GND" "GND" 2 1 -2) #("nmos" "A" "Y" "N2" "GND" 1 1 -1))) (pulldown-network (cell-netlist NAND2-cell)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-mosfet-ascending test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    sort mosfets descending     -----------------------
+
+;   Contract:
+;   sort-mosfets-desscending : netlist -> netlist
+
+;   Purpose:
+;   sort all transistors regarding their names
+
+;   Example:
+;   (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("pmos" "B" "Y" "VDD" "VDD" 1 2  1))) => (pullup-network (cell-netlist NAND2-cell))
+
+;   Definition:
+    (define sort-mosfet-descending
+        (lambda (netlist)
+            (list-sort >mosfet netlist)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("pmos" "B" "Y" "VDD" "VDD" 1 2  1))) (pullup-network (cell-netlist NAND2-cell)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " sort-mosfet-descending test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1317,7 +1788,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (> (copyleft-year) 2018)
                 (display "++ passed" (current-error-port))
@@ -1349,7 +1820,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (stringlist->csv '("C2" "B1" "A0")) "C2, B1, A0")
                 (display "++ passed" (current-error-port))
@@ -1378,7 +1849,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (stringlist->symbollist (list "C2" "B1" "A0")) '(C2 B1 A0))
                 (display "++ passed" (current-error-port))
@@ -1407,7 +1878,7 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
             (if (equal? (symbollist->stringlist '(C2 B1 A0)) (list "C2" "B1" "A0"))
                 (display "++ passed" (current-error-port))
