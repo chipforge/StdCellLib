@@ -9,7 +9,7 @@
 .\"                         www.chipforge.org
 .\"                 there are projects from small cores up to PCBs, too.
 .\"
-.\" File:           popcorn.1
+.\" File:           StdCellLib/Tools/popcorn.1
 .\"
 .\" Purpose:        man 1 popcorn - classical Manual Page
 .\"
@@ -18,7 +18,7 @@
 .\" ///////////////////////////////////////////////////////////////////
 .\"
 .\" Copyright (c)   2019 by
-.\"                 SANKOWSKI, Hagen - hsank@nospam.chipforge.org
+.\"                 chipforge - <popcorn@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
 .\" provided that this copyright statement is not removed from the
@@ -151,6 +151,10 @@ Schematic (gEDA and friends)
 Schematic (TeX with Circdia package)
 .It Em truthtable_tex
 Truth Table (TeX)
+.It Em verilog-slm
+Switch-level Model (Verilog '95)
+.It Em verilog-bench
+Stimulation Work Bench (Verilog '95)
 .El
 .Ss \-h, \-\-help
 Display help message and exit.
@@ -163,7 +167,7 @@ Limit the longest path of stacked transistors between output and any supply
 line to
 .Em number .
 .Ss \-m method
-Enlarge cell with following methods:
+Enlarge cell with one of following methods:
 .Bl -ohang
 .It Em nand
 Add nMOS transistor in serial into pull-down path.
@@ -175,7 +179,7 @@ Add nMOS transistor in serial into highest free pull-down path.
 Add pMOS transistor in serial into highest free pull-up path.
 .El
 .Pp
-An addition in one network implies an addition in the other network also.
+An addition in one network implies an addition in the complementary network also.
 .Ss \-T file
 Specify the
 .Xr magic 1
@@ -197,7 +201,7 @@ For the exact file format, see
 .Sh FILES
 .Pa *.cell
 .Sh AUTHORS
-.An Hagen SANKOWSKI Aq hsank@nospam.chipforge.org
+.An chipforge Aq popcorn@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
 .Sh COPYRIGHT

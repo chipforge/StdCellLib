@@ -9,15 +9,15 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Documents/LaTeX/GNUmakefile
+#   File:           StdCellLib/include.mk
 #
-#   Purpose:        Makefile for Document Generation in LaTeX
+#   Purpose:        include common definitions
 #
 #   ************    GNU Make 3.80 Source Code       ****************
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+#   Copyright (c) 2018 by chipforge <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -33,59 +33,41 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
+#   ----------------------------------------------------------------
+#               DEFINITIONS
+#   ----------------------------------------------------------------
+
 #   project name
 
 PROJECT =       StdCellLib
 
-#   directory pathes
+#   directory paths
 
-DOCUMENTSDIR =  .
-OUTPUTDIR =     ..
+CATALOGDIR =    Catalog
+DOCUMENTSDIR =  Documents
+SIMULATIONDIR = Simulation
+SOURCESDIR =    Sources
+SYNTHESISDIR =  Synthesis
+TEMPDIR =       Intermediate
+TBENCHDIR =     TBench
+TOOLSDIR =      Tools
 
 #   tool variables
 
 CAT ?=          @cat
 ECHO ?=         @echo # -e
 MV ?=           mv
-RM ?=           rm -f
 TAR ?=          tar -zh
+GREP ?=         grep
+SED ?=          sed
+MKDIR ?=        mkdir -p
 DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-LATEX ?=        pdflatex # -output-directory $(OUTPUTDIR)
+POPCORN ?=      $(TOOLSDIR)/popcorn/popcorn # -v
+SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
+MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
+SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
 
-#   ----------------------------------------------------------------
-#               DEFAULT TARGETS
-#   ----------------------------------------------------------------
-
-#   display help screen if no target is specified
-
-.PHONY: help
-help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) "    clean      - clean up all intermediate files"
-	$(ECHO) ""
-	$(ECHO) "    doc        - compile documentation"
-	$(ECHO) ""
-
-
-.PHONY: clean
-clean:
-	$(RM) *.aux *.idx *.log *.toc *.out
-
-#   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
-#   ----------------------------------------------------------------
-
-.PHONY: doc
-doc:    pdf clean
-
-.PHONY: pdf
-pdf:    $(PROJECT).tex revision.tex
-	$(LATEX) $<
-	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
+.SUFFIXES:      # delete all default suffix rules

@@ -1,4 +1,4 @@
-"a Not (or Inverter) gate"
+a Not (or Inverter) gate
 .cell INV
 .inputs A
 .outputs Y
@@ -17,6 +17,6 @@
 #       | +-.
 #           |
 #          _|_ Gnd
-A Y vdd pmos 1  1
-A Y gnd nmos 1 -1
+pmos A Y vdd vdd 1 1  1
+nmos A Y gnd vdd 1 1 -1
 .end
