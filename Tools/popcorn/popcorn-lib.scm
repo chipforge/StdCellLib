@@ -84,7 +84,10 @@
            pulldown-network
            vdd-mosfets
            gnd-mosfets
-           ;node-mosfets
+           input-mosfets
+           complementary-mosfets
+           pullup-nodes
+           pulldown-nodes
            sort-mosfet-ascending
            sort-mosfet-descending
            ; auxilary stuff
@@ -1534,35 +1537,33 @@
         )
     )
 
-;;  ------------    filter for node connected transistors   -----------
+;;  ------------    filter for input connected transistors  -----------
 
 ;   Contract:
-;   node-mosfets : netlist node -> netlist
+;   input-mofets : netlist node -> netlist
 
 ;   Purpose:
-;   get all transistors which are connected to this node
+;   get all transistors which are connected to input
 
 ;   Example:
-;   (node-mosfets (cell-netlist INV-cell) "Y") => INV-cell
+;   (input-mosfets (cell-netlist INV-cell) "A") => INV-cell
 
-;   Definition:
-    (define node-mosfets
+;   Note
+;   Implementation with (map) or (filter) are better?
+
+;   Definitions:
+    (define input-mosfets
         (lambda (netlist node)
             (cond
                 ; empty list?
                 [(null? netlist) netlist]
 
-                ; if mosfet connected to node, add them to netlist and go down recursive
-                ; on source pins ..
-                [(equal? (mosfet-source (car netlist)) node)
-                    (cons (car netlist) (node-mosfets (cdr netlist) node))]
-
-                ; .. and drain pins
-                [(equal? (mosfet-drain  (car netlist)) node)
-                    (cons (car netlist) (node-mosfets (cdr netlist) node))]
+                ; if mosfet connected to input node, add them to netlist and go down recursive
+                [(equal? (mosfet-gate (car netlist)) node)
+                    (cons (car netlist) (input-mosfets (cdr netlist) node))]
 
                 ; just go down
-                [else (node-mosfets (cdr netlist) node)]
+                [else (input-mosfets (cdr netlist) node)]
             )
         )
     )
@@ -1570,15 +1571,57 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (node-mosfets (cell-netlist INV-cell) "Y") (cell-netlist INV-cell))
+            (if (equal? (input-mosfets (cell-netlist INV-cell) "A") (cell-netlist INV-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " node-mosfets test" (current-error-port))
+            (display " input-mosfets test" (current-error-port))
             (newline (current-error-port))
         )
     )
 
-;;  ------------    filter for all intermediate nods    ---------------
+;;  ------------    filter for node connected transistors   -----------
+
+;   Contract:
+;   complementary-mosfets : netlist transtistor -> netlist
+
+;   Purpose:
+;   get complementary transistors which is connected to the same input
+
+;   Example:
+;   (complementary-mosfets (cell-netlist INV-cell) #("pmos" "A" "Y" "VDD" "VDD" 1 1  1)) => #("nmos" "A" "Y" "GND" "GND" 1 1 -1)
+
+;   Definition:
+    (define complementary-mosfets
+        (lambda (netlist transistor)
+            (let ((input (mosfet-gate transistor)))
+                (cond
+                    ; pmos? get first transistor out-of-list
+                    [(mosfet-pmos? transistor)
+                        (car (input-mosfets (pulldown-network netlist) input))]
+
+                    ; nmos? get first transistor out-of-list
+                    [(mosfet-nmos? transistor)
+                        (car (input-mosfets (pullup-network netlist) input))]
+
+                    ; unknown circuit
+                    [else #f]
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (complementary-mosfets (cell-netlist INV-cell) #("pmos" "A" "Y" "VDD" "VDD" 1 1  1)) #("nmos" "A" "Y" "GND" "GND" 1 1 -1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " complementary-mosfets test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    filter for intermediate pullup nodes    -----------
 
 ;   Contract:
 ;   pullup-nodes : netlist -> list-of-nodes
@@ -1594,20 +1637,21 @@
     (define pullup-nodes
         (lambda (netlist)
             (let ((network (pullup-network netlist)))
-                (cond
+                (if (null? network)
                     ; emtpy list?
-                    [(null? network) network]
+                    network
+                    (let ((node (mosfet-drain (car network)))
+                          (feedback (pullup-nodes (cdr network))))
+                        (cond
+                            ; node on drain in node-space?
+                            [(and (node-space? node) (not (member node feedback)))
+                                    (cons node feedback)
+                            ]
 
-                    ; nodes on drain?
-                    [(node-space? (mosfet-drain (car network)))
-                        (cons (mosfet-drain (car network)) (pullup-nodes (cdr network)))]
-
-                    ; nodes on source?
-                    [(node-space? (mosfet-source (car network)))
-                        (cons (mosfet-source (car network)) (pullup-nodes (cdr network)))]
-
-                    ; just go down
-                    [else (pullup-nodes (cdr network))]
+                            ; just go down
+                            [else (pullup-nodes (cdr network))]
+                        )
+                    )
                 )
             )
         )
@@ -1621,6 +1665,54 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " pullup-nodes test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    filter for intermediate pulldown nodes  -----------
+
+;   Contract:
+;   pulldown-nodes : netlist -> list-of-nodes
+
+;   Purpose:
+;   filter all nodes from pulldown network into one list
+
+;   Example:
+;   (pulldown-nodes (cell-netlist INV-Cell)) => '()
+;   (pulldown-nodes (cell-netlist NAND2-Cell)) => '("N2")
+
+;   Definition:
+    (define pulldown-nodes
+        (lambda (netlist)
+            (let ((network (pulldown-network netlist)))
+                (if (null? network)
+                    ; emtpy list?
+                    network
+                    (let ((node (mosfet-drain (car network)))
+                          (feedback (pulldown-nodes (cdr network))))
+                        (cond
+                            ; node on drain in node-space?
+                            [(and (node-space? node) (not (member node feedback)))
+                                    (cons node feedback)
+                            ]
+
+                            ; just go down
+                            [else (pulldown-nodes (cdr network))]
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (display (pulldown-nodes (cell-netlist NAND2-cell)))
+            (if (equal? (pulldown-nodes (cell-netlist NAND2-cell)) '("N2"))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " pulldown-nodes test" (current-error-port))
             (newline (current-error-port))
         )
     )
