@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd April 12, 2019
+.Dd June 10, 2019
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -95,9 +95,7 @@ In both networks all inputs are used to determine the output functionality.
    A --o| |     pMOS
         | +-.
             |
-            |
             *---- Y
-            |
             |
         | +-'
    A ---| |     nMOS
@@ -170,16 +168,21 @@ line to
 Enlarge cell with one of following methods:
 .Bl -ohang
 .It Em nand
-Add nMOS transistor in serial into pull-down path.
+Add nMOS transistor in serial into highest free pull-down path.
+Use new character for enumeration scheme.
 .It Em nor
-Add pMOS transistor in serial into pull-up path.
+Add pMOS transistor in serial into highest free pull-up path.
+Use new character for enumeration scheme.
 .It Em aoi
 Add nMOS transistor in serial into highest free pull-down path.
+Use next index for enumeration.
 .It Em oai
 Add pMOS transistor in serial into highest free pull-up path.
+Use next index for enumeration.
 .El
 .Pp
-An addition in one network implies an addition in the complementary network also.
+An addition in one network implies an addition - a transisor in parallel - in the complementary network also.
+In some cases, the enlargement with one method is not feasible while the limit of stacked transistors is already reached.
 .Ss \-T file
 Specify the
 .Xr magic 1
