@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -45,7 +45,7 @@
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \title{LibreSilicon's Standard Cell Library}
-\author{Hagen Sankowski}
+\author{chipforge}
 \date{\today}
 
 \makeindex  % usefull for ToC
@@ -55,7 +55,7 @@
 \maketitle
 \begin{abstract}
 \begin{quote}
-Copyright \textcopyright  2018 CHIPFORGE.ORG. All rights reserved.
+Copyright \textcopyright  2018 CHIPFORGE. All rights reserved.
 
 This process is licensed under the Libre Silicon public license; you can redistribute it and/or modify it under the terms of the Libre Silicon public license as published by the Libre Silicon alliance either version 2 of the License, or (at your option) any later version.
 
@@ -76,13 +76,12 @@ For further clarification consult the complete documentation of the process.
 \input{cmos_in_a_nutshell.tex}
 \clearpage
 
-\section{Considerations}
+%%\section{Considerations} !!
 \newcommand{\stacktfour}{YES}
 %\newcommand{\stacktfour}{NO}
-\clearpage
+%%\clearpage !!
 
 \section{Logical Cells}
-\twocolumn
 
 \ifthenelse{\equal{\stacktfour}{YES}}{
     \input{AND4_manpage.tex}
@@ -145,10 +144,8 @@ For further clarification consult the complete documentation of the process.
 
 \input{XOR2_manpage.tex}
 
-\onecolumn
 \section{Physical Cells}
 
-\twocolumn
 \input{TIE0_manpage.tex}
 \input{TIE1_manpage.tex}
 \input{FILL_manpage.tex}
@@ -157,6 +154,4 @@ VDDIO \\
 GND \\
 ANA
 
-\onecolumn
-\
 \end{document}

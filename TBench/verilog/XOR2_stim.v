@@ -9,15 +9,15 @@
 //                          www.chipforge.org
 //                  there are projects from small cores up to PCBs, too.
 //
-//  File:           StdCellLib/Sources/verilog/tb_XOR2.v
+//  File:           StdCellLib/TBench/verilog/XOR2_stim.v
 //
-//  Purpose:        XOR2 Testbench
+//  Purpose:        XOR2 stimulus generation
 //
 //  ************    IEEE Std 1364-2001 (Verilog HDL)    ***************
 //
 //  ///////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+//  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 //  All rights reserved.
 //
 //      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,7 +34,7 @@
 //  ///////////////////////////////////////////////////////////////////
 
 //  -------------------------------------------------------------------
-//                          DESCRIPTION
+//                  DESCRIPTION
 //  -------------------------------------------------------------------
 
 //  Event principles:
@@ -56,31 +56,31 @@
 `include "timescale.v"
 
 //  -------------------------------------------------------------------
-//                          CONFIGURATION
+//                  CONFIGURATION
 //  -------------------------------------------------------------------
 
-`define                 TIMELIMIT       10_000
+`define             TIMELIMIT       10_000
 
-//  ----------------    global signal   -------------------------------
+//  ------------    global signals      -------------------------------
 
-`define                 CLK_PERIOD      10
-`define                 RST_PERIOD      200
-`define                 STROBE          (0.8 * `CLK_PERIOD)
+`define             CLK_PERIOD      10
+`define             RST_PERIOD      200
+`define             STROBE          (0.8 * `CLK_PERIOD)
 
-module tb_XOR2 (
+module XOR2_stim (
 //  Sorry, testbenches do not have ports
 );
 
 //  ------------    global signals      -------------------------------
 
-    reg                 clk_tb = ~0;        // start with falling edge
+    reg             clk_tb = ~0;        // start with falling edge
 
 always @ (clk_tb)
 begin
     clk_tb <= #(`CLK_PERIOD/2) ~clk_tb;
 end
 
-    reg                 rst_tb = 0;         // start inactive
+    reg             rst_tb = 0;         // start inactive
 
 initial
 begin
@@ -92,31 +92,21 @@ end
 
 //  ------------    testbench top level signals -----------------------
 
-    localparam          c_width = 2;
+    localparam      WIDTH = 2;
 
-    reg [c_width-1:0]   r_stimuli = 0;      // for input pattern
-    wire                w_response_cell;    // for cell model
-    wire                w_response_switch;  // for switch-level model
+    reg [WIDTH-1:0] r_stimuli = 0;      // for input pattern
+    wire            w_response;         // for model
 
 //  ------------    device-under-test (DUT) ---------------------------
 
-// cell model
-XOR2 dut_cell (
-    .Z                  (w_response_cell),  // Z
-    .B                  (r_stimuli[1]),     // B
-    .A                  (r_stimuli[0])      // A
-);
-
 // switch-level model
 XOR2_switch dut_switch (
-    .Z                  (w_response_switch),// Z
-    .B                  (r_stimuli[1]),     // B
-    .A                  (r_stimuli[0])      // A
+    .Z              (w_response),       // Z
+    .B              (r_stimuli[1]),     // B
+    .A              (r_stimuli[0])      // A
 );
 
 //  ------------    test functionality  -------------------------------
-
-    integer             failed = 0;         // failed test item counter
 
 task t_initialize;
 begin
@@ -133,8 +123,8 @@ task t_step;
 begin
     repeat(reps) begin
         @ (posedge clk_tb);
-        #(`STROBE);
         r_stimuli <= r_stimuli + 1;
+        #(`STROBE);
     end
 end
 endtask
@@ -145,19 +135,16 @@ initial
 begin
     t_initialize;
 
-    for (i=0; i<=2**c_width; i=i+1)
+    $display(".table");
+    $display(".//\tB\tA\t:\tZ;");
+
+    for (i=0; i<2**WIDTH; i=i+1)
         begin
-        $display("\t%t: %b - %s", $time, r_stimuli, (w_response_cell == w_response_switch)? "yes": "NO");
-        failed <= failed + (w_response_cell !== w_response_switch);
+        $display(".\t%b\t%b\t:\t%b;", r_stimuli[1], r_stimuli[0], w_response);
         t_step(1);
         end
-    t_step(1);
 
-    #1;
-    if (failed)
-        $display("\t%m: *failed* %0d times", failed);
-    else
-        $display("\t%m: *well done*");
+    $display(".endtable");
     $finish;
 end
 
