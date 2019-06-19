@@ -62,8 +62,12 @@ sub truth
           if($t)
           {
             verb "Transitor conducting\n";
-	    my $ig=($g=~m/^(vdd|gnd)$/i)?$g:(defined($iv{$g}) && $iv{$g}=~m/^(vdd|gnd)$/i)?$iv{$g}:undef;
-	    my $id=($d=~m/^(vdd|gnd)$/i)?$d:(defined($iv{$d}) && $iv{$d}=~m/^(vdd|gnd)$/i)?$iv{$d}:undef;
+	    verb "g: $g iv{g}=".($iv{$g}||"")."\n";
+	    verb "d: $d iv{d}=".($iv{$d}||"")."\n";
+	    my $ig=($g=~m/^(vdd|gnd)$/i)?$g:(defined($iv{$g}) && $iv{$g}=~m/^(vdd|gnd|0|1)$/i)?$iv{$g}:undef;
+	    verb "ig: ".($ig||"")."\n";
+	    my $id=($d=~m/^(vdd|gnd)$/i)?$d:(defined($iv{$d}) && $iv{$d}=~m/^(vdd|gnd|0|1)$/i)?$iv{$d}:undef;
+	    verb "id: ".($id||"")."\n";
 
 	    if((defined($ig) && defined($id)) && (($ig=~m/vdd/i && $id=~m/gnd/i) || ($ig=~m/vdd/i && $id=~m/gnd/i)))
 	    {
