@@ -59,7 +59,7 @@
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test #t)
+    (define build-in-self-test? #t)
 
 ;;  -------------------------------------------------------------------
 ;;                  AUXILARY FUNCTIONS
@@ -74,7 +74,7 @@
 ;   transfer a list of input symbols into list of strings
 
 ;   Example:
-;   (inputlist->stimulilist '(C B A)) => ("stimuli[2]" "stimuli[1]" "stimuli[0]")
+;   (inputlist->stimulilist '("C" "B" "A")) => ("stimuli[2]" "stimuli[1]" "stimuli[0]")
 
 ;   Definition:
     (define inputlist->stimulilist
@@ -89,9 +89,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (inputlist->stimulilist '(C B A)) '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
+            (if (equal? (inputlist->stimulilist '("C" "B" "A")) '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " inputlist->stimulilist test" (current-error-port))
@@ -108,7 +108,7 @@
 ;   transfer a list of output symbols into list of strings
 
 ;   Example:
-;   (outputlist->responselist '(Z Y X)) => ("response[2]" "response[1]" "response[0]")
+;   (outputlist->responselist '("Z" "Y")) => ("response[1]" "response[0]")
 
 ;   Definition:
     (define outputlist->responselist
@@ -123,9 +123,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (outputlist->responselist '(Z Y X)) '("response[2]" "response[1]" "response[0]"))
+            (if (equal? (outputlist->responselist '("Z" "Y")) '("response[1]" "response[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " outputlist->responselist test" (current-error-port))
@@ -142,7 +142,7 @@
 ;   transfer a list of clock symbols into list of strings
 
 ;   Example:
-;   (clocklist->signallist '(Ckl)) => ("clk_tb")
+;   (clocklist->signallist '("X")) => ("clk_tb")
 
 ;   Definition:
     (define clocklist->signallist
@@ -155,9 +155,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (clocklist->signallist (list 'Clk)) '("clk_tb"))
+            (if (equal? (clocklist->signallist (list "X")) '("clk_tb"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " clocklist->signallist test" (current-error-port))
@@ -174,7 +174,7 @@
 ;   transfer lists of ports into well-formed table format
 
 ;   Example:
-;   (portlists->tableformat '(Y A)) => ("\\t%b\\t:%b")
+;   (portlists->tableformat '("Y" "A")) => ("\\t%b\\t:%b")
 
 ;   Definition:
     (define portlists->tableformat
@@ -191,9 +191,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (portlists->tableformat '(A Y)) "\\t%b\\t:%b")
+            (if (equal? (portlists->tableformat '("A" "Y")) "\\t%b\\t:%b")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " portlists->tableformat test" (current-error-port))
@@ -293,7 +293,7 @@
     )
 
 ;;  -------------------------------------------------------------------
-;;                  WRITING CELL DESCRIPTIONS
+;;                  WRITING VERILOG MODULE
 ;;  -------------------------------------------------------------------
 
 ;;  ------------    export verilog module   ---------------------------
@@ -321,9 +321,9 @@
     parameter gnd = 1'b0;
 
 "                   (cell-id cell)
-                    (stringlist->csv (symbollist->stringlist (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell))))
-                    (stringlist->csv (symbollist->stringlist (cell-outputs cell)))
-                    (stringlist->csv (symbollist->stringlist (cell-inputs cell)))
+                    (stringlist->csv (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell)))
+                    (stringlist->csv (cell-outputs cell))
+                    (stringlist->csv (cell-inputs cell))
                 )
             )
         )
@@ -338,7 +338,7 @@
 ;   generate Verilog '95 transistor line on STDOUT
 
 ;   Example:
-;   (export-verilog-mosfet '#(nmos A Y VDD substrate 1 1 -1)) => --
+;   (export-verilog-mosfet '#(nmos A Y GND GND 1 1 -1)) => --
 
 ;   Definition:
     (define export-verilog-mosfet
