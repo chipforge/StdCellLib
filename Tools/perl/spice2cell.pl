@@ -1,7 +1,11 @@
 #!/usr/bin/perl -w
 use strict;
 
-my $demo=<<EOF
+print "spice2cell converts SPICE compatible .sp files to Popcorn compatible .cell files\n";
+print "Usage: spice2cell <filename.sp>\n";
+
+# This is an example AND2X1 cell in SPICE format:
+my $example=<<EOF
 .subckt AND2X1 Y B vdd gnd A
 M0 a_2_6# A vdd vdd pfet w=2u l=0.2u
 + ad=0p pd=0u as=0p ps=0u 
@@ -24,12 +28,14 @@ my %seenpins=();
 our $name="UNNAMED";
 our $pins="";
 
+# Defines whether pins are inputs or outputs since SPICE does not have that concept
 my %iomap=('A'=>'I','B'=>'I','C'=>'I','CLK'=>'I','D'=>'I','EN'=>'I','Q'=>'O','R'=>'I','S'=>'I','Y'=>'O','YC'=>'O','YS'=>'O','gnd'=>'','vdd'=>'','GND'=>'','VDD'=>'','Z'=>'O','DI'=>'I','DO'=>'O','OEN'=>'I','YPAD'=>'O','gnd2'=>'','vdd2'=>'','GND2'=>'','VDD2'=>'','vss'=>'','VSS'=>'');
 my %mosmap=('pfet'=>'pmos','nfet'=>'nmos','nmos'=>'nmos','pmos'=>'pmos','hnfet'=>'nmos','hpfet'=>'pmos');
 our %internalnets=();
 our $internalcounter=0;
 our $OUT;
 
+# Generates and caches new names for the internal nets, which must be unique per cell
 sub internal($)
 {
   my $in=$_[0];
@@ -91,10 +97,13 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
   close IN;
 }
 
-print "Seen pins:\n(";
-foreach(sort keys %seenpins)
+if(scalar(keys %seenpins))
 {
-  next if(defined($iomap{$_}));
-  print "'$_'=>'I'," ;
+  print "Not yet defined pins, please update them in the sourcecode:\n(";
+  foreach(sort keys %seenpins)
+  {
+    next if(defined($iomap{$_}));
+    print "'$_'=>'I'," ;
+  }
+  print ")\n";
 }
-print ")\n";
