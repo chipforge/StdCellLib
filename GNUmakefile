@@ -83,6 +83,7 @@ help:
 dist: clean
 	$(ECHO) "---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
+	echo $(PROJECT)_$(DATE).tgz has been written.
 
 #   well, 'clean' directories before distributing
 
