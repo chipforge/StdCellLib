@@ -80,6 +80,7 @@ help:
 clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
 	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
+	$(RM) *.mag
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
