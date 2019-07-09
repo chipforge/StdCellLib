@@ -1,3 +1,5 @@
+#!/usr/bin/perl -w
+
 open OUT,">libresilicon.sp";
 
 foreach my $fn (<*.cell>)
@@ -10,7 +12,7 @@ foreach my $fn (<*.cell>)
   my $ios="";
   while(<IN>)
   {
-    if(m/^\.(INPUT|OUTPUT) (.*)/)
+    if(m/^\.(inputs|outputs) (.*)/)
     {
       $ios.=" ".$2;
     }
