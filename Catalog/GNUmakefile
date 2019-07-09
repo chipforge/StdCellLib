@@ -54,7 +54,7 @@ DATE :=         $(shell date +%Y%m%d)
 #   project tools
 
 POPCORN ?=      ../Tools/tcl/popcorn
-CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell
+CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell AOI21.cell OAI21.cell
 LIMIT =         4
 
 #   ----------------------------------------------------------------
@@ -79,13 +79,33 @@ help:
 .PHONY: clean
 clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
+	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
 
 .PHONY: catalog
-catalog:    $(CELLS)
+catalog:    $(CELLS) libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
+
+libresilicon.sp: *.cell
+	../Tools/perl/cell2spice.pl
+	../Tools/perl/librecells.pl
+
+demoboard.mag: *.cell libresilicon.sp
+	perl ../Tools/perl/demoboard.pl >demoboard.mag
+
+libresilicon.lef: *.cell libresilicon.sp
+	../Tools/perl/lefgen.pl outputlib/*.lef >libresilicon.lef
+
+libresilicon.lib: *.cell libresilicon.sp
+	../Tools/perl/libgen.pl >libresilicon.lib
+
+.PHONY: qflow
+qflow:	libresilicon.lef libresilicon.lib
+	mkdir -p /usr/local/share/qflow/tech/ls050
+	cp libresilicon.lef /usr/local/share/qflow/tech/ls050/ls050_stdcells.lef
+	cp libresilicon.lib /usr/local/share/qflow/tech/ls050/ls05_stdcells.lib
 
 AND4.cell: NAND3.cell
 	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
@@ -96,6 +116,12 @@ NAND2.cell: INV.cell
 NAND3.cell: NAND2.cell
 	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
 
+AOI21.cell: INV.cell
+	$(POPCORN) -l $(LIMIT) -n aoi -c $@ $<
+
+OAI21.cell: INV.cell
+	$(POPCORN) -l $(LIMIT) -n oai -c $@ $<
+
 NOR2.cell: INV.cell
 	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
 
@@ -103,5 +129,17 @@ NOR3.cell: NOR2.cell
 	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
 
 OR4.cell: NOR3.cell
-	$(POPCORN) -l $(LIMIT) -n nor -b $(LIMIT) -c $@ $<
+	$(POPCORN) -l $(LIMIT) -n nor -c $@ -b $(LIMIT) $<
+
+doc/StdCellLib.pdf: *.cell libresilicon.sp
+	doc/docu.sh
+
+.PHONY: importQflow
+importQflow:
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/gscl45nm/gscl45nm.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/ls050/libresilicon.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/ls050/ls050_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu018/osu018_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu035/osu035_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu050/osu050_stdcells.sp
 
