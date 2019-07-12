@@ -89,40 +89,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test #t)
-
-;;  -------------------------------------------------------------------
-;;                      DESCRIPTION
-;;  -------------------------------------------------------------------
-
-;;  In principle every combinatorial cell (in CMOS technology) contains
-;;  two functional complementary networks. The pull-up network - build
-;;  with pmos transistors - as well as the pull-down network - build
-;;  with nmos transistors.
-
-;;  so every netlist becomes, well, a list of transistors
-
-;;  ------------    Example : INV   -----------------------------------
-
-;;              ^ Vdd
-;;              |
-;;          | --+
-;;     A --o| |     pmos
-;;          | --+
-;;              |
-;;              |
-;;              *---- Y
-;;              |
-;;              |
-;;          | --+
-;;     A ---| |     nmos
-;;          | --+
-;;              |
-;;             _|_ Gnd
-
-    (define INV '(#(pmos A Y VDD VDD 1 1  1)
-                  #(nmos A Y GND GND 1 1 -1))
-    )
+    (define build-in-self-test? #t)
 
 ;;  -------------------------------------------------------------------
 ;;                       GLOBAL OPTIONS
@@ -164,7 +131,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
     (define stacked-limit 4)
 
 ;   -m method
-    (define extension-method 'none)
+    (define expansion-method 'none)
 
 ;   -T file
     (define technology-file "scmos.tech")
@@ -197,7 +164,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-b")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! buffer-limit value)   ; !! value check missing
+                        (set! buffer-limit (string->number value))   ; !! value check missing
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -230,7 +197,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-H")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! track-high value)  ; !! value check missing)]
+                        (set! track-high (string->number value))  ; !! value check missing)]
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -239,7 +206,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-l")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! stacked-limit value)  ; !! value check missing)]
+                        (set! stacked-limit (string->number value))  ; !! value check missing)]
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -248,7 +215,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-m")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! extension-method value)  ; !! value check missing)]
+                        (set! expansion-method (string->symbol value))
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -317,8 +284,8 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
 
                     ; -m method
                     (format (at-port)
-"Extension Method: ~a"
-                     extension-method)
+"Expansion Method: ~a"
+                     expansion-method)
                     (newline (at-port))
 
                     ; -T file
@@ -339,45 +306,6 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                      cell-file)
                     (newline (at-port))
             )
-        )
-    )
-
-;;  -------------------------------------------------------------------
-;;                       FUNCTIONS
-;;  -------------------------------------------------------------------
-
-;;  ------------    get highest free nmos transistor    ---------------
-
-;   Contract:
-;   get-highest-nmos : netlist -> transistor
-
-;   Purpose:
-;   find highest nmos transistor, which can be extended
-
-;   Example:
-;   (get-highest-nmos INV) => #('nmos 'A 'X 'GND 'GND 1 1 -1)
-
-;   Definition:
-    (define get-highest-nmos
-        (lambda (netlist)
-            (cond
-                ; emtpy list?
-                [(null? netlist) netlist]
-
-                ;; !!
-                [else (get-highest-nmos (cdr netlist))]
-            )
-        )
-    )
-
-;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
-        (begin
-            (if (equal? (get-highest-nmos INV) '(#(nmos A Y GND GND 1 1 -1)))
-                (display "++ passed" (current-error-port))
-                (display "-- failed" (current-error-port)))
-            (display " get-node-mosfets test" (current-error-port))
-            (newline (current-error-port))
         )
     )
 
@@ -412,30 +340,31 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                         )
                     ]
 
-;                    ; expand cell instead
-;                    [(equal? export-format 'cell)
-;                        (cond
-;                            ; nand-wise
-;                            [(equal? extension-method 'nand)
-;                                (begin
-;                                    0   ; exit value
-;                                )
-;                            ]
-;                            ; nor-wise
-;                            [(equal? extension-method 'nor)
-;                                (begin
-;                                    0   ; exit value
-;                                )
-;                            ]
-;                            ; selection failed, unknown extension-method
-;                            [else
-;                                (begin
-;                                    (+usage+ eigen-name current-error-port)
-;                                    2   ; exit value - wrong usage
-;                                )
-;                            ]
-;                        )
-;                    ]
+                    ; expand cell instead
+                    [(equal? export-format 'cell)
+                        (cond
+                            ; nand-wise
+                            [(equal? expansion-method 'nand)
+                                (begin
+                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit))
+                                    0   ; exit value
+                               )
+                            ]
+                            ; nor-wise
+                            [(equal? expansion-method 'nor)
+;;                                (begin
+;;                                    0   ; exit value
+;;                                )
+                            ]
+                            ; selection failed, unknown expansion-method
+                            [else
+                                (begin
+                                    (+usage+ eigen-name current-error-port)
+                                    2   ; exit value - wrong usage
+                                )
+                            ]
+                        )
+                    ]
 
                     ; selection failed, unknown export-format value
                     [else
