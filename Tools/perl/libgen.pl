@@ -425,16 +425,16 @@ EOF
 EOF
       ;
     }
+    print $output;
     print <<EOF
 }
 
 EOF
 ;
 
-    print $output;
 
   }
 
 }
 
-print "}\n";
+print "} /* END*/\n";
