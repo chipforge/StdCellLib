@@ -143,4 +143,7 @@ importQflow:
 	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu018/osu018_stdcells.sp
 	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu035/osu035_stdcells.sp
 	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu050/osu050_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu018/osu018_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu035/osu035_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu050/osu050_stdcells.sp
 
