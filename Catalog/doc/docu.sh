@@ -27,4 +27,4 @@ do
 done
 pdflatex StdCellLib.tex
 pdflatex StdCellLib.tex
-
+cp StdCellLib.pdf ../../Documents/StdCellLib.pdf
