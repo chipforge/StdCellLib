@@ -1,5 +1,16 @@
 #!/usr/bin/perl -w
 
+my $tech="w=1.0u l=1.0u";
+
+if(open IN,"<../Tech/transistor.sp")
+{
+  print "Loading tech specs from transistor.sp file\n";
+  $tech=<IN>;
+  close IN;
+}
+
+print "Tech specs: $tech\n";
+
 open OUT,">libresilicon.sp";
 
 foreach my $fn (<*.cell>)
@@ -20,13 +31,13 @@ foreach my $fn (<*.cell>)
     {
       my($g,$d,$s,$t)=($1,$2,$3,$4);
       my $x=($t eq "pmos")?"vdd":"gnd";
-      $transistors.="M$M $d $g $s $x $t w=0.5u l=0.05u\n";
+      $transistors.="M$M $d $g $s $x $t $tech\n";
             #M1  vdd    B a_2_6# vdd pmos w=0.5u l=0.05u
             #M2  Y a_2_6# vdd vdd pmos w=0.5u l=0.05u
             #M3  a_9_6# A a_2_6# gnd nmos w=0.5u l=0.05u
             #M4  gnd    B a_9_6# gnd nmos w=0.5u l=0.05u
             #M5  Y a_2_6# gnd gnd nmos w=0.25u l=0.05u
-      $transistors.="+ ad=0p pd=0u as=0p ps=0u\n";
+	    #$transistors.="+ ad=0p pd=0u as=0p ps=0u\n";
       $M++;
     }
   }
