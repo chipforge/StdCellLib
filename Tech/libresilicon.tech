@@ -1,3 +1,4 @@
+# This is the tech-file for magic
 # 1 "scmos.tech.out"
 # 1 "<built-in>"
 # 1 "<command-line>"
@@ -836,6 +837,7 @@ style generic
 
  layer m2contact m2contact
   calma m2contact 7 0
+  labels metal2
 
  layer metal2 metal2
   calma metal2 8 0
@@ -845,6 +847,10 @@ style generic
  layer pdcontact pdcontact
   calma pdcontact 4 0
   calma pdcontact 5 0
+
+ templayer abutment
+  calma abutment 200 0
+  boundary 
 
 end
 
