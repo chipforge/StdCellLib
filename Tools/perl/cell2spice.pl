@@ -5,7 +5,7 @@ my $tech="w=1.0u l=1.0u";
 if(open IN,"<../Tech/transistor.sp")
 {
   print "Loading tech specs from transistor.sp file\n";
-  $tech=<IN>;
+  $tech=<IN>; $tech=~s/[\n\r]//s;
   close IN;
 }
 
