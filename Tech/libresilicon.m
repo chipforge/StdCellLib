@@ -1,4 +1,4 @@
-# This is a template file, it needs to be adapted to our real values
+# This is a template file for characterization, it needs to be adapted to our real values
 
 .model  NMOS_VTL  nmos  level = 54
 
