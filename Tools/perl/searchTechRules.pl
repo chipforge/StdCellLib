@@ -48,7 +48,7 @@ while(!$ende)
 
   my $fn="ls".join("_",@b);
 
-  open IN,"<../../Tech/libresilicon.py";
+  open IN,"<../../Tech/librecell_tech.py";
   open OUT,">$fn.py";
   while(<IN>)
   {
