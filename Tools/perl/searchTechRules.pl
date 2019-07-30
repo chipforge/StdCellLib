@@ -6,16 +6,16 @@ print "searchTechRules.pl searches for working Tech Rules\n";
 system "perl ../Tools/perl/cell2spice.pl";
 
 my @params=(
-	["unit_cell_width",50,300,5],
-	["unit_cell_height",100,500,5],
-	["routing_grid_pitch_x",5,40,5],
-	["routing_grid_pitch_y",5,40,5],
-	["grid_offset_x",0,30,5],
-	["grid_offset_y",0,30,5],
-	["power_rail_width",20,50,5],
-	["minimum_gate_width_nfet",5,30,5],
-	["minimum_gate_width_pfet",5,30,5],
-	["minimum_pin_width",5,20,5],
+	#["unit_cell_width",20,100,5],
+	#["unit_cell_height",100,200,5],
+	#["routing_grid_pitch_x",20,20,5],
+	#["routing_grid_pitch_y",20,20,5],
+	#["grid_offset_x",5,50,5],
+	#["grid_offset_y",0,40,5],
+	#["power_rail_width",30,30,5],
+	#["minimum_gate_width_nfet",35,35,5],
+	#["minimum_gate_width_pfet",35,35,5],
+	#["minimum_pin_width",5,15,5],
 );
 
 mkdir "str";
@@ -66,22 +66,29 @@ while(!$ende)
   close IN;
   close OUT;
 
-  #unlink "$cell.gds";
-  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v 2>$fn.err";
-  if(-f "$cell.gds")
-  {
-    print "We found a solution\n";	    
-    system "touch $fn.solution";
-    system "klayout $cell.gds" if(-f "$cell.gds");
-    exit;
-  }
+  unlink "$cell.gds";
+  my $found="";
   system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v --debug-routing-graph 2>$fn.gerr";
   if(-f "$cell.gds")
   {
-    rename "$cell.gds","$fn.gds";
-    system "klayout $fn.gds &" unless(-f ".hide"); 
+    rename "$cell.gds","$fn.graph.gds";
+    $found.="$fn.graph.gds";
+  }
+  
+  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v 2>$fn.err";
+  if(-f "$cell.gds")
+  {
+    rename "$cell.gds","$fn.final.gds";
+    $found.=" $fn.final.gds";
   }
 
-  #  exit;
+  system "cat $fn.gerr $fn.err";
+
+  if($found ne "")
+  {
+    my $names=""; $names="-l ../librecell.lyp";
+    system "klayout $names ../*.gds $found" unless(-f ".hide"); 
+  }
+  exit;
 }
 
