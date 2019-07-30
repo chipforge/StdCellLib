@@ -3,7 +3,7 @@
 foreach(<str/*.gds>)
 {
   next if(-f "$_.ann");	
-  system "klayout $_";
+  system "klayout -l librecell.lyp $_";
   print "Is it good?\n";
   my $val=<STDIN>;
   print "So you think $val?\n";
