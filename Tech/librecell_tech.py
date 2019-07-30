@@ -8,11 +8,11 @@ db_unit = 1e-7
 transistor_channel_width_sizing = 1
 
 # GDS2 layer numbers for final output.
-my_active = (1, 0) # all DIFF's + all FET's
+my_active = (1, 0) # all DIFF's + all FET's (pdiff+ndiff)
 my_nwell = (2, 0)
 #my_nwell2 = (2, 1) # a copy of the nwell layer due to limitations of other tools we don't need
 my_pwell = (2, 7)
-my_poly = (3, 0)
+my_poly = (3, 0) # poly silicium for gates -> poly + ntransistor + ptransistor
 my_poly_contact = (4, 0) # Both poly_contact and diff_contact are the same in Libresilicon and they are both just one layer called "CONTACT"
 my_diff_contact = (5, 0) # Both poly_contact and diff_contact are the same in Libresilicon and they are both just one layer called "CONTACT"
 my_metal1 = (6, 0)
@@ -59,17 +59,19 @@ min_spacing = {
     (l_active, l_active): 15, # 3 -> 3l
     (l_active, l_poly_contact): 20, # 2.6.6 -> 4l
     (l_nwell, l_nwell): 50, # 3 -> 10l
-    (l_nwell, l_pwell): 50, # 2.2.2->10l 
+    (l_nwell, l_pwell): 60, # 2.2.4->12l 
     (l_pwell, l_pwell): 50, # 3 -> 10l
     #(l_poly, l_nwell): 10, # No rule?
     (l_poly, l_active): 5, # 2.4.6 -> 1l
-    (l_poly, l_poly): 10, # 3 POLY -> 2l
+    (l_poly, l_poly): 5, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 10 (2l) BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
     (l_poly, l_diff_contact): 10, # The maximum "minimum spacing" from poly to anything else is 2l
+    (l_diff_contact, l_diff_contact): 10, # 3 -> 2l
     (l_metal1, l_metal1): 20, # 3 METAL1 -> 4l # !!!! WARNING: Spacing to BigMetal (>=10um) needs to be 6l !
     (l_metal2, l_metal2): 20, # 3 METAL2 -> 4l
     (l_via1, l_via1): 15, # 3 VIA1 -> 3l
     (l_via1, l_diff_contact): 10, # 2.8.3 -> 2l
     (l_via1, l_active): 10, # 2.8.4 -> 2l
+    (l_poly_contact, l_diff_contact): 20,
 }
 
 # Layer for the pins.
@@ -81,14 +83,8 @@ power_layer = l_metal1 # Was recommended by leviathanch due to lesser resistance
 # Layers that can be connected/merged without changing the schematic.
 # This can be used to resolve spacing/notch violations by just filling the space.
 connectable_layers = {l_nwell, l_pwell}
-
-# Standard cell dimensions.
-# A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
-# `unit_cell_width` also corresponds to the pitch of the gates because gates are spaced on a regular grid.
-unit_cell_width = 80
-unit_cell_height = 360
-
 # Width of the gate polysilicon stripe.
+# is reused as the minimum_width for the l_poly layer
 gate_length = 10 # 2.4.1 -> 2l
 
 # Minimum length a polysilicon gate must overlap the silicon.
@@ -98,25 +94,35 @@ gate_extension = 10 # 2.4.4 -> 2l
 routing_grid_pitch_x = 20 # unit_cell_width // 8
 routing_grid_pitch_y = 20 # unit_cell_height // 30
 
+# Standard cell dimensions.
+# A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
+# `unit_cell_width` also corresponds to the pitch of the gates because gates are spaced on a regular grid.
+unit_cell_width = routing_grid_pitch_x      * 1 * 2
+unit_cell_height = max(routing_grid_pitch_y * 1 * 10,160) # minimum 16um due to pwell width + nwell-pwell spacing
+# due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
+
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
-grid_offset_x = 10 # routing_grid_pitch_x
-grid_offset_y = 0 # routing_grid_pitch_y // 2
+grid_offset_x = routing_grid_pitch_x
+grid_offset_y = (routing_grid_pitch_y // 2 ) -0
 
 # Width of power rail.
-power_rail_width = 40
+power_rail_width = 30
 # Between 2 and 3 um
 
 # Minimum width of polysilicon gate stripes.
-minimum_gate_width_nfet = 10
+# I think this should be (extension over active) + (minimum width of active) + (extension over active)
+# No, it seems to be something else.
+# It increases w and l from the spice netlist, so it must be width from the spice netlist
+minimum_gate_width_nfet = 10 
 minimum_gate_width_pfet = 10
 
 # Minimum width for pins.
-minimum_pin_width = 10
+minimum_pin_width = 10 # 2l said leviathanch
 
 # Width of routing wires.
 wire_width = {
-#    l_nwell: 20,  # ?!? Why is there a wire with for nwell/pwell?!?
-#    l_pwell: 20,
+    l_nwell: 10,  # ?!? Why is there a wire with for nwell/pwell?!?
+    l_pwell: 10,
     l_poly: 10,   # 2.4.1 -> 2l
     l_metal1: 20, # 2.7.1 -> 4l
     l_metal2: 20, # 2.9.1 -> 4l
@@ -134,11 +140,12 @@ via_size = {
     l_poly_contact: 10, # 2.6.1 -> 2l
     l_diff_contact: 10, # 2.6.1 -> 2l
     l_via1: 10 # 2.8.1 -> 2l
-#    l_via2: 10 # 2.10.1 -> 2l
+#    l_via2: 10 # 2.10.1 -> 2l   librecell only goes to metal2, via2 would go to metal3
 }
 
 # Minimum width rules.
 minimum_width = {
+    l_active: 10, # 4 l
     l_poly: gate_length, # 2.4.1-> 2l
     l_metal1: 20, # 2.7.1 -> 4l
     l_metal2: 20, # 2.9.1 -> 4l
@@ -148,7 +155,7 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_active, l_diff_contact): 30, # 2.3.3 -> 6l  Source/Drain are DIFF's
+    (l_active, l_diff_contact): 5, # 2.3.3 -> 6l  Source/Drain are DIFF's
     (l_poly, l_poly_contact): 5, # 2.6.2 -> 1l ?!?!? PLEASE VERIFY WHETHER THIS IS CORRECT
     (l_metal1, l_diff_contact): 5, # 2.7.3 -> 1l
     (l_metal1, l_poly_contact): 5, # 2.7.3 -> 1l
@@ -156,8 +163,10 @@ minimum_enclosure = {
     (l_metal2, l_via1): 5,# 2.9.3 -> 1l
 
     # l_nwell must overlap l_active
-    (l_nwell, l_active): 15, # 2.3.4 -> 3l ?!?!? PLEASE VERIFY WHETHER THIS IS CORRECT
-    (l_pwell, l_active): 15, # 2.3.4 -> 3l
+    (l_nwell, l_active): 10, # 2.3.3 -> 2l
+    (l_pwell, l_active): 10, # 2.3.3 -> 2l
+    (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
+    (l_abutment_box, l_pwell): 0,
 }
 
 # Minimum notch rules.
@@ -166,7 +175,8 @@ minimum_notch = {
     l_poly: 5,
     l_metal1: 5,
     l_metal2: 5,
-    l_nwell: 5
+    l_nwell: 5,
+    l_pwell: 5,
 }
 
 # Minimum area rules.
