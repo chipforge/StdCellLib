@@ -80,7 +80,7 @@ help:
 clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
 	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
-	$(RM) *.mag
+	$(RM) *.mag *.svg
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
@@ -89,7 +89,7 @@ clean:
 .PHONY: catalog
 catalog:    $(CELLS) libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
 
-libresilicon.sp: *.cell
+libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/transistor.sp
 	../Tools/perl/cell2spice.pl
 	../Tools/perl/librecells.pl
 
@@ -146,4 +146,29 @@ importQflow:
 	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu018/osu018_stdcells.sp
 	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu035/osu035_stdcells.sp
 	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu050/osu050_stdcells.sp
+
+mags=$(wildcard *.mag)
+svgs=$(mags:.mag=.svg)
+
+.PHONY: svg
+svg: $(svgs)
+
+test:
+	lctime --debug --liberty libresilicon.lib \
+	--include ../Tech/libresilicon.m \
+	--spice INV.sp \
+	--cell INV \
+	--output INV.lib
+
+test2:
+	/usr/local/bin/lctime --debug --liberty ~/FreePDK45/osu_soc/lib/files/gscl45nm.lib \
+	--include ~/FreePDK45/osu_soc/lib/files/gpdk45nm.m \
+	--spice ~/FreePDK45/osu_soc/lib/source/netlists/AND2X1.pex.netlist \
+	--cell AND2X1 \
+	--output /tmp/and2x1.lib
+	libertyviz -l libresilicon.lib --cell INV --pin Y --related-pin A --table cell_rise
+
+%.svg:
+	perl ../Tools/perl/mag2svg.pl $@
+
 
