@@ -1,4 +1,4 @@
-a 3-input Not-AND (or NAND) gate
+.DESCRIPTION a 3-input Not-AND (or NAND) gate
 .cell NAND3
 .inputs C B A
 .outputs Y

@@ -2,9 +2,9 @@
 .inputs C B A
 .outputs Y
 .ORDER "Gate Drain Source MOSFET"
-A Y 1 pmos
-B 1 2 pmos
-C 2 vdd pmos
-A Y gnd nmos
-B Y gnd nmos
-C Y gnd nmos
+pmos A Y 1
+pmos B 1 2
+pmos C 2 vdd
+nmos A Y gnd
+nmos B Y gnd
+nmos C Y gnd

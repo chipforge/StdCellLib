@@ -1,4 +1,4 @@
-a Not (or Inverter) gate
+.DESCRIPTION a Not (or Inverter) gate
 .cell INV
 .inputs A
 .outputs Y
