@@ -28,3 +28,5 @@ done
 pdflatex StdCellLib.tex
 pdflatex StdCellLib.tex
 cp StdCellLib.pdf ../../Documents/StdCellLib.pdf
+echo "You can view the generated documentation by calling:"
+echo "evince doc/StdCellLib.pdf"
