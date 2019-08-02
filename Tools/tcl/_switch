@@ -88,7 +88,7 @@ proc inputs? {netlist} {
     # collect all inputs from all networks
     set unsorted {}
     foreach mosfet $netlist {
-        lappend unsorted [lindex $mosfet 0]
+        lappend unsorted [lindex $mosfet 1]
     }
 
     # sort inputs
@@ -114,7 +114,7 @@ proc outputs? {netlist} {
     # collect nodes on drain
     set unsorted {}
     foreach mosfet $netlist {
-        set drain [lindex $mosfet 1]
+        set drain [lindex $mosfet 2]
         if {![string is entier $drain]} {
             lappend unsorted $drain
         }
@@ -142,7 +142,7 @@ proc nodes? {netlist} {
 
     set nodes {}
     foreach mosfet $netlist {
-        set nodes [lappend nodes [lindex $mosfet 2]]
+        set nodes [lappend nodes [lindex $mosfet 3]]
     }
 
     # verbose message
@@ -255,29 +255,29 @@ puts $f ""
 puts $f "// type name (drain source gate);"
         foreach mosfet $netlist {
 
-            set ttype [lindex $mosfet 3]
+            set ttype [lindex $mosfet 0]
 puts -nonewline $f "$ttype " ; # type
             if {[string compare -nocase $ttype "pmos"] == 0} {
-puts -nonewline $f "MP[lindex $mosfet 0] " ; # name
+puts -nonewline $f "MP[lindex $mosfet 1] " ; # name
             } elseif {[string compare -nocase $ttype "nmos"] == 0} {
-puts -nonewline $f "MN[lindex $mosfet 0] " ; # name
+puts -nonewline $f "MN[lindex $mosfet 1] " ; # name
             }
 
-            set drain [lindex $mosfet 1]
+            set drain [lindex $mosfet 2]
             if {[string is entier $drain]} {
 puts -nonewline $f "\(n$drain, "
             } else {
 puts -nonewline $f "\($drain, "
             }
 
-            set src [lindex $mosfet 2]
+            set src [lindex $mosfet 3]
             if {[string is entier $src]} {
 puts -nonewline $f "n$src, "
             } else {
 puts -nonewline $f "$src, "
             }
 
-            set gate [lindex $mosfet 0]
+            set gate [lindex $mosfet 1]
             if {[string is entier $gate]} {
 puts $f "n$gate\);"
             } else {
