@@ -2,7 +2,7 @@
 .SEE_ALSO "AOI31 - a 3-1-input AND-OR-Invert gate"
 .inputs A B B1 B2
 .outputs Y
-.ORDER "Gate Drain Source MOSFET"
+.ORDER "MOSFET Gate Drain Source"
 pmos A Y 1
 pmos B 1 vdd
 pmos B1 1 vdd
