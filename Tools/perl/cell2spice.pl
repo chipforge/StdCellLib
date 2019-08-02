@@ -27,9 +27,9 @@ foreach my $fn (<*.cell>)
     {
       $ios.=" ".$2;
     }
-    if(m/^(\w+) (\w+) (\w+) ([pn]mos)/i)
+    if(m/^([pn]mos) (\w+) (\w+) (\w+)/i)
     {
-      my($g,$d,$s,$t)=($1,$2,$3,$4);
+      my($t,$g,$d,$s)=($1,$2,$3,$4);
       my $x=($t eq "pmos")?"vdd":"gnd";
       $transistors.="M$M $d $g $s $x $t $tech\n";
             #M1  vdd    B a_2_6# vdd pmos w=0.5u l=0.05u

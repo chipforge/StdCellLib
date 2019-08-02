@@ -13,7 +13,11 @@ while(<IN>)
   {
     my $cellname=$1;	   
     my $placer=""; $placer="--placer=hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
-    next if($cellname eq "CLKBUF3");# TODO: CLKBUF3 currently takes too much time to generate so we have to skip it, librecell needs to be improved
+    if($cellname eq "CLKBUF3")
+    {
+      print STDERR "TODO: CLKBUF3 currently takes too much time to generate so we have to skip it, librecell needs to be improved\n";
+      next;
+    }
     my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer";
     print "$cmd\n";
     system $cmd;
@@ -30,7 +34,7 @@ quit -noprompt
 EOF
 ;
     close OUT;
-    #system "gds2mag --config /root/libresilicon/gds2mag/example/example_config.toml -i outputlib/$1.gds -o _$1.mag";
+    #system "gds2mag --config ~/libresilicon/gds2mag/example/example_config.toml -i outputlib/$1.gds -o _$1.mag";
     #    exit; # Stop after doing one cell
   }
 }

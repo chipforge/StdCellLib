@@ -98,9 +98,9 @@ if($ARGV[0] && open(IN,"<$ARGV[0]"))
   %graphs=();
   while(<IN>) # reading each line
   {
-    if(m/^(\w+) (\w+) (\w+) ([pn]mos)/i) # Does the line define a transistor?
+    if(m/^([pn]mos) (\w+) (\w+) (\w+)/i) # Does the line define a transistor?
     {
-      my($g,$d,$s,$t)=($1,$2,$3,$4); # Extract all the parameters from the line
+      my($t,$g,$d,$s)=($1,$2,$3,$4); # Extract all the parameters from the line
       next if(lc($network) eq "pmos" && lc($t) eq "nmos"); # If we only look for pmos transistors we skip nmos transistors
       next if(lc($network) eq "nmos" && lc($t) eq "pmos"); # and vice versa
       print "$_" if($debug);

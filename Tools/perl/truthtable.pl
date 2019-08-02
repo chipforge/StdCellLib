@@ -48,9 +48,9 @@ sub truth
     {
       s/\s+$//m;
       verb "Line: $_\n";
-      if(m/^(\w+) (\w+) (\w+) ([pn]mos)/i)
+      if(m/^([pn]mos) (\w+) (\w+) (\w+)/i)
       {
-	my ($s,$g,$d,$tr)=($1,$2,$3,$4);
+	my ($tr,$s,$g,$d)=($1,$2,$3,$4);
 	$g=~s/^(\d+)$/$tr$1/;
 	$d=~s/^(\d+)$/$tr$1/;
         verb "Transistor: $_\n";
