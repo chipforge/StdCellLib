@@ -73,6 +73,7 @@
            sanity-mosfet?
            ; example cells
            INV-cell
+           BUF-cell
            NAND2-cell
            NOR2-cell
            OAI21-cell
@@ -88,6 +89,7 @@
            cell-additional  cell-additional!
            sanity-cell?
            ; functions on netlists
+           buffer-network
            pullup-network
            pulldown-network
            vdd-mosfets
@@ -96,14 +98,25 @@
            complementary-mosfets
            sort-mosfet-ascending
            sort-mosfet-descending
+           sort-netlist
            filter-mosfet-char
            filter-mosfet-remove
+           filter-mosfet-column
+           filter-mosfet-row
            input-nodes
            clock-nodes
            output-nodes
+           replace-nodes
            intermediate-nodes
            sort-nodes-ascending
            sort-nodes-descending
+           ; metrics on netlists
+           metric-tp-stacked
+           metric-tn-stacked
+           metric-highest-stacked
+           metric-highest-xaxis
+           metric-highest-yaxis
+           metric-lowest-yaxis
            ; auxilary stuff
            copyleft-year
            stringlist->csv
@@ -267,7 +280,7 @@
 ;   Hence, the member compare has a string-ci=? option.
 
 ;   Definition:
-    (define supply-space (list "vcc" "vdd"))
+    (define supply-space (list "VDD" "VCC"))
 
 ;   Contract:
 ;   sypply-symbol-space? list-of-ports -> boolean
@@ -303,7 +316,7 @@
 ;   Hence, the member compare has a string-ci=? option.
 
 ;   Definition:
-    (define ground-space (list "gnd" "vss"))
+    (define ground-space (list "GND" "VSS"))
 
 ;   Contract:
 ;   ground-space? list-of-ports -> boolean
@@ -1148,6 +1161,31 @@
                         ())
     )
 
+;;  ------------    Example : BUF-cell  -------------------------------
+
+;               ^ Vdd               ^ Vdd
+;               |                   |
+;           | --+               | --+
+;      A --o| |     pmos    +--o| |     pmos
+;           | --+           |   | --+
+;               |           |       |
+;               *-----------*       *---- Z
+;               |           |       |
+;           | --+           |   | --+
+;      A ---| |     nmos    +---| |     nmos
+;           | --+               | --+
+;               |                   |
+;              _|_ Gnd             _|_ Gnd
+
+    (define BUF-cell '#("BUF" "a non-inverting Buffer gate"
+                        ("A") ("Z") ()
+                        (#("pmos" "N1" "Z" "VDD" "VDD" 1 2  1)
+                         #("nmos" "N1" "Z" "GND" "GND" 1 2 -1)
+                         #("pmos" "A" "N1" "VDD" "VDD" 1 1  1)
+                         #("nmos" "A" "N1" "GND" "GND" 1 1 -1))
+                        ())
+    )
+
 ;;  ------------    Example : NAND2-cell    ---------------------------
 
 ;               ^ Vdd               ^ Vdd
@@ -1825,6 +1863,46 @@
 ;;                  FUNCTIONS on NETLISTs
 ;;  -------------------------------------------------------------------
 
+;;  ------------    filter network for output buffer    ---------------
+
+;   Contract:
+;   buffer-network : netlist -> netlist
+
+;   Purpose:
+;   get network with buffering transistors only
+
+;   Example:
+;   (buffer-network (cell-netlist BUF-cell)) => '(#("pmos" "N1" "Z" "VDD" "VDD" 1 2  1)
+;                                                 #("nmos" "N1" "Z" "GND" "GND" 1 2 -1))
+;   Definition:
+    (define buffer-network
+        (lambda (netlist)
+            (cond
+                ; empty list?
+                [(null? netlist) netlist]
+
+                ; mosfet belongs to output, append
+                [(equal? (mosfet-drain (car netlist)) "Z")
+                    (cons (car netlist) (buffer-network (cdr netlist)))]
+
+                ; mosfet does not drive output, go down
+                [else
+                    (buffer-network (cdr netlist))]
+            )
+        )
+    )
+
+    ;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (buffer-network (cell-netlist BUF-cell)) '(#("pmos" "N1" "Z" "VDD" "VDD" 1 2  1) #("nmos" "N1" "Z" "GND" "GND" 1 2 -1)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " buffer-network test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
 ;;  ------------    filter network for pull-up      -------------------
 
 ;   Contract:
@@ -1845,6 +1923,10 @@
             (cond
                 ; empty list?
                 [(null? netlist) netlist]
+
+                ; exclude mosfet which buffers output, go down
+                [(eqv? (mosfet-drain (car netlist)) "Z")
+                    (pullup-network (cdr netlist))]
 
                 ; if pMOS than add mosfet to netlist, go down recursive
                 [(mosfet-pmos? (car netlist))
@@ -1887,6 +1969,10 @@
             (cond
                 ; empty list?
                 [(null? netlist) netlist]
+
+                ; exclude mosfet which buffers output, go down
+                [(eqv? (mosfet-drain (car netlist)) "Z")
+                    (pullup-network (cdr netlist))]
 
                 ; if nMOS than add mosfet to netlist, go down recursive
                 [(mosfet-nmos? (car netlist))
@@ -2157,6 +2243,41 @@
         )
     )
 
+;;  ------------    sort netlist    -----------------------------------
+
+;   Contract:
+;   sort-netlist : netlist -> netlist
+
+;   Purpose:
+;   sort pullup network descending, pulldown network ascending
+
+;   Example:
+;   (sort-netlist '(#())) => (cell-netlist NAND2-cell)
+
+;   Definition;
+    (define sort-netlist
+        (lambda (netlist)
+            (let ((pullup (sort-mosfet-descending (pullup-network netlist)))
+                  (pulldown (sort-mosfet-ascending (pulldown-network netlist))))
+                (append pullup pulldown)
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (sort-netlist '(#("pmos" "B" "Y"  "VDD" "VDD" 1 2  1)
+                                        #("pmos" "A" "Y"  "VDD" "VDD" 1 1  1)
+                                        #("nmos" "A" "Y"  "N2"  "GND" 1 1 -1)
+                                        #("nmos" "B" "N2" "GND" "GND" 2 1 -2))) (cell-netlist NAND2-cell))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " sort-netlist test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
 ;;  ------------    filter mosfets with char-group nodes    -----------
 
 ;   Contract:
@@ -2235,6 +2356,84 @@
         )
     )
 
+;;  ------------    filter mosfet regarding column number   -----------
+
+;   Contract:
+;   filter-mosfet-column : netlist column -> netlist
+
+;   Purpose:
+;   return all transistors in one column
+
+;   Example:
+;   (filter-mosfet-column '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("pmos" "B" "Y" "VDD" "VDD" 1 1  2)) 2) => '(#("pmos" "B" "Y" "VDD" "VDD" 1 1  2))
+
+;   Definition:
+    (define filter-mosfet-column
+        (lambda (netlist column)
+            (cond
+                ; emtpy list?
+                [(null? netlist) netlist]
+
+                ; if mosfet placed on this column, add them to netlist and go down recursive
+                [(= (mosfet-xaxis (car netlist)) column)
+                    (cons (car netlist) (filter-mosfet-column (cdr netlist) column))]
+
+                ; just go down
+                [else (filter-mosfet-column (cdr netlist) column)]
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (filter-mosfet-column (cell-netlist NAND2-cell) 2) '(#("pmos" "B" "Y" "VDD" "VDD" 1 2  1)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " filter-mosfet-column" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    filter mosfet regarding row number  ---------------
+
+;   Contract:
+;   filter-mosfet-row : netlist row -> netlist
+
+;   Purpose:
+;   return all transistors in one row
+
+;   Example:
+;   (filter-mosfet-row '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("pmos" "B" "Y" "VDD" "VDD" 1 2  1)) 1) => '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1) #("pmos" "B" "Y" "VDD" "VDD" 1 2  1))
+
+;   Definition:
+    (define filter-mosfet-row
+        (lambda (netlist row)
+            (cond
+                ; emtpy list?
+                [(null? netlist) netlist]
+
+                ; if mosfet placed on this row, add them to netlist and go down recursive
+                [(= (mosfet-yaxis (car netlist)) row)
+                    (cons (car netlist) (filter-mosfet-row (cdr netlist) row))]
+
+                ; just go down
+                [else (filter-mosfet-row (cdr netlist) row)]
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (filter-mosfet-row (cell-netlist NAND2-cell) 1) '(#("pmos" "B" "Y" "VDD" "VDD" 1 2  1) #("pmos" "A" "Y" "VDD" "VDD" 1 1  1)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " filter-mosfet-row" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
 ;;  ------------    filter for input nodes  ---------------------------
 
 ;   Contract:
@@ -2275,6 +2474,61 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " input-nodes test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    replace node on all occurrencies    ---------------
+
+;   Contract:
+;   replace-nodes : netlist node node -> netlist
+
+;   Purpose:
+;   crawl netlist for nodes and replace them by another name
+
+;   Example:
+;   (replace-nodes (cell-netlist INV-cell) "Y" "Z") => '(#("pmos" "A" "Z" "VDD" "VDD" 1 1  1)
+;                                                       #("nmos" "A" "Z" "GND" "GND" 1 1 -1))
+
+;   Definition:
+    (define replace-nodes
+        (lambda (netlist old-node new-node)
+            (if (null? netlist)
+                netlist
+                (let ((original (car netlist))
+                      (mosfet (generate-mosfet)))
+                    (begin
+                        (mosfet-type! mosfet (mosfet-type original))
+                        (if (equal? (mosfet-gate original) old-node)
+                            (mosfet-gate! mosfet new-node)
+                            (mosfet-gate! mosfet (mosfet-gate original)))
+                        (if (equal? (mosfet-source original) old-node)
+                            (mosfet-source! mosfet new-node)
+                            (mosfet-source! mosfet (mosfet-source original)))
+                        (if (equal? (mosfet-drain original) old-node)
+                            (mosfet-drain! mosfet new-node)
+                            (mosfet-drain! mosfet (mosfet-drain original)))
+                        (if (equal? (mosfet-bulk original) old-node)
+                            (mosfet-bulk! mosfet new-node)
+                            (mosfet-bulk! mosfet (mosfet-bulk original)))
+                        (mosfet-stacked! mosfet (mosfet-stacked original))
+                        (mosfet-xaxis! mosfet (mosfet-xaxis original))
+                        (mosfet-yaxis! mosfet (mosfet-yaxis original))
+                        (cons mosfet (replace-nodes (cdr netlist) old-node new-node))
+                    )
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (replace-nodes (cell-netlist INV-cell)  "Y" "Z") '(#("pmos" "A" "Z" "VDD" "VDD" 1 1  1)
+                                                                          #("nmos" "A" "Z" "GND" "GND" 1 1 -1)))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " replace-nodes test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -2404,7 +2658,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (output-nodes (cell-netlist INV-cell)) '())
+            (if (equal? (output-nodes (cell-netlist INV-cell)) '("Y"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " output-nodes test" (current-error-port))
@@ -2516,6 +2770,257 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-nodes-ascending test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  -------------------------------------------------------------------
+;;                  METRICS ON NETLISTS
+;;  -------------------------------------------------------------------
+
+;;  ------------    stacked pmos transistors    -----------------------
+
+;   Contract:
+;   metric-tp-stacked : netlist -> number
+
+;   Purpose:
+;   crawl netlist and get highest number of stacked pmos transistors
+
+;   Example:
+;   (metric-tp-stacked (cell-netlist OAI21-cell)) => 2
+
+;   Definition:
+    (define metric-tp-stacked
+        (lambda (netlist)
+            (cond
+                [(null? netlist) 0]
+                [(mosfet-nmos? (car netlist))
+                    ; do not check nmos transistors for tp
+                    (metric-tp-stacked (cdr netlist))]
+                [else
+                    (let ((stacked (mosfet-stacked (car netlist))))
+                        (max stacked (metric-tp-stacked (cdr netlist)))
+                    )
+                ]
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-tp-stacked (cell-netlist OAI21-cell)) 2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-tp-stacked test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    stacked nmos transistors    -----------------------
+
+;   Contract:
+;   metric-tn-stacked : netlist -> number
+
+;   Purpose:
+;   crawl netlist and get highest number of stacked nmos transistors
+
+;   Example:
+;   (metric-tn-stacked (cell-netlist OAI21-cell)) => 2
+
+;   Definition:
+    (define metric-tn-stacked
+        (lambda (netlist)
+            (cond
+                [(null? netlist) 0]
+                [(mosfet-pmos? (car netlist))
+                    ; do not check pmos transistors for tn
+                    (metric-tn-stacked (cdr netlist))]
+                [else
+                    (let ((stacked (mosfet-stacked (car netlist))))
+                        (max stacked (metric-tn-stacked (cdr netlist)))
+                    )
+                ]
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-tn-stacked (cell-netlist OAI21-cell)) 2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-tn-stacked test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    stacked both transistors    -----------------------
+
+;   Contract:
+;   metric-highest-stacked : netlist -> number
+
+;   Purpose:
+;   take highest number from pullup / pulldown network
+
+;   Example:
+;   (metric-highest-stacked (cell-netlist NAND2-cell) => 2
+
+;   Definition:
+    (define metric-highest-stacked
+        (lambda (netlist)
+            (max (metric-tp-stacked netlist) (metric-tn-stacked netlist))
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-highest-stacked (cell-netlist NAND2-cell)) 2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-highest-stacked test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    find highest xaxis number   -----------------------
+
+;   Contract:
+;   metric-highest-xaxis : netlist -> number
+
+;   Purpose:
+;   crawl netlist and find highest xaxis number
+
+;   Example:
+;   (metric-highest-xaxis (cell-netlist OAI21-cell)) => 2
+
+;   Definition:
+    (define metric-highest-xaxis
+        (lambda (netlist)
+            (if (null? netlist)
+                0
+                (let ((xaxis (mosfet-xaxis (car netlist))))
+                    (max xaxis (metric-highest-xaxis (cdr netlist)))
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-highest-xaxis (cell-netlist OAI21-cell)) 2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-highest-xaxis test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    find highest yaxis number   -----------------------
+
+;   Contract:
+;   metric-highest-yaxis : netlist -> number
+
+;   Purpose:
+;   crawl netlist and find highest yaxis number
+
+;   Example:
+;   (metric-highest-yaxis (cell-netlist AOI21-cell)) => 2
+
+;   Definition:
+    (define metric-highest-yaxis
+        (lambda (netlist)
+            (if (null? netlist)
+                0
+                (let ((yaxis (mosfet-yaxis (car netlist))))
+                    (max yaxis (metric-highest-yaxis (cdr netlist)))
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-highest-yaxis (cell-netlist AOI21-cell)) 2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-highest-yaxis test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    find lowest yaxis number    -----------------------
+
+;   Contract:
+;   metric-lowest-yaxis : netlist -> number
+
+;   Purpose:
+;   crawl netlist and find lowest yaxis number
+
+;   Example:
+;   (metric-lowest-yaxis (cell-netlist AOI21-cell)) => -2
+
+;   Definition:
+    (define metric-lowest-yaxis
+        (lambda (netlist)
+            (if (null? netlist)
+                0
+                (let ((yaxis (mosfet-yaxis (car netlist))))
+                    (min yaxis (metric-lowest-yaxis (cdr netlist)))
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (metric-lowest-yaxis (cell-netlist AOI21-cell)) -2)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " metric-lowest-yaxis test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    find mosfet by position     -----------------------
+
+;   Purpose:
+;   mosfet-by-position : netlist -> mosfet
+
+;   Purpose:
+;   crwal netlist and find mosfet by positon coordinates
+
+;   Example:
+;   (mosfet-by-position (cell-netlist INV-cell) 1 1) => #("pmos" "A" "Y" "VDD" "VDD" 1 1  1)
+
+;   Definition:
+    (define mosfet-by-position
+        (lambda (netlist xaxis yaxis)
+            (if (null? netlist)
+                netlist
+                (let ((mosfet (car netlist)))
+                    ; check coordinates
+                    (if (and (equal? (mosfet-xaxis mosfet) xaxis)
+                             (equal? (mosfet-yaxis mosfet) yaxis))
+                        mosfet
+                        (mosfet-by-position netlist xaxis yaxis))
+                )
+            )
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (mosfet-by-position (cell-netlist INV-cell) 1 1) #("pmos" "A" "Y" "VDD" "VDD" 1 1  1))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " mosfet-by-position test" (current-error-port))
             (newline (current-error-port))
         )
     )

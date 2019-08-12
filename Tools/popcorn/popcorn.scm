@@ -346,15 +346,30 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                             ; nand-wise
                             [(equal? expansion-method 'nand)
                                 (begin
-                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit))
+                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit buffer-limit))
                                     0   ; exit value
-                               )
+                                )
                             ]
                             ; nor-wise
                             [(equal? expansion-method 'nor)
-;;                                (begin
-;;                                    0   ; exit value
-;;                                )
+                                (begin
+                                    (write-cell-file (expand-cell-nor (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    0   ; exit value
+                                )
+                            ]
+                            ; aoi-wise
+                            [(equal? expansion-method 'aoi)
+                                (begin
+                                    (write-cell-file (expand-cell-aoi (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    0   ; exit value
+                                )
+                            ]
+                            ; oai-wise
+                            [(equal? expansion-method 'oai)
+                                (begin
+                                    (write-cell-file (expand-cell-oai (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    0   ; exit value
+                                )
                             ]
                             ; selection failed, unknown expansion-method
                             [else

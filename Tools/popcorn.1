@@ -68,7 +68,7 @@
 .Sh DESCRIPTION
 First, the
 .Nm
-utility enlarges a given combinatorial cell by different methods (
+utility expands a given combinatorial cell by different methods (
 .Em nand ,
 .Em nor ,
 .Em aoi ,
@@ -107,7 +107,7 @@ Example Schematic for Inverter Cell (INV)
 .Pp
 .RE
 .Nm
-functionality is to take one combinatorial cell and enlarge both networks
+functionality is to take one combinatorial cell and expand both networks
 by adding one transistor per network.
 The new combinatorial cell can be exported in different file formats for
 documentation, layout and simulation.
@@ -165,7 +165,7 @@ Limit the longest path of stacked transistors between output and any supply
 line to
 .Em number .
 .Ss \-m method
-Enlarge cell with one of following methods:
+Expand cell with one of following methods:
 .Bl -ohang
 .It Em nand
 Add nMOS transistor in serial into highest free pull-down path.
@@ -182,7 +182,7 @@ Use next index for enumeration.
 .El
 .Pp
 An addition in one network implies an addition - a transisor in parallel - in the complementary network also.
-In some cases, the enlargement with one method is not feasible while the limit of stacked transistors is already reached.
+In some cases, the expansion with one method is not feasible while the limit of stacked transistors is already reached.
 .Ss \-T file
 Specify the
 .Xr magic 1
