@@ -51,11 +51,17 @@ RM ?=           rm -f
 TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
-#   project tools
+#   project settings
+#   Attention! limit/buffer changes will impact cell catalog
 
-POPCORN ?=      ../Tools/tcl/popcorn
-CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell
 LIMIT =         4
+BUFFER =        $(LIMIT)
+CELLS =         AOI21.cell \
+                NAND2.cell NAND3.cell AND4.cell \
+                NOR2.cell NOR3.cell OR4.cell \
+                OAI21.cell
+
+POPCORN ?=      ../Tools/popcorn/popcorn -l $(LIMIT) -b $(BUFFER)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -78,30 +84,36 @@ help:
 
 .PHONY: clean
 clean:
-#	$(RM) *.aux *.idx *.log *.toc *.out
+	$(RM) $(CELLS)
 
 #   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
+#               CELL TARGETS
 #   ----------------------------------------------------------------
 
 .PHONY: catalog
 catalog:    $(CELLS)
 
 AND4.cell: NAND3.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
+	$(POPCORN) -m nand $< > $@
+
+AOI21.cell: NOR2.cell
+	$(POPCORN) -m aoi $< > $@
 
 NAND2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+	$(POPCORN) -m nand $< > $@
 
 NAND3.cell: NAND2.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+	$(POPCORN) -m nand $< > $@
 
 NOR2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
+	$(POPCORN) -m nor $< > $@
 
 NOR3.cell: NOR2.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
+	$(POPCORN) -m nor $< > $@
+
+OAI21.cell: NAND2.cell
+	$(POPCORN) -m oai $< > $@
 
 OR4.cell: NOR3.cell
-	$(POPCORN) -l $(LIMIT) -n nor -b $(LIMIT) -c $@ $<
+	$(POPCORN) -m nor $< > $@
 
