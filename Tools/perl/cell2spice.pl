@@ -40,6 +40,12 @@ foreach my $fn (<*.cell>)
 	    #$transistors.="+ ad=0p pd=0u as=0p ps=0u\n";
       $M++;
     }
+    if(m/^res (\w+) (\w+) (\w+)/i)
+    {
+      my($n1,$n2,$v)=($1,$2,$3);
+      $transistors.="R$M $n1 $n2 $v\n";
+      $M++;
+    }
   }
   $ios=~s/,/ /g;$ios=~s/  / /g; $ios=~s/^ //; $ios=~s/ $//;
   print OUT ".subckt $short vdd gnd $ios\n";

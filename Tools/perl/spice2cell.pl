@@ -44,12 +44,20 @@ sub internal($)
   $internalnets{$in}=$internalcounter++ if(!defined($internalnets{$in}));
   return $internalnets{$in};
 }
+sub internal2($)
+{
+  my $in=$_[0];
+  return $in unless($in=~m/\@/);
+  #print $OUT "#$in? $internalcounter\n";
+  $internalnets{$in}=$internalcounter++ if(!defined($internalnets{$in}));
+  return $internalnets{$in};
+}
 
 if($ARGV[0] && open IN,"<$ARGV[0]")
 {
   while(<IN>)
   {
-    if(m/^\.subckt (\w+) (.*)$/)
+    if(m/^\.subckt (\w+) (.*)$/ || m/TOP LEVEL CELL: (\w+)\{sch\}()/)
     {
       $name=$1;
       $pins=$2;
@@ -72,9 +80,23 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
       $s=internal($s);
       print $OUT $mosmap{$m}." $g $d $s\n";
     }
-    elsif(m/^R\d+ /)
+    elsif(m/^M(n|p)mos\@\d+ (\w+\@?\d*) (\w+\@?\d*) (\w+\@?\d*) (\w+\@?\d*)/)
     {
-      #TODO: Resistors for Padcells
+      my ($g,$d,$s,$m)=($3,$2,$4,$1."mos");
+      $g=internal2($g);
+      $d=internal2($d);
+      $s=internal2($s);
+      print $OUT $mosmap{$m}." $g $d $s\n";
+    }
+    elsif(m/^R\w+\@\d+ (\w+\@?\d*) (\w+\@?\d*) (\d+\.?\d*)/)
+    { # Rres@0 net@25 YPAD 100
+      my ($n1,$n2,$v)=($1,$2,$3);
+      $n1=internal2($n1);
+      $n2=internal2($n2);
+      print $OUT "res $n1 $n2 $v\n";
+    }
+    elsif(m/^\*/)
+    {
     }
     elsif(m/^\+/)
     {
