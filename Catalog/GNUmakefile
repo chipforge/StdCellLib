@@ -17,7 +17,8 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+#   Copyright (c)   2018, 2019 by
+#                   chipforge - <popcorn@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -52,16 +53,16 @@ TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
 #   project settings
+
+CELLS =
+
 #   Attention! limit/buffer changes will impact cell catalog
 
-LIMIT =         4
-BUFFER =        $(LIMIT)
-CELLS =         AOI21.cell \
-                NAND2.cell NAND3.cell AND4.cell \
-                NOR2.cell NOR3.cell OR4.cell \
-                OAI21.cell
+LIMIT ?=        5
+BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
+LELVEL ?=       $(LIMIT)    # hack for fencing expand algorithmen
 
-POPCORN ?=      ../Tools/popcorn/popcorn -l $(LIMIT) -b $(BUFFER)
+POPCORN ?=      ../Tools/popcorn/popcorn -l $(LEVEL) -b $(BUFFER)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -78,9 +79,14 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    catalog    - compile catalog cells"
+	$(ECHO) "    catalog    - compile *all* catalog cells (see list below)"
 	$(ECHO) ""
-
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) "    available cells [limit=" $(LIMIT) "+ buffer=" $(BUFFER)"]:"
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) ""
+	$(ECHO) $(CELLS)
+	$(ECHO) ""
 
 .PHONY: clean
 clean:
@@ -90,30 +96,24 @@ clean:
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
+#   include makefile with highest number of (allowed) stacked transistors
+
+ifeq ($(LIMIT),2)
+    include stacked2_cells.mk
+else
+ifeq ($(LIMIT),3)
+    include stacked3_cells.mk
+else
+ifeq ($(LIMIT),4)
+    include stacked4_cells.mk
+else
+ifeq ($(LIMIT),5)
+    include stacked5_cells.mk
+endif
+endif
+endif
+endif
+
 .PHONY: catalog
 catalog:    $(CELLS)
-
-AND4.cell: NAND3.cell
-	$(POPCORN) -m nand $< > $@
-
-AOI21.cell: NOR2.cell
-	$(POPCORN) -m aoi $< > $@
-
-NAND2.cell: INV.cell
-	$(POPCORN) -m nand $< > $@
-
-NAND3.cell: NAND2.cell
-	$(POPCORN) -m nand $< > $@
-
-NOR2.cell: INV.cell
-	$(POPCORN) -m nor $< > $@
-
-NOR3.cell: NOR2.cell
-	$(POPCORN) -m nor $< > $@
-
-OAI21.cell: NAND2.cell
-	$(POPCORN) -m oai $< > $@
-
-OR4.cell: NOR3.cell
-	$(POPCORN) -m nor $< > $@
 
