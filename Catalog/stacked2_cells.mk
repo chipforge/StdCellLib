@@ -50,7 +50,9 @@ ifeq ($(BUFFER),2)
 
 CELLS +=        AND2.cell \
                 AO21.cell \
+                AO22.cell \
                 OA21.cell \
+                OA22.cell \
                 OR2.cell
 
 AND2.cell:      INV.cell
@@ -59,7 +61,15 @@ AND2.cell:      INV.cell
 AO21.cell:      OR2.cell
 	$(POPCORN) -m aoi $< > $@
 
+AO22.cell:      LEVEL = 2
+AO22.cell:      AO21.cell
+	$(POPCORN) -m oai $< > $@
+
 OA21.cell:      AND2.cell
+	$(POPCORN) -m oai $< > $@
+
+OA22.cell:      LEVEL = 2
+OA22.cell:      OA21.cell
 	$(POPCORN) -m oai $< > $@
 
 OR2.cell:       INV.cell
@@ -72,12 +82,18 @@ else
 #   --------    not buffered    ------------------------------------
 
 CELLS +=        AOI21.cell \
+                AOI22.cell \
                 NAND2.cell \
                 NOR2.cell \
-                OAI21.cell
+                OAI21.cell \
+                OAI22.cell
 
 AOI21.cell:     NOR2.cell
 	$(POPCORN) -m aoi $< > $@
+
+AOI22.cell:     LEVEL = 2
+AOI22.cell:     AOI21.cell
+	$(POPCORN) -m oai $< > $@
 
 NAND2.cell:     INV.cell
 	$(POPCORN) -m nand $< > $@
@@ -86,6 +102,10 @@ NOR2.cell:      INV.cell
 	$(POPCORN) -m nor $< > $@
 
 OAI21.cell:     NAND2.cell
+	$(POPCORN) -m oai $< > $@
+
+OAI22.cell:     LEVEL = 2
+OAI22.cell:     OAI21.cell
 	$(POPCORN) -m oai $< > $@
 
 endif
