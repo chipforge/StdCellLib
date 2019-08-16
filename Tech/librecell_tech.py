@@ -4,6 +4,9 @@ from lclayout.layout.layers import *
 # Libresilicon: 100nm was chosen, so 1 lambda is 5 units of 1e-7, so every lambda value has to be multiplied by 5
 db_unit = 1e-7
 
+# Lambda - how many db_units is 1 lambda?
+l = 5
+
 # Scale transistor width.
 transistor_channel_width_sizing = 1
 
@@ -56,22 +59,22 @@ routing_layers = {
 
 # Minimum spacing rules for layer pairs.
 min_spacing = {
-    (l_active, l_active): 15, # 3 -> 3l
-    (l_active, l_poly_contact): 20, # 2.6.6 -> 4l
-    (l_nwell, l_nwell): 50, # 3 -> 10l
-    (l_nwell, l_pwell): 60, # 2.2.4->12l 
-    (l_pwell, l_pwell): 50, # 3 -> 10l
+    (l_active, l_active): 3*l, # 3 -> 3l
+    (l_active, l_poly_contact): 4*l, # 2.6.6 -> 4l
+    (l_nwell, l_nwell): 10*l, # 3 -> 10l
+    (l_nwell, l_pwell): 12*l, # 2.2.4->12l
+    (l_pwell, l_pwell): 10*l, # 3 -> 10l
     #(l_poly, l_nwell): 10, # No rule?
-    (l_poly, l_active): 5, # 2.4.6 -> 1l
-    (l_poly, l_poly): 5, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 10 (2l) BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
-    (l_poly, l_diff_contact): 10, # The maximum "minimum spacing" from poly to anything else is 2l
-    (l_diff_contact, l_diff_contact): 10, # 3 -> 2l
-    (l_metal1, l_metal1): 20, # 3 METAL1 -> 4l # !!!! WARNING: Spacing to BigMetal (>=10um) needs to be 6l !
-    (l_metal2, l_metal2): 20, # 3 METAL2 -> 4l
-    (l_via1, l_via1): 15, # 3 VIA1 -> 3l
-    (l_via1, l_diff_contact): 10, # 2.8.3 -> 2l
-    (l_via1, l_active): 10, # 2.8.4 -> 2l
-    (l_poly_contact, l_diff_contact): 20,
+    (l_poly, l_active): 1*l, # 2.4.6 -> 1l
+    (l_poly, l_poly): 1*l, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 10 (2l) BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
+    (l_poly, l_diff_contact): 2*l, # The maximum "minimum spacing" from poly to anything else is 2l
+    (l_diff_contact, l_diff_contact): 2*l, # 3 -> 2l
+    (l_metal1, l_metal1): 4*l, # 3 METAL1 -> 4l # !!!! WARNING: Spacing to BigMetal (>=10um) needs to be 6l !
+    (l_metal2, l_metal2): 4*l, # 3 METAL2 -> 4l
+    (l_via1, l_via1): 3*l, # 3 VIA1 -> 3l
+    (l_via1, l_diff_contact): 2*l, # 2.8.3 -> 2l
+    (l_via1, l_active): 2*l, # 2.8.4 -> 2l
+    (l_poly_contact, l_diff_contact): 4*l,
 }
 
 # Layer for the pins.
@@ -85,14 +88,14 @@ power_layer = l_metal1 # Was recommended by leviathanch due to lesser resistance
 connectable_layers = {l_nwell, l_pwell}
 # Width of the gate polysilicon stripe.
 # is reused as the minimum_width for the l_poly layer
-gate_length = 10 # 2.4.1 -> 2l
+gate_length = 2*l # 2.4.1 -> 2l
 
 # Minimum length a polysilicon gate must overlap the silicon.
-gate_extension = 10 # 2.4.4 -> 2l
+gate_extension = 2*l # 2.4.4 -> 2l
 
 # Routing pitch
-routing_grid_pitch_x = 20 # unit_cell_width // 8
-routing_grid_pitch_y = 20 # unit_cell_height // 30
+routing_grid_pitch_x = 4*l # unit_cell_width // 8
+routing_grid_pitch_y = 4*l # unit_cell_height // 30
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -106,77 +109,75 @@ grid_offset_x = routing_grid_pitch_x
 grid_offset_y = (routing_grid_pitch_y // 2 ) -0
 
 # Width of power rail.
-power_rail_width = 30
+power_rail_width = 6*l
 # Between 2 and 3 um
 
 # Minimum width of polysilicon gate stripes.
 # I think this should be (extension over active) + (minimum width of active) + (extension over active)
 # No, it seems to be something else.
 # It increases w and l from the spice netlist, so it must be width from the spice netlist
-minimum_gate_width_nfet = 10 
-minimum_gate_width_pfet = 10
+minimum_gate_width_nfet = 2*l
+minimum_gate_width_pfet = 2*l
 
 # Minimum width for pins.
-minimum_pin_width = 10 # 2l said leviathanch
+minimum_pin_width = 2*l # 2l said leviathanch
 
 # Width of routing wires.
 wire_width = {
-    l_nwell: 10,  # ?!? Why is there a wire with for nwell/pwell?!?
-    l_pwell: 10,
-    l_poly: 10,   # 2.4.1 -> 2l
-    l_metal1: 20, # 2.7.1 -> 4l
-    l_metal2: 20, # 2.9.1 -> 4l
+    l_poly: 2*l,   # 2.4.1 -> 2l
+    l_metal1: 4*l, # 2.7.1 -> 4l
+    l_metal2: 4*l, # 2.9.1 -> 4l
 }
 
 # Width of horizontal routing wires (overwrites `wire_width`).
 wire_width_horizontal = {
-    l_poly: 10, # 2.4.1 -> 2l
-    l_metal1: 20, # 2.7.1 -> 4l
-    l_metal2: 20, # 2.9.1 -> 4l
+    l_poly: 2*l, # 2.4.1 -> 2l
+    l_metal1: 4*l, # 2.7.1 -> 4l
+    l_metal2: 4*l, # 2.9.1 -> 4l
 }
 
 # Side lengths of vias (square shaped).
 via_size = {
-    l_poly_contact: 10, # 2.6.1 -> 2l
-    l_diff_contact: 10, # 2.6.1 -> 2l
-    l_via1: 10 # 2.8.1 -> 2l
+    l_poly_contact: 2*l, # 2.6.1 -> 2l
+    l_diff_contact: 2*l, # 2.6.1 -> 2l
+    l_via1: 2*l # 2.8.1 -> 2l
 #    l_via2: 10 # 2.10.1 -> 2l   librecell only goes to metal2, via2 would go to metal3
 }
 
 # Minimum width rules.
 minimum_width = {
-    l_active: 10, # 4 l
+    l_active: 2*l, # 4 l
     l_poly: gate_length, # 2.4.1-> 2l
-    l_metal1: 20, # 2.7.1 -> 4l
-    l_metal2: 20, # 2.9.1 -> 4l
+    l_metal1: 4*l, # 2.7.1 -> 4l
+    l_metal2: 4*l, # 2.9.1 -> 4l
 }
 
 # Minimum enclosure rules.
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_active, l_diff_contact): 5, # 2.3.3 -> 6l  Source/Drain are DIFF's
-    (l_poly, l_poly_contact): 5, # 2.6.2 -> 1l ?!?!? PLEASE VERIFY WHETHER THIS IS CORRECT
-    (l_metal1, l_diff_contact): 5, # 2.7.3 -> 1l
-    (l_metal1, l_poly_contact): 5, # 2.7.3 -> 1l
-    (l_metal1, l_via1): 5,# 2.7.3 -> 1l
-    (l_metal2, l_via1): 5,# 2.9.3 -> 1l
+    (l_active, l_diff_contact): 1*l, # 2.3.3 -> 6l  Source/Drain are DIFF's
+    (l_poly, l_poly_contact): 1*l, # 2.6.2 -> 1l ?!?!? PLEASE VERIFY WHETHER THIS IS CORRECT
+    (l_metal1, l_diff_contact): 1*l, # 2.7.3 -> 1l
+    (l_metal1, l_poly_contact): 1*l, # 2.7.3 -> 1l
+    (l_metal1, l_via1): 1*l,# 2.7.3 -> 1l
+    (l_metal2, l_via1): 1*l,# 2.9.3 -> 1l
 
     # l_nwell must overlap l_active
-    (l_nwell, l_active): 10, # 2.3.3 -> 2l
-    (l_pwell, l_active): 10, # 2.3.3 -> 2l
+    (l_nwell, l_active): 2*l, # 2.3.3 -> 2l
+    (l_pwell, l_active): 2*l, # 2.3.3 -> 2l
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
 }
 
 # Minimum notch rules.
 minimum_notch = {
-    l_active: 5,
-    l_poly: 5,
-    l_metal1: 5,
-    l_metal2: 5,
-    l_nwell: 5,
-    l_pwell: 5,
+    l_active: 1*l,
+    l_poly: 1*l,
+    l_metal1: 1*l,
+    l_metal2: 1*l,
+    l_nwell: 1*l,
+    l_pwell: 1*l,
 }
 
 # Minimum area rules.
