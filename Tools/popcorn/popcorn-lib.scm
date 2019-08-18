@@ -126,7 +126,7 @@
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #t)
+    (define build-in-self-test? #f)
 
 ;;  ------------    build-in sanity checks  ---------------------------
 
@@ -1037,7 +1037,9 @@
                     ; gate nodes
                     (let ((gate (mosfet-gate mosfet)))
                         (if (and (string? gate)
-                                 (input-space? gate))
+                                 (or
+                                    (input-space? gate)
+                                    (node-space? gate)))
                             #t
                             (begin
                                 (display "!! insane mosfet-gate check " (current-error-port))
@@ -1366,14 +1368,14 @@
 ;   Definition
     (define generate-cell
         (lambda ()
-            (make-vector 7 "")
+            (make-vector 7 '())
         )
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (generate-cell) #("" "" "" "" "" "" ""))
+            (if (equal? (generate-cell) #('() '() '() '() '() '() '()))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " generate-cell test" (current-error-port))
@@ -3081,7 +3083,7 @@
 ;   Definition:
     (define stringlist->csv
         (lambda (string-list)
-            (if (equal? (cdr string-list) ())
+            (if (equal? (length string-list) 1)
                 (car string-list)   ; last value in list
                 (string-append (car string-list) ", " (stringlist->csv (cdr string-list)))
             )
