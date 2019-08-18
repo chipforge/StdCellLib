@@ -50,28 +50,28 @@ include stacked4_cells.mk
 
 ifdef BUFFERED
 
-CELLS +=        AND5.cell \
-                OR5.cell
+CELLS +=        AND5 \
+                OR5
 
-AND5.cell:      AND4.cell
-	$(POPCORN) -m nand $< > $@
+AND5:           AND4
+	$(POPCORN) -m nand -c $@ $< > $@
 
-OR5.cell:       OR4.cell
-	$(POPCORN) -m nor $< > $@
+OR5:            OR4
+	$(POPCORN) -m nor -c $@ $< > $@
 
 #   --------    now buffered    ------------------------------------
 
 else
 ifeq ($(BUFFER),5)
 
-CELLS +=        AND5.cell \
-                OR5.cell
+CELLS +=        AND5 \
+                OR5
 
-AND5.cell:      NAND4.cell
-	$(POPCORN) -m nand $< > $@
+AND5:           NAND4
+	$(POPCORN) -m nand -c $@ $< > $@
 
-OR5.cell:       NOR4.cell
-	$(POPCORN) -m nor $< > $@
+OR5:            NOR4
+	$(POPCORN) -m nor -c $@ $< > $@
 
 BUFFERED = true
 
@@ -79,14 +79,14 @@ BUFFERED = true
 
 else
 
-CELLS +=        NAND5.cell \
-                NOR5.cell
+CELLS +=        NAND5 \
+                NOR5
 
-NAND5.cell:     NAND4.cell
-	$(POPCORN) -m nand $< > $@
+NAND5:          NAND4
+	$(POPCORN) -m nand -c $@ $< > $@
 
-NOR5.cell:      NOR4.cell
-	$(POPCORN) -m nor $< > $@
+NOR5:           NOR4
+	$(POPCORN) -m nor -c $@ $< > $@
 
 endif
 endif

@@ -48,32 +48,32 @@ ifeq ($(BUFFER),2)
 
 #   --------    now buffered    ------------------------------------
 
-CELLS +=        AND2.cell \
-                AO21.cell \
-                AO22.cell \
-                OA21.cell \
-                OA22.cell \
-                OR2.cell
+CELLS +=        AND2 \
+                AO21 \
+                AO22 \
+                OA21 \
+                OA22 \
+                OR2
 
-AND2.cell:      INV.cell
-	$(POPCORN) -m nand $< > $@
+AND2:           INV
+	$(POPCORN) -m nand -c $@ $< > $@
 
-AO21.cell:      OR2.cell
-	$(POPCORN) -m aoi $< > $@
+AO21:           OR2
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO22.cell:      LEVEL = 2
-AO22.cell:      AO21.cell
-	$(POPCORN) -m oai $< > $@
+AO22:           LEVEL = 2
+AO22:           AO21
+	$(POPCORN) -m oai -c $@ $< > $@
 
-OA21.cell:      AND2.cell
-	$(POPCORN) -m oai $< > $@
+OA21:           AND2
+	$(POPCORN) -m oai -c $@ $< > $@
 
-OA22.cell:      LEVEL = 2
-OA22.cell:      OA21.cell
-	$(POPCORN) -m oai $< > $@
+OA22:           LEVEL = 2
+OA22:           OA21
+	$(POPCORN) -m oai -c $@ $< > $@
 
-OR2.cell:       INV.cell
-	$(POPCORN) -m nor $< > $@
+OR2:            INV
+	$(POPCORN) -m nor -c $@ $< > $@
 
 BUFFERED = true
 
@@ -81,31 +81,31 @@ else
 
 #   --------    not buffered    ------------------------------------
 
-CELLS +=        AOI21.cell \
-                AOI22.cell \
-                NAND2.cell \
-                NOR2.cell \
-                OAI21.cell \
-                OAI22.cell
+CELLS +=        AOI21 \
+                AOI22 \
+                NAND2 \
+                NOR2 \
+                OAI21 \
+                OAI22
 
-AOI21.cell:     NOR2.cell
-	$(POPCORN) -m aoi $< > $@
+AOI21:          NOR2
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOI22.cell:     LEVEL = 2
-AOI22.cell:     AOI21.cell
-	$(POPCORN) -m oai $< > $@
+AOI22:          LEVEL = 2
+AOI22:          AOI21
+	$(POPCORN) -m oai -c $@ $< > $@
 
-NAND2.cell:     INV.cell
-	$(POPCORN) -m nand $< > $@
+NAND2:          INV
+	$(POPCORN) -m nand -c $@ $< > $@
 
-NOR2.cell:      INV.cell
-	$(POPCORN) -m nor $< > $@
+NOR2:           INV
+	$(POPCORN) -m nor -c $@ $< > $@
 
-OAI21.cell:     NAND2.cell
-	$(POPCORN) -m oai $< > $@
+OAI21:          NAND2
+	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI22.cell:     LEVEL = 2
-OAI22.cell:     OAI21.cell
-	$(POPCORN) -m oai $< > $@
+OAI22:          LEVEL = 2
+OAI22:          OAI21
+	$(POPCORN) -m oai -c $@ $< > $@
 
 endif

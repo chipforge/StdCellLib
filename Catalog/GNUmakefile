@@ -60,7 +60,7 @@ CELLS =
 
 LIMIT ?=        5
 BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
-LELVEL ?=       $(LIMIT)    # hack for fencing expand algorithmen
+LEVEL ?=        $(LIMIT)    # hack for fencing expand algorithmen
 
 POPCORN ?=      ../Tools/popcorn/popcorn -l $(LEVEL) -b $(BUFFER)
 

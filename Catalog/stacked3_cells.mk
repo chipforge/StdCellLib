@@ -50,100 +50,236 @@ ifdef BUFFERED
 
 #   --------    already buffered    --------------------------------
 
-CELLS +=        AND3.cell \
-                AO211.cell \
-                AO31.cell \
-                AO311.cell \
-                AOA211.cell \
-                AOA221.cell \
-                OA211.cell \
-                OA31.cell \
-                OA311.cell \
-                OAO211.cell \
-                OR3.cell
+CELLS +=        AND3 \
+                AO211 \
+                AO31 \
+                AO311 \
+                AO32 \
+                AO321 \
+                AO33 \
+                AO331 \
+                AO332 \
+                AO333 \
+                AOA211 \
+                AOA221 \
+                AOAO2111 \
+                OA211 \
+                OA31 \
+                OA311 \
+                OA32 \
+                OA321 \
+                OA33 \
+                OA331 \
+                OA332 \
+                OA333 \
+                OAO211 \
+                OAO221 \
+                OAOA2111 \
+                OR3
 
-AND3.cell:      AND2.cell
-	$(POPCORN) -m nand $< > $@
+AND3:           AND2
+	$(POPCORN) -m nand -c $(*F) -c $@ $< > $@
 
-AO211.cell:     OR3.cell
-	$(POPCORN) -m aoi $< > $@
+AO211:          OR3
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO31.cell:      AO21.cell
-	$(POPCORN) -m aoi $< > $@
+AO31:           AO21
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO311.cell:     AO211.cell
-	$(POPCORN) -m aoi $< > $@
+AO311:          AO211
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA211.cell:    OA21.cell
-	$(POPCORN) -m nand $< > $@
+AO32:           AO22
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA221.cell:    OA31.cell
-	$(POPCORN) -m nand $< > $@
+AO321:          AO221
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA211.cell:     AND3.cell
-	$(POPCORN) -m oai $< > $@
+AO33:           LEVEL = 3
+AO33:           AO32
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA31.cell:      OA21.cell
-	$(POPCORN) -m oai $< > $@
+AO331:          LEVEL = 3
+AO331:          AO321
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA311.cell:     OA211.cell
-	$(POPCORN) -m oai $< > $@
+AO332:          LEVEL = 3
+AO332:          AO331
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAO211.cell:    AO21.cell
-	$(POPCORN) -m nor $< > $@
+AO333:          LEVEL = 3
+AO333:          AO332
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OR3.cell:       OR2.cell
-	$(POPCORN) -m nor $< > $@
+AOA211:         OA21
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOA221:         OA31
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOAO2111:       OAO211
+	$(POPCORN) -m nand -c $@ $< > $@
+
+OA211:          AND3
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA31:           OA21
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA311:          OA211
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA32:           OA22
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA321:          OA221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA33:           LEVEL = 3
+OA33:           OA32
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA331:          LEVEL = 3
+OA331:          OA321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA332:          LEVEL = 3
+OA332:          OA331
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA333:          LEVEL = 3
+OA333:          OA332
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAO211:         AO21
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAO221:         AO31
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAOA2111:       AOA211
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OR3:            OR2
+	$(POPCORN) -m nor -c $@ $< > $@
 
 else
 ifeq ($(BUFFER),3)
 
 #   --------    now buffered    ------------------------------------
 
-CELLS +=        AND3.cell \
-                AO211.cell \
-                AO31.cell \
-                AO311.cell \
-                AOA211.cell \
-                AOA221.cell \
-                OA211.cell \
-                OA31.cell \
-                OA311.cell \
-                OAO211.cell \
-                OR3.cell
+CELLS +=        AND3 \
+                AO211 \
+                AO31 \
+                AO311 \
+                AO32 \
+                AO321 \
+                AO33 \
+                AO331 \
+                AO332 \
+                AO333 \
+                AOA211 \
+                AOA221 \
+                AOAO2111 \
+                OA211 \
+                OA31 \
+                OA311 \
+                OA32 \
+                OA321 \
+                OA33 \
+                OA331 \
+                OA332 \
+                OA333 \
+                OAO211 \
+                OAO221 \
+                OAOA2111 \
+                OR3
 
-AND3.cell:      NAND2.cell
-	$(POPCORN) -m nand $< > $@
+AND3:           NAND2
+	$(POPCORN) -m nand -c $@ $< > $@
 
-AO211.cell:     OR3.cell
-	$(POPCORN) -m aoi $< > $@
+AO211:          OR3
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO31.cell:      AOI21.cell
-	$(POPCORN) -m aoi $< > $@
+AO31:           AOI21
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO311.cell:     AO211.cell
-	$(POPCORN) -m aoi $< > $@
+AO311:          AO211
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA211.cell:    OAI21.cell
-	$(POPCORN) -m nand $< > $@
+AO32:           AOI22
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA221.cell:    OA31.cell
-	$(POPCORN) -m nand $< > $@
+AO321:          AO221
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA211.cell:     AND3.cell
-	$(POPCORN) -m oai $< > $@
+AO33:           LEVEL = 3
+AO33:           AO32
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA31.cell:      OAI21.cell
-	$(POPCORN) -m oai $< > $@
+AO331:          LEVEL = 3
+AO331:          AO321
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OA311.cell:     OA211.cell
-	$(POPCORN) -m oai $< > $@
+AO332:          LEVEL = 3
+AO332:          AO331
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAO211.cell:    AOI21.cell
-	$(POPCORN) -m nor $< > $@
+AO333:          LEVEL = 3
+AO333:          AO332
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OR3.cell:       NOR2.cell
-	$(POPCORN) -m nor $< > $@
+AOA211:         OAI21
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOA221:         OA31
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOAO2111:       OAO211
+	$(POPCORN) -m nand -c $@ $< > $@
+
+OA211:          AND3
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA31:           OAI21
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA311:          OA211
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA32:           OAI22
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA321:          OA221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA33:           LEVEL = 3
+OA33:           OA32
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA331:          LEVEL = 3
+OA331:          OA321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA332:          LEVEL = 3
+OA332:          OA331
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OA333:          LEVEL = 3
+OA333:          OA332
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAO211:         AOI21
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAO221:         AO31
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAOA2111:       AOA211
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OR3:            NOR2
+	$(POPCORN) -m nor -c $@ $< > $@
 
 BUFFERED = true
 
@@ -151,50 +287,118 @@ else
 
 #   --------    not buffered    ------------------------------------
 
-CELLS +=        AOAI211.cell \
-                AOAI221.cell \
-                AOI211.cell \
-                AOI31.cell \
-                AOI311.cell \
-                NAND3.cell \
-                NOR3.cell \
-                OAI211.cell \
-                OAI31.cell \
-                OAI311.cell \
-                OAOI211.cell \
+CELLS +=        AOAI211 \
+                AOAI221 \
+                AOAOI2111 \
+                AOI211 \
+                AOI31 \
+                AOI311 \
+                AOI32 \
+                AOI321 \
+                AOI33 \
+                AOI331 \
+                AOI332 \
+                AOI333 \
+                NAND3 \
+                NOR3 \
+                OAI211 \
+                OAI31 \
+                OAI311 \
+                OAI32 \
+                OAI321 \
+                OAI33 \
+                OAI331 \
+                OAI332 \
+                OAI333 \
+                OAOAI2111 \
+                OAOI211 \
+                OAOI221
 
-AOAI211.cell:   OAI21.cell
-	$(POPCORN) -m nand $< > $@
+AOAI211:        OAI21
+	$(POPCORN) -m nand -c $@ $< > $@
 
-AOAI221.cell:   OAI31.cell
-	$(POPCORN) -m nand $< > $@
+AOAI221:        OAI31
+	$(POPCORN) -m nand -c $@ $< > $@
 
-AOI211.cell:    NOR3.cell
-	$(POPCORN) -m aoi $< > $@
+AOAOI2111:      OAOI211
+	$(POPCORN) -m nand -c $@ $< > $@
 
-AOI31.cell:     AOI21.cell
-	$(POPCORN) -m aoi $< > $@
+AOI211:         NOR3
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOI311.cell:    AOI211.cell
-	$(POPCORN) -m aoi $< > $@
+AOI31:          AOI21
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-NAND3.cell:     NAND2.cell
-	$(POPCORN) -m nand $< > $@
+AOI311:         AOI211
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-NOR3.cell:      NOR2.cell
-	$(POPCORN) -m nor $< > $@
+AOI32:          AOI22
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAI211.cell:    NAND3.cell
-	$(POPCORN) -m oai $< > $@
+AOI321:         AOI221
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAI31.cell:     OAI21.cell
-	$(POPCORN) -m oai $< > $@
+AOI33:          LEVEL = 3
+AOI33:          AOI32
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAI311.cell:    OAI211.cell
-	$(POPCORN) -m oai $< > $@
+AOI331:         LEVEL = 3
+AOI331:         AOI321
+	$(POPCORN) -m aoi -c $@ $< > $@
 
-OAOI211.cell:   AOI21.cell
-	$(POPCORN) -m nor $< > $@
+AOI332:         LEVEL = 3
+AOI332:         AOI331
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AOI333:         LEVEL = 3
+AOI333:         AOI332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+NAND3:          NAND2
+	$(POPCORN) -m nand -c $@ $< > $@
+
+NOR3:           NOR2
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAI211:         NAND3
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI31:          OAI21
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI311:         OAI211
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI32:          OAI22
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI321:         OAI221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI33:          LEVEL = 3
+OAI33:          OAI32
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI331:         LEVEL = 3
+OAI331:         OAI321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI332:         LEVEL = 3
+OAI332:         OAI331
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAI333:         LEVEL = 3
+OAI333:         OAI332
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OAOAI2111:      AOAI211
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAOI211:        AOI21
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAOI221:        AOI31
+	$(POPCORN) -m nor -c $@ $< > $@
 
 endif
 endif
