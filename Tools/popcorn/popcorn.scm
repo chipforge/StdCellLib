@@ -68,7 +68,7 @@
     (define +version+
         (lambda (eigen-name at-port)
             (format (at-port)
-"~a (\"Popcorn\") - Version 2019-04-12
+"~a (\"Popcorn\") - Version 2019-08-13
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
             (format (at-port)
 "Usage: ~a - Generate new combinatorial cells
    -b number           set threshold value for output buffer
+   -c cellname         cell name for generated output
    -e format           specify cell export format
    -h | --help         print help screen and exit
    -H number           set cell high in metal tracks
@@ -120,6 +121,9 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
 
 ;   -b number
     (define buffer-limit 4)
+
+;   -c cellname
+    (define cell-name "CELL")
 
 ;   -e format
     (define export-format 'cell)
@@ -165,6 +169,15 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! buffer-limit (string->number value))   ; !! value check missing
+                        (set-parameters-with-args! eigen-name tail)
+                    )
+                ]
+
+                ; -c cellname
+                [(equal? (car arguments) "-c")
+                    (let ([value (car (cdr arguments))]
+                          [tail (cddr arguments)])
+                        (set! cell-name value)
                         (set-parameters-with-args! eigen-name tail)
                     )
                 ]
@@ -264,6 +277,12 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                      buffer-limit)
                     (newline (at-port))
 
+                    ; -c cellname
+                    (format (at-port)
+"Cell Name: ~a"
+                     cell-name)
+                    (newline (at-port))
+
                     ; -e format
                     (format (at-port)
 "Export Format: ~a"
@@ -346,28 +365,28 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                             ; nand-wise
                             [(equal? expansion-method 'nand)
                                 (begin
-                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; nor-wise
                             [(equal? expansion-method 'nor)
                                 (begin
-                                    (write-cell-file (expand-cell-nor (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    (write-cell-file (expand-cell-nor (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; aoi-wise
                             [(equal? expansion-method 'aoi)
                                 (begin
-                                    (write-cell-file (expand-cell-aoi (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    (write-cell-file (expand-cell-aoi (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; oai-wise
                             [(equal? expansion-method 'oai)
                                 (begin
-                                    (write-cell-file (expand-cell-oai (read-cell-file cell-file) stacked-limit buffer-limit))
+                                    (write-cell-file (expand-cell-oai (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
