@@ -1,8 +1,11 @@
 #!/usr/bin/perl -w
 use strict;
 
-print "spice2cell converts SPICE compatible .sp files to Popcorn compatible .cell files\n";
-print "Usage: spice2cell <filename.sp>\n";
+if($#ARGV)
+{
+  print "spice2cell converts SPICE compatible .sp files to Popcorn compatible .cell files\n";
+  print "Usage: spice2cell <filename.sp>\n";
+}
 
 # This is an example AND2X1 cell in SPICE format:
 my $example=<<EOF
@@ -95,6 +98,13 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
       $n2=internal2($n2);
       print $OUT "res $n1 $n2 $v\n";
     }
+    elsif(m/R\d+ (\w+#?) (\w+#?) (\d+)/)
+    {
+      my ($n1,$n2,$v)=($1,$2,$3);
+      $n1=internal($n1);
+      $n2=internal($n2);
+      print $OUT "res $n1 $n2 $v\n";
+    }
     elsif(m/^\*/)
     {
     }
@@ -119,7 +129,13 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
   close IN;
 }
 
-if(scalar(keys %seenpins))
+my $undefinedpins=0;
+foreach(keys %seenpins)
+{
+  $undefinedpins++ unless(defined($iomap{$_}));
+}
+
+if($undefinedpins)
 {
   print "Not yet defined pins, please update them in the sourcecode:\n(";
   foreach(sort keys %seenpins)
