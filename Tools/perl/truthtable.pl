@@ -48,11 +48,37 @@ sub truth
     {
       s/\s+$//m;
       verb "Line: $_\n";
+      if(m/^res (\w+) (\w+) (\d+\.?\d*)/i)
+      {
+	my ($n1,$n2,$v)=($1,$2,$3);
+        verb "Resistor found\n";
+        my $i1=($n1=~m/^(vdd|gnd)$/i)?$n1:(defined($iv{$n1}) && $iv{$n1}=~m/^(vdd|gnd|0|1)$/i)?$iv{$n1}:undef;
+        verb "i1: ".($i1||"")."\n";
+        my $i2=($n2=~m/^(vdd|gnd)$/i)?$n2:(defined($iv{$n2}) && $iv{$n2}=~m/^(vdd|gnd|0|1)$/i)?$iv{$n2}:undef;
+        verb "i2: ".($i2||"")."\n";
+        if((defined($i1) && defined($i2)) && (($i1=~m/vdd/i && $i2=~m/gnd/i) || ($i1=~m/vdd/i && $i2=~m/gnd/i)))
+        {
+          die "ERROR: Short cirtuit detected: $n1->$i1->$iv{$n1} $n2->$i2->$iv{$2}!\n";
+        }
+        if(defined($i1))
+        {
+          verb "Setting: $n2 <= $i1\n";
+          $iv{$n2}=$i1;
+        }
+        if(defined($i2))
+        {
+          verb "Setting: $n1 <= $i2\n";
+          $iv{$n1}=$i2;
+        }
+        $hadwork=1 if(defined($i1) || defined($i2));
+        push @nexttodo,$_ if((!defined($iv{$n1})) && (!defined($iv{$n2})));
+        verb "Status: Net1: $n1-".($iv{$n1}||"")." Net2: $n2-".($iv{$n2}||"")."\n";
+      }
       if(m/^([pn]mos) (\w+) (\w+) (\w+)/i)
       {
 	my ($tr,$s,$g,$d)=($1,$2,$3,$4);
-	$g=~s/^(\d+)$/$tr$1/;
-	$d=~s/^(\d+)$/$tr$1/;
+	#$g=~s/^(\d+)$/$tr$1/; This was necessary when popcorn generated same names for different internal nets in nmos and pmos
+	#$d=~s/^(\d+)$/$tr$1/; But it failed for less structured cells (e.g. transmission gates)
         verb "Transistor: $_\n";
   
         if(defined($iv{$s}))
@@ -73,9 +99,17 @@ sub truth
 	    {
               die "ERROR: Short cirtuit detected: $g->$ig->$iv{$g} $d->$id->$iv{$d}!\n";
 	    }
-            $iv{$d}=$ig if(defined($ig)); 
-            $iv{$g}=$id if(defined($id)); 
-	    $hadwork=1 if(defined($id) || defined($ig));
+            if(defined($ig))
+	    {
+              verb "Setting: $d <= $ig\n";
+              $iv{$d}=$ig;
+	    }
+            if(defined($id))
+	    {
+              verb "Setting: $g <= $id\n";
+              $iv{$g}=$id;
+            }
+            $hadwork=1 if(defined($id) || defined($ig));
 	    push @nexttodo,$_ if((!defined($iv{$d})) && (!defined($iv{$g})));
 	    verb "Status: Source: $d-".($iv{$d}||"")." Drain: $g-".($iv{$g}||"")."\n";
           }
@@ -94,6 +128,10 @@ sub truth
     if(!$hadwork)
     {
       verb "No further progress. Exiting.\n";
+      foreach(sort keys %iv)
+      {
+        verb "Status: $_ : $iv{$_}\n";
+      }
       last;
     }
     verb "Still to be done:\n@nexttodo\n\n";
@@ -131,20 +169,28 @@ foreach my $file(@ARGV)
     my %outputs=();
  
     # Here we are parsing all transistor lines for input-, output- and intermediate nets
+    # But this is just a guess:
     foreach(@lines)
     {
       next if(m/^#/); # Ignore comment lines
-      $inputs{$1}=1 if(m/^([A-W]\d*) .*[pn]mos/);
-      $intermediates{$1}=1 if(m/^([X-Y]\d*) .*[pn]mos/);
-      $outputs{$1}=1 if(m/^\w+ ([X-Z]\d*) .*[pn]mos/);
+      $inputs{$1}=1 if(m/^[pn]mos\s*([A-W]+\d*)/);
+      $intermediates{$1}=1 if(m/^[pn]mos.*([X-Y]\w*\d*)/);
+      $outputs{$1}=1 if(m/^[pn]mos.*\w+ ([X-Z]\w*\d*)/);
     }
     delete($outputs{"Y"}) if(defined($outputs{"Z"})); # If we have Z, then Y is an internal net and Z is the output net
 
     my @ins=sort keys %inputs;
     my @outs=sort keys %outputs;
 
-    my $ninputs=scalar(keys %inputs);
-    my $noutputs=scalar(keys %outputs);
+    # Now we are parsing for the real inputs and ouputs if they are available
+    foreach my $line(@lines)
+    {
+      @ins=split(" ",$1) if($line=~m/^\.inputs (\w.*)/i);
+      @outs=split(" ",$1) if($line=~m/^\.outputs (\w.*)/i)
+    }
+
+    my $ninputs=scalar(@ins);
+    my $noutputs=scalar(@outs);
     my $combinations=2**$ninputs; # We calculate the number of possible combinations in the truthtable
 
     verb "Number of Inputs: $ninputs (".join(",",@ins).") -> Combinations: $combinations\n";
@@ -239,6 +285,7 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
       # Now we are analyzing the results
       foreach my $out (@outs)
       {
+	$res{$out}="HIGH-Z" if(!defined($res{$out}));
         $sum{$out}{$res{$out}}++; # We are counting the occurance of all output values of the whole truthtable to decide, which value is more often used, which helps to decide whether the function can be represented in a shorter way with a negation
 	my @a=();
 	foreach(@ins)
@@ -266,15 +313,16 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
 
       foreach my $out (@outs) # We might have more than one output of a cell
       {
-        my $not=$sum{$out}{0}>$sum{$out}{1}?1:0;
+        my $not=($sum{$out}{0}||0)>($sum{$out}{1}||0)?1:0;
         # If we have more 0 than 1 results, then the negated inverse is shorted: 
+	# TODO: When there are HIGH-Z outputs we should split the HIGH-Z outputs from the others and give a function for output-enable and HIGH-Z
 	if($not)
 	{
-          print "FUNCTION: $out = (".join(" || ",@{$results{$out}{$not}}).")";
+          print "FUNCTION: $out = (".join(" || ",@{$results{$out}{$not}}).") ";
 	}
 	else
 	{
-          print "FUNCTION: $out = ! (".join(" || ",@{$results{$out}{$not}}).")";
+          print "FUNCTION: $out = ! (".join(" || ",@{$results{$out}{$not}}).") ";
         }
         # TODO: We should try more functional representations like AOI, OAI, OR, NOR and see which one is the shortest representation
       }
