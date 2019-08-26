@@ -29,7 +29,7 @@ Additionally we use the great CirDia LaTeX package for drawing circuit diagrams 
 
 ### Scheme
 
-Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
+Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R^7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
 
 ```
 apt-get install gauche
