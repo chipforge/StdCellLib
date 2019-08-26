@@ -37,12 +37,22 @@
 
 include include.mk
 
-#   simulation tool variables
+#   3rd party simulation tool variables
 
-WORKDIR ?=          $(SIMULATIONDIR)/verilog
-SIMULATOR1 ?=       iverilog -g2 # -Wall
-SIMULATOR2 ?=       vvp # -v
-WAVEVIEWER ?=       gtkwave
+SIMULATOR1 ?=   iverilog -g2 # -Wall
+SIMULATOR2 ?=   vvp # -v
+WAVEVIEWER ?=   gtkwave
+
+SPICE ?=        ngspice -b -c
+#NETLIST ?=     gnetlist -g spice-noqsi -o
+#NETLIST ?=      gnetlist -g spice -o
+NETLIST ?=      gnetlist -g spice-sdb -o
+#NETLIST ?=      lepton-netlist -g spice-sdb -o
+
+#   temporary simulation directory
+
+VERILOGTMP ?=   $(SIMULATIONDIR)/verilog
+
 
 .PHONY: clean
 clean:
@@ -50,23 +60,42 @@ clean:
 	-$(RM) $(SIMULATIONDIR)/verilog/*_bench.v
 	-$(RM) $(SIMULATIONDIR)/verilog/*.vpp
 	-$(RM) $(SIMULATIONDIR)/verilog/*.table
+	-$(RM) $(SIMULATIONDIR)/spice/*_record.txt
+	-$(RM) $(TBENCHDIR)/spice/*_tb.sp
+	-$(RM) $(RELEASEDIR)/spice/*.cir
 
 #   ----------------------------------------------------------------
 #                   RUN VERILOG SIMULATION
 #   ----------------------------------------------------------------
 
 verilog-slm:
-	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL).v
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL) > $(SIMULATIONDIR)/verilog/$(CELL).v
 
 verilog-bench:
-	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL).cell > $(SIMULATIONDIR)/verilog/$(CELL)_bench.v
+	$(POPCORN) -e $@ $(CATALOGDIR)/$(CELL) > $(SIMULATIONDIR)/verilog/$(CELL)_bench.v
 
 .PHONY: table-file
 table-file: PROJECT_DEFINES += -DDUMPFILE=\"$@.vcd\"
 table-file: verilog-slm verilog-bench
 	$(MKDIR) $(TEMPDIR)
-	$(SIMULATOR1) $(PROJECT_DEFINES) -o $(WORKDIR)/$(CELL)_bench.vpp $(WORKDIR)/$(CELL).v $(WORKDIR)/$(CELL)_bench.v
-	$(SIMULATOR2) $(WORKDIR)/$(CELL)_bench.vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $(TEMPDIR)/$(CELL).table
+	$(SIMULATOR1) $(PROJECT_DEFINES) -o $(VERILOGTMP)/$(CELL)_bench.vpp $(VERILOGTMP)/$(CELL).v $(VERILOGTMP)/$(CELL)_bench.v
+	$(SIMULATOR2) $(VERILOGTMP)/$(CELL)_bench.vpp | $(GREP) '^\.' | $(SED) 's/^.//g' > $(TEMPDIR)/$(CELL).table
 ifeq ($(MODE), gui)
 	$(WAVEVIEWER) -f $@.vcd -a $(SIMULATIONDIR)/verilog/$(CELL).do
 endif
+
+#   ----------------------------------------------------------------
+#                   RUN SPICE SIMULATION
+#   ----------------------------------------------------------------
+
+record: $(SIMULATIONDIR)/spice/$(CELL)_record.txt
+
+$(SIMULATIONDIR)/spice/$(CELL)_record.txt: $(RELEASEDIR)/spice/$(CELL).cir $(RELEASEDIR)/spice/BUF2.cir $(TBENCHDIR)/spice/$(CELL)_tb.sp
+	$(SPICE) $? > $@
+
+$(TBENCHDIR)/spice/$(CELL)_tb.sp: $(TBENCHDIR)/geda/$(CELL)_tb.sch $(TBENCHDIR)/spice/$(CELL)_tb.cmd
+	$(NETLIST) $@ $<
+
+$(RELEASEDIR)/spice/$(CELL).cir: $(SOURCESDIR)/geda/$(CELL).sch
+	$(NETLIST) $@ $?
+
