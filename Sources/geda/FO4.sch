@@ -1,0 +1,190 @@
+v 20130925 2
+C 51600 43000 1 0 0 asic-nmos-1.sym
+{
+T 53000 43800 5 8 0 0 0 0 1
+device=NMOS_TRANSISTOR
+T 52400 43800 5 10 1 1 0 0 1
+refdes=M2
+T 52400 43600 5 8 1 1 0 0 1
+model-name=nmos4
+T 52400 43300 5 8 1 0 0 0 1
+w='Fan*Wunit'
+T 52400 43100 5 8 1 0 0 0 1
+l=1u
+}
+T 50100 40100 9 10 1 0 0 0 1
+1
+T 51700 40100 9 10 1 0 0 0 1
+1
+C 54000 43000 1 0 0 asic-nmos-1.sym
+{
+T 55400 43800 5 8 0 0 0 0 1
+device=NMOS_TRANSISTOR
+T 54800 43800 5 10 1 1 0 0 1
+refdes=M4
+T 54800 43600 5 8 1 1 0 0 1
+model-name=nmos4
+T 54800 43300 5 8 1 0 0 0 1
+w='Fan*Fan*Wunit'
+T 54800 43100 5 8 1 0 0 0 1
+l=1u
+}
+C 51600 44500 1 0 0 asic-pmos-1.sym
+{
+T 53000 45300 5 8 0 0 0 0 1
+device=PMOS_TRANSISTOR
+T 52400 45300 5 10 1 1 0 0 1
+refdes=M1
+T 52400 45100 5 8 1 1 0 0 1
+model-name=pmos4
+T 52400 44800 5 8 1 0 0 0 1
+w='Fan*PNratio*Wunit'
+T 52400 44600 5 8 1 0 0 0 1
+l=1u
+}
+C 54000 44500 1 0 0 asic-pmos-1.sym
+{
+T 55400 45300 5 8 0 0 0 0 1
+device=PMOS_TRANSISTOR
+T 54800 45300 5 10 1 1 0 0 1
+refdes=M3
+T 54800 45100 5 8 1 1 0 0 1
+model-name=pmos4
+T 54800 44800 5 8 1 0 0 0 1
+w='Fan*Fan*PNratio*Wunit'
+T 54800 44600 5 8 1 0 0 0 1
+l=1u
+}
+C 49500 40000 1 0 0 cvstitleblock-1.sym
+{
+T 50100 40400 5 10 1 1 0 0 1
+date=2019-08-27
+T 54000 40400 5 10 1 1 0 0 1
+rev=$Revision$
+T 54000 40100 5 10 1 1 0 0 1
+auth=<stdcelllib@nospam.chipforge.org>
+T 50100 40700 5 10 1 1 0 0 1
+fname=FO4.sch
+T 52900 41100 5 14 1 1 0 4 1
+title=FO4 - TBench Load with high (4x) fan-in
+}
+C 48000 46500 1 0 0 spice-model-1.sym
+{
+T 48100 47100 5 10 1 1 0 0 1
+refdes=A1
+T 49300 46800 5 10 1 1 0 0 1
+model-name=nmos4
+T 48500 46600 5 10 1 1 0 0 1
+file=Technology/spice/ls1unmos.mod
+}
+C 51300 46500 1 0 0 spice-model-1.sym
+{
+T 51400 47100 5 10 1 1 0 0 1
+refdes=A2
+T 52600 46800 5 10 1 1 0 0 1
+model-name=pmos4
+T 51800 46600 5 10 1 1 0 0 1
+file=Technology/spice/ls1upmos.mod
+}
+C 55400 44000 1 0 0 spice-subcircuit-IO-1.sym
+{
+T 55800 44600 5 10 1 1 180 0 1
+refdes=P1
+}
+C 50900 44600 1 180 0 spice-subcircuit-IO-1.sym
+{
+T 50500 44500 5 10 1 1 0 0 1
+refdes=P2
+}
+N 51300 45000 51600 45000 4
+N 51600 43500 51300 43500 4
+N 51300 43500 51300 45000 4
+N 52200 44500 52200 44000 4
+N 53700 45000 54000 45000 4
+N 54000 43500 53700 43500 4
+N 53700 43500 53700 45000 4
+N 52200 44300 53700 44300 4
+N 54600 46000 54600 45500 4
+N 54600 44500 54600 44000 4
+N 54600 43000 54600 42400 4
+N 54600 44300 55600 44300 4
+{
+T 55200 44400 5 10 1 1 0 0 1
+netname=Z
+}
+N 50700 44300 51300 44300 4
+{
+T 50900 44400 5 10 1 1 0 0 1
+netname=A
+}
+N 50600 46000 54800 46000 4
+{
+T 50900 46100 5 10 1 1 0 0 1
+netname=VDD
+}
+N 50700 42400 54800 42400 4
+{
+T 51000 42500 5 10 1 1 0 0 1
+netname=GND
+}
+T 51700 41900 9 10 1 0 0 0 2
+1. Stage:
+- inverter with high fan-in
+T 53800 41900 9 10 1 0 0 0 2
+2. Stage:
+- inverter with even higher fan-in
+N 54800 45000 54800 46000 4
+N 54700 45000 54800 45000 4
+N 54800 42400 54800 43500 4
+N 54700 43500 54800 43500 4
+N 52200 45500 52200 46000 4
+N 52300 45000 52400 45000 4
+N 52400 45000 52400 46000 4
+N 52200 43000 52200 42400 4
+N 52300 43500 52400 43500 4
+N 52400 43500 52400 42400 4
+C 48000 45100 1 0 0 spice-directive-1.sym
+{
+T 48100 45400 5 10 0 1 0 0 1
+device=directive
+T 48100 45500 5 10 1 1 0 0 1
+refdes=A4
+T 48100 45200 5 10 1 1 0 0 1
+value=.PARAM Wunit=1.5u
+}
+C 48000 44500 1 0 0 spice-directive-1.sym
+{
+T 48100 44800 5 10 0 1 0 0 1
+device=directive
+T 48100 44900 5 10 1 1 0 0 1
+refdes=A5
+T 48100 44600 5 10 1 1 0 0 1
+value=.PARAM PNratio=2
+}
+C 51100 42100 1 0 0 gnd-1.sym
+C 54600 46700 1 0 0 spice-subcircuit-LL-1.sym
+{
+T 54700 47100 5 10 1 1 0 0 1
+refdes=A3
+T 54700 46800 5 10 1 1 0 0 1
+model-name=FO4
+}
+C 50800 46300 1 180 0 spice-subcircuit-IO-1.sym
+{
+T 50400 46200 5 10 1 1 0 0 1
+refdes=P3
+}
+C 50900 42700 1 180 0 spice-subcircuit-IO-1.sym
+{
+T 50500 42600 5 10 1 1 0 0 1
+refdes=P4
+}
+C 48000 43900 1 0 0 spice-directive-1.sym
+{
+T 48100 44200 5 10 0 1 0 0 1
+device=directive
+T 48100 44300 5 10 1 1 0 0 1
+refdes=A6
+T 48100 44000 5 10 1 1 0 0 1
+value=.PARAM Fan=4
+}
