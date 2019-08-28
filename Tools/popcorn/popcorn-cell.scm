@@ -53,12 +53,12 @@
           (srfi 152)                ; string-split, string-join
           ; popcorn lib also
           (popcorn-lib))
-  (export  read-cell-file
-           write-cell-file
-           expand-cell-nand
-           expand-cell-nor
-           expand-cell-aoi
-           expand-cell-oai)
+  (export  cell:read-file
+           cell:write-file
+           cell:expand-nand
+           cell:expand-nor
+           cell:expand-aoi
+           cell:expand-oai)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
@@ -89,16 +89,16 @@
 ;;  ------------    read in cell file   -------------------------------
 
 ;   Contract:
-;   read-cell-file : filehandler -> cell
+;   cell:read-file : filehandler -> cell
 
 ;   Purpose:
 ;   read in cell file as vector for further usage
 
 ;   Example:
-;   (read-cell-file file) => INV-cell
+;   (cell:read-file file) => INV-cell
 
 ;   Definition:
-    (define (read-cell-file file-name)
+    (define (cell:read-file file-name)
         (let ((file (open-input-file file-name))
               (return (generate-cell))
               (netlist '()))
@@ -293,16 +293,16 @@
 ;;  ------------    write cell description  ---------------------------
 
 ;   Contract:
-;   write-cell-file : cell -> --
+;   cell:write-file : cell -> --
 
 ;   Purpose:
 ;   write cell description to STDOUT
 
 ;   Example:
-;   (write-cell-file INV-cell) => --
+;   (cell:write-file INV-cell) => --
 
 ;   Definition:
-    (define write-cell-file
+    (define cell:write-file
         (lambda (cell)
             (let ((at-port current-output-port))
                 (begin
@@ -1012,16 +1012,16 @@
 ;;  ------------    expand cell nand-wise   ---------------------------
 
 ;   Contract:
-;   expand-cell-nand : cell -> cell
+;   cell:expand-nand : cell -> cell
 
 ;   Purpose:
 ;   expand cell description by adding mosfet nand-like
 
 ;   Example:
-;   (expand-cell-nand INV-cell 2) => NAND2-cell
+;   (cell:expand-nand INV-cell 2) => NAND2-cell
 
 ;   Definition:
-    (define expand-cell-nand
+    (define cell:expand-nand
         (lambda (cell stacked-limit buffer-limit cell-name)
             (let ((netlist (cell-netlist cell)))
                 (let ((anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit)))
@@ -1062,10 +1062,10 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-cell-nand INV-cell 4 4) NAND2-cell)
+            (if (equal? (cell:expand-nand INV-cell 4 4) NAND2-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " expand-cell-nand test" (current-error-port))
+            (display " cell:expand-nand test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1073,16 +1073,16 @@
 ;;  ------------    expand cell nor-wise    ---------------------------
 
 ;   Contract:
-;   expand-cell-nor : cell -> cell
+;   cell:expand-nor : cell -> cell
 
 ;   Purpose:
 ;   expand cell description by adding mosfet nor-like
 
 ;   Example:
-;   (expand-cell-nor INV-cell 4 4) => NOR2-cell
+;   (cell:expand-nor INV-cell 4 4) => NOR2-cell
 
 ;   Definition:
-    (define expand-cell-nor
+    (define cell:expand-nor
         (lambda (cell stacked-limit buffer-limit cell-name)
             (let ((netlist (cell-netlist cell)))
                 (let ((anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit)))
@@ -1123,10 +1123,10 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-cell-nor INV-cell 4 4) NOR2-cell)
+            (if (equal? (cell:expand-nor INV-cell 4 4) NOR2-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " expand-cell-nor test" (current-error-port))
+            (display " cell:expand-nor test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1134,16 +1134,16 @@
 ;;  ------------    expand cell oai-wise    ---------------------------
 
 ;   Contract:
-;   expand-cell-oai : cell -> cell
+;   cell:expand-oai : cell -> cell
 
 ;   Purpose:
 ;   expand cell description by adding mosfet oai-like
 
 ;   Example:
-;   (expand-cell-oai NAND2-cell) => OAI21-cell
+;   (cell:expand-oai NAND2-cell) => OAI21-cell
 
 ;   Definition:
-    (define expand-cell-oai
+    (define cell:expand-oai
         (lambda (cell stacked-limit buffer-limit cell-name)
             (let ((netlist (cell-netlist cell)))
                 (let ((anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit)))
@@ -1184,10 +1184,10 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-cell-oai NAND2-cell 4 4) OAI21-cell)
+            (if (equal? (cell:expand-oai NAND2-cell 4 4) OAI21-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " expand-cell-oai test" (current-error-port))
+            (display " cell:expand-oai test" (current-error-port))
             (newline (current-error-port))
         )
     )
@@ -1195,16 +1195,16 @@
 ;;  ------------    expand cell aoi-wise    ---------------------------
 
 ;   Contract:
-;   expand-cell-aoi : cell -> cell
+;   cell:expand-aoi : cell -> cell
 
 ;   Purpose:
 ;   expand cell description by adding mosfet aoi-like
 
 ;   Example:
-;   (expand-cell-aoi NOR2-cell) => AOI21-cell
+;   (cell:expand-aoi NOR2-cell) => AOI21-cell
 
 ;   Definition:
-    (define expand-cell-aoi
+    (define cell:expand-aoi
         (lambda (cell stacked-limit buffer-limit cell-name)
             (let ((netlist (cell-netlist cell)))
                 (let ((anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit)))
@@ -1245,10 +1245,10 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-cell-aoi NOR2-cell 4 4) AOI21-cell)
+            (if (equal? (cell:expand-aoi NOR2-cell 4 4) AOI21-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
-            (display " expand-cell-aoi test" (current-error-port))
+            (display " cell:expand-aoi test" (current-error-port))
             (newline (current-error-port))
         )
     )

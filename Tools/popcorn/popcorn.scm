@@ -346,7 +346,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     ; generate verilog switch-level model
                     [(equal? export-format 'verilog-slm)
                         (begin
-                            (export-verilog-switch (read-cell-file cell-file))
+                            (verilog:export-switch (cell:read-file cell-file))
                             0   ; exit value
                         )
                     ]
@@ -354,7 +354,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     ; generate verilog stimulus work bench
                     [(equal? export-format 'verilog-bench)
                         (begin
-                            (export-verilog-bench (read-cell-file cell-file))
+                            (verilog:export-bench (cell:read-file cell-file))
                             0   ; exit value
                         )
                     ]
@@ -365,28 +365,28 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                             ; nand-wise
                             [(equal? expansion-method 'nand)
                                 (begin
-                                    (write-cell-file (expand-cell-nand (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
+                                    (cell:write-file (cell:expand-nand (cell:read-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; nor-wise
                             [(equal? expansion-method 'nor)
                                 (begin
-                                    (write-cell-file (expand-cell-nor (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
+                                    (cell:write-file (cell:expand-nor (cell:read-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; aoi-wise
                             [(equal? expansion-method 'aoi)
                                 (begin
-                                    (write-cell-file (expand-cell-aoi (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
+                                    (cell:write-file (cell:expand-aoi (cell:read-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
                             ; oai-wise
                             [(equal? expansion-method 'oai)
                                 (begin
-                                    (write-cell-file (expand-cell-oai (read-cell-file cell-file) stacked-limit buffer-limit cell-name))
+                                    (cell:write-file (cell:expand-oai (cell:read-file cell-file) stacked-limit buffer-limit cell-name))
                                     0   ; exit value
                                 )
                             ]
