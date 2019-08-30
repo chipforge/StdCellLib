@@ -80,6 +80,7 @@ help:
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
 	$(ECHO) "    catalog    - compile *all* catalog cells (see list below)"
+	$(ECHO) "    cell CELL=<cell> - compile up to dedicated catalog cell"
 	$(ECHO) ""
 	$(ECHO) "-------------------------------------------------------------------"
 	$(ECHO) "    available cells [limit=" $(LIMIT) "+ buffer=" $(BUFFER)"]:"
@@ -117,3 +118,5 @@ endif
 .PHONY: catalog
 catalog:    $(CELLS)
 
+.PHONY: cell
+cell:       $(CELL)
