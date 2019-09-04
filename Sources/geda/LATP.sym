@@ -33,18 +33,6 @@ pinlabel=X
 T 208 642 5 10 0 1 0 6 1
 pinnumber=3
 }
-T 492 992 5 16 1 1 0 0 1
-device=LATP
-T 1292 2292 8 10 0 1 0 0 1
-description=High-active D-Latch
-T 292 1989 5 10 1 1 0 0 1
-refdes=X?
-T 1892 1392 8 10 0 0 0 0 1
-footprint=none
-T -8 -8 8 10 0 1 0 0 1
-source=LATP.sch
-T 600 100 9 10 0 0 0 0 1
-numslots=0
 P 1200 2200 1200 1900 1 0 0
 {
 T 1150 1900 5 10 0 0 90 6 1
@@ -67,3 +55,15 @@ pinnumber=5
 T 1250 300 5 10 0 0 270 6 1
 pinseq=5
 }
+T 492 992 5 16 1 1 0 0 1
+device=LATP
+T 1292 2292 8 10 0 1 0 0 1
+description=High-active D-Latch
+T 292 1989 5 10 1 1 0 0 1
+refdes=X?
+T 1892 1392 8 10 0 0 0 0 1
+footprint=none
+T -8 -8 8 10 0 1 0 0 1
+source=LATP.sch
+T 600 100 9 10 0 0 0 0 1
+numslots=0
