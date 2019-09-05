@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_BUF.tex
+%%  File:           StdCellLib/Documents/LaTeX/BUF2_circuit.tex
 %%
-%%  Purpose:        Circuit File for BUF
+%%  Purpose:        Circuit File for BUF2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,12 +34,12 @@
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
     Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    \begin{figure}[h]
         \begin{center}
             \begin{circuitdiagram}{14}{6}
             \pin{1}{3}{L}{A}    % pin A
-            \gate{not}{5}{3}{R}{}{}    % NOT gate -> right
-            \gate{not}{11}{3}{R}{}{}    % NOT gate -> right
+            \gate{not}{5}{3}{R}{}{} % 1st buffer
+            \gate{not}{11}{3}{Rc}{}{2x} % 2nd buffer
             \pin{15}{3}{R}{Z}   % pin Z
             \end{circuitdiagram}
         \end{center}

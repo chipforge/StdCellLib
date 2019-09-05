@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/CGN2_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/LATRP_manpage.tex
 %%
-%%  Purpose:        Manual Page File for CGN2
+%%  Purpose:        Manual Page File for LATRP
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,37 +32,34 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{CGN2}
+\label{LATRP}
 \paragraph{Cell}
 \begin{quote}
-    \textbf{CGN2} - Clock Gating Buffer for negative Clock with 2x Drive Strength
+    \textbf{LATRP} - a High-active D-Latch with high-active Reset
 \end{quote}
 
 \paragraph{Synopsys}
 \begin{quote}
-    CGN2(XO, E, XI)
+    LATP(Q, D, R, X)
 \end{quote}
 
 \paragraph{Description}
-\input{CGN2_circuit.tex}
-%\input{CGN2_schematic.tex}
+\input{LATRP_circuit.tex}
+%\input{LATRP_schematic.tex}
 
-%\paragraph{Truth Table}
-%\input{CGN2_truthtable.tex}
+\paragraph{Truth Table}
+%\input{LATRP_truthtable.tex}
 
 \paragraph{Usage}
 
 \paragraph{Fan-in / Fan-out}
-\begin{quote}
-    ?
-\end{quote}
 
 \paragraph{Layout}
 
 \paragraph{Files}
-%\input{CGN2_files.tex}
 
 \paragraph{See also}
 \begin{quote}
-    CGP2 - Clock Gating Buffer for positive Clock with 2x Drive Strength
+    LATP - a High-active D-Latch \\
+    LATSP - a High-active D-Latch with low-active Set
 \end{quote}

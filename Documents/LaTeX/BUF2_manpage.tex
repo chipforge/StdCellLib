@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_BUF.tex
+%%  File:           StdCellLib/Documents/LaTeX/BUF2_manpage.tex
 %%
-%%  Purpose:        Manual Page File for BUF
+%%  Purpose:        Manual Page File for BUF2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,23 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{BUF}
+\label{BUF2}
 \paragraph{Cell}
 \begin{quote}
-    \textbf{BUF} - a Buffer gate
+    \textbf{BUF2} - a non-inverting Buffer with 2x Drive Strength
 \end{quote}
 
 \paragraph{Synopsys}
 \begin{quote}
-    BUF(Z, A)
+    BUF2(Z, A)
 \end{quote}
 
 \paragraph{Description}
-\input{BUF_circuit.tex}
-\input{BUF_schematic.tex}
+\input{BUF2_circuit.tex}
+\input{BUF2_schematic.tex}
 
 \paragraph{Truth Table}
-\input{BUF_truthtable.tex}
+\input{BUF2_truthtable.tex}
 
 \paragraph{Usage}
 
@@ -60,5 +60,5 @@
 
 \paragraph{See also}
 \begin{quote}
-    INV - a Not (or Inverter) gate
+    IBUF2 - a inverting Buffer with 2x Drive Strength
 \end{quote}

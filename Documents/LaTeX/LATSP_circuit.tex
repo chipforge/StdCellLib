@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/CGN2_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/LATSP_circuit.tex
 %%
-%%  Purpose:        Manual Page File for CGN2
+%%  Purpose:        Circuit File for LATSP
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,37 +32,19 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{CGN2}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{CGN2} - Clock Gating Buffer for negative Clock with 2x Drive Strength
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    CGN2(XO, E, XI)
-\end{quote}
-
-\paragraph{Description}
-\input{CGN2_circuit.tex}
-%\input{CGN2_schematic.tex}
-
-%\paragraph{Truth Table}
-%\input{CGN2_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-\begin{quote}
-    ?
-\end{quote}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-%\input{CGN2_files.tex}
-
-\paragraph{See also}
-\begin{quote}
-    CGP2 - Clock Gating Buffer for positive Clock with 2x Drive Strength
-\end{quote}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{12}{10}
+            \usgate
+            %\flipflop[\clockin{p}\setin{n}]{d}{6}{4}{R}{}{}
+            \flipflop[\clockin{p}\setin{p}]{d}{6}{4}{R}{}{} % !! wrong Set pin polarity !!
+            \pin{1}{4}{L}{X}   % pin X
+            \pin{1}{6}{L}{D}   % pin D
+            \pin{6}{9}{U}{SN}  % pin SN
+            \pin{11}{6}{R}{Q}  % pin Q
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
