@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/LATSP_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/LATESN_manpage.tex
 %%
-%%  Purpose:        Manual Page File for LATSP
+%%  Purpose:        Manual Page File for LATESN
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,23 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{LATSP}
+\label{LATESN}
 \paragraph{Cell}
 \begin{quote}
-    \textbf{LATSP} - a High-active D-Latch with low-active asynchronous Set
+    \textbf{LATESN} - a Low-active D-Latch with low-active Clock Enable and low-active asynchronous Set
 \end{quote}
 
 \paragraph{Synopsys}
 \begin{quote}
-    LATSP(Q, D, SN, X)
+    LATESN(Q, D, SN, EN, XN)
 \end{quote}
 
 \paragraph{Description}
-\input{LATSP_circuit.tex}
-%\input{LATSP_schematic.tex}
+\input{LATESN_circuit.tex}
+%\input{LATESN_schematic.tex}
 
 \paragraph{Truth Table}
-%\input{LATSP_truthtable.tex}
+%\input{LATESN_truthtable.tex}
 
 \paragraph{Usage}
 

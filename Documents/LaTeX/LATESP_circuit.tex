@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/LATSP_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/LATESP_circuit.tex
 %%
-%%  Purpose:        Manual Page File for LATSP
+%%  Purpose:        Circuit File for LATESP
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,28 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{LATSP}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{LATSP} - a High-active D-Latch with low-active asynchronous Set
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    LATSP(Q, D, SN, X)
-\end{quote}
-
-\paragraph{Description}
-\input{LATSP_circuit.tex}
-%\input{LATSP_schematic.tex}
-
-\paragraph{Truth Table}
-%\input{LATSP_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{19}{11}
+            \usgate
+            \gate{nand}{5}{3}{R}{}{}
+            %\flipflop[\clockin{p}\setin{n}]{d}{13}{5}{R}{}{}
+            \flipflop[\clockin{p}\setin{p}]{d}{13}{5}{R}{}{}
+            \pin{1}{7}{L}{D}   % pin D
+            \wire{2}{7}{9}{7}
+            \pin{1}{5}{L}{E}   % pin E
+            \pin{1}{1}{L}{X}   % pin X
+            \wire{9}{3}{9}{5}
+            \pin{13}{10}{U}{SN}% pin SN
+            \pin{18}{7}{R}{Q}  % pin Q
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
