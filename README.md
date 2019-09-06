@@ -25,7 +25,7 @@ apt-get install texlive-full
 ```
 
 which installs the complete (and usefull) LaTeX Environment.
-Additionally we use the great CirDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CirDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
+Additionally we use the great CircDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CircDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
 
 ### Scheme
 
