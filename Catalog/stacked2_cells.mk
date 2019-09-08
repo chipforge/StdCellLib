@@ -63,14 +63,14 @@ AO21:           OR2
 
 AO22:           LEVEL = 2
 AO22:           AO21
-	$(POPCORN) -m oai -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 OA21:           AND2
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA22:           LEVEL = 2
 OA22:           OA21
-	$(POPCORN) -m oai -c $@ $< > $@
+	$(POPCORN) -m nor -c $@ $< > $@
 
 OR2:            INV
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -93,7 +93,7 @@ AOI21:          NOR2
 
 AOI22:          LEVEL = 2
 AOI22:          AOI21
-	$(POPCORN) -m oai -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 NAND2:          INV
 	$(POPCORN) -m nand -c $@ $< > $@
@@ -106,6 +106,6 @@ OAI21:          NAND2
 
 OAI22:          LEVEL = 2
 OAI22:          OAI21
-	$(POPCORN) -m oai -c $@ $< > $@
+	$(POPCORN) -m nor -c $@ $< > $@
 
 endif
