@@ -21,7 +21,7 @@ auth=<stdcelllib@nospam.chipforge.org>
 T 49300 39600 5 10 1 1 0 0 1
 fname=LATP_tb.sch
 T 51400 40100 5 14 1 1 0 4 1
-title=LATP - High-active D-FlipFlop
+title=LATP - High-active D-Latch
 }
 T 49300 39000 9 10 1 0 0 0 1
 1
