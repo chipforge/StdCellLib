@@ -61,6 +61,7 @@ CELLS +=        AND3 \
                 AO332 \
                 AO333 \
                 AOA211 \
+                AOA212 \
                 AOA221 \
                 AOAO2111 \
                 OA211 \
@@ -73,6 +74,7 @@ CELLS +=        AND3 \
                 OA332 \
                 OA333 \
                 OAO211 \
+                OAO212 \
                 OAO221 \
                 OAOA2111 \
                 OR3
@@ -112,6 +114,9 @@ AO333:          AO332
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOA211:         OA21
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOA212:         OA22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA221:         OA31
@@ -154,6 +159,9 @@ OA333:          OA332
 OAO211:         AO21
 	$(POPCORN) -m nor -c $@ $< > $@
 
+OAO212:         AO22
+	$(POPCORN) -m nor -c $@ $< > $@
+
 OAO221:         AO31
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -179,6 +187,7 @@ CELLS +=        AND3 \
                 AO332 \
                 AO333 \
                 AOA211 \
+                AOA212 \
                 AOA221 \
                 AOAO2111 \
                 OA211 \
@@ -191,6 +200,7 @@ CELLS +=        AND3 \
                 OA332 \
                 OA333 \
                 OAO211 \
+                OAO212 \
                 OAO221 \
                 OAOA2111 \
                 OR3
@@ -230,6 +240,9 @@ AO333:          AO332
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOA211:         OAI21
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOA212:         OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA221:         OA31
@@ -272,6 +285,9 @@ OA333:          OA332
 OAO211:         AOI21
 	$(POPCORN) -m nor -c $@ $< > $@
 
+OAO212:         AOI22
+	$(POPCORN) -m nor -c $@ $< > $@
+
 OAO221:         AO31
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -288,6 +304,7 @@ else
 #   --------    not buffered    ------------------------------------
 
 CELLS +=        AOAI211 \
+                AOAI212 \
                 AOAI221 \
                 AOAOI2111 \
                 AOI211 \
@@ -312,9 +329,13 @@ CELLS +=        AOAI211 \
                 OAI333 \
                 OAOAI2111 \
                 OAOI211 \
+                OAOI212 \
                 OAOI221
 
 AOAI211:        OAI21
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOAI212:        OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAI221:        OAI31
@@ -395,6 +416,9 @@ OAOAI2111:      AOAI211
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OAOI211:        AOI21
+	$(POPCORN) -m nor -c $@ $< > $@
+
+OAOI212:        AOI22
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OAOI221:        AOI31
