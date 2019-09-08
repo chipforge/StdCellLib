@@ -36,17 +36,19 @@
     Circuit
     \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{19}{11}
+            \begin{circuitdiagram}{21}{11}
             \usgate
             \gate{nor}{5}{3}{R}{}{}
-            \flipflop[\clockin{p}\setin{n}]{d}{13}{5}{R}{}{}
+            \flipflop[\clockin{p}\setin{n}]{d}{15}{5}{R}{}{}
             \pin{1}{7}{L}{D}   % pin D
-            \wire{2}{7}{9}{7}
+            \wire{2}{7}{11}{7}
             \pin{1}{5}{L}{EN}  % pin EN
             \pin{1}{1}{L}{XN}  % pin XN
-            \wire{9}{3}{9}{5}
-            \pin{13}{10}{U}{SN}% pin SN
-            \pin{18}{7}{R}{Q}  % pin Q
+            \wire{9}{3}{10}{3}
+            \wire{10}{3}{10}{5}
+            \wire{10}{5}{11}{5}
+            \pin{15}{10}{U}{SN}% pin SN
+            \pin{20}{7}{R}{Q}  % pin Q
             \end{circuitdiagram}
         \end{center}
     \end{figure}

@@ -36,16 +36,18 @@
     Circuit
     \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{19}{9}
+            \begin{circuitdiagram}{21}{9}
             \usgate
             \gate{nand}{5}{3}{R}{}{}
-            \flipflop[\clockin{n}]{d}{13}{5}{R}{}{}
+            \flipflop[\clockin{n}]{d}{15}{5}{R}{}{}
             \pin{1}{7}{L}{D}   % pin D
-            \wire{2}{7}{9}{7}
+            \wire{2}{7}{11}{7}
             \pin{1}{5}{L}{E}   % pin E
             \pin{1}{1}{L}{X}   % pin X
-            \wire{9}{3}{9}{5}
-            \pin{18}{7}{R}{Q}  % pin Q
+            \wire{9}{3}{10}{3}
+            \wire{10}{3}{10}{5}
+            \wire{10}{5}{11}{5}
+            \pin{20}{7}{R}{Q}  % pin Q
             \end{circuitdiagram}
         \end{center}
     \end{figure}
