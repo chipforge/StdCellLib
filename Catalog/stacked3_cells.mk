@@ -61,9 +61,9 @@ CELLS +=        AND3 \
                 AO332 \
                 AO333 \
                 AOA211 \
-                AOA212 \
                 AOA221 \
                 AOAO2111 \
+                AOOA212 \
                 OA22 \
                 OA31 \
                 OA311 \
@@ -116,13 +116,13 @@ AO333:          AO332
 AOA211:         OA21
 	$(POPCORN) -m nand -c $@ $< > $@
 
-AOA212:         OOA22
-	$(POPCORN) -m nand -c $@ $< > $@
-
 AOA221:         OA31
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAO2111:       OAO211
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOOA212:        OOA22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 OA22:           AND3
@@ -187,9 +187,9 @@ CELLS +=        AND3 \
                 AO332 \
                 AO333 \
                 AOA211 \
-                AOA212 \
                 AOA221 \
                 AOAO2111 \
+                AOOA212 \
                 OA22 \
                 OA31 \
                 OA311 \
@@ -242,13 +242,13 @@ AO333:          AO332
 AOA211:         OAI21
 	$(POPCORN) -m nand -c $@ $< > $@
 
-AOA212:         OOAI22
-	$(POPCORN) -m nand -c $@ $< > $@
-
 AOA221:         OA31
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAO2111:       OAO211
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AOOA212:        OOAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 OA22:           AND3
@@ -304,7 +304,6 @@ else
 #   --------    not buffered    ------------------------------------
 
 CELLS +=        AOAI211 \
-                AOAI212 \
                 AOAI221 \
                 AOAOI2111 \
                 AOI211 \
@@ -316,6 +315,7 @@ CELLS +=        AOAI211 \
                 AOI331 \
                 AOI332 \
                 AOI333 \
+                AOOAI212 \
                 NAND3 \
                 NOR3 \
                 OAI22 \
@@ -333,9 +333,6 @@ CELLS +=        AOAI211 \
                 OOAI32
 
 AOAI211:        OAI21
-	$(POPCORN) -m nand -c $@ $< > $@
-
-AOAI212:        OOAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAI221:        OAI31
@@ -374,6 +371,9 @@ AOI332:         AOI331
 AOI333:         LEVEL = 3
 AOI333:         AOI332
 	$(POPCORN) -m aoi -c $@ $< > $@
+
+AOOAI212:       OOAI22
+	$(POPCORN) -m nand -c $@ $< > $@
 
 NAND3:          NAND2
 	$(POPCORN) -m nand -c $@ $< > $@
