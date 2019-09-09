@@ -53,7 +53,7 @@ ifdef BUFFERED
 CELLS +=        AND4 \
                 AO2111 \
                 AO41 \
-                AOA2111 \
+                AOA212 \
                 AOA311 \
                 OA22 \
                 OA23 \
@@ -75,7 +75,7 @@ AO2111:         OR4
 AO41:           AO31
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA2111:        OA22
+AOA212:         OA22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA311:         AOA211
@@ -119,7 +119,7 @@ ifeq ($(BUFFER),4)
 CELLS +=        AND4 \
                 AO2111 \
                 AO41 \
-                AOA2111 \
+                AOA212 \
                 AOA311 \
                 OA22 \
                 OA23 \
@@ -141,7 +141,7 @@ AO2111:         OR4
 AO41:           AOI31
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOA2111:        OAI22
+AOA212:         OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA311:         AOAI211
@@ -183,7 +183,7 @@ BUFFERED = true
 
 else
 
-CELLS +=        AOAI2111 \
+CELLS +=        AOAI212 \
                 AOAI311 \
                 AOI2111 \
                 AOI41 \
@@ -198,7 +198,7 @@ CELLS +=        AOAI2111 \
                 OAOI2111 \
                 OAOI311
 
-AOAI2111:       OAI22
+AOAI212:        OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAI311:        AOAI211
