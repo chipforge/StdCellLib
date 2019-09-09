@@ -116,7 +116,7 @@ AO333:          AO332
 AOA211:         OA21
 	$(POPCORN) -m nand -c $@ $< > $@
 
-AOA212:         OA22
+AOA212:         OOA22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA221:         OA31
@@ -134,7 +134,7 @@ OA31:           OA21
 OA311:          OA211
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA32:           OA22
+OA32:           OOA22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA321:          OA221
@@ -242,7 +242,7 @@ AO333:          AO332
 AOA211:         OAI21
 	$(POPCORN) -m nand -c $@ $< > $@
 
-AOA212:         OAI22
+AOA212:         OOAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA221:         OA31
@@ -260,7 +260,7 @@ OA31:           OAI21
 OA311:          OA211
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA32:           OAI22
+OA32:           OOAI22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA321:          OA221
@@ -335,7 +335,7 @@ CELLS +=        AOAI211 \
 AOAI211:        OAI21
 	$(POPCORN) -m nand -c $@ $< > $@
 
-AOAI212:        OAI22
+AOAI212:        OOAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAI221:        OAI31
@@ -390,7 +390,7 @@ OAI31:          OAI21
 OAI311:         OAI211
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI32:          OAI22
+OAI32:          OOAI22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OAI321:         OAI221

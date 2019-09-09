@@ -52,7 +52,7 @@ CELLS +=        AND2 \
                 AO21 \
                 AO22 \
                 OA21 \
-                OA22 \
+                OOA22 \
                 OR2
 
 AND2:           INV
@@ -68,8 +68,8 @@ AO22:           AO21
 OA21:           AND2
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA22:           LEVEL = 2
-OA22:           OA21
+OOA22:          LEVEL = 2
+OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OR2:            INV
@@ -86,7 +86,7 @@ CELLS +=        AOI21 \
                 NAND2 \
                 NOR2 \
                 OAI21 \
-                OAI22
+                OOAI22
 
 AOI21:          NOR2
 	$(POPCORN) -m aoi -c $@ $< > $@
@@ -104,8 +104,8 @@ NOR2:           INV
 OAI21:          NAND2
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI22:          LEVEL = 2
-OAI22:          OAI21
+OOAI22:         LEVEL = 2
+OOAI22:         OAI21
 	$(POPCORN) -m nor -c $@ $< > $@
 
 endif
