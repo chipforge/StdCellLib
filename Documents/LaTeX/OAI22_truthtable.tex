@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_OAI211.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI22_truthtable.tex
 %%
-%%  Purpose:        Circuit File for OAI211
+%%  Purpose:        Truth Table File for OAI22
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,22 +32,19 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
+
 \begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    {\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
+    \begin{table}[h] %\caption{\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
         \begin{center}
-            \begin{circuitdiagram}{18}{10}
-            \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{3}{L}{B}    % pin B
-            \pin{1}{5}{L}{C0}   % pin C0
-            \pin{1}{9}{L}{C1}   % pin C2
-            \gate[\inputs{2}]{or}{5}{7}{R}{}{}    % OR gate -> right
-            \gate[\inputs{3}]{nand}{12}{3}{R}{}{}   % NAND gate -> right
-            \wire{9}{5}{9}{7}     % wire between OR and NAND
-            \wire{2}{1}{9}{1}     % wire between pin and NAND
-            \wire{2}{3}{9}{3}     % wire between pin and NAND
-            \pin{17}{3}{R}{Z}   % pin Z
-            \end{circuitdiagram}
+            \begin{tabular}{|c|c|c|c||c|} \hline
+            C1 & C0 & B & A & Z \\ \hline\hline
+            0  & 0  & X & X & 1 \\ \hline
+            1  & X  & 1 & 1 & 0 \\ \hline
+            X  & 1  & 1 & 1 & 0 \\ \hline
+            X  & X  & 0 & X & 1 \\ \hline
+            X  & X  & X & 0 & 1 \\ \hline
+            \end{tabular}
         \end{center}
-    \end{figure}
+    \end{table}
 \end{center}

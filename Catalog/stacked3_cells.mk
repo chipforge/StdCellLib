@@ -64,7 +64,7 @@ CELLS +=        AND3 \
                 AOA212 \
                 AOA221 \
                 AOAO2111 \
-                OA211 \
+                OA22 \
                 OA31 \
                 OA311 \
                 OA32 \
@@ -125,13 +125,13 @@ AOA221:         OA31
 AOAO2111:       OAO211
 	$(POPCORN) -m nand -c $@ $< > $@
 
-OA211:          AND3
+OA22:           AND3
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA31:           OA21
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA311:          OA211
+OA311:          OA22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA32:           OOA22
@@ -190,7 +190,7 @@ CELLS +=        AND3 \
                 AOA212 \
                 AOA221 \
                 AOAO2111 \
-                OA211 \
+                OA22 \
                 OA31 \
                 OA311 \
                 OA32 \
@@ -251,13 +251,13 @@ AOA221:         OA31
 AOAO2111:       OAO211
 	$(POPCORN) -m nand -c $@ $< > $@
 
-OA211:          AND3
+OA22:           AND3
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA31:           OAI21
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA311:          OA211
+OA311:          OA22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA32:           OOAI22
@@ -318,7 +318,7 @@ CELLS +=        AOAI211 \
                 AOI333 \
                 NAND3 \
                 NOR3 \
-                OAI211 \
+                OAI22 \
                 OAI31 \
                 OAI311 \
                 OAI32 \
@@ -381,13 +381,13 @@ NAND3:          NAND2
 NOR3:           NOR2
 	$(POPCORN) -m nor -c $@ $< > $@
 
-OAI211:         NAND3
+OAI22:          NAND3
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OAI31:          OAI21
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI311:         OAI211
+OAI311:         OAI22
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OAI32:          OOAI22

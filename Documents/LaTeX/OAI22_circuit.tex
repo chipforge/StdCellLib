@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_OAI211.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI22_circuit.tex
 %%
-%%  Purpose:        Manual Page File for OAI211
+%%  Purpose:        Circuit File for OAI22
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,33 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{OAI211}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{OAI211} - a 2-1-1-input OR-AND-Invert gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    OAI211(Z, C1, C0, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{OAI211_circuit.tex}
-\input{OAI211_schematic.tex}
-
-\paragraph{Truth Table}
-\input{OAI211_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-
-\paragraph{See also}
-\begin{quote}
-    OAI311 - a 3-1-1-input OR-AND-Invert gate
-\end{quote}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{18}{10}
+            \usgate
+            \gate[\inputs{2}]{or}{5}{7}{R}{}{}    % OR
+            \gate[\inputs{3}]{nand}{12}{3}{R}{}{} % NAND
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{3}{L}{B}    % pin B
+            \pin{1}{5}{L}{C0}   % pin C0
+            \pin{1}{9}{L}{C1}   % pin C2
+            \wire{9}{5}{9}{7}   % wire between OR and NAND
+            \wire{2}{1}{9}{1}   % wire between pin and NAND
+            \wire{2}{3}{9}{3}   % wire between pin and NAND
+            \pin{17}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

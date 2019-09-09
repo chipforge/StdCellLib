@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_OAI211.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI22_manpage.tex
 %%
-%%  Purpose:        Truth Table File for OAI211
+%%  Purpose:        Manual Page File for OAI22
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,19 +32,28 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
+\label{OAI22}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{OAI22} - a 2-2-input OR-AND-Invert gate
+\end{quote}
 
-\begin{center}
-    {\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
-        \begin{center}
-            \begin{tabular}{|c|c|c|c||c|} \hline
-            C1 & C0 & B & A & Z \\ \hline\hline
-            0  & 0  & X & X & 1 \\ \hline
-            1  & X  & 1 & 1 & 0 \\ \hline
-            X  & 1  & 1 & 1 & 0 \\ \hline
-            X  & X  & 0 & X & 1 \\ \hline
-            X  & X  & X & 0 & 1 \\ \hline
-            \end{tabular}
-        \end{center}
-    \end{table}
-\end{center}
+\paragraph{Synopsys}
+\begin{quote}
+    OAI22(Z, C1, C0, B, A)
+\end{quote}
+
+\paragraph{Description}
+\input{OAI22_circuit.tex}
+\input{OAI22_schematic.tex}
+
+\paragraph{Truth Table}
+\input{OAI22_truthtable.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
