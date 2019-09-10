@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/AO311_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/AO32_circuit.tex
 %%
-%%  Purpose:        Manual Page File for AO311
+%%  Purpose:        Circuit File for AOI32
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,28 +32,25 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{AO311}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{AO311} - a 3-1-1-input AND-OR gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    AO311(Z, C2, C1, C, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{AO311_circuit.tex}
-%\input{AO311_schematic.tex}
-
-\paragraph{Truth Table}
-%\input{AO311_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{24}{10}
+            \usgate
+            \gate[\inputs{3}]{and}{5}{7}{R}{}{}    % AND
+            \gate[\inputs{3}]{nor}{12}{3}{R}{}{}    % NOR
+            \gate{not}{19}{3}{R}{}{}    % NOT
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{3}{L}{B}    % pin B
+            \pin{1}{5}{L}{C}    % pin C
+            \pin{1}{7}{L}{C1}   % pin C1
+            \pin{1}{9}{L}{C2}   % pin C2
+            \wire{2}{1}{9}{1}     % wire from pin A
+            \wire{2}{3}{9}{3}     % wire from pin B
+            \wire{9}{7}{9}{5}     % wire between AND and NOR
+            \pin{23}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
