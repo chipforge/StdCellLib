@@ -48,22 +48,22 @@ ifeq ($(BUFFER),2)
 
 #   --------    now buffered    ------------------------------------
 
-CELLS +=        AND2 \
+CELLS +=        AAO22 \
+                AND2 \
                 AO21 \
-                AO22 \
                 OA21 \
                 OOA22 \
                 OR2
+
+AAO22:          LEVEL = 2
+AAO22:          AO21
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AND2:           INV
 	$(POPCORN) -m nand -c $@ $< > $@
 
 AO21:           OR2
 	$(POPCORN) -m aoi -c $@ $< > $@
-
-AO22:           LEVEL = 2
-AO22:           AO21
-	$(POPCORN) -m nand -c $@ $< > $@
 
 OA21:           AND2
 	$(POPCORN) -m oai -c $@ $< > $@
@@ -81,19 +81,19 @@ else
 
 #   --------    not buffered    ------------------------------------
 
-CELLS +=        AOI21 \
-                AOI22 \
+CELLS +=        AAOI22 \
+                AOI21 \
                 NAND2 \
                 NOR2 \
                 OAI21 \
                 OOAI22
 
+AAOI22:         LEVEL = 2
+AAOI22:         AOI21
+	$(POPCORN) -m nand -c $@ $< > $@
+
 AOI21:          NOR2
 	$(POPCORN) -m aoi -c $@ $< > $@
-
-AOI22:          LEVEL = 2
-AOI22:          AOI21
-	$(POPCORN) -m nand -c $@ $< > $@
 
 NAND2:          INV
 	$(POPCORN) -m nand -c $@ $< > $@

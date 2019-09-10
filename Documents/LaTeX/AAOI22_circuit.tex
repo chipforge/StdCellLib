@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_AOI22.tex
+%%  File:           StdCellLib/Documents/LaTeX/AAOI22_circuit.tex
 %%
-%%  Purpose:        Manual Page File for AOI22
+%%  Purpose:        Circuit File for AAOI22
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,33 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{AOI22}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{AOI22} - a 2-2-input AND-OR-Invert gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    AOI22(Z, B1, B0, A1, A0)
-\end{quote}
-
-\paragraph{Description}
-\input{AOI22_circuit.tex}
-\input{AOI22_schematic.tex}
-
-\paragraph{Truth Table}
-\input{AOI22_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-
-\paragraph{See also}
-\begin{quote}
-    AOI33 - a 3-3-input AND-OR-Invert gate
-\end{quote}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{18}{12}
+            \usgate
+            \gate[\inputs{2}]{and}{5}{9}{R}{}{}  % AND
+            \gate[\inputs{2}]{and}{5}{3}{R}{}{}  % AND
+            \gate[\inputs{2}]{nor}{12}{6}{R}{}{} % NOR
+            \pin{1}{1}{L}{A}     % pin A
+            \pin{1}{5}{L}{A1}    % pin A1
+            \pin{1}{7}{L}{B}     % pin B
+            \pin{1}{11}{L}{B1}   % pin B1
+            \wire{9}{3}{9}{4}    % wire between AND and NOR
+            \wire{9}{9}{9}{8}    % wire between AND and NOR
+            \pin{17}{6}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
