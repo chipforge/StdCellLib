@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/AOI311_circuit.tex
+%%  File:           StdCellLib/Documents/LaTeX/AOI32_manpage.tex
 %%
-%%  Purpose:        Circuit File for AOI211
+%%  Purpose:        Manual Page File for AOI32
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,24 +32,28 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{18}{10}
-            \usgate
-            \gate[\inputs{3}]{and}{5}{7}{R}{}{}    % AND gate -> right
-            \gate[\inputs{3}]{nor}{12}{3}{R}{}{}    % NOR gate -> right
-            \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{3}{L}{B}    % pin B
-            \pin{1}{5}{L}{C}    % pin C
-            \pin{1}{7}{L}{C1}   % pin C1
-            \pin{1}{9}{L}{C2}   % pin C2
-            \wire{2}{1}{9}{1}     % wire from pin A
-            \wire{2}{3}{9}{3}     % wire from pin B
-            \wire{9}{7}{9}{5}     % wire between AND and NOR
-            \pin{17}{3}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\label{AOI32}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{AOI32} - a 3-2-input AND-OR-Invert gate
+\end{quote}
+
+\paragraph{Synopsys}
+\begin{quote}
+    AOI32(Z, C2, C1, C, B, A)
+\end{quote}
+
+\paragraph{Description}
+\input{AOI32_circuit.tex}
+\input{AOI32_schematic.tex}
+
+\paragraph{Truth Table}
+\input{AOI32_truthtable.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}

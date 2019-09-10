@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_AOI311.tex
+%%  File:           StdCellLib/Documents/LaTeX/AOI32_truthtable.tex
 %%
-%%  Purpose:        Manual Page File for AOI311
+%%  Purpose:        Truth Table File for AOI32
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,28 +32,20 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{AOI311}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{AOI311} - a 3-1-1-input AND-OR-Invert gate
-\end{quote}
 
-\paragraph{Synopsys}
-\begin{quote}
-    AOI311(Z, C2, C1, C, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{AOI311_circuit.tex}
-\input{AOI311_schematic.tex}
-
-\paragraph{Truth Table}
-\input{AOI311_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
+\begin{center}
+    {\(Z = \lnot ((C2 \land C1 \land C0) \lor B \lor A) \)}
+    \begin{table}[h] %\caption{\(Z = \lnot ((C2 \land C1 \land C0) \lor B \lor A) \)}
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c||c|} \hline
+            C2 & C1 & C0 & B & A & Z \\ \hline\hline
+            0  & X  & X  & 0 & 0 & 1 \\ \hline
+            1  & 1  & 1  & X & X & 0 \\ \hline
+            X  & 0  & X  & 0 & 0 & 1 \\ \hline
+            X  & X  & 0  & 0 & 0 & 1 \\ \hline
+            X  & X  & X  & 1 & X & 0 \\ \hline
+            X  & X  & X  & X & 1 & 0 \\ \hline
+            \end{tabular}
+        \end{center}
+    \end{table}
+\end{center}
