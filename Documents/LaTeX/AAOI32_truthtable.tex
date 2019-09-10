@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_AOI32.tex
+%%  File:           StdCellLib/Documents/LaTeX/AAOI32_truthtable.tex
 %%
-%%  Purpose:        Circuit File for AOI33
+%%  Purpose:        Truth Table File for AAOI32
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,23 +32,22 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
+
 \begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    {\(Z = \lnot ((B2 \land B1 \land B0) \lor (A1 \land A0)) \)}
+    \begin{table}[h] %\caption{\(Z = \lnot ((B2 \land B1 \land B0) \lor (A1 \land A0)) \)}
         \begin{center}
-            \begin{circuitdiagram}{18}{12}
-            \pin{1}{1}{L}{A0}    % pin A0
-            \pin{1}{5}{L}{A1}    % pin A1
-            \pin{1}{7}{L}{B0}    % pin B0
-            \pin{1}{9}{L}{B1}    % pin B1
-            \pin{1}{11}{L}{B2}   % pin B2
-            \gate[\inputs{3}]{and}{5}{9}{R}{}{}    % AND gate -> right
-            \gate[\inputs{2}]{and}{5}{3}{R}{}{}    % AND gate -> right
-            \gate[\inputs{2}]{nor}{12}{6}{R}{}{}    % NOR gate -> right
-            \wire{9}{3}{9}{4}     % wire between AND and NOR
-            \wire{9}{9}{9}{8}     % wire between AND and NOR
-            \pin{17}{6}{R}{Z}   % pin Z
-            \end{circuitdiagram}
+            \begin{tabular}{|c|c|c|c|c||c|} \hline
+            B2 & B1 & B0 & A1 & A0 & Z \\ \hline\hline
+            0  & X  & X  & 0  & X  & 1\\ \hline
+            0  & X  & X  & X  & 0  & 1\\ \hline
+            1  & 1  & 1  & X  & X  & 0\\ \hline
+            X  & 0  & X  & 0  & X  & 1\\ \hline
+            X  & 0  & X  & X  & 0  & 1\\ \hline
+            X  & X  & 0  & 0  & X  & 1\\ \hline
+            X  & X  & 0  & X  & 0  & 1\\ \hline
+            X  & X  & X  & 1  & 1  & 0\\ \hline
+            \end{tabular}
         \end{center}
-    \end{figure}
+    \end{table}
 \end{center}
