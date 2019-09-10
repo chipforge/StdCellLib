@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/OAOI2111_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAOI212_circuit.tex
 %%
-%%  Purpose:        Manual Page File for OAOI2111
+%%  Purpose:        Circuit File for OAOI212
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,28 +32,26 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{OAOI2111}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{OAOI2111} - a 2-1-1-1-input OR-AND-OR-Invert gate
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    OAOI2111(Z, D1, D, C, B, A)
-\end{quote}
-
-\paragraph{Description}
-\input{OAOI2111_circuit.tex}
-%\input{OAOI2111_schematic.tex}
-
-\paragraph{Truth Table}
-%\input{OAOI2111_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{25}{12}
+            \usgate
+            \gate[\inputs{2}]{or}{5}{9}{R}{}{}    % OR
+            \gate[\inputs{2}]{and}{12}{7}{R}{}{}  % AND
+            \gate[\inputs{3}]{nor}{19}{3}{R}{}{}  % NOR
+            \pin{1}{1}{L}{A}    % pin A
+            \pin{1}{3}{L}{B}    % pin B
+            \pin{1}{5}{L}{C}    % pin C
+            \pin{1}{7}{L}{D}    % pin D
+            \pin{1}{11}{L}{D1}  % pin D1
+            \wire{2}{1}{16}{1}  % wire from pin A
+            \wire{2}{3}{16}{3}  % wire from pin B
+            \wire{2}{5}{9}{5}   % wire from pin C
+            \wire{16}{7}{16}{5} % wire between AND and NOR
+            \pin{24}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
