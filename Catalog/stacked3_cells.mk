@@ -73,13 +73,13 @@ CELLS +=        AAAO332 \
                 OA33 \
                 OA331 \
                 OA332 \
-                OA333 \
                 OAO211 \
                 OAO212 \
                 OAO221 \
                 OAOA2111 \
                 OR3 \
-                OOA32
+                OOA32 \
+                OA333
 
 AAAO332:        LEVEL = 3
 AAAO332:        AAAO331
@@ -162,10 +162,6 @@ OA332:          LEVEL = 3
 OA332:          OA331
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA333:          LEVEL = 3
-OA333:          OA332
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAO211:         AO21
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -180,6 +176,10 @@ OAOA2111:       AOA211
 
 OR3:            OR2
 	$(POPCORN) -m nor -c $@ $< > $@
+
+OOOA333:        LEVEL = 3
+OOOA333:        OA332
+	$(POPCORN) -m oai -c $@ $< > $@
 
 else
 ifeq ($(BUFFER),3)
@@ -209,13 +209,13 @@ CELLS +=        AAAO332 \
                 OA33 \
                 OA331 \
                 OA332 \
-                OA333 \
                 OAO211 \
                 OAO212 \
                 OAO221 \
                 OAOA2111 \
                 OR3 \
-                OOA32
+                OOA32 \
+                OA333
 
 AAAO332:        LEVEL = 3
 AAAO332:        AAAO331
@@ -298,10 +298,6 @@ OA332:          LEVEL = 3
 OA332:          OA331
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA333:          LEVEL = 3
-OA333:          OA332
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAO211:         AOI21
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -316,6 +312,10 @@ OAOA2111:       AOA211
 
 OR3:            NOR2
 	$(POPCORN) -m nor -c $@ $< > $@
+
+OOOA333:        LEVEL = 3
+OOOA333:        OA332
+	$(POPCORN) -m oai -c $@ $< > $@
 
 BUFFERED = true
 
@@ -346,12 +346,12 @@ CELLS +=        AAAOI332 \
                 OAI33 \
                 OAI331 \
                 OAI332 \
-                OAI333 \
                 OAOAI2111 \
                 OAOI211 \
                 OAOI212 \
                 OAOI221 \
-                OOAI32
+                OOAI32 \
+                OOOOAI333
 
 AAAOI332:       LEVEL = 3
 AAAOI332:       AOI331
@@ -437,10 +437,6 @@ OAI332:         LEVEL = 3
 OAI332:         OAI331
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI333:         LEVEL = 3
-OAI333:         OAI332
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAOAI2111:      AOAI211
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -452,6 +448,10 @@ OAOI212:        AOI22
 
 OAOI221:        AOI31
 	$(POPCORN) -m nor -c $@ $< > $@
+
+OOOAI333:       LEVEL = 3
+OOOAI333:       OAI332
+	$(POPCORN) -m oai -c $@ $< > $@
 
 endif
 endif

@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_OAI333.tex
+%%  File:           StdCellLib/Documents/LaTeX/OOOAI333_manpage.tex
 %%
-%%  Purpose:        Manual Page File for OAI333
+%%  Purpose:        Manual Page File for OOOAI333
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,23 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{OAI333}
+\label{OOOAI333}
 \paragraph{Cell}
 \begin{quote}
-    \textbf{OAI333} - a 3-3-3-input OR-AND-Invert gate
+    \textbf{OOOAI333} - a 3-3-3-input OR-OR-OR-AND-Invert gate
 \end{quote}
 
 \paragraph{Synopsys}
 \begin{quote}
-    OAI333(Z, C2, C1, C0, B2, B1, B0, A2, A1, A0)
+    OOOAI333(Z, C2, C1, C, B2, B1, B, A2, A1, A)
 \end{quote}
 
 \paragraph{Description}
-\input{OAI333_circuit.tex}
-\input{OAI333_schematic.tex}
+\input{OOOAI333_circuit.tex}
+\input{OOOAI333_schematic.tex}
 
 \paragraph{Truth Table}
-\input{OAI333_truthtable.tex}
+\input{OOOAI333_truthtable.tex}
 
 \paragraph{Usage}
 
@@ -57,10 +57,3 @@
 \paragraph{Layout}
 
 \paragraph{Files}
-
-\paragraph{See also}
-\begin{quote}
-    OAI222 - a 2-2-2-input OR-AND-Invert gate \\
-    OAI322 - a 3-2-2-input OR-AND-Invert gate \\
-    OAI332 - a 3-3-2-input OR-AND-Invert gate
-\end{quote}
