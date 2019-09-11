@@ -69,7 +69,6 @@ CELLS +=        AAAO332 \
                 OA22 \
                 OA31 \
                 OA32 \
-                OA33 \
                 OAO211 \
                 OAO212 \
                 OAO221 \
@@ -77,6 +76,7 @@ CELLS +=        AAAO332 \
                 OR3 \
                 OOA32 \
                 OOA321 \
+                OOA33 \
                 OOA331 \
                 OOOA332 \
                 OOOA333
@@ -147,10 +147,6 @@ OA32:           OA22
 OOA32:          OOA22
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA33:           LEVEL = 3
-OA33:           OA32
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAO211:         AO21
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -167,6 +163,10 @@ OR3:            OR2
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOA321:         OOA221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOA33:          LEVEL = 3
+OOA33:          OOA32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOA331:         LEVEL = 3
@@ -205,7 +205,6 @@ CELLS +=        AAAO332 \
                 OA22 \
                 OA31 \
                 OA32 \
-                OA33 \
                 OAO211 \
                 OAO212 \
                 OAO221 \
@@ -213,6 +212,7 @@ CELLS +=        AAAO332 \
                 OR3 \
                 OOA32 \
                 OOA321 \
+                OOA33 \
                 OOA331 \
                 OOOA332 \
                 OOOA333
@@ -283,10 +283,6 @@ OA32:           OA22
 OOA32:          OOAI22
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA33:           LEVEL = 3
-OA33:           OA32
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAO211:         AOI21
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -303,6 +299,10 @@ OR3:            NOR2
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOA321:         OOA221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOA33:          LEVEL = 3
+OOA33:          OOA32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA331:          LEVEL = 3
@@ -341,13 +341,13 @@ CELLS +=        AAAOI332 \
                 OAI22 \
                 OAI31 \
                 OAI32 \
-                OAI33 \
                 OAOAI2111 \
                 OAOI211 \
                 OAOI212 \
                 OAOI221 \
                 OOAI32 \
                 OOAI321 \
+                OOAI33 \
                 OOAI331 \
                 OOOAI332 \
                 OOOOAI333
@@ -421,10 +421,6 @@ OAI32:          OAI22
 OOAI32:         OOAI22
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI33:          LEVEL = 3
-OAI33:          OAI32
-	$(POPCORN) -m oai -c $@ $< > $@
-
 OAOAI2111:      AOAI211
 	$(POPCORN) -m nor -c $@ $< > $@
 
@@ -438,6 +434,10 @@ OAOI221:        AOI31
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOAI321:        OOAI221
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOAI33:         LEVEL = 3
+OOAI33:         OOAI32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOAI331:        LEVEL = 3
