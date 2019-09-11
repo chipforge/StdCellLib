@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AOI221.tex
+%%  File:           StdCellLib/Documents/LaTeX/AAOI221_manpage.tex
 %%
-%%  Purpose:        Truth Table File for AOI221
+%%  Purpose:        Manual Page File for AAOI221
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,21 +32,28 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
+\label{AAOI221}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{AAOI221} - a 2-2-1-input AND-AND-OR-Invert gate
+\end{quote}
 
-\begin{center}
-    {\(Z = \lnot ((C1 \land C0) \lor (B1 \land B0) \lor A) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((C1 \land C0) \lor (B1 \land B0) \lor A) \)}
-        \begin{center}
-            \begin{tabular}{|c|c|c|c|c||c|} \hline
-            C1 & C0 & B1 & B0 & A & Z \\ \hline\hline
-            0  & X  & 0  & X  & 0 & 1 \\ \hline
-            0  & X  & X  & 0  & 0 & 1 \\ \hline
-            1  & 1  & X  & X  & X & 0 \\ \hline
-            X  & 0  & 0  & X  & 0 & 1 \\ \hline
-            X  & 0  & X  & 0  & 0 & 1 \\ \hline
-            X  & X  & 1  & 1  & X & 0 \\ \hline
-            X  & X  & X  & X  & 1 & 0 \\ \hline
-            \end{tabular}
-        \end{center}
-    \end{table}
-\end{center}
+\paragraph{Synopsys}
+\begin{quote}
+    AAOI221(Z, C1, C, B1, B, A)
+\end{quote}
+
+\paragraph{Description}
+\input{AAOI221_circuit.tex}
+\input{AAOI221_schematic.tex}
+
+\paragraph{Truth Table}
+\input{AAOI221_truthtable.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
