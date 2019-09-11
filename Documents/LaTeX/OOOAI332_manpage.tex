@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_OAI332.tex
+%%  File:           StdCellLib/Documents/LaTeX/OOOAI332_manpage.tex
 %%
-%%  Purpose:        Circuit File for OAI332
+%%  Purpose:        Manual Page File for OOOAI332
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,27 +32,28 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
-        \begin{center}
-            \begin{circuitdiagram}{18}{18}
-            \pin{1}{1}{L}{A0}    % pin A0
-            \pin{1}{5}{L}{A1}    % pin A1
-            \pin{1}{7}{L}{B0}    % pin B0
-            \pin{1}{9}{L}{B1}    % pin B1
-            \pin{1}{11}{L}{B2}   % pin B2
-            \pin{1}{13}{L}{C0}   % pin C0
-            \pin{1}{15}{L}{C1}   % pin C1
-            \pin{1}{17}{L}{C2}   % pin C2
-            \gate[\inputs{2}]{or}{5}{3}{R}{}{}    % OR gate -> right
-            \gate[\inputs{3}]{or}{5}{9}{R}{}{}    % OR gate -> right
-            \gate[\inputs{3}]{or}{5}{15}{R}{}{}   % OR gate -> right
-            \gate[\inputs{3}]{nand}{12}{9}{R}{}{}   % NAND gate -> right
-            \wire{9}{3}{9}{7}     % wire between OR and NAND
-            \wire{9}{11}{9}{15}   % wire between OR and NAND 
-            \pin{17}{9}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\label{OOOAI332}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{OOOAI332} - a 3-3-2-input OR-OR-OR-AND-Invert gate
+\end{quote}
+
+\paragraph{Synopsys}
+\begin{quote}
+    OOOAI332(Z, C2, C1, C, B2, B1, B, A1, A)
+\end{quote}
+
+\paragraph{Description}
+\input{OOOAI332_circuit.tex}
+\input{OOOAI332_schematic.tex}
+
+\paragraph{Truth Table}
+\input{OOOAI332_truthtable.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
