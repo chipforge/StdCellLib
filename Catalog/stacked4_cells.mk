@@ -87,7 +87,7 @@ OA22:           AND3
 OA23:           AND4
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA3111:         OA23
+OA33:           OA23
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA41:           OA31
@@ -153,7 +153,7 @@ OA22:           AND3
 OA23:           AND4
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OA3111:         OA23
+OA33:           OA23
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OA41:           OAI31
@@ -222,7 +222,7 @@ OAI23:          NAND4
 OAI41:          OAI31
 	$(POPCORN) -m oai -c $@ $< > $@
 
-OAI3111:        OAI23
+OAI33:          OAI23
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OAI4111:        OAI3111
