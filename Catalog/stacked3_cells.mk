@@ -52,13 +52,13 @@ ifdef BUFFERED
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAO321 \
                 AAO331 \
                 AND3 \
                 AO211 \
                 AO31 \
                 AO311 \
                 AO32 \
-                AO321 \
                 AO33 \
                 AO331 \
                 AO332 \
@@ -188,13 +188,13 @@ ifeq ($(BUFFER),3)
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAO321 \
                 AAO331 \
                 AND3 \
                 AO211 \
                 AO31 \
                 AO311 \
                 AO32 \
-                AO321 \
                 AO33 \
                 AO331 \
                 AO332 \
@@ -325,6 +325,7 @@ else
 
 CELLS +=        AAAOI332 \
                 AAAOI333 \
+                AAOI321 \
                 AAOI331 \
                 AOAI211 \
                 AOAI221 \
@@ -333,7 +334,6 @@ CELLS +=        AAAOI332 \
                 AOI31 \
                 AOI32 \
                 AOI32 \
-                AOI321 \
                 AOI33 \
                 AOI331 \
                 AOOAI212 \
@@ -362,7 +362,11 @@ AAAOI333:       AAAOI332
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAOI331:        LEVEL = 3
-AAOI331:        AAAOI321
+AAOI331:        AAOI321
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAOI321:        LEVEL = 3
+AAOI321:        AAOI221
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOAI211:        OAI21
