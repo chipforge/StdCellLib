@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/manpage_AOI33.tex
+%%  File:           StdCellLib/Documents/LaTeX/AAOI33_truthtable.tex
 %%
-%%  Purpose:        Manual Page File for AOI33
+%%  Purpose:        Truth Table File for AAOI33
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,34 +32,25 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{AOI33}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{AOI33} - a 3-3-input AND-OR-Invert gate
-\end{quote}
 
-\paragraph{Synopsys}
-\begin{quote}
-    AOI33(Z, B2, B1, B0, A2, A1, A0)
-\end{quote}
-
-\paragraph{Description}
-\input{AOI33_circuit.tex}
-\input{AOI33_schematic.tex}
-
-\paragraph{Truth Table}
-\input{AOI33_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-
-\paragraph{See also}
-\begin{quote}
-    AOI22 - a 2-2-input AND-OR-Invert gate \\
-    AOI32 - a 3-2-input AND-OR-Invert gate
-\end{quote}
+\begin{center}
+    {\(Z = \lnot ((B2 \land B1 \land B0) \lor (A2 \land A1 \land A0)) \)}
+    \begin{table}[h] %\caption{\(Z = \lnot ((B2 \land B1 \land B0) \lor (A2 \land A1 \land A0)) \)}
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c||c|} \hline
+            B2 & B1 & B0 & A2 & A1 & A0 & Z \\ \hline\hline
+            0  & X  & X  & 0  & X  & X  & 1\\ \hline
+            0  & X  & X  & X  & 0  & X  & 1\\ \hline
+            0  & X  & X  & X  & X  & 0  & 1\\ \hline
+            1  & 1  & 1  & X  & X  & X  & 0\\ \hline
+            X  & 0  & X  & 0  & X  & X  & 1\\ \hline
+            X  & 0  & X  & X  & 0  & X  & 1\\ \hline
+            X  & 0  & X  & X  & X  & 0  & 1\\ \hline
+            X  & X  & 0  & 0  & X  & X  & 1\\ \hline
+            X  & X  & 0  & X  & 0  & X  & 1\\ \hline
+            X  & X  & 0  & X  & X  & 0  & 1\\ \hline
+            X  & X  & X  & 1  & 1  & 1  & 0\\ \hline
+            \end{tabular}
+        \end{center}
+    \end{table}
+\end{center}

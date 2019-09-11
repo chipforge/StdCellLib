@@ -59,7 +59,7 @@ CELLS +=        AAAO332 \
                 AO31 \
                 AO311 \
                 AO32 \
-                AO33 \
+                AAO33 \
                 AO331 \
                 AO332 \
                 AOA211 \
@@ -111,8 +111,8 @@ AO32:           AO22
 AO321:          AO221
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO33:           LEVEL = 3
-AO33:           AO32
+AAO33:          LEVEL = 3
+AAO33:          AAO32
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AO331:          LEVEL = 3
@@ -247,8 +247,8 @@ AO32:           AOI22
 AO321:          AO221
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO33:           LEVEL = 3
-AO33:           AO32
+AAO33:          LEVEL = 3
+AAO33:          AAO32
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AO331:          LEVEL = 3
@@ -333,8 +333,7 @@ CELLS +=        AAAOI332 \
                 AOI211 \
                 AOI31 \
                 AOI32 \
-                AOI32 \
-                AOI33 \
+                AAOI33 \
                 AOI331 \
                 AOOAI212 \
                 NAND3 \
@@ -393,8 +392,8 @@ AOI32:          AOI22
 AOI321:         AOI221
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOI33:          LEVEL = 3
-AOI33:          AOI32
+AAOI33:         LEVEL = 3
+AAOI33:         AAOI32
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOI331:         LEVEL = 3
