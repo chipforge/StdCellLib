@@ -52,6 +52,7 @@ ifdef BUFFERED
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAO331 \
                 AND3 \
                 AO211 \
                 AO31 \
@@ -86,6 +87,10 @@ AAAO332:        AAAO331
 
 AAAO333:        LEVEL = 3
 AAAO333:        AAAO332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAO331:         LEVEL = 3
+AAO331:         AAO321
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AND3:           AND2
@@ -183,6 +188,7 @@ ifeq ($(BUFFER),3)
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAO331 \
                 AND3 \
                 AO211 \
                 AO31 \
@@ -217,6 +223,10 @@ AAAO332:        AAAO331
 
 AAAO333:        LEVEL = 3
 AAAO333:        AAAO332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAO331:         LEVEL = 3
+AAO331:         AAO321
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AND3:           NAND2
@@ -315,6 +325,7 @@ else
 
 CELLS +=        AAAOI332 \
                 AAAOI333 \
+                AAOI331 \
                 AOAI211 \
                 AOAI221 \
                 AOAOI2111 \
@@ -348,6 +359,10 @@ AAAOI332:       AOI331
 
 AAAOI333:       LEVEL = 3
 AAAOI333:       AAAOI332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAOI331:        LEVEL = 3
+AAOI331:        AAAOI321
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOAI211:        OAI21
