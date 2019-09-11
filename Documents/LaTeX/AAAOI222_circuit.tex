@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AOI222.tex
+%%  File:           StdCellLib/Documents/LaTeX/AAAOI222_circuit.tex
 %%
-%%  Purpose:        Truth Table File for AOI222
+%%  Purpose:        Circuit File for AAAOI222
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,25 +32,26 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-
 \begin{center}
-    {\(Z = \lnot ((C1 \land C0) \lor (B1 \land B0) \lor (A1 \land A0)) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((C1 \land C0) \lor (B1 \land B0) \lor (A1 \land A0)) \)}
+    Circuit
+    \begin{figure}[h]
         \begin{center}
-            \begin{tabular}{|c|c|c|c|c|c||c|} \hline
-            C1 & C0 & B1 & B0 & A1 & A0 & Z \\ \hline\hline
-            0  & X  & 0  & X  & 0  & X  & 1 \\ \hline
-            0  & X  & 0  & X  & X  & 0  & 1 \\ \hline
-            0  & X  & X  & 0  & 0  & X  & 1 \\ \hline
-            0  & X  & X  & 0  & X  & 0  & 1 \\ \hline
-            1  & 1  & X  & X  & X  & X  & 0 \\ \hline
-            X  & 0  & 0  & X  & 0  & X  & 1 \\ \hline
-            X  & 0  & 0  & X  & X  & 0  & 1 \\ \hline
-            X  & 0  & X  & 0  & 0  & X  & 1 \\ \hline
-            X  & 0  & X  & 0  & X  & 0  & 1 \\ \hline
-            X  & X  & 1  & 1  & X  & X  & 0 \\ \hline
-            X  & X  & X  & X  & 1  & 1  & 0 \\ \hline
-            \end{tabular}
+            \begin{circuitdiagram}{18}{18}
+            \usgate
+            \gate[\inputs{2}]{and}{5}{3}{R}{}{}    % AND
+            \gate[\inputs{2}]{and}{5}{9}{R}{}{}    % AND
+            \gate[\inputs{2}]{and}{5}{15}{R}{}{}   % AND
+            \gate[\inputs{3}]{nor}{12}{9}{R}{}{}   % NOR
+            \pin{1}{1}{L}{A0}    % pin A0
+            \pin{1}{5}{L}{A1}    % pin A1
+            \pin{1}{7}{L}{B0}    % pin B0
+            \pin{1}{11}{L}{B1}   % pin B1
+            \pin{1}{13}{L}{C0}   % pin C0
+            \pin{1}{17}{L}{C1}   % pin C1
+            \wire{9}{3}{9}{7}    % wire between AND and NOR
+            \wire{9}{11}{9}{15}  % wire between AND and NOR
+            \pin{17}{9}{R}{Z}    % pin Z
+            \end{circuitdiagram}
         \end{center}
-    \end{table}
+    \end{figure}
 \end{center}
