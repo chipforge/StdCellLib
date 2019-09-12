@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_OAI221.tex
+%%  File:           StdCellLib/Documents/LaTeX/OOAI221_manpage.tex
 %%
-%%  Purpose:        Circuit File for OAI221
+%%  Purpose:        Manual Page File for OOAI221
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,24 +32,28 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
-        \begin{center}
-            \begin{circuitdiagram}{18}{14}
-            \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{3}{L}{B0}   % pin B0
-            \pin{1}{7}{L}{B1}   % pin B1
-            \pin{1}{9}{L}{C0}   % pin C0
-            \pin{1}{13}{L}{C1}  % pin C1
-            \gate[\inputs{2}]{or}{5}{5}{R}{}{}    % OR gate -> right
-            \gate[\inputs{2}]{or}{5}{11}{R}{}{}   % OR gate -> right
-            \gate[\inputs{3}]{nand}{12}{5}{R}{}{}   % NAND gate -> right
-            \wire{9}{1}{9}{3}     % wire between OR and NAND
-            \wire{9}{11}{9}{7}   % wire between OR and NAND
-            \wire{2}{1}{9}{1}   % wire before NAND
-            \pin{17}{5}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\label{OOAI221}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{OOAI221} - a 2-2-1-input OR-OR-AND-Invert gate
+\end{quote}
+
+\paragraph{Synopsys}
+\begin{quote}
+    OOAI221(Z, C1, C, B1, B, A)
+\end{quote}
+
+\paragraph{Description}
+\input{OOAI221_circuit.tex}
+\input{OOAI221_schematic.tex}
+
+\paragraph{Truth Table}
+\input{OOAI221_truthtable.tex}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
