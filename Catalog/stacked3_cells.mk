@@ -58,7 +58,7 @@ CELLS +=        AAAO332 \
                 AO211 \
                 AO31 \
                 AO311 \
-                AO32 \
+                AAO32 \
                 AAO33 \
                 AO331 \
                 AO332 \
@@ -105,7 +105,7 @@ AO31:           AO21
 AO311:          AO211
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO32:           AO22
+AAO32:          AAO22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AO321:          AO221
@@ -194,7 +194,7 @@ CELLS +=        AAAO332 \
                 AO211 \
                 AO31 \
                 AO311 \
-                AO32 \
+                AAO32 \
                 AO33 \
                 AO331 \
                 AO332 \
@@ -241,7 +241,7 @@ AO31:           AOI21
 AO311:          AO211
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AO32:           AOI22
+AAO32:          AAOI22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AO321:          AO221
@@ -332,7 +332,7 @@ CELLS +=        AAAOI332 \
                 AOAOI2111 \
                 AOI211 \
                 AOI31 \
-                AOI32 \
+                AAOI32 \
                 AAOI33 \
                 AOI331 \
                 AOOAI212 \
@@ -383,10 +383,7 @@ AOI211:         NOR3
 AOI31:          AOI21
 	$(POPCORN) -m aoi -c $@ $< > $@
 
-AOI32:          AOI22
-	$(POPCORN) -m aoi -c $@ $< > $@
-
-AOI32:          AOI22
+AAOI32:         AAOI22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AOI321:         AOI221
