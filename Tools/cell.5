@@ -83,7 +83,7 @@ All circuit lines are an ordered, white-space-separated list of strings (also te
 .Pp
 Every circuits line contains this arguments in the following order:
 .Bd -literal
-type   gate   drain   source   bulk   stacked   xgrid   ygrid
+type   gate   drain   source   bulk   stacked   xgrid   ygrid   size
 .Ed
 .Bl -ohang
 .It Em type
@@ -104,6 +104,8 @@ This coordinates rising up from left (1st grid position is 1) to right.
 .It Em ygrid
 Y-position (as integer) inside the grid; always positive for pMOS transistors and always negative for nMOS transistors.
 This coordinates are aligned to the output with zero.
+.It Em size
+Size (as integer) of the mosfet; representing the number of minimum sized transister length for width parameter.
 .El
 .Sh AUTHORS
 .An chipforge Aq popcorn@nospam.chipforge.org
