@@ -54,6 +54,8 @@
 .Op Fl b Ar number
 .Op Fl l Ar number
 .Op Fl m Ar method
+.Op Fl c Ar name
+.Op Fl D Ar string
 .Ar cell-file
 .Nm
 .Op Fl v
@@ -75,6 +77,7 @@ utility expands a given combinatorial cell by different methods (
 .Em oai )
 and writes out the new derived cell information on
 .Dv STDOUT .
+The new cell name and a cell description for the new cell can be specified.
 Second, the
 .Nm
 utility can be used to derive Schematics, Layouts and Documentation in
@@ -129,6 +132,11 @@ which has at least
 of stacked transistors between output and any supply line.
 This will sharpen the maximum LOW and minimum HIGH output levels of the
 cell output.
+.Ss \-c cellname
+Specify the cell-name for the new generated cell.
+.Ss \-D string
+Specify the new cell functionality in a quoted string, e.g. "Not (or
+Inverter) gate" which than occurs in generated cell documentation.
 .Ss \-e format
 Export cell description in one of the following file
 .Em formats :

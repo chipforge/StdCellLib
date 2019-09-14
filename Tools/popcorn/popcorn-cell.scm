@@ -1220,10 +1220,6 @@
                         (let ((new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node new-gate anchor) new-gate complementary)))
                             (let ((2nd-node (next-node-number (intermediate-nodes new-netlist))))
                                 (begin
-(display cell-name (current-error-port)) (read-line)
-(display anchor (current-error-port)) (read-line)
-(display complementary (current-error-port)) (read-line)
-(display new-gate (current-error-port)) (read-line)
                                     ; netlist
                                     (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
                                         ; netlist is yet still not buffered but already on level
