@@ -1,11 +1,12 @@
 from lclayout.layout.layers import *
 
 # Physical size of one data base unit in meters.
-# Libresilicon: 100nm was chosen, so 1 lambda is 5 units of 1e-7, so every lambda value has to be multiplied by 5
-db_unit = 1e-7
+# Libresilicon: We wanted to choose 100nm, so 1 lambda is 5 units of 1e-7, so every lambda value has to be multiplied by 5
+# BUT GDS2 requires the database units to be in nanometers, and lclayout cannot convert to nanometers automatically yet
+db_unit = 1e-9
 
 # Lambda - how many db_units is 1 lambda?
-l = 5
+l = 500
 
 # Scale transistor width.
 transistor_channel_width_sizing = 1
@@ -66,7 +67,7 @@ min_spacing = {
     (l_pwell, l_pwell): 10*l, # 3 -> 10l
     #(l_poly, l_nwell): 10, # No rule?
     (l_poly, l_active): 1*l, # 2.4.6 -> 1l
-    (l_poly, l_poly): 1*l, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 10 (2l) BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
+    (l_poly, l_poly): 1*l, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 2l BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
     (l_poly, l_diff_contact): 2*l, # The maximum "minimum spacing" from poly to anything else is 2l
     (l_diff_contact, l_diff_contact): 2*l, # 3 -> 2l
     (l_metal1, l_metal1): 4*l, # 3 METAL1 -> 4l # !!!! WARNING: Spacing to BigMetal (>=10um) needs to be 6l !
