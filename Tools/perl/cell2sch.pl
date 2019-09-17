@@ -22,13 +22,13 @@ sub mymax
 
 
 # Loading the .cell file:
-open IN,"<$cellfn";
+open IN,"<$cellfn" or die "Could not open file: $!\n";
 # Using graphviz dot to do the placement of the transistors and resistors on the schematic
 open OUT,"|dot >$cellfn.g";
 
 # Graphviz header
 print OUT <<EOF
-Graph G {
+digraph cell {
 EOF
 ;
 
@@ -54,9 +54,16 @@ foreach(@devs)
     my ($t,$g,$s,$d)=(lc($1),$2,$3,$4);
     my $dev="$t"."mos".$count;
     print OUT "$dev [shape=\"rectangle\"]\n"; # node
-    print OUT "$g -- $dev\n" unless($g=~m/(vdd|gnd)/); # edge
-    print OUT "$s -- $dev\n" unless($s=~m/(vdd|gnd)/); # edge
-    print OUT "$dev -- $d\n" unless($d=~m/(vdd|gnd)/); # edge
+    print OUT "$g -> $dev\n" unless($g=~m/(vdd|gnd)/); # edge
+    print OUT "$g [shape=\"point\"]\n" if($g=~m/^\d+$/);
+    print OUT "$g [fillcolor=\"yellow\", style=\"filled\"]\n" if($g=~m/^\w+$/);
+    print OUT "$dev -> $s\n" unless($s=~m/(vdd|gnd)/); # edge
+    print OUT "$s [shape=\"point\"]\n" if($s=~m/^\d+$/);
+    print OUT "$s [fillcolor=\"yellow\", style=\"filled\"]\n" if($s=~m/^\w+$/);
+    print OUT "$d -> $dev\n" unless($d=~m/(vdd|gnd)/); # edge
+    print OUT "$d [shape=\"point\"]\n" if($d=~m/^\d+$/);
+    print OUT "$d [fillcolor=\"yellow\", style=\"filled\"]\n" if($d=~m/^\w+$/);
+
     $count++;
   }
   elsif(m/^res (\w+) (\w+) (\d+)/)
@@ -64,8 +71,8 @@ foreach(@devs)
     my ($n1,$n2)=($1,$2);
     my $dev="res".$count;
     print OUT "$dev [shape=\"rectangle\"]\n";
-    print OUT "$n1 -- $dev\n" unless($n1=~m/(vdd|gnd)/);
-    print OUT "$dev -- $n2\n" unless($n2=~m/(vdd|gnd)/);
+    print OUT "$n1 -> $dev\n" unless($n1=~m/(vdd|gnd)/);
+    print OUT "$dev -> $n2\n" unless($n2=~m/(vdd|gnd)/);
     $count++;
   }
 }
@@ -85,7 +92,7 @@ open IN,"<$cellfn.g";
 undef $/;
 my $g=<IN>;
 my %stat=();
-while($g=~s/(pmos|nmos|res)(\d+)\s*\[height=\d+\.?\d*,\s*pos="(\d+),(\d+)"//sm)
+while($g=~s/(pmos|nmos|res)(\d+)\s*\[height=\d+\.?\d*,\s*pos="(\d+\.?\d*),(\d+\.?\d*)"//sm)
 {
   $coordx{$2}=$3; 
     $stat{'minx'}=mymin($stat{'minx'},$3);
