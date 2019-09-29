@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd June 10, 2019
+.Dd October 3, 2019
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -94,15 +94,15 @@ In both networks all inputs are used to determine the output functionality.
 .Bd -literal
             ^ Vdd
             |
-        | +-'
+        | +--
    A --o| |     pMOS
-        | +-.
+        | +--
             |
             *---- Y
             |
-        | +-'
+        | +--
    A ---| |     nMOS
-        | +-.
+        | +--
             |
            _|_ Gnd
 .Ed
@@ -177,16 +177,16 @@ Expand cell with one of following methods:
 .Bl -ohang
 .It Em nand
 Add nMOS transistor in serial into highest free pull-down path.
-Use new character for enumeration scheme.
+Use same character and next number for new mosfet gate name.
 .It Em nor
 Add pMOS transistor in serial into highest free pull-up path.
-Use new character for enumeration scheme.
+Use same character and next number for new mosfet gate name.
 .It Em aoi
 Add nMOS transistor in serial into highest free pull-down path.
-Use next index for enumeration.
+Use new character for last mosfet gate name, enumerate this character for new mosfet gate name.
 .It Em oai
 Add pMOS transistor in serial into highest free pull-up path.
-Use next index for enumeration.
+Use new character for last mosfet gate name, enumerate this character for new mosfet gate name.
 .El
 .Pp
 An addition in one network implies an addition - a transisor in parallel - in the complementary network also.
