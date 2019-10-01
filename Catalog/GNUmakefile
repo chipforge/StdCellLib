@@ -157,6 +157,7 @@ test:
 	--spice INV.sp \
 	--cell INV \
 	--output INV.lib
+	libertyviz -l INV.lib --cell INV --pin Y --related-pin A --table cell_rise
 
 test2:
 	/usr/local/bin/lctime --debug --liberty ~/FreePDK45/osu_soc/lib/files/gscl45nm.lib \
@@ -164,7 +165,11 @@ test2:
 	--spice ~/FreePDK45/osu_soc/lib/source/netlists/AND2X1.pex.netlist \
 	--cell AND2X1 \
 	--output /tmp/and2x1.lib
-	libertyviz -l libresilicon.lib --cell INV --pin Y --related-pin A --table cell_rise
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin A --table cell_rise &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin B --table rise_transition &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin A --table cell_fall &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin B --table fall_transition &
+
 
 %.svg:
 	perl ../Tools/perl/mag2svg.pl $@
