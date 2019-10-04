@@ -180,7 +180,7 @@ foreach my $mag(<*.mag>)
   my @outputs=();
   if(open(IN,"<$cellname.cell"))
   {
-    print STDERR "Reading $cellname.cell\n";
+    #print STDERR "Reading $cellname.cell\n";
     while(<IN>)
     {
       @inputs=split " ",$1 if(m/^\.inputs (.*)/);
@@ -415,16 +415,26 @@ EOF
 EOF
       ;
     }
-    foreach my $pin(@outputs)
-    {
-      $output.=<<EOF
-  pin($pin)  {
-    direction : output;
-    function : "(A B)";
-  }
-EOF
-      ;
-    }
+    my $truthtable=`perl ../Tools/perl/truthtable.pl --format liberty $cellname.cell`;
+    $output.=$truthtable;
+    my %functions=();
+    #foreach(split "\n",$truthtable)
+    #{
+    #  my @a=split"=",$_;
+    #  $functions{$a[0]}=$a[1];
+    #  print "$cellname: Pin $a[0] has the function $a[1].\n";
+    #}
+
+    #    foreach my $pin(@outputs)
+    #{
+    #      $output.=<<EOF
+    #  pin(pin)  {
+    #    direction : output;
+    ##    function : "$functions{$pin}";
+    #  }
+    #EOF
+    #      ;
+    #}
     print $output;
     print <<EOF
 }

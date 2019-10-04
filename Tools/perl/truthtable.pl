@@ -4,12 +4,12 @@ use Getopt::Long;
 
 # Parameters and their default values:
 our $debug=0;
-our $format="text"; # html latex
+our $format="text"; # html latex liberty
 
 # Parsing the commandline parameters:
 GetOptions ("debug" => \$debug,
 	    "v" => \$debug,
-            "format=s" => \$format);
+            "format=s" => \$format); # text,html,latex,liberty
 
 # Convert a value to the gray code value:
 sub bin2gray
@@ -160,7 +160,7 @@ foreach my $file(@ARGV)
   # Open each file
   if(open(IN,"<$file"))
   {
-    print STDERR "Analyzing $file\n";
+    print STDERR "Analyzing $file\n" if($debug);
     my @lines=<IN>; # Read all lines into an array
     close IN;
 
@@ -248,15 +248,16 @@ print <<EOF
 EOF
 ;
 
-print "    {\(Z = \\lnot ((B1 \\land B0) \\lor A) \\)}\n";
-print "    \\begin{table}[h] %\\caption{\\(Z = \\lnot ((B1 \\land B0) \\lor A) \\)}\n";
-print "        \\begin{center}\n";
-print "            \\begin{tabular}{";
-print "|c" foreach(@ins);
-print "|";
-print "|c" foreach(@outs);
-print "|} \\hline\n";
-print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hline\\hline\n";
+      print "    {\(Z = \\lnot ((B1 \\land B0) \\lor A) \\)}\n";
+      print "    \\begin{table}[h] %\\caption{\\(Z = \\lnot ((B1 \\land B0) \\lor A) \\)}\n";
+      print "        \\begin{center}\n";
+      print "            \\begin{tabular}{";
+      print "|c" foreach(@ins);
+      print "|";
+      print "|c" foreach(@outs);
+      print "|} \\hline\n";
+      print "            "; 
+      print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hline\\hline\n";
     }
     elsif($format eq "html")
     {
@@ -275,7 +276,7 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
       foreach(0 .. $ninputs-1)
       {
 	print "& " if($format eq "latex" && $_>0);
-        print "".($gray&(1<<$_))?"1 ":"0 ";
+        print "".($gray&(1<<$_))?"1 ":"0 " unless($format eq "liberty");
 	$values{$ins[$_]}=($gray&(1<<$_))?1:0;
       }
       # Here we are using the truth function to calculate all network states for the given inputs:
@@ -292,7 +293,7 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
 	{
           push @a,$res{$_}?"$_":"!$_"; # Here we are collecting all values for a AO representation, e.g. (A && !B && C) || (!A && B && C))
 	}
-	push @{$results{$out}{$res{$out}}},join(" && ",@a); # Here the single values are put together: (A && !B && C)
+	push @{$results{$out}{$res{$out}}},join($format eq "liberty"?"&":" && ",@a); # Here the single values are put together: (A && !B && C)
       }
 
       if($format eq "text")
@@ -302,13 +303,13 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
       elsif($format eq "latex")
       {
         print "& $res{$_} " foreach(@outs);
+        print "\\\\ \\hline";
       }
       elsif($format eq "html")
       {
         print "<td><b>$res{$_}</b></td>" foreach(@outs);
       }
-      print "\\\\ \\hline" if($format eq "latex");
-      print "\n";
+      print "\n" unless($format eq "liberty");
     }
 
       foreach my $out (@outs) # We might have more than one output of a cell
@@ -316,18 +317,20 @@ print "            "; print join(" & ",@ins)." & ".join(" & ",@outs)." \\\\ \\hl
         my $not=($sum{$out}{0}||0)>($sum{$out}{1}||0)?1:0;
         # If we have more 0 than 1 results, then the negated inverse is shorted: 
 	# TODO: When there are HIGH-Z outputs we should split the HIGH-Z outputs from the others and give a function for output-enable and HIGH-Z
+        print $format eq "liberty" ? "  pin($out) {\n    direction: output;\n    function:\"":"function: $out = ";
 	if($not)
 	{
-          print "FUNCTION: $out = (".join(" || ",@{$results{$out}{$not}}).") ";
+          print "(".join($format eq "liberty"?"|":" || ",@{$results{$out}{$not}}).")";
 	}
 	else
 	{
-          print "FUNCTION: $out = ! (".join(" || ",@{$results{$out}{$not}}).") ";
+          print "!(".join($format eq "liberty"?"|":" || ",@{$results{$out}{$not}}).")";
         }
+	print $format eq "liberty" ? "\";\n  }":" ";
         # TODO: We should try more functional representations like AOI, OAI, OR, NOR and see which one is the shortest representation
       }
 
-    print "\n" if($format eq "text");
+    print "\n" if($format eq "text" || $format eq "liberty");
     if($format eq "latex")
     {
 	    print <<EOF
@@ -340,4 +343,4 @@ EOF
     }
   }
 }
-print STDERR "Done.\n";
+print STDERR "Done.\n" if($debug);
