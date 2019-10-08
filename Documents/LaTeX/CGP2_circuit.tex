@@ -36,19 +36,20 @@
     Circuit
     \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{25}{9}
+            \begin{circuitdiagram}{26}{9}
             \usgate
-            % \flipflop[\clockin{n}]{d}{6}{6}{R}{}{}
-            \flipflop[\clockin{p}]{d}{6}{5}{R}{}{} % !! clock polarity is wrong
-            \pin{1}{5}{L}{XI}   % pin XI
+            \flipflop[\clockin{n}]{d}{7}{5}{R}{}{}
+            \pin{1}{1}{L}{XI}   % pin XI
             \pin{1}{7}{L}{E}    % pin E
-            \junct{2}{5}        % clock line
+            \wire{2}{7}{3}{7}
+            \wire{2}{5}{3}{5}
             \wire{2}{1}{2}{5}
-            \wire{2}{1}{10}{1}
-            \wire{10}{1}{10}{3}
-            \gate{nand}{13}{5}{R}{}{} % NAND
-            \gate{not}{20}{5}{Rc}{}{2x} % buffer
-            \pin{24}{5}{R}{XO}   % pin XO
+            \junct{2}{1}        % clock line
+            \wire{2}{1}{11}{1}
+            \wire{11}{5}{11}{7}
+            \gate{nand}{14}{3}{R}{}{} % NAND
+            \gate{not}{21}{3}{Rc}{}{2x} % buffer
+            \pin{25}{3}{R}{XO}   % pin XO
             \end{circuitdiagram}
         \end{center}
     \end{figure}
