@@ -9,7 +9,7 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_NAND2.tex
+%%  File:           StdCellLib/Documents/LaTeX/NAND2_circuit.tex
 %%
 %%  Purpose:        Circuit File for NAND2
 %%
@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,13 +34,14 @@
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
     Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    \begin{figure}[h]
         \begin{center}
             \begin{circuitdiagram}{11}{6}
+            \usgate
+            \gate[\inputs{2}]{nand}{5}{3}{R}{}{} % NAND
             \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{5}{L}{B}    % pin B
-            \gate[\inputs{2}]{nand}{5}{3}{R}{}{}    % NAND gate -> right
-            \pin{10}{3}{R}{Z}   % pin Z
+            \pin{1}{5}{L}{A1}   % pin A1
+            \pin{10}{3}{R}{Y}   % pin Y
             \end{circuitdiagram}
         \end{center}
     \end{figure}

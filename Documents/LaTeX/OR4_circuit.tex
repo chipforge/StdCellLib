@@ -9,7 +9,7 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_OR4.tex
+%%  File:           StdCellLib/Documents/LaTeX/OR4_circuit.tex
 %%
 %%  Purpose:        Circuit File for OR4
 %%
@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,15 +34,16 @@
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
     Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    \begin{figure}[h]
         \begin{center}
             \begin{circuitdiagram}{17}{8}
+            \usgate
+            \gate[\inputs{4}]{nor}{5}{4}{R}{}{} % NOR
+            \gate{not}{12}{4}{R}{}{}    % NOT
             \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{3}{L}{B}    % pin B
-            \pin{1}{5}{L}{C}    % pin C
-            \pin{1}{7}{L}{D}    % pin D
-            \gate[\inputs{4}]{nor}{5}{4}{R}{}{}    % OR gate -> right
-            \gate{not}{12}{4}{R}{}{}    % NOT gate -> right
+            \pin{1}{3}{L}{A1}   % pin A1
+            \pin{1}{5}{L}{A2}   % pin A2
+            \pin{1}{7}{L}{A3}   % pin A3
             \pin{16}{4}{R}{Z}   % pin Z
             \end{circuitdiagram}
         \end{center}

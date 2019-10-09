@@ -9,7 +9,7 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_OAI22.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI22_truthtable.tex
 %%
 %%  Purpose:        Truth Table File for OAI22
 %%
@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,17 +34,16 @@
 %%  ///////////////////////////////////////////////////////////////////
 
 \begin{center}
-    {\(Z = \lnot ((B1 \lor B0) \land (A1 \lor A0)) \)}
-    \begin{table}[h] %\caption{\(Z = \lnot ((B1 \lor B0) \land (A1 \lor A0)) \)}
+    {\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
+    \begin{table}[h] %\caption{\(Z = \lnot ((C1 \lor C0) \land B \land A) \)}
         \begin{center}
             \begin{tabular}{|c|c|c|c||c|} \hline
-            B1 & B0 & A1 & A0 & Z \\ \hline\hline
-            0  & 0  & X  & X  & 1 \\ \hline
-            1  & X  & 1  & X  & 0 \\ \hline
-            1  & X  & X  & 1  & 0 \\ \hline
-            X  & 1  & 1  & X  & 0 \\ \hline
-            X  & 1  & X  & 1  & 0 \\ \hline
-            X  & X  & 0  & 0  & 1 \\ \hline
+            C1 & C0 & B & A & Z \\ \hline\hline
+            0  & 0  & X & X & 1 \\ \hline
+            1  & X  & 1 & 1 & 0 \\ \hline
+            X  & 1  & 1 & 1 & 0 \\ \hline
+            X  & X  & 0 & X & 1 \\ \hline
+            X  & X  & X & 0 & 1 \\ \hline
             \end{tabular}
         \end{center}
     \end{table}

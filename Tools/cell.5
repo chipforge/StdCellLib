@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd April 12, 2019
+.Dd August 19, 2019
 .Dt CELL 5 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -82,6 +82,9 @@ indicates the end of file.
 All circuit lines are an ordered, white-space-separated list of strings (also terminated by the end of the line) describing one circuit (a pMOS or nMOS transistor) with some arguments.
 .Pp
 Every circuits line contains this arguments in the following order:
+.Bd -literal
+type   gate   drain   source   bulk   stacked   xgrid   ygrid   size
+.Ed
 .Bl -ohang
 .It Em type
 The transistor type used for this circuit (e.g., pmos or nmos).
@@ -101,6 +104,8 @@ This coordinates rising up from left (1st grid position is 1) to right.
 .It Em ygrid
 Y-position (as integer) inside the grid; always positive for pMOS transistors and always negative for nMOS transistors.
 This coordinates are aligned to the output with zero.
+.It Em size
+Size (as integer) of the mosfet; representing the number of minimum sized transister length for width parameter.
 .El
 .Sh AUTHORS
 .An chipforge Aq popcorn@nospam.chipforge.org

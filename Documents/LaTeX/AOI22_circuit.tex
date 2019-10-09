@@ -9,7 +9,7 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/circuit_AOI22.tex
+%%  File:           StdCellLib/Documents/LaTeX/AOI22_circuit.tex
 %%
 %%  Purpose:        Circuit File for AOI22
 %%
@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,19 +34,20 @@
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
     Circuit
-    \begin{figure}[h] %\caption{Circuit}
+    \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{18}{12}
-            \pin{1}{1}{L}{A0}    % pin A0
-            \pin{1}{5}{L}{A1}    % pin A1
-            \pin{1}{7}{L}{B0}    % pin B0
-            \pin{1}{11}{L}{B1}   % pin B1
-            \gate[\inputs{2}]{and}{5}{9}{R}{}{}    % AND gate -> right
-            \gate[\inputs{2}]{and}{5}{3}{R}{}{}    % AND gate -> right
-            \gate[\inputs{2}]{nor}{12}{6}{R}{}{}    % NOR gate -> right
-            \wire{9}{3}{9}{4}     % wire between AND and NOR
-            \wire{9}{9}{9}{8}     % wire between AND and NOR
-            \pin{17}{6}{R}{Z}   % pin Z
+            \begin{circuitdiagram}{18}{10}
+            \usgate
+            \gate[\inputs{2}]{and}{5}{7}{R}{}{}  % AND
+            \gate[\inputs{3}]{nor}{12}{3}{R}{}{} % NOR
+            \pin{1}{1}{L}{A}    % pin A
+            \wire{2}{1}{9}{1}   % wire pin A
+            \pin{1}{3}{L}{A1}   % pin A1
+            \wire{2}{3}{9}{3}   % wire pin A1
+            \pin{1}{5}{L}{B}    % pin B
+            \pin{1}{9}{L}{B1}   % pin B1
+            \wire{9}{5}{9}{7}   % wire between OR and NAND
+            \pin{17}{3}{R}{Y}   % pin Y
             \end{circuitdiagram}
         \end{center}
     \end{figure}

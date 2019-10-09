@@ -25,11 +25,11 @@ apt-get install texlive-full
 ```
 
 which installs the complete (and usefull) LaTeX Environment.
-Additionally we use the great CirDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CirDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
+Additionally we use the great CircDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CircDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run mktexlsr in the directory. Many Thanks to Stefan for the excellent work!
 
 ### Scheme
 
-Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
+Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R^7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
 
 ```
 apt-get install gauche

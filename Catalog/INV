@@ -1,0 +1,22 @@
+.DESCRIPTION a Not (or Inverter) gate
+.cell INV
+.inputs A
+.outputs Y
+#           ^ Vdd
+#           |
+#       | +-'
+#  A --o| |     pMOS
+#       | +-.
+#           |
+#           |
+#           *---- Y
+#           |
+#           |
+#       | +-'
+#  A ---| |     nMOS
+#       | +-.
+#           |
+#          _|_ Gnd
+pmos A Y vdd vdd 1 1  1
+nmos A Y gnd gnd 1 1 -1
+.end

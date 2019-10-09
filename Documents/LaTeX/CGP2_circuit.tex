@@ -1,0 +1,56 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/CGP2_circuit.tex
+%%
+%%  Purpose:        Circuit File for CGP2
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{26}{9}
+            \usgate
+            \flipflop[\clockin{n}]{d}{7}{5}{R}{}{}
+            \pin{1}{1}{L}{XI}   % pin XI
+            \pin{1}{7}{L}{E}    % pin E
+            \wire{2}{7}{3}{7}
+            \wire{2}{5}{3}{5}
+            \wire{2}{1}{2}{5}
+            \junct{2}{1}        % clock line
+            \wire{2}{1}{11}{1}
+            \wire{11}{5}{11}{7}
+            \gate{nand}{14}{3}{R}{}{} % NAND
+            \gate{not}{21}{3}{Rc}{}{2x} % buffer
+            \pin{25}{3}{R}{XO}   % pin XO
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

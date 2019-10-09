@@ -17,7 +17,8 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+#   Copyright (c)   2018, 2019 by
+#                   chipforge - <popcorn@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -51,11 +52,19 @@ RM ?=           rm -f
 TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
-#   project tools
+#   project settings
 
-POPCORN ?=      ../Tools/tcl/popcorn
-CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell AOI21.cell OAI21.cell
-LIMIT =         4
+CELLS =
+
+#   Attention! limit/buffer changes will impact cell catalog
+
+LIMIT ?=        5
+BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
+LEVEL ?=        $(LIMIT)    # hack for fencing expand algorithmen
+DESCR ?=        '?'
+
+#POPCORN ?=      ../Tools/tcl/popcorn
+POPCORN ?=      ../Tools/popcorn/popcorn -l $(LEVEL) -b $(BUFFER) -D $(DESCR)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -72,19 +81,44 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    catalog    - compile catalog cells"
+	$(ECHO) "    catalog    - compile *all* catalog cells (see list below)"
+	$(ECHO) "    cell CELL=<cell> - compile up to dedicated catalog cell"
 	$(ECHO) ""
-
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) "    available cells [limit=" $(LIMIT) "+ buffer=" $(BUFFER)"]:"
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) ""
+	$(ECHO) $(CELLS)
+	$(ECHO) ""
 
 .PHONY: clean
 clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
+	$(RM) $(CELLS)
 	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
 	$(RM) *.mag *.svg
 
 #   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
+#               CELL TARGETS
 #   ----------------------------------------------------------------
+
+#   include makefile with highest number of (allowed) stacked transistors
+
+ifeq ($(LIMIT),2)
+    include stacked2_cells.mk
+else
+ifeq ($(LIMIT),3)
+    include stacked3_cells.mk
+else
+ifeq ($(LIMIT),4)
+    include stacked4_cells.mk
+else
+ifeq ($(LIMIT),5)
+    include stacked5_cells.mk
+endif
+endif
+endif
+endif
 
 .PHONY: catalog
 catalog:    $(CELLS) libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
@@ -175,3 +209,5 @@ test2:
 	perl ../Tools/perl/mag2svg.pl $@
 
 
+.PHONY: cell
+cell:       $(CELL)

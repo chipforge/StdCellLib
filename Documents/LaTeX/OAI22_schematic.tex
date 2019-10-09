@@ -9,7 +9,7 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_OAI22.tex
+%%  File:           StdCellLib/Documents/LaTeX/OAI22_schematic.tex
 %%
 %%  Purpose:        Schematic File for OAI22
 %%
@@ -17,7 +17,7 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -33,37 +33,40 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 \begin{center}
-    Schematic (one stage, 2$T_{p}$/2$T_{n}$ stacked, 8T total)
+    Schematic (one stage, 2$T_{p}$/3$T_{n}$ stacked, 8T total)
     \begin{figure}[h] %\caption{Schematic}
         \begin{center}
-            \begin{circuitdiagram}{24}{27}
-            \pin{2}{2.5}{L}{B0}  % pin B0, n-channel left-below
-            \pin{2}{8.5}{L}{A0}  % pin A0, n-channel left-above
-            \pin{14}{2.5}{L}{B1}  % pin B1, n-channel right-below
-            \pin{14}{8.5}{L}{A1}  % pin A1, n-channel right-above
-            \pin{2}{17.5}{L}{A0} % pin A0, p-channel left-below
-            \pin{14}{17.5}{L}{B0} % pin B0, p-channel right-below
-            \pin{2}{23.5}{L}{A1} % pin A1, p-channel left-above
-            \pin{14}{23.5}{L}{B1} % pin B1, p-channel right-above
-            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NB0}$}{}
-            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NA0}$}{}
-            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NB1}$}{}
-            \trans[\wireUD{0.5}]{nenh*}{18}{10}{R}{$M_{NA1}$}{}
-            \trans[\wireUD{0.5}]{penh*}{6}{16}{R}{}{$M_{PA0}$}
-            \trans[\wireUD{0.5}]{penh*}{18}{16}{R}{}{$M_{PB0}$}
-            \trans[\wireD{0.5}]{penh*}{6}{22}{R}{}{$M_{PA1}$}
-            \trans[\wireD{0.5}]{penh*}{18}{22}{R}{}{$M_{PB1}$}
+            \begin{circuitdiagram}{36}{33}
+            \pin{2}{2.5}{L}{C0}  % pin C0, n-channel
+            \pin{2}{8.5}{L}{B}  % pin B, n-channel
+            \pin{2}{14.5}{L}{A}  % pin A, n-channel
+            \pin{14}{2.5}{L}{C1}  % pin C1, n-channel
+            \pin{2}{23.5}{L}{A}  % pin A, p-channel
+            \pin{14}{23.5}{L}{B}  % pin B, p-channel
+            \pin{26}{23.5}{L}{C0} % pin C0, p-channel
+            \pin{26}{29.5}{L}{C1} % pin C1, p-channel
+            \trans[\wireU{0.5}]{nenh*}{6}{4}{R}{$M_{NC0}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{10}{R}{$M_{NB}$}{}
+            \trans[\wireUD{0.5}]{nenh*}{6}{16}{R}{$M_{NA}$}{}
+            \trans[\wireU{0.5}]{nenh*}{18}{4}{R}{$M_{NC1}$}{}
+            \trans[\wireD{0.5}]{penh*}{6}{22}{R}{}{$M_{PA}$}
+            \trans[\wireD{0.5}]{penh*}{18}{22}{R}{}{$M_{PB}$}
+            \trans[\wireUD{0.5}]{penh*}{30}{22}{R}{}{$M_{PC0}$}
+            \trans[\wireD{0.5}]{penh*}{30}{28}{R}{}{$M_{PC1}$}
             \ground{8}{0.5}{D}  % ground below nmos
             \ground{20}{0.5}{D}  % ground below nmos
-            \power{8}{25.5}{U}{}  % power above left pmos
-            \power{20}{25.5}{U}{}  % power above left pmos
-            \wire{8}{7}{20}{7}    % wire short between pmos
-            \wire{8}{13}{22}{13}    % wire before pin Z
-            \junct{8}{13}
+            \power{8}{31.5}{U}{}  % power above left pmos
+            \power{20}{31.5}{U}{}  % power above middle pmos
+            \power{32}{31.5}{U}{}  % power above right pmos
+            \wire{8}{24}{8}{31}
+            \wire{20}{24}{20}{31}
+            \wire{8}{7}{20}{7}    % wire short between nmos
+            \wire{8}{19}{34}{19}    % wire before pin Z
+            \junct{8}{19}
             \junct{8}{7}
-            \junct{20}{13}
-            \junct{20}{7}
-            \pin{23}{13}{R}{Z}  % pin Z
+            \junct{20}{19}
+            \junct{32}{19}
+            \pin{35}{19}{R}{Z}  % pin Z
             \end{circuitdiagram}
         \end{center}
     \end{figure}
