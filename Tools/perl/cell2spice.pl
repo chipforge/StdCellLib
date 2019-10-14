@@ -11,14 +11,26 @@ if(open IN,"<../Tech/transistor.sp")
 
 print "Tech specs: $tech\n";
 
-open OUT,">libresilicon.sp";
+my @cells=<*.cell>;
+my $cell=undef;
 
-foreach my $fn (<*.cell>)
+if(scalar(@ARGV))
+{
+  $cell=$ARGV[0];
+  $cell=~s/\.cell$//;
+  @cells=$cell.".cell";
+}
+
+open OUT,">".($cell?"$cell.sp":"libresilicon.sp");
+
+print "Params: ".scalar(@ARGV)." ".scalar(@cells)."\n";
+
+foreach my $fn (@cells)
 {
   my $short=$fn; $short=~s/\.cell//;
   my $transistors="";
-
-  open IN,"<$fn";
+  print "Opening $fn\n";
+  open IN,"<$fn" || die "Error opening cell file: $!\n";
   my $M=0;
   my $ios="";
   while(<IN>)
@@ -51,6 +63,7 @@ foreach my $fn (<*.cell>)
   print OUT ".subckt $short vdd gnd $ios\n";
   print OUT $transistors;
   print OUT ".ends $short\n\n";
+  close IN;
 }
 
 close OUT;
