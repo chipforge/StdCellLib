@@ -1049,11 +1049,11 @@
                                     ; set new cell description
                                     (cell-text! cell cell-descr)
                                     ; set input nodes
-                                    (cell-inputs! cell (sort-nodes-descending (input-nodes (cell-netlist cell))))
+                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
                                     ; set output nodes
-                                    (cell-outputs! cell (sort-nodes-descending (output-nodes (cell-netlist cell))))
+                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
                                     ; set clock nodes
-                                    (cell-clocks! cell (sort-nodes-descending (clock-nodes (cell-netlist cell))))
+                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                                     ; set additionals
                                     (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                                 )
@@ -1110,11 +1110,11 @@
                                     ; set new cell description
                                     (cell-text! cell cell-descr)
                                     ; set input nodes
-                                    (cell-inputs! cell (sort-nodes-descending (input-nodes (cell-netlist cell))))
+                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
                                     ; set output nodes
-                                    (cell-outputs! cell (sort-nodes-descending (output-nodes (cell-netlist cell))))
+                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
                                     ; set clock nodes
-                                    (cell-clocks! cell (sort-nodes-descending (clock-nodes (cell-netlist cell))))
+                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                                     ; set additionals
                                     (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                                 )
@@ -1171,11 +1171,11 @@
                                     ; set new cell description
                                     (cell-text! cell cell-descr)
                                     ; set input nodes
-                                    (cell-inputs! cell (sort-nodes-descending (input-nodes (cell-netlist cell))))
+                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
                                     ; set output nodes
-                                    (cell-outputs! cell (sort-nodes-descending (output-nodes (cell-netlist cell))))
+                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
                                     ; set clock nodes
-                                    (cell-clocks! cell (sort-nodes-descending (clock-nodes (cell-netlist cell))))
+                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                                     ; set additionals
                                     (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                                 )
@@ -1232,11 +1232,11 @@
                                     ; set new cell description
                                     (cell-text! cell cell-descr)
                                     ; set input nodes
-                                    (cell-inputs! cell (sort-nodes-descending (input-nodes (cell-netlist cell))))
+                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
                                     ; set output nodes
-                                    (cell-outputs! cell (sort-nodes-descending (output-nodes (cell-netlist cell))))
+                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
                                     ; set clock nodes
-                                    (cell-clocks! cell (sort-nodes-descending (clock-nodes (cell-netlist cell))))
+                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                                     ; set additionals
                                     (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                                 )
