@@ -50,7 +50,7 @@ ECHO ?=         @echo # -e
 MV ?=           mv
 RM ?=           rm -f
 TAR ?=          tar -zh
-DATE :=         $(shell date +%Y%m%d)
+DATE :=         $(shell date -R --utc)
 
 #   project settings
 
@@ -58,7 +58,7 @@ CELLS =
 
 #   Attention! limit/buffer changes will impact cell catalog
 
-LIMIT ?=        5
+LIMIT ?=        4
 BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
 LEVEL ?=        $(LIMIT)    # hack for fencing expand algorithmen
 DESCR ?=        '?'
@@ -94,6 +94,14 @@ help:
 clean:
 	$(RM) $(CELLS)
 
+.PHONY: header
+header:
+	$(ECHO) "\t _ __   ___  _ __   ___ ___  _ __ _ __"
+	$(ECHO) "\t| '_ \ / _ \| '_ \ / __/ _ \| '__| '_ \\"
+	$(ECHO) "\t| |_) | (_) | |_) | (_| (_) | |  | | | |"
+	$(ECHO) "\t| .__/ \___/| .__/ \___\___/|_|  |_| |_|"
+	$(ECHO) "\t|_|    run: |_| $(DATE)"
+
 #   ----------------------------------------------------------------
 #               CELL TARGETS
 #   ----------------------------------------------------------------
@@ -108,16 +116,12 @@ ifeq ($(LIMIT),3)
 else
 ifeq ($(LIMIT),4)
     include stacked4_cells.mk
-else
-ifeq ($(LIMIT),5)
-    include stacked5_cells.mk
-endif
 endif
 endif
 endif
 
 .PHONY: catalog
-catalog:    $(CELLS)
+catalog:    header $(CELLS)
 
 .PHONY: cell
 cell:       $(CELL)
