@@ -111,6 +111,8 @@
            intermediate-nodes
            sort-nodes-ascending
            sort-nodes-descending
+           sort-ports-ascending
+           sort-ports-descending
            ; metrics on netlists
            metric-tp-stacked
            metric-tn-stacked
@@ -127,7 +129,7 @@
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #t)
+    (define build-in-self-test? #f)
 
 ;;  ------------    build-in sanity checks  ---------------------------
 
@@ -1269,7 +1271,7 @@
 ;               ^ Vdd               ^ Vdd
 ;               |                   |
 ;           | --+               | --+
-;      A --o| |   g        B --o| |   g
+;      A --o| |   g       A1 --o| |   g
 ;           | --+               | --+
 ;               |                   |
 ;               *-------------------*---- Y
@@ -1280,17 +1282,17 @@
 ;               | N2
 ;               |
 ;           | --+
-;      B ---| |   2
+;     A1 ---| |   2
 ;           | --+
 ;               |
 ;              _|_ Gnd
 
     (define NAND2-cell '#("NAND2" "a 2-input Not-AND (or NAND) gate"
-                          ("B" "A") ("Y") ()
-                          (#("pmos" "B" "Y"  "VDD" "VDD" 1 2  1 "g")
-                           #("pmos" "A" "Y"  "VDD" "VDD" 1 1  1 "g")
-                           #("nmos" "A" "Y"  "N2"  "GND" 1 1 -1 "2")
-                           #("nmos" "B" "N2" "GND" "GND" 2 1 -2 "2"))
+                          ("A1" "A") ("Y") ()
+                          (#("pmos" "A1" "Y"  "VDD" "VDD" 1 2  1 "g")
+                           #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
+                           #("nmos" "A"  "Y"  "N2"  "GND" 1 1 -1 "2")
+                           #("nmos" "A1" "N2" "GND" "GND" 2 1 -2 "2"))
                           ())
     )
 
@@ -1299,7 +1301,7 @@
 ;               ^ Vdd
 ;               |
 ;           | --+
-;      B --o| |   2g
+;     A1 --o| |   2g
 ;           | --+
 ;               |
 ;               | N1
@@ -1310,17 +1312,17 @@
 ;               *-------------------*---- Y
 ;               |                   |
 ;           | --+               | --+
-;      A ---| |   1        B ---| |   1
+;      A ---| |   1       A1 ---| |   1
 ;           | --+               | --+
 ;               |                   |
 ;              _|_ Gnd             _|_ Gnd
 
     (define NOR2-cell '#("NOR2" "a 2-input Not-OR (or NOR) gate"
                          ("B" "A") ("Y") ()
-                         (#("pmos" "B" "N1" "VDD" "VDD" 2 1  2 "2g")
-                          #("pmos" "A" "Z"  "N1"  "VDD" 1 1  1 "2g")
-                          #("nmos" "A" "Y"  "GND" "GND" 1 1 -1 "1")
-                          #("nmos" "B" "Y"  "GND" "GND" 1 2 -1 "1"))
+                         (#("pmos" "A1" "N1" "VDD" "VDD" 2 1  2 "2g")
+                          #("pmos" "A"  "Z"  "N1"  "VDD" 1 1  1 "2g")
+                          #("nmos" "A"  "Y"  "GND" "GND" 1 1 -1 "1")
+                          #("nmos" "A1" "Y"  "GND" "GND" 1 2 -1 "1"))
                          ())
     )
 
@@ -1334,7 +1336,7 @@
 ;               ^ Vdd               |
 ;               |                   | N1
 ;           | --+               | --+
-;      A --o| |   g       B0 --o| |   2g
+;      A --o| |   g        B --o| |   2g
 ;           | --+               | --+
 ;               |                   |
 ;               *-------------------*---- Y
@@ -1346,18 +1348,18 @@
 ;               *-------------------*
 ;               |                   |
 ;           | --+               | --+
-;     B0 ---| |   2       B1 ---| |   2
+;      B ---| |   2       B1 ---| |   2
 ;           | --+               | --+
 ;               |                   |
 ;              _|_ Gnd             _|_ Gnd
 
     (define OAI21-cell '#("OAI21" "a 2-1-input OR-AND-Invert (or OAI) gate"
-                          ("B1" "B0" "A") ("Y") ()
+                          ("B1" "B" "A") ("Y") ()
                           (#("pmos" "B1" "N1" "VDD" "VDD" 2 2  2 "2g")
-                           #("pmos" "B0" "Y"  "N1"  "VDD" 1 2  1 "2g")
-                           #("pmos" "A" "Y"   "VDD" "VDD" 1 1  1 "g")
-                           #("nmos" "A" "Y"   "N2"  "GND" 1 1 -1 "2")
-                           #("nmos" "B0" "N2" "GND" "GND" 2 1 -2 "2")
+                           #("pmos" "B"  "Y"  "N1"  "VDD" 1 2  1 "2g")
+                           #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
+                           #("nmos" "A"  "Y"  "N2"  "GND" 1 1 -1 "2")
+                           #("nmos" "B"  "N2" "GND" "GND" 2 1 -2 "2")
                            #("nmos" "B1" "N2" "GND" "GND" 2 2 -2 "2"))
                           ())
     )
@@ -1367,7 +1369,7 @@
 ;               ^ Vdd               ^ Vdd
 ;               |                   |
 ;           | --+               | --+
-;     B0 --o| |   2g      B1 --o| |   2g
+;      B --o| |   2g      B1 --o| |   2g
 ;           | --+               | --+
 ;               | N1                |
 ;               *-------------------*
@@ -1379,7 +1381,7 @@
 ;               *-------------------*---- Y
 ;               |                   |
 ;           | --+               | --+
-;      A ---| |   1       B0 ---| |   2
+;      A ---| |   1        B ---| |   2
 ;           | --+               | --+
 ;               |                   |
 ;              _|_ Gnd              | N2
@@ -1390,12 +1392,12 @@
 ;                                  _|_ Gnd
 
     (define AOI21-cell '#("AOI21" "a 2-1-input AND-OR-Invert (or AOI) gate"
-                          ("B1" "B0" "A") ("Y") ()
+                          ("B1" "B" "A") ("Y") ()
                           (#("pmos" "B1" "N1" "VDD" "VDD" 2 2  2 "2g")
-                           #("pmos" "B0" "Y"  "N1"  "VDD" 2 1  2 "2g")
+                           #("pmos" "B"  "Y"  "N1"  "VDD" 2 1  2 "2g")
                            #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "2g")
                            #("nmos" "A"  "Y"  "GND" "GND" 1 1 -1 "1")
-                           #("nmos" "B0" "Y"  "N2"  "GND" 2 2 -1 "2")
+                           #("nmos" "B"  "Y"  "N2"  "GND" 2 2 -1 "2")
                            #("nmos" "B1" "N2" "GND" "GND" 2 2 -2 "2"))
                           ())
     )
@@ -2202,7 +2204,7 @@
 ;;  ------------    filter for node connected transistors   -----------
 
 ;   Contract:
-;   complementary-mosfets : netlist transtistor -> netlist
+;   complementary-mosfets : netlist transistor -> mosfet
 
 ;   Purpose:
 ;   get complementary transistors which is connected to the same input
@@ -2272,7 +2274,7 @@
 ;   sort all transistors regarding their names
 
 ;   Example:
-;   (sort-mosfet-ascending '(#("nmos" "B" "N2" "GND" "GND" 2 1 -2 "2") #("nmos" "A" "Y"  "N2" GND 1 1 -1 "2"))) => (pulldown-network (cell-netlist NAND2-cell))
+;   (sort-mosfet-ascending '(#("nmos" "A1" "N2" "GND" "GND" 2 1 -2 "2") #("nmos" "A" "Y"  "N2" GND 1 1 -1 "2"))) => (pulldown-network (cell-netlist NAND2-cell))
 
 ;   Definition:
     (define sort-mosfet-ascending
@@ -2284,7 +2286,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (sort-mosfet-ascending '(#("nmos" "B" "N2" "GND" "GND" 2 1 -2 "2") #("nmos" "A" "Y" "N2" "GND" 1 1 -1 "2"))) (pulldown-network (cell-netlist NAND2-cell)))
+            (if (equal? (sort-mosfet-ascending '(#("nmos" "A1" "N2" "GND" "GND" 2 1 -2 "2") #("nmos" "A" "Y" "N2" "GND" 1 1 -1 "2"))) (pulldown-network (cell-netlist NAND2-cell)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-mosfet-ascending test" (current-error-port))
@@ -2301,7 +2303,7 @@
 ;   sort all transistors regarding their names
 
 ;   Example:
-;   (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g"))) => (pullup-network (cell-netlist NAND2-cell))
+;   (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g"))) => (pullup-network (cell-netlist NAND2-cell))
 
 ;   Definition:
     (define sort-mosfet-descending
@@ -2313,7 +2315,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g"))) (pullup-network (cell-netlist NAND2-cell)))
+            (if (equal? (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g"))) (pullup-network (cell-netlist NAND2-cell)))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-mosfet-descending test" (current-error-port))
@@ -2345,10 +2347,10 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (sort-netlist '(#("pmos" "B" "Y"  "VDD" "VDD" 1 2  1 "g")
-                                        #("pmos" "A" "Y"  "VDD" "VDD" 1 1  1 "g")
-                                        #("nmos" "A" "Y"  "N2"  "GND" 1 1 -1 "2")
-                                        #("nmos" "B" "N2" "GND" "GND" 2 1 -2 "2"))) (cell-netlist NAND2-cell))
+            (if (equal? (sort-netlist '(#("pmos" "A1" "Y"  "VDD" "VDD" 1 2  1 "g")
+                                        #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
+                                        #("nmos" "A"  "Y"  "N2"  "GND" 1 1 -1 "2")
+                                        #("nmos" "A1" "N2" "GND" "GND" 2 1 -2 "2"))) (cell-netlist NAND2-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-netlist test" (current-error-port))
@@ -2387,7 +2389,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (filter-mosfet-char (cell-netlist NAND2-cell) "A") '(#("pmos" "A" "Y"  "VDD" "VDD" 1 1  1 "g") #("nmos" "A" "Y"  "N2"  "GND" 1 1 -1 "2")))
+            (if (equal? (filter-mosfet-char (cell-netlist NAND2-cell) "A") (cell-netlist NAND2-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " filter-mosfet-char" (current-error-port))
@@ -2443,7 +2445,7 @@
 ;   return all transistors in one column
 
 ;   Example:
-;   (filter-mosfet-column '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 1) #("pmos" "B" "Y" "VDD" "VDD" 1 1  2 "g")) 2) => '(#("pmos" "B" "Y" "VDD" "VDD" 1 1  2 "g"))
+;   (filter-mosfet-column '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 1) #("pmos" "A1" "Y" "VDD" "VDD" 1 1  2 "g")) 2) => '(#("pmos" "A1" "Y" "VDD" "VDD" 1 1  2 "g"))
 
 ;   Definition:
     (define filter-mosfet-column
@@ -2465,7 +2467,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (filter-mosfet-column (cell-netlist NAND2-cell) 2) '(#("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g")))
+            (if (equal? (filter-mosfet-column (cell-netlist NAND2-cell) 2) '(#("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " filter-mosfet-column" (current-error-port))
@@ -2482,7 +2484,7 @@
 ;   return all transistors in one row
 
 ;   Example:
-;   (filter-mosfet-row '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g")) 1) => '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g"))
+;   (filter-mosfet-row '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g")) 1) => '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g") #("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g"))
 
 ;   Definition:
     (define filter-mosfet-row
@@ -2504,7 +2506,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (filter-mosfet-row (cell-netlist NAND2-cell) 1) '(#("pmos" "B" "Y" "VDD" "VDD" 1 2  1 "g") #("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g")))
+            (if (equal? (filter-mosfet-row (cell-netlist NAND2-cell) 1) '(#("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g") #("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " filter-mosfet-row" (current-error-port))
@@ -2548,7 +2550,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (input-nodes (cell-netlist NOR2-cell)) '("A" "B"))
+            (if (equal? (input-nodes (cell-netlist NOR2-cell)) '("A" "A1"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " input-nodes test" (current-error-port))
@@ -2795,6 +2797,60 @@
         )
     )
 
+;;  ------------    <port operator  -----------------------------------
+
+    (define <port
+        (lambda (kar kdr)
+            (let ((length-1st (string-length kar))
+                  (length-2nd (string-length kdr)))
+                (cond
+                    ; character of 1st name is smaller than 2nd
+                    [(< (char->integer (string-ref kar 0)) (char->integer (string-ref kdr 0))) #t]
+                    ; character of 1st name is bigger than 2nd
+                    [(> (char->integer (string-ref kar 0)) (char->integer (string-ref kdr 0))) #f]
+                    ; 1st name is shorter than 2nd
+                    [(< length-1st length-2nd) #t]
+                    ; 1st name is longer than 2nd
+                    [(> length-1st length-2nd) #f]
+                    [else
+                        (if (> length-1st 1)
+                            ; check numbers
+                            (< (string->number (substring kar 1 length-1st)) (string->number (substring kdr 1 length-2nd)))
+                            ; otherwise false
+                            #f)
+                    ]
+                )
+            )
+        )
+    )
+
+;;  ------------    >port operator  -----------------------------------
+
+    (define >port
+        (lambda (kar kdr)
+            (let ((length-1st (string-length kar))
+                  (length-2nd (string-length kdr)))
+                (cond
+                    ; character of 1st name is bigger than 2nd
+                    [(> (char->integer (string-ref kar 0)) (char->integer (string-ref kdr 0))) #t]
+                    ; character of 1st name is smaller than 2nd
+                    [(< (char->integer (string-ref kar 0)) (char->integer (string-ref kdr 0))) #f]
+                    ; 1st name is longer than 2nd
+                    [(> length-1st length-2nd) #t]
+                    ; 1st name is shorter than 2nd
+                    [(< length-1st length-2nd) #f]
+                    [else
+                        (if (> length-1st 1)
+                            ; check numbers
+                            (> (string->number (substring kar 1 length-1st)) (string->number (substring kdr 1 length-2nd)))
+                            ; otherwise false
+                            #f)
+                    ]
+                )
+            )
+        )
+    )
+
 ;;  ------------    sort nodes descending   ---------------------------
 
 ;   Contract:
@@ -2849,6 +2905,65 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " sort-nodes-ascending test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    sort ports ascending    ---------------------------
+
+;   Contract:
+;   sort-ports-ascending : port-list -> port-list
+
+;   Purpose:
+;   sort all ports regarding their names
+
+;   Example:
+;   (sort-ports-ascending '("B1" "B" "A") => '("A" "B" "B1")
+
+;   Definition:
+    (define sort-ports-ascending
+        (lambda (portlist)
+            (list-sort <port portlist)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (sort-ports-ascending '("A1" "B" "A")) '("A" "A1" "B"))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " sort-ports-ascending test" (current-error-port))
+            (newline (current-error-port))
+        )
+    )
+
+;;  ------------    sort ports descending   ---------------------------
+
+;   Contract:
+;   sort-ports-descending : port-list -> port-list
+
+;   Purpose:
+;   sort all ports regarding their names
+
+;   Example:
+;   (sort-ports-descending '("A" "B" "B1") => '("B1" "B" "A")
+
+;   Definition:
+    (define sort-ports-descending
+        (lambda (portlist)
+            (list-sort >port portlist)
+        )
+    )
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+(display (sort-ports-descending '("A" "B" "B1")) (current-error-port))
+            (if (equal? (sort-ports-descending '("A" "B" "B1")) '("B1" "B" "A"))
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " sort-ports-descending test" (current-error-port))
             (newline (current-error-port))
         )
     )
