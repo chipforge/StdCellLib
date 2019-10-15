@@ -50,7 +50,9 @@ include stacked3_cells.mk
 
 ifdef BUFFERED
 
-CELLS +=        AND4 \
+CELLS +=        AAOA321 \
+                AAOA331 \
+                AND4 \
                 AO23 \
                 AO41 \
                 AOA212 \
@@ -64,7 +66,17 @@ CELLS +=        AND4 \
                 OAO311 \
                 OAOA2211 \
                 OAOA3211 \
+                OOAO321 \
                 OR4
+
+AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
+AAOA321:        AAOA221
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
+AAOA331:        LIMIT = 4
+AAOA331:        AAOA321
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AND4:           DESCR = "4-input AND gate"
 AND4:           AND3
@@ -118,6 +130,10 @@ OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
 OAOA3211:       OAOA2211
 	$(POPCORN) -m oai -c $@ $< > $@
 
+OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
+OOAO321:        OOAO221
+	$(POPCORN) -m oai -c $@ $< > $@
+
 OR4:            DESCR = "4-input OR gate"
 OR4:            OR3
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -127,7 +143,9 @@ OR4:            OR3
 else
 ifeq ($(BUFFER),4)
 
-CELLS +=        AND4 \
+CELLS +=        AAOA321 \
+                AAOA331 \
+                AND4 \
                 AO23 \
                 AO41 \
                 AOA212 \
@@ -141,7 +159,17 @@ CELLS +=        AND4 \
                 OAO311 \
                 OAOA2211 \
                 OAOA3211 \
+                OOAO321 \
                 OR4
+
+AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
+AAOA321:        AAOAI221
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
+AAOA331:        LIMIT = 4
+AAOA331:        AAOA321
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AND4:           DESCR = "4-input AND gate"
 AND4:           NAND3
@@ -195,6 +223,10 @@ OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
 OAOA3211:       OAOA2211
 	$(POPCORN) -m oai -c $@ $< > $@
 
+OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
+OOAO321:        OOAOI221
+	$(POPCORN) -m oai -c $@ $< > $@
+
 OR4:            DESCR = "4-input OR gate"
 OR4:            NOR3
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -205,7 +237,9 @@ BUFFERED = true
 
 else
 
-CELLS +=        AOAI212 \
+CELLS +=        AAOAI321 \
+                AAOAI331 \
+                AOAI212 \
                 AOAI311 \
                 AOI23 \
                 AOI41 \
@@ -217,7 +251,17 @@ CELLS +=        AOAI212 \
                 OAI4111 \
                 OAOAI2211 \
                 OAOAI3211 \
-                OAOI311
+                OAOI311 \
+                OOAOI321
+
+AAOAI321:       DESCR = "3-2-1-input AND-AND-OR-AND-Invert gate"
+AAOAI321:       AAOAI221
+	$(POPCORN) -m nand -c $@ $< > $@
+
+AAOAI331:       DESCR = "3-3-1-input AND-AND-OR-AND-Invert gate"
+AAOAI331:       LIMIT = 4
+AAOAI331:       AAOAI321
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AOAI212:        DESCR = "2-1-2-input AND-OR-AND-Invert gate"
 AOAI212:        OAI22
@@ -269,6 +313,10 @@ OAOAI3211:      OAOAI2211
 
 OAOI311:        DESCR = "3-1-1-input OR-AND-OR-Invert gate"
 OAOI311:        OAOI211
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOAOI321:       DESCR = "3-2-1-input OR-OR-AND-OR-Invert gate"
+OOAOI321:       OOAOI221
 	$(POPCORN) -m oai -c $@ $< > $@
 
 endif

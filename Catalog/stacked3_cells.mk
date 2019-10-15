@@ -52,11 +52,14 @@ ifdef BUFFERED
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAOA321 \
+                AAOA221 \
                 AAO331 \
                 AND3 \
                 AO22 \
                 AO31 \
                 AO311 \
+                AO32 \
                 AAO32 \
                 AAO33 \
                 AO331 \
@@ -77,6 +80,7 @@ CELLS +=        AAAO332 \
                 OOA321 \
                 OOA33 \
                 OOA331 \
+                OOAO221 \
                 OOOA332 \
                 OOOA333
 
@@ -88,6 +92,16 @@ AAAO332:        AAAO331
 AAAO333:        DESCR = "3-3-3-input AND-AND-AND-OR gate"
 AAAO333:        LEVEL = 3
 AAAO333:        AAAO332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAO321:         DESCR = "3-2-1-input AND-AND-OR gate"
+AAO321:         LEVEL = 3
+AAO321:         AO32
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAOA221:        DESCR = "2-2-1-input AND-AND-OR-AND gate"
+AAOA221:        LEVEL = 3
+AAOA221:        AOA211
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAO331:         DESCR = "3-3-1-input AND-AND-OR gate"
@@ -105,6 +119,10 @@ AO22:           OR3
 
 AO31:           DESCR = "3-1-input AND-OR gate"
 AO31:           AO21
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AO32:           DESCR = "3-2-input AND-OR gate"
+AO32:           AO22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAO32:          DESCR = "3-2-input AND-AND-OR gate"
@@ -173,7 +191,8 @@ OR3:            OR2
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOA321:         DESCR = "3-2-1-input OR-OR-AND gate"
-OOA321:         OOA221
+OOA321:         LEVEL = 3
+OOA321:         OA32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOA33:          DESCR = "3-3-input OR-OR-AND gate"
@@ -184,6 +203,11 @@ OOA33:          OOA32
 OOA331:         DESCR = "3-3-1-input OR-OR-AND gate"
 OOA331:         LEVEL = 3
 OOA331:         OOA321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOAO221:        DESCR = "2-2-1-input OR-OR-AND-OR gate"
+OOAO221:        LEVEL = 3
+OOAO221:        OAO211
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOOA332:        DESCR = "3-3-2-input OR-OR-OR-AND gate"
@@ -203,10 +227,13 @@ ifeq ($(BUFFER),3)
 
 CELLS +=        AAAO332 \
                 AAAO333 \
+                AAOA321 \
+                AAOA221 \
                 AAO331 \
                 AND3 \
                 AO31 \
                 AO311 \
+                AO32 \
                 AAO32 \
                 AO33 \
                 AO331 \
@@ -227,6 +254,7 @@ CELLS +=        AAAO332 \
                 OOA321 \
                 OOA33 \
                 OOA331 \
+                OOAO221 \
                 OOOA332 \
                 OOOA333
 
@@ -238,6 +266,16 @@ AAAO332:        AAAO331
 AAAO333:        DESCR = "3-3-3-input AND-AND-AND-OR gate"
 AAAO333:        LEVEL = 3
 AAAO333:        AAAO332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAO321:         DESCR = "3-2-1-input AND-AND-OR gate"
+AAO321:         LEVEL = 3
+AAO321:         AO32
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAOA221:        DESCR = "2-2-1-input AND-AND-OR-AND gate"
+AAOA221:        LEVEL = 3
+AAOA221:        AOA211
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAO331:         DESCR = "3-3-1-input AND-AND-OR gate"
@@ -255,6 +293,10 @@ AO22:           OR3
 
 AO31:           DESCR = "3-1-input AND-OR gate"
 AO31:           AOI21
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AO32:           DESCR = "3-2-input AND-OR gate"
+AO32:           AO22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAO32:          DESCR = "3-2-input AND-AND-OR gate"
@@ -323,7 +365,8 @@ OR3:            NOR2
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOA321:         DESCR = "3-2-1-input OR-OR-AND gate"
-OOA321:         OOA221
+OOA321:         LEVEL = 3
+OOA321:         OA32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOA33:          DESCR = "3-3-input OR-OR-AND gate"
@@ -334,6 +377,11 @@ OOA33:          OOA32
 OOA331:         DESCR = "3-3-1-input OR-OR-AND gate"
 OOA331:         LEVEL = 3
 OOA331:         OOA321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOAO221:        DESCR = "2-2-1-input OR-OR-AND-OR gate"
+OOAO221:        LEVEL = 3
+OOAO221:        OAO211
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOOA332:        DESCR = "3-3-2-input OR-OR-OR-AND gate"
@@ -354,6 +402,7 @@ else
 
 CELLS +=        AAAOI332 \
                 AAAOI333 \
+                AAOAI221 \
                 AAOI321 \
                 AAOI331 \
                 AOAI211 \
@@ -361,6 +410,7 @@ CELLS +=        AAAOI332 \
                 AOAOI2111 \
                 AOI211 \
                 AOI31 \
+                AOI32 \
                 AAOI32 \
                 AAOI33 \
                 AOOAI212 \
@@ -377,6 +427,7 @@ CELLS +=        AAAOI332 \
                 OOAI321 \
                 OOAI33 \
                 OOAI331 \
+                OOAOI221 \
                 OOOAI332 \
                 OOOOAI333
 
@@ -388,6 +439,11 @@ AAAOI332:       AAOI331
 AAAOI333:       DESCR = "3-3-3-input AND-AND-AND-OR-Invert gate"
 AAAOI333:       LEVEL = 3
 AAAOI333:       AAAOI332
+	$(POPCORN) -m aoi -c $@ $< > $@
+
+AAOAI221:       DESCR = "2-2-1-input AND-AND-OR-AND gate"
+AAOAI221:       LEVEL = 3
+AAOAI221:       AOAI211
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAOI331:        DESCR = "3-3-1-input AND-AND-OR-Invert gate"
@@ -415,12 +471,17 @@ AOI31:          DESCR = "3-1-input AND-OR-Invert gate"
 AOI31:          AOI21
 	$(POPCORN) -m aoi -c $@ $< > $@
 
+AOI32:          DESCR = "3-2-input AND-OR-Invert gate"
+AOI32:          AOI22
+	$(POPCORN) -m aoi -c $@ $< > $@
+
 AAOI32:         DESCR = "3-2-input AND-AND-OR-Invert gate"
 AAOI32:         AAOI22
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAOI321:        DESCR = "3-2-1-input AND-AND-OR-Invert gate"
-AAOI321:        AAOI221
+AAOI321:        LEVEL = 3
+AAOI321:        AOI32
 	$(POPCORN) -m aoi -c $@ $< > $@
 
 AAOI33:         DESCR = "3-3-input AND-AND-OR-Invert gate"
@@ -473,7 +534,8 @@ OAOI221:        AOI31
 	$(POPCORN) -m nor -c $@ $< > $@
 
 OOAI321:        DESCR = "3-2-1-input OR-OR-AND-Invert gate"
-OOAI321:        OOAI221
+OOAI321:        LEVEL = 3
+OOAI321:        OAI32
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOAI33:         DESCR = "3-3-input OR-OR-AND-Invert gate"
@@ -484,6 +546,11 @@ OOAI33:         OOAI32
 OOAI331:        DESCR = "3-3-1-input OR-OR-AND-Invert gate"
 OOAI331:        LEVEL = 3
 OOAI331:        OOAI321
+	$(POPCORN) -m oai -c $@ $< > $@
+
+OOAOI221:       DESCR = "2-2-1-input OR-OR-AND-OR-Invert gate"
+OOAOI221:       LEVEL = 3
+OOAOI221:       OAOI211
 	$(POPCORN) -m oai -c $@ $< > $@
 
 OOOAI332:       DESCR = "3-3-2-input OR-OR-OR-AND-Invert gate"
