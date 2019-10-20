@@ -123,7 +123,7 @@ AO31:           AO21
 
 AO32:           DESCR = "3-2-input AND-OR gate"
 AO32:           AO22
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AAO32:          DESCR = "3-2-input AND-AND-OR gate"
 AAO32:          AAO22
@@ -297,7 +297,7 @@ AO31:           AOI21
 
 AO32:           DESCR = "3-2-input AND-OR gate"
 AO32:           AO22
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AAO32:          DESCR = "3-2-input AND-AND-OR gate"
 AAO32:          AAOI22
@@ -473,7 +473,7 @@ AOI31:          AOI21
 
 AOI32:          DESCR = "3-2-input AND-OR-Invert gate"
 AOI32:          AOI22
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AAOI32:         DESCR = "3-2-input AND-AND-OR-Invert gate"
 AAOI32:         AAOI22
