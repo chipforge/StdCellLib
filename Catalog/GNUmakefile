@@ -36,34 +36,43 @@
 
 #   project name
 
-PROJECT =       StdCellLib
+PROJECT =           StdCellLib
 
 #   directory pathes
 
-DOCUMENTSDIR =  .
-OUTPUTDIR =     ..
+DOCUMENTSDIR =      .
+OUTPUTDIR =         ..
 
 #   tool variables
 
-CAT ?=          @cat
-ECHO ?=         @echo # -e
-MV ?=           mv
-RM ?=           rm -f
-TAR ?=          tar -zh
-DATE :=         $(shell date -R --utc)
+ECHO ?=             @echo # -e
+MV ?=               mv
+RM ?=               rm -f
+TAR ?=              tar -zh
+DATE :=             $(shell date -R --utc)
 
 #   project settings
 
 CELLS =
 
-#   Attention! limit/buffer changes will impact cell catalog
+#   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#       ATTENTION! Limit/Buffer changes will impact cell catalog.
+#       Hence, strongly recommended, that you know what you're doing.
+#   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-LIMIT ?=        4
-BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
-LEVEL ?=        $(LIMIT)    # hack for fencing expand algorithmen
-DESCR ?=        '?'
+# global; max number of stacked mosfets
+LIMIT ?=            4
+# buffering recommended, but free to reduce
+BUFFER ?=           $(LIMIT)
+# hack limit for fencing expand algorithmen
+LEVEL ?=            $(LIMIT)
+# textual description for cell functionality
+DESCR ?=            '?'
 
-POPCORN ?=      ../Tools/popcorn/popcorn -l $(LEVEL) -b $(BUFFER) -D $(DESCR)
+POPCORN ?=          ../Tools/popcorn/popcorn \
+                    -l $(LEVEL) \
+                    -b $(BUFFER) \
+                    -D $(DESCR)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
