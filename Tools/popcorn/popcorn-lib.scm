@@ -1279,7 +1279,7 @@
 ;           | --+
 ;      A ---| |   2
 ;           | --+
-;               | N2
+;               | N1
 ;               |
 ;           | --+
 ;     A1 ---| |   2
@@ -1291,8 +1291,8 @@
                           ("A1" "A") ("Y") ()
                           (#("pmos" "A1" "Y"  "VDD" "VDD" 1 2  1 "g")
                            #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
-                           #("nmos" "A"  "Y"  "N2"  "GND" 1 1 -1 "2")
-                           #("nmos" "A1" "N2" "GND" "GND" 2 1 -2 "2"))
+                           #("nmos" "A"  "Y"  "N1"  "GND" 1 1 -1 "2")
+                           #("nmos" "A1" "N1" "GND" "GND" 2 1 -2 "2"))
                           ())
     )
 
@@ -3202,7 +3202,7 @@
                     (if (and (equal? (mosfet-xaxis mosfet) xaxis)
                              (equal? (mosfet-yaxis mosfet) yaxis))
                         mosfet
-                        (mosfet-by-position netlist xaxis yaxis))
+                        (mosfet-by-position (cdr netlist) xaxis yaxis))
                 )
             )
         )
