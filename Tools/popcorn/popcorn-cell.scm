@@ -57,14 +57,14 @@
            cell:write-file
            cell:expand-nand
            cell:expand-nor
-           cell:expand-aoi
-           cell:expand-oai)
+           cell:expand-oai
+           cell:expand-aoi)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #t)
+    (define build-in-self-test? #f)
 
 ;;  ------------    build-in sanity checks  ---------------------------
 
@@ -688,7 +688,7 @@
         (lambda (mosfet)
             (let ((node (mosfet-gate mosfet)))
                 (cond
-                    [(null? node) "A"]
+                    [(null? node) "A1"]
                     [else
                         (string (car (cdr (memq (string-ref node 0) input-space))))]
                 )
@@ -801,7 +801,7 @@
                             ; got it - candidate on path is below limit
                             candidate
                             ; waste path away, check next
-                            (find-mosfet-anchor (filter-mosfet-remove network (mosfet-gate candidate)) limit)
+                            (find-mosfet-anchor (filter-mosfet-remove (cdr network) (mosfet-gate candidate)) limit)
                         )
                     )
                 )
@@ -824,7 +824,7 @@
 ;;  ------------    expand netlist serial   ---------------------------
 
 ;   Contract:
-;   expand-netlist-serial : netlist new-node new-gate mosfet -> netlist
+;   expand-netlist-serial : netlist new-node org-gate new-gate mosfet -> netlist
 
 ;   Purpose:
 ;   expand network by mosfet in serial
@@ -835,19 +835,27 @@
 
 ;   Definition:
     (define expand-netlist-serial
-        (lambda (netlist new-node new-gate mosfet)
+        (lambda (netlist new-node org-gate new-gate mosfet)
             (cond
                 ; netlist empty?
                 [(null? netlist)]
                 ; handle anchor transistor
                 [(equal? (car netlist) mosfet)
-                    (let ((new-mosfet (generate-mosfet))
-                          (org-mosfet mosfet))
+                    (let*  ((new-mosfet (generate-mosfet))
+                            (org-mosfet mosfet)
+                            ; increment yaxis regarding network
+                            (new-yaxis (if (< (mosfet-yaxis org-mosfet) 0)
+                                        ; negative, pulldown network
+                                        (- (mosfet-yaxis org-mosfet) 1)
+                                        ; positive, pullup network
+                                        (+ (mosfet-yaxis org-mosfet) 1))))
                         (begin
                             ; use same type as original
                             (mosfet-type! new-mosfet (mosfet-type org-mosfet))
-                            ; use new generated gate node
+                            ; use orginal and new generated gate node
                             (mosfet-gate! new-mosfet new-gate)
+                            ; rename orginal gate for aoi or oai methods
+                            (mosfet-gate! org-mosfet org-gate)
                             ; use same source as original (hopefully a power rail)
                             (mosfet-source! new-mosfet (mosfet-source org-mosfet))
                             ; use new generated node number between original and new mosfet
@@ -859,13 +867,8 @@
                             (mosfet-stacked! new-mosfet (+ (mosfet-stacked org-mosfet) 1))
                             ; use same xasis as original
                             (mosfet-xaxis! new-mosfet (mosfet-xaxis org-mosfet))
-                            ; increment yaxis number
-                            (if (< (mosfet-yaxis org-mosfet) 0)
-                                ; negative, pulldown network
-                                (mosfet-yaxis! new-mosfet (- (mosfet-yaxis org-mosfet) 1))
-                                ; positive, pullup network
-                                (mosfet-yaxis! new-mosfet (+ (mosfet-yaxis org-mosfet) 1))
-                            )
+                            ; assign free row
+                            (mosfet-yaxis! new-mosfet new-yaxis)
                             ; transistor sizing
                             (mosfet-size! new-mosfet "0") ; !! no size yet
                             ; return
@@ -873,7 +876,7 @@
                         )
                     )]
                 [else
-                    (cons (car netlist) (expand-netlist-serial (cdr netlist) new-node new-gate mosfet))]
+                    (cons (car netlist) (expand-netlist-serial (cdr netlist) new-node org-gate new-gate mosfet))]
             )
         )
     )
@@ -881,7 +884,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-netlist-serial (pulldown-network (cell-netlist INV-cell)) "N1" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
+            (if (equal? (expand-netlist-serial (pulldown-network (cell-netlist INV-cell)) "N1" "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                     '( #("nmos" "B" "N1" "GND" "GND" 2 1 -2 "0")
                        #("nmos" "A" "Y"  "N1"  "GND" 1 1 -1 "1")))
                 (display "++ passed" (current-error-port))
@@ -900,41 +903,47 @@
 ;   expand network by mosfet in parallel
 
 ;   Example:
-;   (expand-netlist-parallel (pulldown-down (cell-netlist INV-cell)) "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) =>
+;   (expand-netlist-parallel (pulldown-down (cell-netlist INV-cell)) "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) =>
 ;       (#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1") #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1"))
 
 ;   Definition:
     (define expand-netlist-parallel
-        (lambda (netlist new-gate org-mosfet)
-            (let ((new-mosfet (generate-mosfet))
-                  (xaxis (mosfet-xaxis org-mosfet)))
-                (begin
-                    ; use same type as original
-                    (mosfet-type! new-mosfet (mosfet-type org-mosfet))
-                    ; use new generated gate node
-                    (mosfet-gate! new-mosfet new-gate)
-                    ; use same source as original
-                    (mosfet-source! new-mosfet (mosfet-source org-mosfet))
-                    ; use same drain as original
-                    (mosfet-drain! new-mosfet (mosfet-drain org-mosfet))
-                    ; use same bulk as original
-                    (mosfet-bulk! new-mosfet (mosfet-bulk org-mosfet))
-                    ; use same stacked transistor number
-                    (mosfet-stacked! new-mosfet (mosfet-stacked org-mosfet))
-                    ; increment xasis number !! fixme - others transistors has to be shifted?
-                    (if (< xaxis 0)
-                        ; negative, pulldown network
-                        (mosfet-xaxis! new-mosfet (- xaxis 1))
-                        ; positive, pullup network
-                        (mosfet-xaxis! new-mosfet (+ xaxis 1))
-                    )
-                    ; use same yaxis number
-                    (mosfet-yaxis! new-mosfet (mosfet-yaxis org-mosfet))
-                    ; transistor sizing
-                    (mosfet-size! new-mosfet (mosfet-size org-mosfet)) ; always same size
-                    ; return
-                    (cons new-mosfet netlist)
-                )
+        (lambda (netlist org-gate new-gate mosfet)
+            (cond
+                ; netlist empty?
+                [(null? netlist)]
+                ; handle anchor transistor
+                [(equal? (car netlist) mosfet)
+                    (let*  ((new-mosfet (generate-mosfet))
+                            (org-mosfet mosfet)
+                            ; increment xasis number
+                            (new-xaxis (+ (mosfet-xaxis org-mosfet) 1)))
+                        (begin
+                            ; use same type as original
+                            (mosfet-type! new-mosfet (mosfet-type org-mosfet))
+                            ; use new generated gate node
+                            (mosfet-gate! new-mosfet new-gate)
+                            (mosfet-gate! org-mosfet org-gate)
+                            ; use same source as original
+                            (mosfet-source! new-mosfet (mosfet-source org-mosfet))
+                            ; use same drain as original
+                            (mosfet-drain! new-mosfet (mosfet-drain org-mosfet))
+                            ; use same bulk as original
+                            (mosfet-bulk! new-mosfet (mosfet-bulk org-mosfet))
+                            ; use same stacked transistor number
+                            (mosfet-stacked! new-mosfet (mosfet-stacked org-mosfet))
+                            ; assign free column
+                            (mosfet-xaxis! new-mosfet new-xaxis)
+                            ; use same yaxis number
+                            (mosfet-yaxis! new-mosfet (mosfet-yaxis org-mosfet))
+                            ; transistor sizing
+                            (mosfet-size! new-mosfet (mosfet-size org-mosfet)) ; always same size
+                            ; return
+                            (append (list new-mosfet org-mosfet) (cdr netlist))
+                        )
+                    )]
+                [else
+                    (cons (car netlist) (expand-netlist-parallel (cdr netlist) org-gate new-gate mosfet))]
             )
         )
     )
@@ -942,7 +951,7 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (expand-netlist-parallel (pulldown-network (cell-netlist INV-cell)) "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
+            (if (equal? (expand-netlist-parallel (pulldown-network (cell-netlist INV-cell)) "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                          '(#("nmos" "B" "Y"  "GND" "GND" 1 2 -1 "1")
                            #("nmos" "A" "Y"  "GND" "GND" 1 1 -1 "1")))
                 (display "++ passed" (current-error-port))
@@ -1029,37 +1038,40 @@
 ;   Definition:
     (define cell:expand-nand
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let ((netlist (cell-netlist cell)))
-                (let ((anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit)))
-                    (let ((complementary (complementary-mosfets netlist anchor))
-                          (1st-node (next-node-number (intermediate-nodes netlist)))
-                          (new-gate (next-input-char-node anchor)))
-                        (let ((new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node new-gate anchor) new-gate complementary)))
-                            (let ((2nd-node (next-node-number (intermediate-nodes new-netlist))))
-                                (begin
-                                    ; netlist
-                                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
-                                        ; netlist is yet still not buffered but already on level
-                                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
-                                        ; already bufferd, set netlist
-                                        (cell-netlist! cell (sort-netlist new-netlist))
-                                    )
-                                    ; set new cell-id
-                                    (cell-id! cell cell-name)
-                                    ; set new cell description
-                                    (cell-text! cell cell-descr)
-                                    ; set input nodes
-                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
-                                    ; set output nodes
-                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
-                                    ; set clock nodes
-                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
-                                    ; set additionals
-                                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                                )
-                            )
-                        )
+            (let*  (;shortend netlist call
+                    (netlist (cell-netlist cell))
+                    ; search anchor mosfet
+                    (anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit))
+                    ; get complementary mosfet regarding anchor
+                    (complementary (complementary-mosfets netlist anchor))
+                    ; get free node number
+                    (1st-node (next-node-number (intermediate-nodes netlist)))
+                    ; calculate new gate name for additional mosfet
+                    (2nd-gate (next-input-num-node anchor))
+                    ; expand original netlist with new mosfets
+                    (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node (mosfet-gate anchor) 2nd-gate anchor) (mosfet-gate anchor) 2nd-gate complementary))
+                    ; get next free node for potentialy buffer addition
+                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                (begin
+                    ; netlist
+                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
+                        ; netlist is yet still not buffered but already on level
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        ; already bufferd, set netlist
+                        (cell-netlist! cell (sort-netlist new-netlist))
                     )
+                    ; set new cell-id
+                    (cell-id! cell cell-name)
+                    ; set new cell description
+                    (cell-text! cell cell-descr)
+                    ; set input nodes
+                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    ; set output nodes
+                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    ; set clock nodes
+                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    ; set additionals
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                 )
             )
         )
@@ -1090,37 +1102,40 @@
 ;   Definition:
     (define cell:expand-nor
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let ((netlist (cell-netlist cell)))
-                (let ((anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit)))
-                    (let ((complementary (complementary-mosfets netlist anchor))
-                          (1st-node (next-node-number (intermediate-nodes netlist)))
-                          (new-gate (next-input-char-node anchor )))
-                        (let ((new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node new-gate anchor) new-gate complementary)))
-                            (let ((2nd-node (next-node-number (intermediate-nodes new-netlist))))
-                                (begin
-                                    ; netlist
-                                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
-                                        ; netlist is yet still not buffered but already on level
-                                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
-                                        ; already bufferd, set netlist
-                                        (cell-netlist! cell (sort-netlist new-netlist))
-                                    )
-                                    ; set new cell-id
-                                    (cell-id! cell cell-name)
-                                    ; set new cell description
-                                    (cell-text! cell cell-descr)
-                                    ; set input nodes
-                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
-                                    ; set output nodes
-                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
-                                    ; set clock nodes
-                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
-                                    ; set additionals
-                                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                                )
-                            )
-                        )
+            (let*  (; shortend netlist call
+                    (netlist (cell-netlist cell))
+                    ; search anchor mosfet
+                    (anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit))
+                    ; get complementary mosfet regarding anchor
+                    (complementary (complementary-mosfets netlist anchor))
+                    ; get free node number
+                    (1st-node (next-node-number (intermediate-nodes netlist)))
+                    ; calculate new gate name for additional mosfet
+                    (2nd-gate (next-input-num-node anchor))
+                    ; expand original netlist with new mosfets
+                    (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node (mosfet-gate anchor) 2nd-gate anchor) (mosfet-gate anchor) 2nd-gate complementary))
+                    ; get next free node for potentialy buffer addition
+                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                (begin
+                    ; check netlist regading buffer limit
+                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
+                        ; netlist is yet still not buffered but already on level
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        ; already bufferd, set netlist
+                        (cell-netlist! cell (sort-netlist new-netlist))
                     )
+                    ; set new cell-id
+                    (cell-id! cell cell-name)
+                    ; set new cell description
+                    (cell-text! cell cell-descr)
+                    ; set input nodes
+                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    ; set output nodes
+                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    ; set clock nodes
+                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    ; set additionals
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                 )
             )
         )
@@ -1151,37 +1166,42 @@
 ;   Definition:
     (define cell:expand-oai
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let ((netlist (cell-netlist cell)))
-                (let ((anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit)))
-                    (let ((complementary (complementary-mosfets netlist anchor))
-                          (1st-node (next-node-number (intermediate-nodes netlist)))
-                          (new-gate (next-input-num-node anchor )))
-                        (let ((new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node new-gate anchor) new-gate complementary)))
-                            (let ((2nd-node (next-node-number (intermediate-nodes new-netlist))))
-                                (begin
-                                    ; netlist
-                                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
-                                        ; netlist is yet still not buffered but already on level
-                                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
-                                        ; already bufferd, set netlist
-                                        (cell-netlist! cell (sort-netlist new-netlist))
-                                    )
-                                    ; set new cell-id
-                                    (cell-id! cell cell-name)
-                                    ; set new cell description
-                                    (cell-text! cell cell-descr)
-                                    ; set input nodes
-                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
-                                    ; set output nodes
-                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
-                                    ; set clock nodes
-                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
-                                    ; set additionals
-                                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                                )
-                            )
-                        )
+            (let* (; shortend netlist call
+                    (netlist (cell-netlist cell))
+                    ; search anchor mosfet
+                    (anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit))
+                    ; get complementary mosfet regarding anchor
+                    (complementary (complementary-mosfets netlist anchor))
+                    ; get free node number
+                    (1st-node (next-node-number (intermediate-nodes netlist)))
+                    ; calculate replacement name for anchor mosfet
+                    (1st-gate (next-input-char-node anchor))
+                    ; get gate name with index for additional mosfet
+                    (2nd-gate (string-append 1st-gate (number->string 1)))
+                    ; expand original netlist with new mosfets
+                    (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node 1st-gate 2nd-gate anchor) 1st-gate 2nd-gate complementary))
+                    ; get next free node for potentialy buffer addition
+                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                (begin
+                    ; check netlist regading buffer limit
+                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
+                        ; netlist is yet still not buffered but already on level
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        ; already bufferd, set netlist
+                        (cell-netlist! cell (sort-netlist new-netlist))
                     )
+                    ; set new cell-id
+                    (cell-id! cell cell-name)
+                    ; set new cell description
+                    (cell-text! cell cell-descr)
+                    ; set input nodes
+                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    ; set output nodes
+                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    ; set clock nodes
+                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    ; set additionals
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                 )
             )
         )
@@ -1212,42 +1232,47 @@
 ;   Definition:
     (define cell:expand-aoi
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let ((netlist (cell-netlist cell)))
-                (let ((anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit)))
-                    (let ((complementary (complementary-mosfets netlist anchor))
-                          (1st-node (next-node-number (intermediate-nodes netlist)))
-                          (new-gate (next-input-num-node anchor)))
-                        (let ((new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node new-gate anchor) new-gate complementary)))
-                            (let ((2nd-node (next-node-number (intermediate-nodes new-netlist))))
-                                (begin
-                                    ; netlist
-                                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
-                                        ; netlist is yet still not buffered but already on level
-                                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
-                                        ; already bufferd, set netlist
-                                        (cell-netlist! cell (sort-netlist new-netlist))
-                                    )
-                                    ; set new cell-id
-                                    (cell-id! cell cell-name)
-                                    ; set new cell description
-                                    (cell-text! cell cell-descr)
-                                    ; set input nodes
-                                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
-                                    ; set output nodes
-                                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
-                                    ; set clock nodes
-                                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
-                                    ; set additionals
-                                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                                )
-                            )
-                        )
+            (let* ( ; shortend netlist call
+                    (netlist (cell-netlist cell))
+                    ; search anchor mosfet
+                    (anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit))
+                    ; get complementary mosfet regarding anchor
+                    (complementary (complementary-mosfets netlist anchor))
+                    ; get free node number
+                    (1st-node (next-node-number (intermediate-nodes netlist)))
+                    ; calculate replacement name for anchor mosfet
+                    (1st-gate (next-input-char-node anchor))
+                    ; get gate name with index for additional mosfet
+                    (2nd-gate (string-append 1st-gate (number->string 1)))
+                    ; expand original netlist with new mosfets
+                    (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node 1st-gate 2nd-gate anchor) 1st-gate 2nd-gate complementary))
+                    ; get next free node for potentialy buffer addition
+                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                (begin
+                    ; check netlist regading buffer limit
+                    (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
+                        ; netlist is yet still not buffered but already on level
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        ; already bufferd, set netlist
+                        (cell-netlist! cell (sort-netlist new-netlist))
                     )
+                    ; set new cell-id
+                    (cell-id! cell cell-name)
+                    ; set new cell description
+                    (cell-text! cell cell-descr)
+                    ; set input nodes
+                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    ; set output nodes
+                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    ; set clock nodes
+                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    ; set additionals
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
                 )
             )
         )
     )
-#|
+
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
@@ -1258,7 +1283,7 @@
             (newline (current-error-port))
         )
     )
-|#
+
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
 ;;  ===================================================================
