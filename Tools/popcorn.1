@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd October 3, 2019
+.Dd October 26, 2019
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -74,20 +74,22 @@ utility expands a given combinatorial cell by different methods (
 .Em nand ,
 .Em nor ,
 .Em aoi ,
-.Em oai )
-and writes out the new derived cell information on
+.Em oai ,
+.Em pu ,
+.Em pd
+)  and writes out the new derived cell information on
 .Dv STDOUT .
 The new cell name and a cell description for the new cell can be specified.
 Second, the
 .Nm
-utility can be used to derive Schematics, Layouts and Documentation in
-dedicated formats for cell representations, also written to
+utility can be used to derive Schematics, Layouts and Documentation in dedicated
+formats for cell representations, also written to
 .Dv STDOUT .
 .Pp
 In principle every combinatorial cell (in CMOS technology) contains two
 functional complementary networks.
-The pull-up network - build with pMOS transistors - as well as the pull-down
-network - build with nMOS transistors.
+This are the pull-up network - build with pMOS transistors - as well as the
+pull-down network - build with nMOS transistors.
 In both networks all inputs are used to determine the output functionality.
 .Pp
 .RS
@@ -111,14 +113,14 @@ Example Schematic for Inverter Cell (INV)
 .RE
 .Nm
 functionality is to take one combinatorial cell and expand both networks
-by adding one transistor per network.
+by adding complementary transistors for each network.
 The new combinatorial cell can be exported in different file formats for
 documentation, layout and simulation.
 .Pp
 .Nm
 can be used recursively.
-This implies that one new generated cell becomes the seed for at least 2
-more generated cells.
+This implies that one new generated cell becomes the seed for at least one more
+generated cell.
 .Pp
 Or given a cell descriptions,
 .Nm
@@ -126,8 +128,8 @@ is used to fully deploy all information, which is needed for a Standard
 Cell Library.
 .Sh OPTIONS
 .Ss \-b number
-Append inverting buffer to current cell description, when one path exist
-which has at least
+Append inverting buffer to current cell description, when one path (in one of
+both networks) exist which has at least a
 .Em number
 of stacked transistors between output and any supply line.
 This will sharpen the maximum LOW and minimum HIGH output levels of the
@@ -135,8 +137,8 @@ cell output.
 .Ss \-c cellname
 Specify the cell-name for the new generated cell.
 .Ss \-D string
-Specify the new cell functionality in a quoted string, e.g. "Not (or
-Inverter) gate" which than occurs in generated cell documentation.
+Specify the new cell functionality in a quoted string, e.g. "Not (or Inverter)
+gate" which occurs in generated cell documentation.
 .Ss \-e format
 Export cell description in one of the following file
 .Em formats :
@@ -165,12 +167,12 @@ Stimulation Work Bench (Verilog '95)
 .Ss \-h, \-\-help
 Display help message and exit.
 .Ss \-H number
-Specify the Highth of cells by number of metal tracks (eg. 7). Fractional
-numbers could work inaccurate. The Width of cells varies with transistor
-sizes and numbers.
+Specify the Highth of cells by number of metal tracks (eg. 7).
+Fractional numbers could work inaccurate.
+The Width of cells varies with transistor sizes and numbers.
 .Ss \-l number
-Limit the longest path of stacked transistors between output and any supply
-line to
+Limit the longest path of stacked transistors between output and any supply line
+to
 .Em number .
 .Ss \-m method
 Expand cell with one of following methods:
@@ -179,18 +181,28 @@ Expand cell with one of following methods:
 Add nMOS transistor in serial into highest free pull-down path.
 Use same character and next number for new mosfet gate name.
 .It Em nor
-Add pMOS transistor in serial into highest free pull-up path.
-Use same character and next number for new mosfet gate name.
+Add pMOS transistor in serial into highest free pull-up path.  Use same
+character and next number for new mosfet gate name.
 .It Em aoi
 Add nMOS transistor in serial into highest free pull-down path.
-Use new character for last mosfet gate name, enumerate this character for new mosfet gate name.
+Use new character for last mosfet gate name, enumerate this character for new
+mosfet gate name.
 .It Em oai
 Add pMOS transistor in serial into highest free pull-up path.
-Use new character for last mosfet gate name, enumerate this character for new mosfet gate name.
+Use new character for last mosfet gate name, enumerate this character for new
+mosfet gate name.
+.It Em pu
+Add a chain of pMOS transistors in parallel to the exisiting pull-up network.
+Use new character for new mosfet gate names and enumerate all of them.
+.It Em pd
+Add a chain of nMOS transistors in parallel to the exisiting pull-down network.
+Use new character for new mosfet gate names and enumerate all of them.
 .El
 .Pp
-An addition in one network implies an addition - a transisor in parallel - in the complementary network also.
-In some cases, the expansion with one method is not feasible while the limit of stacked transistors is already reached.
+An addition in one network implies an - complementary - addition in the other
+network also.
+In some cases, the expansion with one method is not feasible, because the limit
+of stacked transistors is already reached.
 .Ss \-T file
 Specify the
 .Xr magic 1
@@ -215,6 +227,7 @@ For the exact file format, see
 .An chipforge Aq popcorn@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
+Please do not hesitate to report your findings.
 .Sh COPYRIGHT
 Copyright (c) 2018-2019 Author and Contributors.
 .Pp

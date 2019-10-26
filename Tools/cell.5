@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd August 19, 2019
+.Dd October 26, 2019
 .Dt CELL 5 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -51,17 +51,23 @@
 .Sh DESCRIPTION
 This is the essential file format for the
 .Xr popcorn 1
-utility, inspired by the Berkeley Logic Interchange Format (BLIF) and Simulation Program with Integrated Circuit Emphasis (SPICE) - both from UC Berkeley.
+utility, inspired by the Berkeley Logic Interchange Format (BLIF) and
+Simulation Program with Integrated Circuit Emphasis (SPICE) - both from UC
+Berkeley.
 .Pp
 The
 .Nm
 file consists of newline separated ASCII records.
 .Pp
-Every line starts with a comment, a dot-command, or would be interpreted as one circuit becomming part of the cell netlist; except the first line which becomes the cell description.
+Every line starts with a comment, a dot-command, or would be interpreted as one
+circuit becomming part of the cell netlist; except the first line which becomes
+the cell description.
 .Ss #
-A hash mark indicates the beginning of a comment; subsequent characters up to the end of the line are not interpreted by the routines which search the file.
+A hash mark indicates the beginning of a comment; subsequent characters up to
+the end of the line are not interpreted by the routines which search the file.
 .Ss .cell
-This dot-command is a string giving the unique cell identifier inside the Standard Cell Library.
+This dot-command is a string giving the unique cell identifier inside the
+Standard Cell Library.
 E.g.
 .Em INV ,
 .Em NAND2 ,
@@ -70,16 +76,23 @@ E.g.
 .Pp
 When missing, the filename of the cell description becomes the cell identifier.
 .Ss .inputs
-This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the formal input terminals for the cell being declared.
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the formal input terminals for the cell being
+declared.
 .Ss .outputs
-This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the formatl output signals for the cell being delared.
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the formatl output signals for the cell being
+delared.
 .Ss .clock
-This dot-command follows a white-space-separated list of strings (terminated by the end of the line) giving the clocks for the model being declared.
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the clocks for the model being declared.
 This command is optional; e.g., for purely combinational circuits.
 .Ss .end
 indicates the end of file.
 .Ss <circuit lines>
-All circuit lines are an ordered, white-space-separated list of strings (also terminated by the end of the line) describing one circuit (a pMOS or nMOS transistor) with some arguments.
+All circuit lines are an ordered, white-space-separated list of strings (also
+terminated by the end of the line) describing one circuit (a pMOS or nMOS
+transistor) with some arguments.
 .Pp
 Every circuits line contains this arguments in the following order:
 .Bd -literal
@@ -91,26 +104,30 @@ The transistor type used for this circuit (e.g., pmos or nmos).
 .It Em gate
 (Input-) Node connected to the gate of the circuit.
 .It Em drain
-Node connected to the drain of the circuit.
+(Network-) Node connected to the drain of the circuit.
 .It Em source
-Node connected to the source of the circuit.
+(Network-) Node connected to the source of the circuit.
 .It Em bulk
-Node connected to the bulk of the circuit, mostly a power supply like VDD or Ground.
+(Network-) Node connected to the bulk of the circuit, mostly a power supply
+like VDD or Ground.
 .It Em stacked
-Order of stacked transistor in the row up/down to power supply.
+Order of current stacked transistor in pull-up or pull-down network.
 .It Em xgrid
 X-position (as integer) inside the grid; always positive.
 This coordinates rising up from left (1st grid position is 1) to right.
 .It Em ygrid
-Y-position (as integer) inside the grid; always positive for pMOS transistors and always negative for nMOS transistors.
+Y-position (as integer) inside the grid; always positive for pMOS transistors
+and always negative for nMOS transistors.
 This coordinates are aligned to the output with zero.
 .It Em size
-Size (as integer) of the mosfet; representing the number of minimum sized transister length for width parameter.
+Size (as integer) of the mosfet; representing the number of minimum sized
+transistor length for width parameter.
 .El
 .Sh AUTHORS
 .An chipforge Aq popcorn@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
+Please do not hesitate to report your findings.
 .Sh COPYRIGHT
 Copyright (c) 2018-2019 Author and Contributors.
 .Pp

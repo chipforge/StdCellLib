@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd Mai 9, 2019
+.Dd October 26, 2019
 .Dt TABLE 5 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -51,7 +51,8 @@
 .Sh DESCRIPTION
 This is a secondary file format for the
 .Xr popcorn 1
-utility, inspired by tables from User-defined Primitives (UDP) in Verilog, defined as IEEE Std 1394-1995 and IEEE Std 1394-2001.
+utility, inspired by tables from User-defined Primitives (UDP) in Verilog,
+defined as IEEE Std 1394-1995 and IEEE Std 1394-2001.
 .Pp
 The
 .Nm
@@ -59,7 +60,9 @@ file consists of newline separated ASCII records.
 .Pp
 Every line starts with comment, an identifier, or forms a table entry.
 .Ss // 
-Two slash signs mark the beginning of a comment line; subsequent characters up to the end of the line are not interpreted by the routines which search the file.
+Two slash signs mark the beginning of a comment line; subsequent characters up
+to the end of the line are not interpreted by the routines which search the
+file.
 .Ss table
 This identifier trigger all table entry lines which are following, until the
 .Em endtable
@@ -72,7 +75,8 @@ Every table line contains this arguments in the following order:
 .It Em inputs
 A list of space-separeted input values.
 .It Em :
-The colon sign devided the Input Node side of table from the following Output Node side.
+The colon sign devided the Input Node side of table from the following Output
+Node side.
 .It Em outputs
 Behind the colon sign all output values are listed.
 .El
@@ -91,6 +95,7 @@ Valid values for every Input or Output Node are:
 .An chipforge Aq popcorn@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
+Please do not hesitate to report your findings.
 .Sh COPYRIGHT
 Copyright (c) 2018-2019 Author and Contributors.
 .Pp
