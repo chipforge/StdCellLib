@@ -157,6 +157,8 @@ if(!scalar(@ARGV)) # no parameters were given
 # Take all the given filenames from the commandline
 foreach my $file(@ARGV)
 {
+  my $cellname=$file; $cellname=~s/\.cell$//;
+
   # Open each file
   if(open(IN,"<$file"))
   {
@@ -220,15 +222,15 @@ print <<EOF
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/truthtable_AOI21.tex
+%%  File:           StdCellLib/Documents/LaTeX/truthtable_$cellname.tex
 %%
-%%  Purpose:        Truth Table File for AOI21
+%%  Purpose:        Truth Table File for $cellname
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank\@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <hsank\@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -318,13 +320,17 @@ EOF
         # If we have more 0 than 1 results, then the negated inverse is shorted: 
 	# TODO: When there are HIGH-Z outputs we should split the HIGH-Z outputs from the others and give a function for output-enable and HIGH-Z
         print $format eq "liberty" ? "  pin($out) {\n    direction: output;\n    function:\"":"function: $out = ";
-	if($not)
+	my @list=defined($results{$out}{$not})?@{$results{$out}{$not}}:();
+	if(!scalar(@list))
 	{
-          print "(".join($format eq "liberty"?"|":" || ",@{$results{$out}{$not}}).")";
+	}
+	elsif($not)
+	{
+          print "(".join($format eq "liberty"?"|":" || ",@list).")";
 	}
 	else
 	{
-          print "!(".join($format eq "liberty"?"|":" || ",@{$results{$out}{$not}}).")";
+          print "!(".join($format eq "liberty"?"|":" || ",@list).")";
         }
 	print $format eq "liberty" ? "\";\n  }":" ";
         # TODO: We should try more functional representations like AOI, OAI, OR, NOR and see which one is the shortest representation
