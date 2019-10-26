@@ -97,7 +97,7 @@ CELLS +=        AAOI22 \
 AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
 AAOI22:         LEVEL = 2
 AAOI22:         AOI21
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
 AOI21:          NOR2

@@ -54,6 +54,7 @@ CELLS +=        AAOA321 \
                 AAOA331 \
                 AND4 \
                 AO23 \
+                AO33 \
                 AO41 \
                 AOA212 \
                 AOA311 \
@@ -86,9 +87,13 @@ AO23:           DESCR = "2-3-input AND-OR gate"
 AO23:           OR4
 	$(POPCORN) -m aoi -c $@ $< > $@
 
+AO33:           DESCR = "3-3-input AND-OR gate"
+AO33:           AO23
+	$(POPCORN) -m nand -c $@ $< > $@
+
 AO41:           DESCR = "4-1-input AND-OR gate"
 AO41:           AO31
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
 AOA212:         OA22
@@ -147,6 +152,7 @@ CELLS +=        AAOA321 \
                 AAOA331 \
                 AND4 \
                 AO23 \
+                AO33 \
                 AO41 \
                 AOA212 \
                 AOA311 \
@@ -179,9 +185,13 @@ AO23:           DESCR = "2-3-input AND-OR gate"
 AO23:           OR4
 	$(POPCORN) -m aoi -c $@ $< > $@
 
+AO33:           DESCR = "3-3-input AND-OR gate"
+AO33:           AO23
+	$(POPCORN) -m nand -c $@ $< > $@
+
 AO41:           DESCR = "4-1-input AND-OR gate"
 AO41:           AOI31
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
 AOA212:         OAI22
@@ -242,6 +252,7 @@ CELLS +=        AAOAI321 \
                 AOAI212 \
                 AOAI311 \
                 AOI23 \
+                AOI33 \
                 AOI41 \
                 NAND4 \
                 NOR4 \
@@ -275,9 +286,13 @@ AOI23:          DESCR = "2-3-input AND-OR-Invert gate"
 AOI23:          NOR4
 	$(POPCORN) -m aoi -c $@ $< > $@
 
+AOI33:          DESCR = "3-3-input AND-OR-Invert gate"
+AOI33:          AOI23
+	$(POPCORN) -m nand -c $@ $< > $@
+
 AOI41:          DESCR = "4-1-input AND-OR-Invert gate"
 AOI41:          AOI31
-	$(POPCORN) -m aoi -c $@ $< > $@
+	$(POPCORN) -m nand -c $@ $< > $@
 
 NAND4:          DESCR = "4-input Not-AND (or NAND) gate"
 NAND4:          NAND3
