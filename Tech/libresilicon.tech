@@ -872,10 +872,10 @@ cifinput
  layer metal2 metal2
   calma metal2 8 0
   calma metal2 8 1
+  calma metal2 8 2
   labels metal2
 
  layer pdcontact pdcontact
-  calma pdcontact 4 0
   calma pdcontact 5 0
 
  templayer abutment
