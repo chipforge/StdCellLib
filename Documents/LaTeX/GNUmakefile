@@ -86,6 +86,7 @@ clean:
 doc:    pdf clean
 
 .PHONY: pdf
-pdf:    $(PROJECT).tex revision.tex
+pdf:    $(PROJECT).tex
+	$(LATEX) $<
 	$(LATEX) $<
 	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
