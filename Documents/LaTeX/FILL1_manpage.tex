@@ -9,15 +9,15 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/schematic_FILL.tex
+%%  File:           StdCellLib/Documents/LaTeX/FILL1_manpage.tex
 %%
-%%  Purpose:        Schematic File for FILL
+%%  Purpose:        Manual Page File for FILL1
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,18 +32,29 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Schematic (one stage, 2T total)
-    \begin{figure}[h] %\caption{Schematic}
-        \begin{center}
-            \begin{circuitdiagram}{10}{15}
-            \trans{nenh*}{6}{4}{R}{$M_{N}$}{}
-            \trans{penh*}{5}{10}{L}{}{$M_{P}$}
-            \ground{8}{0.5}{D}  % ground below nmos
-            \power{3}{13.5}{U}{}  % power above pmos
-            \wire{8}{6}{8}{11.5}  % wire between pmos gate and nmos
-            \wire{3}{2.5}{3}{8}   % wire between nmos gate and pmos
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\label{FILL1}
+\paragraph{Cell}
+\begin{quote}
+    \textbf{FILL1} - a Filler cell, 1-metal Track wide
+\end{quote}
+
+\paragraph{Synopsys}
+\begin{quote}
+    FILL1
+\end{quote}
+
+\paragraph{Description}
+\input{FILL1_schematic.tex}
+
+\paragraph{Truth Table}
+\begin{quote}
+No Truth Table applicable.
+\end{quote}
+
+\paragraph{Usage}
+
+\paragraph{Fan-in / Fan-out}
+
+\paragraph{Layout}
+
+\paragraph{Files}
