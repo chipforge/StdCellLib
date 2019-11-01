@@ -1,0 +1,166 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/part-catalog.tex
+%%
+%%  Purpose:        Part Level File for Standard Cell Library Documentation
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\part{Cell Catalog}
+\pagestyle{headings}
+
+%%  -------------------------------------------------------------------
+%%                  CHAPTER 1
+%%  -------------------------------------------------------------------
+
+\chapter{Combinatorial Cells}
+\clearpage
+
+%%  ------------    one phase   ---------------------------------------
+
+\input{section-NAND_gates.tex}
+\input{section-NOR_gates.tex}
+\input{section-MUX_gates.tex}
+\input{section-XOR_gates.tex}
+
+%%  ------------    two phases  ---------------------------------------
+
+\input{section-AOI_complex.tex}
+\input{section-OAI_complex.tex}
+\input{section-AAOI_complex.tex}
+\input{section-OOAI_complex.tex}
+\input{section-AAAOI_complex.tex}
+\input{section-OOOAI_complex.tex}
+
+%%  ------------    three phases    -----------------------------------
+
+\input{section-AOAI_complex.tex}
+\input{section-OAOI_complex.tex}
+\input{section-AOOAI_complex.tex}
+\input{section-OAAOI_complex.tex}
+\input{section-AAOOAI_complex.tex}
+\input{section-OOAAOI_complex.tex}
+\input{section-AOOOAI_complex.tex}
+\input{section-OAAAOI_complex.tex}
+\input{section-AAOAI_complex.tex}
+\input{section-OOAOI_complex.tex}
+\input{section-AAAOAI_complex.tex}
+\input{section-OOOAOI_complex.tex}
+
+%%  ------------    four phases     -----------------------------------
+
+\input{section-AOAOI_complex.tex}
+\input{section-OAOAI_complex.tex}
+\input{section-AOAAOI_complex.tex}
+\input{section-OAOOAI_complex.tex}
+\input{section-AOAAAOI_complex.tex}
+\input{section-OAOOOAI_complex.tex}
+\input{section-AOOAOI_complex.tex}
+\input{section-OAAOAI_complex.tex}
+\input{section-AAOAAOI_complex.tex}
+\input{section-OOAOOAI_complex.tex}
+\input{section-AOOAAOI_complex.tex}
+\input{section-OAAOOAI_complex.tex}
+
+%%  ------------    five phases     -----------------------------------
+
+\input{section-OAOAOI_complex.tex}
+\input{section-AOAOAI_complex.tex}
+\input{section-AOAOOAI_complex.tex}
+\input{section-OAOAAOI_complex.tex}
+\input{section-AOOAOOAI_complex.tex}
+\input{section-OAAOAAOI_complex.tex}
+\input{section-AOAAOOAI_complex.tex}
+\input{section-OAOOAAOI_complex.tex}
+\input{section-AAOAAOOAI_complex.tex}
+\input{section-OOAOOAAOI_complex.tex}
+\input{section-AAOAOOAI_complex.tex}
+\input{section-OOAOAAOI_complex.tex}
+
+%%  ------------    six phases      -----------------------------------
+
+\input{section-OAOAOAI_complex.tex}
+\input{section-AOAOAOI_complex.tex}
+\input{section-OAOAOOAI_complex.tex}
+\input{section-AOAOAAOI_complex.tex}
+\input{section-OAAOAOOAI_complex.tex}
+\input{section-AOOAOAAOI_complex.tex}
+\input{section-OAOOAOOAI_complex.tex}
+\input{section-AOAAOAAOI_complex.tex}
+\input{section-OAOAAOOAI_complex.tex}
+\input{section-AOAOOAAOI_complex.tex}
+\input{section-OAAOAAOOAI_complex.tex}
+\input{section-AOOAOOAAOI_complex.tex}
+\input{section-OOAAOAOOAI_complex.tex}
+\input{section-AAOOAOAAOI_complex.tex}
+\input{section-OOAAOAAOOAI_complex.tex}
+\input{section-AAOOAOOAAOI_complex.tex}
+
+%%  -------------------------------------------------------------------
+%%                  CHAPTER 2
+%%  -------------------------------------------------------------------
+
+\chapter{Storage Cells}
+\clearpage
+
+\input{section-LAT_latches.tex}
+\input{section-DFF_flipflops.tex}
+
+%%  -------------------------------------------------------------------
+%%                  CHAPTER 3
+%%  -------------------------------------------------------------------
+
+\chapter{Distribution Cells}
+\clearpage
+
+\input{section-INV_buffers.tex}
+
+%%  ------------    global buffer   -----------------------------------
+
+\input{section-BUF_buffers.tex}
+\input{section-CG_buffers.tex}
+
+%%  -------------------------------------------------------------------
+%%                  CHAPTER 4
+%%  -------------------------------------------------------------------
+
+\chapter{Physical Cells}
+\clearpage
+
+%%  ------------    logical also    -----------------------------------
+
+\input{section-TIE_cells.tex}
+
+%%  ------------    core layout     -----------------------------------
+
+\input{section-FILL_cells.tex}
+
+%%  ------------    pad ring    ---------------------------------------
+
+\input{section-PAD_ring.tex}
