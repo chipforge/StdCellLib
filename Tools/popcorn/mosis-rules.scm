@@ -55,6 +55,8 @@
 
 ;;  All rules here are numbered according to the document above.
 
+;;  NOTE: Rules are still implemented for a 3-Metal Process only.
+
 (define-library (mosis-rules)
   (import (scheme base)
           (scheme char)     ; digit-value
@@ -1351,7 +1353,8 @@
 
 ;;  ------------    mosis:rule-7.4      -------------------------------
 
-;       Minimal spacing when either metal line is wider than 10 lambda
+;       Minimum spacing when either metal line is wider than 10 lambda
+;       ("Big metal").
 
 ;   ------------+           +-------+           +-------+
 ;         metal1|           | metal1|           | metal1|
@@ -1703,19 +1706,23 @@
 ;;  ------------    mosis:rule-9.4      -------------------------------
 
 ;       Minimum spacing when ether metal line is wider than 10 lambda
+;       ("Big metal").
 
-;   ------------+       +-------+       +-------+
-;         metal2|       | metal2|       | metal2|
-;               |       |       |       |       |
-;               |       |       |       |       |
-;               |       |       |       |       |
-;               |       |       |       |       |
-;   "big metal" |       |       |       |       |
-;   > 10 lambda |       |       |       |       |
-;   ------------+       +-------+       +-------+
+;   ------------+           +-------+           +-------+
+;         metal2|           | metal2|           | metal2|
+;               |           |       |           |       |
+;               |           |       |           |       |
+;               |       +---+       +---+       |       |
+;               |       |               |       |       |
+;               |       |   +-------+   |       |       |
+;               |       |   |  via  |   |       |       |
+;               |       |   |       |   |       |       |
+;   "big metal" |       |   +-------+   |       |       |
+;   > 10 lambda |       |               |       |       |
+;   ------------+       +---------------+       +-------+
 
 ;               |<----->|
-;               rule-9.4
+;                rule-9.4
 
 ;   Contract:
 ;   mosis:rule-9.4 : tech -> lambda
@@ -1736,6 +1743,295 @@
     (define mosis:rule-9.4
         (lambda (tech)
             (look-up tech table-9.4)
+        )
+    )
+
+;;  -------------------------------------------------------------------
+;;                  POLY2 FOR TRANSISTOR
+;;  -------------------------------------------------------------------
+
+;;  ------------    mosis:rule-12.1     -------------------------------
+
+;       Minimum width
+
+;       |poly2  |       +--------------------------------   -----
+;       |       |       |poly2                                ^
+;       |       |       |   +-------+       +-------+         |
+;       |       |       |   |       |       |       |         |
+;       |       |       |   |contact|       |contact|         | rule-12.1
+;       |       |       |   |       |       |       |         |
+;       |       |       |   +-------+       +-------+         |
+;       |       |       |                                     v
+;       |       |       +--------------------------------   -----
+;
+;       |<----->|
+;       rule-12.1
+
+;   Contract:
+;   mosis:rule-12.1 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.1 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-12.1 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.1
+        (lambda (tech)
+            (look-up tech table-12.1)
+        )
+    )
+
+;;  ------------    mosis:rule-12.2     -------------------------------
+
+;       Minimum spacing
+
+;       |poly2  |       +--------------------------------
+;       |       |       |poly2
+;       |       |       |   +-------+       +-------+
+;       |       |       |   |       |       |       |
+;       |       |       |   |contact|       |contact|
+;       |       |       |   |       |       |       |
+;       |       |       |   +-------+       +-------+
+;       |       |       |
+;       |       |       +--------------------------------
+;
+;               |<----->|
+;               rule-12.2
+
+;   Contract:
+;   mosis:rule-12.2 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.2 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           -1          -1
+    (define table-12.2 '#(3 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.2
+        (lambda (tech)
+            (look-up tech table-12.2)
+        )
+    )
+
+;;  -------------------------------------------------------------------
+;;                  POLY2 CONTACT
+;;  -------------------------------------------------------------------
+
+;;  ------------    mosis:rule-13.1     -------------------------------
+
+;       Exact contact size to poly2
+
+;               +-----------------------+
+;               |poly2                  |
+;               |                       |
+;       --------+       +-------+       |   -----
+;                       |       |       |     ^
+;                       |contact|       |     | rule-13.1
+;                       |       |       |     v
+;       --------+       +-------+       |   -----
+;               |                       |
+;               |                       |
+;               +-----------------------+
+
+;                       |<----->|
+;                       rule-13.1
+
+;   Contract:
+;   mosis:rule-13.1 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-13.1 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;      2            2           -1          -1
+    (define table-13.1 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-13.1
+        (lambda (tech)
+            (look-up tech table-13.1)
+        )
+    )
+
+;;  ------------    mosis:rule-13.2     -------------------------------
+
+;       Minimum contact spacing
+
+;       ----------------------------------------
+;       poly
+;               +-------+       +-------+
+;               |       |       |       |
+;               |contact|       |contact|
+;               |       |       |       |
+;               +-------+       +-------+
+;
+;       ----------------------------------------
+
+;                       |<----->|
+;                       rule-13.2
+
+;   Contract:
+;   mosis:rule-13.2 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-13.2 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           3           -1          -1
+    (define table-13.2 '#(2 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-13.2
+        (lambda (tech)
+            (look-up tech table-13.2)
+        )
+    )
+
+;;  ------------    mosis:rule-13.3     -------------------------------
+
+;       Minimum electrode overlap (on capacitor)
+
+;                               |       |
+;       +-----------------------+       |
+;       |                           poly|     v
+;       |   +-----------------------+   |   -----
+;       |   |                  poly2|   |     | rule-13.3
+;       |   |       +-------+       |   |   -----
+;       |   |       |contact|       |   |     ^
+;       |   |       |       |       |   |
+;       |   |       +-------+       |   |
+;       |   |                       |   |
+;       |   +-----------------------+   |
+;       |                               |
+;       |       +-----------------------+
+;       |       |
+;                           |<----->|
+;                           rule-13.3
+
+;   Contract:
+;   mosis:rule-13.3 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-13.3 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           -1          -1
+    (define table-13.3 '#(3 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-13.3
+        (lambda (tech)
+            (look-up tech table-13.3)
+        )
+    )
+
+;;  ------------    mosis:rule-13.4     -------------------------------
+
+;       Minimum electrode overlap (not on capacitor)
+;                                         v
+;           +-----------------------+   -----
+;           |                  poly2|     | rule-13.4
+;           |       +-------+       |   -----
+;           |       |contact|       |     ^
+;           |       |       |       |
+;           |       +-------+       |
+;           |                       |
+;           +-----------------------+
+
+;                           |<----->|
+;                           rule-13.4
+
+;   Contract:
+;   mosis:rule-13.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-13.4 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-13.4 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-13.4
+        (lambda (tech)
+            (look-up tech table-13.4)
+        )
+    )
+
+;;  ------------    mosis:rule-13.5     -------------------------------
+
+;       Minimum spacing to poly or active
+
+;       --------+                       +--------
+;         active|                       |poly
+;               |   +---------------+   |
+;               |   |          poly2|   |
+;               |   |   +-------+   |   |
+;               |   |   |contact|   |   |
+;               |   |   |       |   |   |
+;               |   |   +-------+   |   |
+;               |   |               |   |
+;               |   +---------------+   |
+;               |                       |
+;       --------+                       +--------
+
+;               |<----->|       |<----->|
+;               rule-13.5       rule-13.5
+
+;   Contract:
+;   mosis:rule-13.5 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-13.5 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           -1          -1
+    (define table-13.5 '#(3 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-13.5
+        (lambda (tech)
+            (look-up tech table-13.5)
         )
     )
 
@@ -1908,6 +2204,8 @@
 ;;                  METAL3
 ;;  -------------------------------------------------------------------
 
+;;  NOTE: Rules are still implemented for a 3-Metal Process only.
+
 ;;  ------------    mosis:rule-15.1     -------------------------------
 
 ;       Minimum metal3 width
@@ -2030,6 +2328,48 @@
         )
     )
 
+;;  ------------    mosis:rule-15.4     -------------------------------
+
+;       Minimum spacing when either metal line is wider than 10 lambda
+;       ("Big metal").
+
+;   ------------+           +-------+           +-------+
+;         metal3|           | metal3|           | metal3|
+;               |           |       |           |       |
+;               |           |       |           |       |
+;               |       +---+       +---+       |       |
+;               |       |               |       |       |
+;               |       |   +-------+   |       |       |
+;               |       |   |  via2 |   |       |       |
+;               |       |   |       |   |       |       |
+;   "big metal" |       |   +-------+   |       |       |
+;   > 10 lambda |       |               |       |       |
+;   ------------+       +---------------+       +-------+
+
+;               |<----->|
+;                rule-15.4
+
+;   Contract:
+;   mosis:rule-15.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-15.4 "SUBM") => 6
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       8           6           -1          -1
+    (define table-15.4 '#(8 6 -1 -1))
+
+;   Definition:
+    (define mosis:rule-15.4
+        (lambda (tech)
+            (look-up tech table-15.4)
+        )
+    )
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
 ;;  ===================================================================
