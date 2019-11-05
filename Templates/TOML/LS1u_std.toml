@@ -1,0 +1,143 @@
+#   ===================================================================
+#               Standard Cell Configuration File (TOML)
+#   ===================================================================
+
+#   ------------    title   -------------------------------------------
+
+#   Start this configuration file with a good, speaking title. Something
+#   like "my_lib" is common in text books, but not recommended for real
+#   world designs. We recommend to name the technology you are using and
+#   as postfix the target you like to hit, e.g. "lp" for low-power.
+
+title = "LS1u_std"
+
+#   -------------------------------------------------------------------
+#                   technology
+#   -------------------------------------------------------------------
+
+#   This section pointed out the more basic stuff, which technology
+#   you are using (LibreSilicon is the best, isn't it?), and parameter
+#   which determine you cell catalog.
+
+[technology]
+
+#   ------------    techfile    ----------------------------------------
+
+#   Configure, where the tools get the technology file for "magic", 
+#   together with the path. The Path can be absolute as well as relative
+#   to the local StdCellLib working directory.
+
+techfile = "./Technology/tech/LS1u.tech"
+
+#   Note:
+#   This technology should support λ-rules (lambda-rules) regarding MOSIS
+#   scalable CMOS design rules. Lambda is always half the "feature size"
+#   of a technology node.
+
+#   ------------    limit   -------------------------------------------
+
+#   Configure, how many stacked transistors can be placed in one column
+#   between a power supply and the (unbuffered) output. This parameter
+#   is essential for the number of cells Popcorn can generate. With a
+#   number of two, the cell library contains only a couple of dozens
+#   cells, while a number of four already blows up the cell library.
+
+limit = 4
+
+#   ------------    buffer  -------------------------------------------
+
+#   Configure, whether cells should be buffered while reaching a
+#   quantified level of stacked transistors (see limit above). The
+#   voltage drop of every switched-on transistor reduces the voltage
+#   level, which an output can get. Or other wise spoken, a output
+#   high (or low) level isn't a clear high (or low) anymore when to many
+#   transistors are stacked. To avoid slow switching characteristics,
+#   cells on a dedicated level of stacked transistors should be buffered.
+
+buffer = 4
+
+#   -------------------------------------------------------------------
+#                   cells
+#   -------------------------------------------------------------------
+
+#   This section pointed out the stuff related more to cells itself.
+#   How high they are, on which metal the terminals are located, etc.
+
+[cells]
+
+#   ------------    high    -------------------------------------------
+
+#   Configure, how high the cell layouts become. This number - usually -
+#   is given in number of metal trackes which could run horizontal
+#   above the cells. E.g. if the technology file defines a metal1 as
+#   well a metal2 grid of 8λ, a 7-track cell becomes 7 * 8λ (= 56λ)
+#   high.
+
+high = 11
+
+#   ------------    terminals   ---------------------------------------
+
+#   Configure, on which physical layer the terminals (or pins) of the
+#   cells are placed. Possible values are "poly", "metal1" or "metal2".
+
+terminals = "metal2"
+
+#   Note:
+#   Physical layer below the terminal layer, are obviously blocked for
+#   "over-the-cell" routing.
+
+#   ------------    connectivity    -----------------------------------
+
+#   In well-structured die layouts, different metal layers are coupled
+#   with different orientations. Quite common is to use metal1 for
+#   horizontal wires and metal2 for vertical wires. This has impact on
+#   the cell layout, while the terminals (see above) have to be easy
+#   accessible from prefered direction also. Possible values are
+#   "horizontal", "vertical" as well as "unrestricted".
+
+connectivity = "unrestricted"
+
+#   -------------------------------------------------------------------
+#                   transistors
+#   -------------------------------------------------------------------
+
+#   ------------    ratio   -------------------------------------------
+
+#   Configure the ratio between the L-size (also called gate width - 
+#   mostly the feature size of the technology node) and the W-size (or
+#   width) of a minimum transistor. While the feature size (or 2λ)
+#   depends on technology node, this ratio determines how wide the minimum
+#   transistor becomes.
+
+ratio = 1.5
+
+#   Note:
+#   A ratio of 1.5 is usually fixed by the scmos design rules (see above).
+#   Bigger transistores with W (width) bigger than 3λ are faster.
+
+#   ------------    gamma   -------------------------------------------
+
+#   In CMOS two types of transistors are used - p-channel mosfets as well
+#   as n-channel mosfets. Unfortunately, the carrier mobility in both
+#   types differs - p-channel mosfets are slower. To compensate this,
+#   cells usually use wider p-channel mosfets than n-channels ones. The
+#   relationship between this sizes is called γ (gamma); and of course
+#   depends on technology (or the doping to be more precise). Ideal
+#   values are somewhere around 3 and impractically; quite common is 2.
+
+gamma = 2
+
+#   ------------    sizing  -------------------------------------------
+
+#   Configure the sizing strategy for the transistors. One strategy
+#   could be a small footprint - all transistors inside a cell have the
+#   same, minimal size. Another strategy could be a well- balanced 
+#   propagation delay from all inputs to the output; a method of
+#   "logical effort" is used for that strategy. Possible values for
+#   sizing are "min" and "effort".
+
+sizing = "effort"
+
+#   ===================================================================
+#               END-OF-FILE
+#   ===================================================================
