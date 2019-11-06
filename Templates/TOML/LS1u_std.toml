@@ -22,9 +22,10 @@ title = "LS1u_std"
 [technology]
 
 #   ------------    techfile    ----------------------------------------
-#   Specify the path and filename of the technology file for "magic", 
-#   The Path can be absolute as well as relative
-#   to the local StdCellLib working directory.
+
+#   Specify the path and filename of the technology file for "magic".
+#   The Path can be absolute as well as relative to the local StdCellLib
+#   working directory.
 
 techfile = "./Technology/tech/LS1u.tech"
 
@@ -34,6 +35,7 @@ techfile = "./Technology/tech/LS1u.tech"
 #   of a technology node.
 
 #   ------------    limit   -------------------------------------------
+
 #   Specify how many stacked transistors can be placed in one column
 #   between a power supply and the (unbuffered) output. This parameter
 #   is essential for the number of cells Popcorn can generate. With a
@@ -45,8 +47,8 @@ limit = 4
 #   ------------    buffer  -------------------------------------------
 
 #   Specify whether cells should be buffered while reaching a
-#   quantified level of stacked transistors (see limit above). The
-#   r_{ds} of every switched-on transistor increases the resistance
+#   quantified level of stacked transistors (see limit above). The drain-
+#   source-channel of every switched-on transistor increases the resistance
 #   between an output and the supply rails. In other words, a output
 #   high (or low) level isn't a clear high (or low) anymore when too many
 #   transistors are stacked. To avoid slow switching characteristics,
@@ -64,19 +66,19 @@ buffer = 4
 [cells]
 
 #   ------------    high    -------------------------------------------
-#   Specify the height of the cell layouts.
-#   This number is usually given as the number of metal traces
-#   which could run horizontally above the cells.
-#   E.g. if the technology file defines a metal1 as
-#   well a metal2 grid of 8λ, a 7-track cell becomes 7 * 8λ (= 56λ)
-#   high.
+
+#   Specify the height of the cell layouts. This number is usually given
+#   as the number of metal traces which could run horizontally above the
+#   cells. E.g. if the technology file defines a metal1 as well a metal2
+#   grid of 8λ, a 7-track cell becomes 7 * 8λ (= 56λ) high.
 
 high = 11
 
 #   ------------    terminals   ---------------------------------------
+
 #   Specify on which physical layer the terminals (or pins) of the
 #   cells are placed. Possible values are "poly", "metal1" or "metal2".
-## Does this standard cell generator not allow multiple poly layers?
+#   BTW, the occasional "poly2" layer is not common here.
 
 terminals = "metal2"
 
@@ -85,11 +87,12 @@ terminals = "metal2"
 #   "over-the-cell" routing.
 
 #   ------------    connectivity    -----------------------------------
+
 #   In well-structured die layouts, different metal layers are assigned
 #   different orientations. It is quite common to use metal1 for
 #   horizontal wires and metal2 for vertical wires. This has impact on
-#   the cell layout, while the terminals (see above) also have to be easily
-#   accessible from the preferred direction. Possible values are
+#   the cell layout, while the terminals (see above) also have to be
+#   easily accessible from the preferred direction. Possible values are
 #   "horizontal", "vertical" as well as "unrestricted".
 
 connectivity = "unrestricted"
@@ -99,7 +102,8 @@ connectivity = "unrestricted"
 #   -------------------------------------------------------------------
 
 #   ------------    ratio   -------------------------------------------
-#   Configure the W/L ratio between the L-size (also called gate width - 
+
+#   Configure the W/L ratio between the L-size (also called gate width,
 #   mostly the feature size of the technology node) and the W-size (or
 #   width) of a minimum transistor. While the feature size (or 2λ)
 #   depends on technology node, this ratio determines how wide the minimum
@@ -112,6 +116,7 @@ ratio = 1.5
 #   Wider transistores with W/L > 3/2 are faster.
 
 #   ------------    gamma   -------------------------------------------
+
 #   In CMOS two types of transistors are used - p-channel mosfets as well
 #   as n-channel mosfets. Unfortunately, the carrier mobility in both
 #   types differs - p-channel mosfets are slower. To compensate this,
@@ -124,6 +129,7 @@ ratio = 1.5
 gamma = 2
 
 #   ------------    sizing  -------------------------------------------
+
 #   Configure the sizing strategy for the transistors. One strategy
 #   could be a small footprint - all transistors inside a cell have the
 #   same, minimal size. Another strategy could be a well-balanced 
