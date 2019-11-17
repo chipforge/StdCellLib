@@ -51,8 +51,7 @@
             ; popcorn libs also
             (popcorn-lib)
             (popcorn-cell)
-            (popcorn-verilog)
-    )
+            (popcorn-verilog))
 
 ;;  -------------------------------------------------------------------
 ;;                       PROGRAM
@@ -156,10 +155,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
         (lambda (wrong-arg)
             (begin (display "command line parsing failed: " (current-error-port))
                    (display wrong-arg (current-error-port))
-                   (newline (current-error-port))
-            )
-        )
-    )
+                   (newline (current-error-port)))))
 
     (define set-parameters-with-args!
         (lambda (eigen-name arguments)
@@ -172,113 +168,88 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! buffer-limit (string->number value))   ; !! value check missing
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -c cellname
                 [(equal? (car arguments) "-c")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! cell-name value)
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -D string
                 [(equal? (car arguments) "-D")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! cell-descr value)
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -e format
                 [(equal? (car arguments) "-e")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! export-format (string->symbol value))
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -h
                 [(equal? (car arguments) "-h")
                     (begin
                         (+usage+ eigen-name current-error-port)
-                        (exit 2) ; done, do not parse further
-                    )
-                ]
+                        (exit 2))] ; done, do not parse further
+
                 ; --help
                 [(equal? (car arguments) "--help")
                     (begin
                         (+usage+ eigen-name current-error-port)
-                        (exit 2) ; done, do not parse further
-                    )
-                ]
+                        (exit 2))] ; done, do not parse further
+
 
                 ; -H number
                 [(equal? (car arguments) "-H")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! track-high (string->number value))  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -l number
                 [(equal? (car arguments) "-l")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! stacked-limit (string->number value))  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -m method
                 [(equal? (car arguments) "-m")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! expansion-method (string->symbol value))
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -T file
                 [(equal? (car arguments) "-T")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
                         (set! technology-file value)  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; -v
                 [(equal? (car arguments) "-v")
                     (let ([tail (cdr arguments)])
                         (set! verbose-mode #t)
-                        (set-parameters-with-args! eigen-name tail)
-                    )
-                ]
+                        (set-parameters-with-args! eigen-name tail))]
 
                 ; --version
                 [(equal? (car arguments) "--version")
                     (begin
                         (+version+ eigen-name current-error-port)
-                        (exit 3) ; done, do not parse further
-                    )
-                ]
+                        (exit 3))]; done, do not parse further
+
 
                 ; file name
                 [(null? (cdr arguments))
-                    (set! cell-file (car arguments))
-                ]
+                    (set! cell-file (car arguments))]
 
-                [else (parsing-error (car arguments)) ]
-            )
-        )
-    )
+                [else (parsing-error (car arguments))])))
 
     (define print-parameters
         (lambda (at-port)
@@ -341,10 +312,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     (format (at-port)
 "Cell Description: ~a"
                      cell-file)
-                    (newline (at-port))
-            )
-        )
-    )
+                    (newline (at-port)))))
 
 ;;  -------------------------------------------------------------------
 ;;                       MAIN
@@ -352,11 +320,11 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
 
 ;;  ------------    main function   -----------------------------------
 
-    (define (main args)
-        (begin
+(define (main args)
+    (begin
             ; parse command line and set values / modes
             (let ((eigen-name (car args)))
-                (set-parameters-with-args! eigen-name (cdr args))
+                (set-parameters-with-args! eigen-name (or (cdr args) '("--help")))
                 (if verbose-mode (print-parameters current-error-port))
 
                 ; select work load
@@ -365,17 +333,13 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                     [(equal? export-format 'verilog-slm)
                         (begin
                             (verilog:export-switch (cell:read-file cell-file))
-                            0   ; exit value
-                        )
-                    ]
+                            0)] ; exit value
 
                     ; generate verilog stimulus work bench
                     [(equal? export-format 'verilog-bench)
                         (begin
                             (verilog:export-bench (cell:read-file cell-file))
-                            0   ; exit value
-                        )
-                    ]
+                            0)] ; exit value
 
                     ; expand cell instead
                     [(equal? export-format 'cell)
@@ -384,49 +348,35 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                             [(equal? expansion-method 'nand)
                                 (begin
                                     (cell:write-file (cell:expand-nand (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                                    0   ; exit value
-                                )
-                            ]
+                                    0)]   ; exit value
+
                             ; nor-wise
                             [(equal? expansion-method 'nor)
                                 (begin
                                     (cell:write-file (cell:expand-nor (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                                    0   ; exit value
-                                )
-                            ]
+                                    0)] ; exit value
+
                             ; aoi-wise
                             [(equal? expansion-method 'aoi)
                                 (begin
                                     (cell:write-file (cell:expand-aoi (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                                    0   ; exit value
-                                )
-                            ]
+                                    0)] ; exit value
+
                             ; oai-wise
                             [(equal? expansion-method 'oai)
                                 (begin
                                     (cell:write-file (cell:expand-oai (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                                    0   ; exit value
-                                )
-                            ]
+                                    0)] ; exit value
+
                             ; selection failed, unknown expansion-method
                             [else
                                 (begin
                                     (+usage+ eigen-name current-error-port)
-                                    2   ; exit value - wrong usage
-                                )
-                            ]
-                        )
-                    ]
+                                    2)])]   ; exit value - wrong usage
 
                     ; selection failed, unknown export-format value
                     [else
                         (begin
                             (+usage+ eigen-name current-error-port)
-                            2   ; exit value - wrong usage
-                        )
-                    ]
-                )
-            )
-        )
-    )
+                            2)])))) ; exit value - wrong usage
 
