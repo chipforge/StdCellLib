@@ -201,15 +201,14 @@ Use new character for new mosfet gate names and enumerate all of them.
 .Pp
 An addition in one network implies an - complementary - addition in the other
 network also.
-In some cases, the expansion with one method is not feasible, because the limit
-of stacked transistors is already reached.
+In some cases, the expansion with one method is not feasible, because the
+limit of stacked transistors is already reached.
 .Ss \-T file
-Specify the
-.Xr magic 1
-Technology file, e.g.
-.Dv scmos.tech .
-This file contains all Layer information for the layout drawing, regarding
-a dedicated technology.
+Specify the configuration file (written in TOML) with all user-defined values.
+This file contains at least the path to the technology file, transistor sizes
+and cell hight.
+Values in the configuration file can be over-ruled by command-line options,
+when feasible, e.g. -l limit and -b buffer.
 .Ss \-v
 Print verbose messages at
 .Dv STDERR .
