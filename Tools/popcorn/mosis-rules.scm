@@ -205,10 +205,7 @@
                 [(equal? tech "SUBM") (vector-ref table |SUBM#|)]
                 [(equal? tech "DEEP") (vector-ref table |DEEP#|)]
                 [(equal? tech "USER") (vector-ref table |USER#|)]
-                [else (vector-ref table |SCMOS#|)]
-            )
-        )
-    )
+                [else (vector-ref table |SCMOS#|)])))
 
 ;;  -------------------------------------------------------------------
 ;;                  WELL
@@ -247,9 +244,7 @@
 ;   Definition:
     (define mosis:rule-1.1
         (lambda (tech)
-            (look-up tech table-1.1)
-        )
-    )
+            (look-up tech table-1.1)))
 
 ;;  ------------    mosis:rule-1.2      -------------------------------
 
@@ -284,9 +279,7 @@
 ;   Definition:
     (define mosis:rule-1.2
         (lambda (tech)
-            (look-up tech table-1.2)
-        )
-    )
+            (look-up tech table-1.2)))
 
 ;;  ------------    mosis:rule-1.3      -------------------------------
 
@@ -321,9 +314,7 @@
 ;   Definition:
     (define mosis:rule-1.3
         (lambda (tech)
-            (look-up tech table-1.3)
-        )
-    )
+            (look-up tech table-1.3)))
 
 ;;  ------------    mosis:rule-1.4      -------------------------------
 
@@ -358,9 +349,7 @@
 ;   Definition:
     (define mosis:rule-1.4
         (lambda (tech)
-            (look-up tech table-1.4)
-        )
-    )
+            (look-up tech table-1.4)))
 
 ;;  -------------------------------------------------------------------
 ;;                  ACTIVE
@@ -399,9 +388,7 @@
 ;   Definition:
     (define mosis:rule-2.1
         (lambda (tech)
-            (look-up tech table-2.1)
-        )
-    )
+            (look-up tech table-2.1)))
 
 ;;  ------------    mosis:rule-2.2      -------------------------------
 
@@ -436,9 +423,7 @@
 ;   Definition:
     (define mosis:rule-2.2
         (lambda (tech)
-            (look-up tech table-2.2)
-        )
-    )
+            (look-up tech table-2.2)))
 
 ;;  ------------    mosis:rule-2.3      -------------------------------
 
@@ -474,9 +459,7 @@
 ;   Definition:
     (define mosis:rule-2.3
         (lambda (tech)
-            (look-up tech table-2.3)
-        )
-    )
+            (look-up tech table-2.3)))
 
 ;;  ------------    mosis:rule-2.4      -------------------------------
 
@@ -512,9 +495,7 @@
 ;   Definition:
     (define mosis:rule-2.4
         (lambda (tech)
-            (look-up tech table-2.4)
-        )
-    )
+            (look-up tech table-2.4)))
 
 ;;  ------------    mosis:rule-2.5      -------------------------------
 
@@ -553,9 +534,7 @@
 ;   Definition:
     (define mosis:rule-2.5
         (lambda (tech)
-            (look-up tech table-2.5)
-        )
-    )
+            (look-up tech table-2.5)))
 
 ;;  -------------------------------------------------------------------
 ;;                  POLY
@@ -595,9 +574,7 @@
 ;   Definition:
     (define mosis:rule-3.1
         (lambda (tech)
-            (look-up tech table-3.1)
-        )
-    )
+            (look-up tech table-3.1)))
 
 ;;  ------------    mosis:rule-3.2      -------------------------------
 
@@ -633,9 +610,7 @@
 ;   Definition:
     (define mosis:rule-3.2
         (lambda (tech)
-            (look-up tech table-3.2)
-        )
-    )
+            (look-up tech table-3.2)))
 
 ;;  ------------    mosis:rule-3.2.a    -------------------------------
 
@@ -668,9 +643,7 @@
 ;   Definition:
     (define mosis:rule-3.2.a
         (lambda (tech)
-            (look-up tech table-3.2.a)
-        )
-    )
+            (look-up tech table-3.2.a)))
 
 ;;  ------------    mosis:rule-3.3      -------------------------------
 
@@ -704,9 +677,7 @@
 ;   Definition:
     (define mosis:rule-3.3
         (lambda (tech)
-            (look-up tech table-3.3)
-        )
-    )
+            (look-up tech table-3.3)))
 
 ;;  ------------    mosis:rule-3.4      -------------------------------
 
@@ -742,9 +713,7 @@
 ;   Definition:
     (define mosis:rule-3.4
         (lambda (tech)
-            (look-up tech table-3.4)
-        )
-    )
+            (look-up tech table-3.4)))
 
 ;;  ------------    mosis:rule-3.5      -------------------------------
 
@@ -777,9 +746,7 @@
 ;   Definition:
     (define mosis:rule-3.5
         (lambda (tech)
-            (look-up tech table-3.5)
-        )
-    )
+            (look-up tech table-3.5)))
 
 ;;  -------------------------------------------------------------------
 ;;                  SELECT
@@ -821,9 +788,7 @@
 ;   Definition:
     (define mosis:rule-4.1
         (lambda (tech)
-            (look-up tech table-3.5)
-        )
-    )
+            (look-up tech table-3.5)))
 
 ;;  ------------    mosis:rule-4.2      -------------------------------
 
@@ -860,9 +825,7 @@
 ;   Definition:
     (define mosis:rule-4.2
         (lambda (tech)
-            (look-up tech table-4.2)
-        )
-    )
+            (look-up tech table-4.2)))
 
 ;;  ------------    mosis:rule-4.3      -------------------------------
 
@@ -896,9 +859,7 @@
 ;   Definition:
     (define mosis:rule-4.3
         (lambda (tech)
-            (look-up tech table-4.3)
-        )
-    )
+            (look-up tech table-4.3)))
 
 ;;  ------------    mosis:rule-4.4      -------------------------------
 
@@ -931,9 +892,7 @@
 ;   Definition:
     (define mosis:rule-4.4
         (lambda (tech)
-            (look-up tech table-4.4)
-        )
-    )
+            (look-up tech table-4.4)))
 
 ;;  -------------------------------------------------------------------
 ;;                  CONTACT
@@ -976,9 +935,7 @@
 ;   Definition:
     (define mosis:rule-5.1
         (lambda (tech)
-            (look-up tech table-5.1)
-        )
-    )
+            (look-up tech table-5.1)))
 
 ;;  ------------    mosis:rule-5.2      -------------------------------
 
@@ -1017,9 +974,7 @@
 ;   Definition:
     (define mosis:rule-5.2
         (lambda (tech)
-            (look-up tech table-5.2)
-        )
-    )
+            (look-up tech table-5.2)))
 
 ;;  ------------    mosis:rule-5.2.b    -------------------------------
 
@@ -1058,9 +1013,7 @@
 ;   Definition:
     (define mosis:rule-5.2.b
         (lambda (tech)
-            (look-up tech table-5.2.b)
-        )
-    )
+            (look-up tech table-5.2.b)))
 
 ;;  ------------    mosis:rule-5.3      -------------------------------
 
@@ -1097,9 +1050,7 @@
 ;   Definition:
     (define mosis:rule-5.3
         (lambda (tech)
-            (look-up tech table-5.3)
-        )
-    )
+            (look-up tech table-5.3)))
 
 ;;  ------------    mosis:rule-5.4      -------------------------------
 
@@ -1135,9 +1086,7 @@
 ;   Definition:
     (define mosis:rule-5.4
         (lambda (tech)
-            (look-up tech table-5.4)
-        )
-    )
+            (look-up tech table-5.4)))
 
 ;;  ------------    mosis:rule-5.5.b    -------------------------------
 
@@ -1177,9 +1126,7 @@
 ;   Definition:
     (define mosis:rule-5.5.b
         (lambda (tech)
-            (look-up tech table-5.5.b)
-        )
-    )
+            (look-up tech table-5.5.b)))
 
 ;;  ------------    mosis:rule-5.6.b    -------------------------------
 
@@ -1217,9 +1164,386 @@
 ;   Definition:
     (define mosis:rule-5.6.b
         (lambda (tech)
-            (look-up tech table-5.6.b)
-        )
-    )
+            (look-up tech table-5.6.b)))
+
+;;  ------------    mosis:rule-5.7.b    -------------------------------
+
+;       Minimum spacing to active (many contacts)
+
+;       ----------------------------------------
+;       active
+;
+;
+;       ----------------------------------------    -----
+;                                                     ^
+;       ----------------------------------------      | rule-5.7.b
+;       poly                                          v
+;               +-------+       +-------+           -----
+;               |       |       |       |
+;               |contact|       |contact|
+;               |       |       |       |
+;               +-------+       +-------+
+
+;   Contract:
+;   mosis:rule-5.7.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-5.7.b "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           3           -1
+    (define table-5.7.b '#(3 3 3 -1))
+
+;   Definition:
+    (define mosis:rule-5.7.b
+        (lambda (tech)
+            (look-up tech table-5.7.b)))
+
+;;  -------------------------------------------------------------------
+;;                  CONTACT TO ACTIVE
+;;  -------------------------------------------------------------------
+
+;;  ------------    mosis:rule-6.1      -------------------------------
+
+;       Exact contact size
+
+;       ----------------------------------------
+;       active
+;               +-------+       +-------+           -----
+;               |       |       |       |             ^
+;               |contact|       |contact|             | rule-6.1
+;               |       |       |       |             v
+;               +-------+       +-------+           -----
+;
+;       ----------------------------------------
+
+;               |<----->|
+;               rule-6.1
+
+;   Contract:
+;   mosis:rule-6.1 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.1 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           2           -1
+    (define table-6.1 '#(2 2 2 -1))
+
+;   Definition:
+    (define mosis:rule-6.1
+        (lambda (tech)
+            (look-up tech table-6.1)))
+
+;;  ------------    mosis:rule-6.2      -------------------------------
+
+;       Minimum active overlap
+
+;           ------------------------+
+;           active                  |
+;                                   |
+;                   +-------+       |
+;                   |       |       |
+;                   |contact|       |
+;                   |       |       |     v
+;                   +-------+       |   -----
+;                                   |     | rule-6.2
+;                                   |     |
+;           ------------------------+   -----
+;                                         ^
+;                           |<----->|
+;                           rule-6.2
+
+;   Contract:
+;   mosis:rule-6.2 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.2 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       1.5         1.5         1.5         -1
+    (define table-6.2 '#(2 2 2 -1)) ; round-up 1.5 -> 2
+
+;   Definition:
+    (define mosis:rule-6.2
+        (lambda (tech)
+            (look-up tech table-6.2)))
+
+;;  ------------    mosis:rule-6.2.b    -------------------------------
+
+;       Minimum active overlap
+
+;           ------------------------+
+;           active                  |
+;                                   |
+;                   +-------+       |
+;                   |       |       |
+;                   |contact|       |
+;                   |       |       |     v
+;                   +-------+       |   -----
+;                                   |     | rule-6.2.b
+;                                   |     |
+;           ------------------------+   -----
+;                                         ^
+;                           |<----->|
+;                           rule-6.2.b
+
+;   Contract:
+;   mosis:rule-6.2.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.2.b "SUBM") => 1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       1           1           1           -1
+    (define table-6.2.b '#(1 1 1 -1))
+
+;   Definition:
+    (define mosis:rule-6.2.b
+        (lambda (tech)
+            (look-up tech table-6.2.b)))
+
+;;  ------------    mosis:rule-6.3      -------------------------------
+
+;       Minimum contact spacing
+;
+;                   +-------+       +-------+
+;                   |       |       |       |
+;                   |contact|       |contact|
+;                   |       |       |       |
+;                   +-------+       +-------+
+;
+;                           |<----->|
+;                           rule-6.3
+
+;   Contract:
+;   mosis:rule-6.3 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.3 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           3           4           -1
+    (define table-6.3 '#(2 3 4 -1))
+
+;   Definition:
+    (define mosis:rule-6.3
+        (lambda (tech)
+            (look-up tech table-6.3)))
+
+;;  ------------    mosis:rule-6.4      -------------------------------
+
+;       Minimum spacing to gate of transistor
+
+;                                   |poly   |
+;           ------------------------|       |
+;           active                  |       |
+;                                   |       |
+;                   +-------+       |       |
+;                   |       |       |       |
+;                   |contact|       |       |
+;                   |       |       |       |
+;                   +-------+       |       |
+;                           |<----->|       |
+;                           rule-6.4|       |
+;           ------------------------|       |
+;                                   |       |
+
+;   Contract:
+;   mosis:rule-6.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.4 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           2           -1
+    (define table-6.4 '#(2 2 2 -1))
+
+;   Definition:
+    (define mosis:rule-6.4
+        (lambda (tech)
+            (look-up tech table-6.4)))
+
+;;  ------------    mosis:rule-6.5.b    -------------------------------
+
+;       Minimum spacing to diffusion active
+
+;                     active|       |active
+;           +-------+       |       |       +-------+
+;           |       |       |       |       |       |
+;           |contact|       |       |       |contact|
+;           |       |       |       |       |       |
+;           +-------+       |       |       +-------+
+;
+;                           |<------------->|
+;                               rule-6.5.b
+
+;   Contract:
+;   mosis:rule-6.5.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.5.b "SUBM") => 5
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       5           5           5           -1
+    (define table-6.5.b '#(5 5 5 -1))
+
+;   Definition:
+    (define mosis:rule-6.5.b
+        (lambda (tech)
+            (look-up tech table-6.5.b)))
+
+;;  ------------    mosis:rule-6.6.b    -------------------------------
+
+;       Minimum spacing to field poly (one contact)
+
+;                                   |poly
+;           ------------------------|
+;           active                  |
+;                                   |
+;                   +-------+       |
+;                   |       |       |
+;                   |contact|       |
+;                   |       |       |
+;                   +-------+       |
+;                           |<----->|
+;                         rule-6.6.b|
+;           ------------------------|
+;                                   |
+
+;   Contract:
+;   mosis:rule-6.6.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.6.b "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           2           -1
+    (define table-6.6.b '#(2 2 2 -1))
+
+;   Definition:
+    (define mosis:rule-6.6.b
+        (lambda (tech)
+            (look-up tech table-6.6.b)))
+
+;;  ------------    mosis:rule-6.7.b    -------------------------------
+
+;       Minimum spacing to field poly (many contact)
+
+;                                   |poly
+;           ------------------------|
+;           active                  |
+;                                   |
+;                   +-------+       |
+;                   |       |       |
+;                   |contact|       |
+;                   |       |       |
+;                   +-------+       |
+;                                   |
+;                                   |
+;                   +-------+       |
+;                   |       |       |
+;                   |contact|       |
+;                   |       |       |
+;                   +-------+       |
+;                           |<----->|
+;                         rule-6.6.b|
+;           ------------------------|
+;                                   |
+
+;   Contract:
+;   mosis:rule-6.7.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.7.b "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           3           -1
+    (define table-6.7.b '#(3 3 3 -1))
+
+;   Definition:
+    (define mosis:rule-6.7.b
+        (lambda (tech)
+            (look-up tech table-6.7.b)))
+
+;;  ------------    mosis:rule-6.8.b    -------------------------------
+
+;       Minimum spacing to poly contact
+
+;                     active|       |poly
+;           +-------+       |       |       +-------+
+;           |       |       |       |       |       |
+;           |contact|       |       |       |contact|
+;           |       |       |       |       |       |
+;           +-------+       |       |       +-------+
+;
+;                   |<-------------------->|
+;                          rule-6.8.b
+
+;   Contract:
+;   mosis:rule-6.8.b : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-6.8.b "SUBM") => 4
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       4           4           4           -1
+    (define table-6.8.b '#(4 4 4 -1))
+
+;   Definition:
+    (define mosis:rule-6.8.b
+        (lambda (tech)
+            (look-up tech table-6.8.b)))
 
 ;;  -------------------------------------------------------------------
 ;;                  METAL1
@@ -1263,9 +1587,7 @@
 ;   Definition:
     (define mosis:rule-7.1
         (lambda (tech)
-            (look-up tech table-7.1)
-        )
-    )
+            (look-up tech table-7.1)))
 
 ;;  ------------    mosis:rule-7.2      -------------------------------
 
@@ -1305,9 +1627,7 @@
 ;   Definition:
     (define mosis:rule-7.2
         (lambda (tech)
-            (look-up tech table-7.2)
-        )
-    )
+            (look-up tech table-7.2)))
 
 ;;  ------------    mosis:rule-7.3      -------------------------------
 
@@ -1347,9 +1667,7 @@
 ;   Definition:
     (define mosis:rule-7.3
         (lambda (tech)
-            (look-up tech table-7.3)
-        )
-    )
+            (look-up tech table-7.3)))
 
 ;;  ------------    mosis:rule-7.4      -------------------------------
 
@@ -1390,9 +1708,7 @@
 ;   Definition:
     (define mosis:rule-7.4
         (lambda (tech)
-            (look-up tech table-7.4)
-        )
-    )
+            (look-up tech table-7.4)))
 
 ;;  -------------------------------------------------------------------
 ;;                  VIA
@@ -1430,9 +1746,7 @@
 ;   Definition:
     (define mosis:rule-8.1
         (lambda (tech)
-            (look-up tech table-8.1)
-        )
-    )
+            (look-up tech table-8.1)))
 
 ;;  ------------    mosis:rule-8.2      -------------------------------
 
@@ -1465,9 +1779,7 @@
 ;   Definition:
     (define mosis:rule-8.2
         (lambda (tech)
-            (look-up tech table-8.2)
-        )
-    )
+            (look-up tech table-8.2)))
 
 ;;  ------------    mosis:rule-8.3      -------------------------------
 
@@ -1499,9 +1811,7 @@
 ;   Definition:
     (define mosis:rule-8.3
         (lambda (tech)
-            (look-up tech table-8.3)
-        )
-    )
+            (look-up tech table-8.3)))
 
 ;;  ------------    mosis:rule-8.4      -------------------------------
 
@@ -1529,15 +1839,13 @@
 ;   +-----------+-----------+-----------+-----------+
 ;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
 ;   +-----------+-----------+-----------+-----------+
-;       2           2           2           -1
-    (define table-8.4 '#(2 2 2 -1))
+;       2           2           -1          -1
+    (define table-8.4 '#(2 2 -1 -1))
 
 ;   Definition:
     (define mosis:rule-8.4
         (lambda (tech)
-            (look-up tech table-8.4)
-        )
-    )
+            (look-up tech table-8.4)))
 
 ;;  ------------    mosis:rule-8.5      -------------------------------
 
@@ -1567,15 +1875,13 @@
 ;   +-----------+-----------+-----------+-----------+
 ;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
 ;   +-----------+-----------+-----------+-----------+
-;       2           2           2           -1
-    (define table-8.5 '#(2 2 2 -1))
+;       2           2           -1          -1
+    (define table-8.5 '#(2 2 -1 -1))
 
 ;   Definition:
     (define mosis:rule-8.5
         (lambda (tech)
-            (look-up tech table-8.5)
-        )
-    )
+            (look-up tech table-8.5)))
 
 ;;  -------------------------------------------------------------------
 ;;                  METAL2
@@ -1619,9 +1925,7 @@
 ;   Definition:
     (define mosis:rule-9.1
         (lambda (tech)
-            (look-up tech table-9.1)
-        )
-    )
+            (look-up tech table-9.1)))
 
 ;;  ------------    mosis:rule-9.2      -------------------------------
 
@@ -1657,9 +1961,7 @@
 ;   Definition:
     (define mosis:rule-9.2
         (lambda (tech)
-            (look-up tech table-9.2)
-        )
-    )
+            (look-up tech table-9.2)))
 
 ;;  ------------    mosis:rule-9.3      -------------------------------
 
@@ -1699,9 +2001,7 @@
 ;   Definition:
     (define mosis:rule-9.3
         (lambda (tech)
-            (look-up tech table-9.3)
-        )
-    )
+            (look-up tech table-9.3)))
 
 ;;  ------------    mosis:rule-9.4      -------------------------------
 
@@ -1742,9 +2042,476 @@
 ;   Definition:
     (define mosis:rule-9.4
         (lambda (tech)
-            (look-up tech table-9.4)
-        )
-    )
+            (look-up tech table-9.4)))
+
+;;  -------------------------------------------------------------------
+;;                  OVERGLASS
+;;  -------------------------------------------------------------------
+
+;;  NOTE: This Rules are measured in microns, not lambda
+
+;;  ------------    mosis:rule-10.1     -------------------------------
+
+;       Minimum bonding passivation opening
+
+;       +---------------------------------------------------+
+;       |metal                                              |
+;       |                                                   |
+;       |       +-----------------------------------+       |   -----
+;       |       |glass                              |       |     ^
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     | rule-10.1
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     v
+;       |       +-----------------------------------+       |   -----
+;       |                                                   |
+;       |                                                   |
+;       +---------------------------------------------------+
+
+;               |<--------------------------------->|
+;                           rule-10.1
+
+;   Contract:
+;   mosis:rule-10.1 : tech -> micron
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-10.1 "SUBM") => 60
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       60          60          60          -1
+    (define table-10.1 '#(60 60 60 -1))
+
+;   Definition:
+    (define mosis:rule-10.1
+        (lambda (tech)
+            (look-up tech table-10.1)))
+
+;;  ------------    mosis:rule-10.2     -------------------------------
+
+;       Minimum probe passivation opening
+
+;       +---------------------------------------------------+
+;       |metal                                              |
+;       |                                                   |
+;       |       +-----------------------------------+       |   -----
+;       |       |glass                              |       |     ^
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     | rule-10.2
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     |
+;       |       |                                   |       |     v
+;       |       +-----------------------------------+       |   -----
+;       |                                                   |
+;       |                                                   |
+;       +---------------------------------------------------+
+
+;               |<--------------------------------->|
+;                           rule-10.2
+
+;   Contract:
+;   mosis:rule-10.2 : tech -> micron
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-10.2 "SUBM") => 20
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       20          20          20          -1
+    (define table-10.2 '#(20 20 20 -1))
+
+;   Definition:
+    (define mosis:rule-10.2
+        (lambda (tech)
+            (look-up tech table-10.2)))
+
+;;  ------------    mosis:rule-10.3     -------------------------------
+
+;       Pad metal overlap of passivation
+
+;       +---------------------------------------------------+
+;       |metal                                              |
+;       |                                                   |
+;       |       +-----------------------------------+       |
+;       |       |glass                              |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |
+;       |       |                                   |       |     v
+;       |       +-----------------------------------+       |   -----
+;       |                                                   |     | rule-10.3
+;       |                                                   |     |
+;       +---------------------------------------------------+   -----
+;                                                                 ^
+;       |<----->|
+;       rule-10.3
+
+;   Contract:
+;   mosis:rule-10.3 : tech -> micron
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-10.3 "SUBM") => 20
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       6           6           6           -1
+    (define table-10.3 '#(6 6 6 -1))
+
+;   Definition:
+    (define mosis:rule-10.3
+        (lambda (tech)
+            (look-up tech table-10.3)))
+
+;;  ------------    mosis:rule-10.4     -------------------------------
+
+;       Minimum pad spacing to unrelated metal
+
+;       ------------------------+           +------------------------
+;                          metal|           |metal
+;                               |           |
+;       ----------------+       |           |       +----------------
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;                       |       |           |       |
+;       ----------------+       |           |       +----------------
+;                               |           |
+;                               |           |
+;       ------------------------+           +------------------------
+
+;                               |<--------->|
+;                                 rule-10.4
+
+;   Contract:
+;   mosis:rule-10.4 : tech -> micron
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-10.4 "SUBM") => 30
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       30          30          30          -1
+    (define table-10.4 '#(30 30 30 -1))
+
+;   Definition:
+    (define mosis:rule-10.4
+        (lambda (tech)
+            (look-up tech table-10.4)))
+
+;;  ------------    mosis:rule-10.5     -------------------------------
+
+;       Minimum pad spacing to active, poly or poly2
+
+;       ------------------------+           |
+;                          metal|           |active/poly/poly2
+;                               |           |
+;       ----------------+       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;                       |       |           |
+;       ----------------+       |           |
+;                               |           |
+;                               |           |
+;       ------------------------+           |
+
+;                               |<--------->|
+;                                 rule-10.5
+
+;   Contract:
+;   mosis:rule-10.5 : tech -> micron
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-10.5 "SUBM") => 15
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       15          15          15          -1
+    (define table-10.5 '#(15 15 15 -1))
+
+;   Definition:
+    (define mosis:rule-10.5
+        (lambda (tech)
+            (look-up tech table-10.5)))
+
+;;  -------------------------------------------------------------------
+;;                  POLY2 FOR CAPACITOR
+;;  -------------------------------------------------------------------
+
+;;  ------------    mosis:rule-11.1     -------------------------------
+
+;       Minimum width
+
+;       +------------------------------------------------------------
+;       |poly
+;       |       +---------------+               +---------------+   -----
+;       |       |poly2          |               |poly2          |     ^
+;       |       |               |               |               |     |
+;       |       |               |               |               |     | rule-11.1
+;       |       |               |               |               |     |
+;       |       |               |               |               |     v
+;       |       +---------------+               +---------------+   -----
+;       |
+;       +------------------------------------------------------------
+;               |<------------->|               |<------------->|
+;                   rule-11.1                       rule-11.1
+
+;   Contract:
+;   mosis:rule-11.1 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.1 "SUBM") => 7
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           7           -1          -1
+    (define table-11.1 '#(3 7 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.1
+        (lambda (tech)
+            (look-up tech table-11.1)))
+
+;;  ------------    mosis:rule-11.2     -------------------------------
+
+;       Minimum spacing
+
+;       +------------------------------------------------------------
+;       |poly
+;       |       +---------------+               +---------------+
+;       |       |poly2          |               |poly2          |
+;       |       |               |               |               |
+;       |       |               |               |               |
+;       |       |               |               |               |
+;       |       |               |               |               |
+;       |       +---------------+               +---------------+
+;       |
+;       +------------------------------------------------------------
+;                               |<------------->|
+;                                   rule-11.2
+
+;   Contract:
+;   mosis:rule-11.2 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.2 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           -1          -1
+    (define table-11.2 '#(3 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.2
+        (lambda (tech)
+            (look-up tech table-11.2)))
+
+;;  ------------    mosis:rule-11.3     -------------------------------
+
+;       Minimum poly overlap
+;                                         v
+;       +----------------------------   -----
+;       |poly                             | rule-11.3
+;       |       +---------------+       -----
+;       |       |poly2          |         ^
+;       |       |               |
+;       |       |               |
+;       |       |               |
+;       |       |               |         v
+;       |       +---------------+       -----
+;       |                                 | rule-11.3
+;       +----------------------------   -----
+;       |<----->|                         ^
+;       rule-11.3
+
+;   Contract:
+;   mosis:rule-11.3 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.3 "SUBM") => 5
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           5           -1          -1
+    (define table-11.3 '#(2 5 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.3
+        (lambda (tech)
+            (look-up tech table-11.3)))
+
+;;  ------------    mosis:rule-11.4     -------------------------------
+
+;       Minimum spacing to active or well edge
+
+;                                       |active/well
+;           +---------------+           |
+;           |poly2          |           |
+;           |               |           |
+;           |               |           |
+;           |               |           |
+;           |               |           |
+;           +---------------+           |
+;                           |<--------->|
+;                             rule-11.4
+
+;   Contract:
+;   mosis:rule-11.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.4 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-11.4 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.4
+        (lambda (tech)
+            (look-up tech table-11.4)))
+
+;;  ------------    mosis:rule-11.5     -------------------------------
+
+;       Minimum spacing to poly contact
+
+;
+;           +---------------+           |
+;           |poly2          |           |metal1
+;           |               |           |   +-------+
+;           |               |           |   |contact|
+;           |               |           |   |       |
+;           |               |           |   +-------+
+;           +---------------+
+;                           |<------------->|
+;                               rule-11.5
+
+;   Contract:
+;   mosis:rule-11.5 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.5 "SUBM") => 6
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           6           -1          -1
+    (define table-11.5 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.5
+        (lambda (tech)
+            (look-up tech table-11.5)))
+
+;;  ------------    mosis:rule-11.6     -------------------------------
+
+;       Minimum spacing to unrelated metal
+
+;
+;           +---------------+           |
+;           |poly2          |           |metal1
+;           |               |           |
+;           |               |           |
+;           |               |           |
+;           |               |           |
+;           +---------------+
+;                           |<--------->|
+;                             rule-11.6
+
+;   Contract:
+;   mosis:rule-11.6 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-11.6 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-11.6 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-11.6
+        (lambda (tech)
+            (look-up tech table-11.6)))
 
 ;;  -------------------------------------------------------------------
 ;;                  POLY2 FOR TRANSISTOR
@@ -1785,9 +2552,7 @@
 ;   Definition:
     (define mosis:rule-12.1
         (lambda (tech)
-            (look-up tech table-12.1)
-        )
-    )
+            (look-up tech table-12.1)))
 
 ;;  ------------    mosis:rule-12.2     -------------------------------
 
@@ -1824,9 +2589,7 @@
 ;   Definition:
     (define mosis:rule-12.2
         (lambda (tech)
-            (look-up tech table-12.2)
-        )
-    )
+            (look-up tech table-12.2)))
 
 ;;  -------------------------------------------------------------------
 ;;                  POLY2 CONTACT
@@ -1869,9 +2632,7 @@
 ;   Definition:
     (define mosis:rule-13.1
         (lambda (tech)
-            (look-up tech table-13.1)
-        )
-    )
+            (look-up tech table-13.1)))
 
 ;;  ------------    mosis:rule-13.2     -------------------------------
 
@@ -1908,9 +2669,7 @@
 ;   Definition:
     (define mosis:rule-13.2
         (lambda (tech)
-            (look-up tech table-13.2)
-        )
-    )
+            (look-up tech table-13.2)))
 
 ;;  ------------    mosis:rule-13.3     -------------------------------
 
@@ -1951,9 +2710,7 @@
 ;   Definition:
     (define mosis:rule-13.3
         (lambda (tech)
-            (look-up tech table-13.3)
-        )
-    )
+            (look-up tech table-13.3)))
 
 ;;  ------------    mosis:rule-13.4     -------------------------------
 
@@ -1989,9 +2746,7 @@
 ;   Definition:
     (define mosis:rule-13.4
         (lambda (tech)
-            (look-up tech table-13.4)
-        )
-    )
+            (look-up tech table-13.4)))
 
 ;;  ------------    mosis:rule-13.5     -------------------------------
 
@@ -2031,9 +2786,7 @@
 ;   Definition:
     (define mosis:rule-13.5
         (lambda (tech)
-            (look-up tech table-13.5)
-        )
-    )
+            (look-up tech table-13.5)))
 
 ;;  -------------------------------------------------------------------
 ;;                  VIA2
@@ -2075,9 +2828,7 @@
 ;   Definition:
     (define mosis:rule-14.1
         (lambda (tech)
-            (look-up tech table-14.1)
-        )
-    )
+            (look-up tech table-14.1)))
 
 ;;  ------------    mosis:rule-14.2     -------------------------------
 
@@ -2110,9 +2861,7 @@
 ;   Definition:
     (define mosis:rule-14.2
         (lambda (tech)
-            (look-up tech table-14.2)
-        )
-    )
+            (look-up tech table-14.2)))
 
 ;;  ------------    mosis:rule-14.3     -------------------------------
 
@@ -2144,9 +2893,7 @@
 ;   Definition:
     (define mosis:rule-14.3
         (lambda (tech)
-            (look-up tech table-14.3)
-        )
-    )
+            (look-up tech table-14.3)))
 
 ;;  ------------    mosis:rule-14.4     -------------------------------
 
@@ -2170,9 +2917,7 @@
 ;   Definition:
     (define mosis:rule-14.4
         (lambda (tech)
-            (look-up tech table-14.4)
-        )
-    )
+            (look-up tech table-14.4)))
 
 ;;  ------------    mosis:rule-14.5     -------------------------------
 
@@ -2196,9 +2941,7 @@
 ;   Definition:
     (define mosis:rule-14.5
         (lambda (tech)
-            (look-up tech table-14.5)
-        )
-    )
+            (look-up tech table-14.5)))
 
 ;;  -------------------------------------------------------------------
 ;;                  METAL3
@@ -2244,9 +2987,7 @@
 ;   Definition:
     (define mosis:rule-15.1
         (lambda (tech)
-            (look-up tech table-15.1)
-        )
-    )
+            (look-up tech table-15.1)))
 
 ;;  ------------    mosis:rule-15.2     -------------------------------
 
@@ -2282,9 +3023,7 @@
 ;   Definition:
     (define mosis:rule-15.2
         (lambda (tech)
-            (look-up tech table-15.2)
-        )
-    )
+            (look-up tech table-15.2)))
 
 ;;  ------------    mosis:rule-15.3     -------------------------------
 
@@ -2324,9 +3063,7 @@
 ;   Definition:
     (define mosis:rule-15.3
         (lambda (tech)
-            (look-up tech table-15.3)
-        )
-    )
+            (look-up tech table-15.3)))
 
 ;;  ------------    mosis:rule-15.4     -------------------------------
 
@@ -2367,9 +3104,8 @@
 ;   Definition:
     (define mosis:rule-15.4
         (lambda (tech)
-            (look-up tech table-15.4)
-        )
-    )
+            (look-up tech table-15.4)))
+
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
 ;;  ===================================================================
