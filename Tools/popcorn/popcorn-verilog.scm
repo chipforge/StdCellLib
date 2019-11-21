@@ -82,22 +82,18 @@
             (let ((index (length input-list)))
                 (if (equal? (cdr input-list) '())
                     (cons "stimuli[0]" '())    ; last value in list
-                    (append (list (string-append "stimuli[" (number->string (- index 1)) "]")) (inputlist->stimulilist (cdr input-list)))
-                )
-            )
-        )
-    )
+                    (append (list (string-append "stimuli[" (number->string (- index 1)) "]"))
+                            (inputlist->stimulilist (cdr input-list)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (inputlist->stimulilist '("C" "B" "A")) '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
+            (if (equal? (inputlist->stimulilist '("C" "B" "A"))
+                        '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " inputlist->stimulilist test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    output list into response list  -------------------
 
@@ -116,22 +112,18 @@
             (let ((index (length output-list)))
                 (if (equal? (cdr output-list) '())
                     (cons "response[0]" '())    ; last value in list
-                    (append (list (string-append "response[" (number->string (- index 1)) "]")) (outputlist->responselist (cdr output-list)))
-                )
-            )
-        )
-    )
+                    (append (list (string-append "response[" (number->string (- index 1)) "]"))
+                            (outputlist->responselist (cdr output-list)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (outputlist->responselist '("Z" "Y")) '("response[1]" "response[0]"))
+            (if (equal? (outputlist->responselist '("Z" "Y"))
+                        '("response[1]" "response[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " outputlist->responselist test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    clock list into signal list     -------------------
 
@@ -149,21 +141,17 @@
         (lambda (clock-list)
             (if (equal? clock-list '())
                 clock-list
-                (cons "clk_tb" '())
-            )
-        )
-    )
+                (cons "clk_tb" '()))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (clocklist->signallist (list "X")) '("clk_tb"))
+            (if (equal? (clocklist->signallist (list "X"))
+                        '("clk_tb"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " clocklist->signallist test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    port lists into table format    -------------------
 
@@ -183,23 +171,20 @@
                 ; empty list?
                 [(null? port-list) ""]
                 ; output port?
-                [(output-space? (car port-list)) (string-append "\\t:\\t\%b" (portlists->tableformat (cdr port-list)))]
+                [(output-space? (car port-list))
+                                (string-append "\\t:\\t\%b" (portlists->tableformat (cdr port-list)))]
                 ; inputs and clock
-                [else (string-append "\\t\%b" (portlists->tableformat (cdr port-list)))]
-            )
-        )
-    )
+                [else (string-append "\\t\%b" (portlists->tableformat (cdr port-list)))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (portlists->tableformat '("A" "Y")) "\\t%b\\t:\\t%b")
+            (if (equal? (portlists->tableformat '("A" "Y"))
+                        "\\t%b\\t:\\t%b")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " portlists->tableformat test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  -------------------------------------------------------------------
 ;;                  WRITING FILE FRAME
@@ -262,11 +247,7 @@
 //                  ~a
 //  -------------------------------------------------------------------
 
-"                   (cell-id cell) purpose-string (copyleft-year) (string-upcase purpose-string))
-                )
-            )
-        )
-    )
+"                   (cell-id cell) purpose-string (copyleft-year) (string-upcase purpose-string))))))
 
 ;;  ------------    export verilog footer   ---------------------------
 
@@ -287,11 +268,7 @@
                     (format (at-port)
 "
 endmodule
-"                   )
-                )
-            )
-        )
-    )
+"                   )))))
 
 ;;  -------------------------------------------------------------------
 ;;                  WRITING VERILOG MODULE
@@ -324,11 +301,7 @@ endmodule
 "                   (cell-id cell)
                     (stringlist->csv (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell)))
                     (stringlist->csv (cell-outputs cell))
-                    (stringlist->csv (cell-inputs cell))
-                )
-            )
-        )
-    )
+                    (stringlist->csv (cell-inputs cell))))))
 
 ;;  ------------    export verilog mosfet   ---------------------------
 
@@ -347,11 +320,10 @@ endmodule
             (let ((at-port current-output-port))
                 (format (at-port)
 "    ~a (~a, ~a, ~a);
-"                   (mosfet-type mosfet) (mosfet-drain mosfet) (mosfet-source mosfet) (mosfet-gate mosfet)
-                )
-            )
-        )
-    )
+"                   (mosfet-type mosfet)
+                    (mosfet-drain mosfet)
+                    (mosfet-source mosfet)
+                    (mosfet-gate mosfet)))))
 
 ;;  ------------    export verilog netlist  ---------------------------
 
@@ -368,10 +340,7 @@ endmodule
     (define verilog:export-netlist
         (lambda (cell)
             (let ((at-port current-output-port))
-                (map (lambda (n) (verilog:export-mosfet n)) (cell-netlist cell))
-            )
-        )
-    )
+                (map (lambda (n) (verilog:export-mosfet n)) (cell-netlist cell)))))
 
 ;;  ------------    export verilog switch   ---------------------------
 
@@ -396,11 +365,7 @@ endmodule
                     ; stages
                     (verilog:export-netlist cell)
                     ; footer
-                    (verilog:export-footer)
-                )
-            )
-        )
-    )
+                    (verilog:export-footer)))))
 
 ;;  -------------------------------------------------------------------
 ;;                  WRITING WORK BENCH DESCRIPTIONS
@@ -453,11 +418,7 @@ module ~a_bench (
 //  Sorry, work benches do not have ports
 );
 
-"                   (cell-id cell))
-                )
-            )
-        )
-    )
+"                   (cell-id cell))))))
 
 ;;  ------------    export verilog globals  ---------------------------
 
@@ -497,11 +458,7 @@ begin
     rst_tb <= ~~rst_tb;
 end
 
-"                   )
-                )
-            )
-        )
-    )
+"                   )))))
 
 ;;  ------------    export verilog dut  -------------------------------
 
@@ -534,11 +491,7 @@ end
 ~a dut (~a);
 
 "                   input-width output-width (cell-id cell)
-                    (stringlist->csv (append (outputlist->responselist (cell-outputs cell)) (inputlist->stimulilist (cell-inputs cell)) (clocklist->signallist (cell-clocks cell)))))
-                )
-            )
-        )
-    )
+                    (stringlist->csv (append (outputlist->responselist (cell-outputs cell)) (inputlist->stimulilist (cell-inputs cell)) (clocklist->signallist (cell-clocks cell)))))))))
 
 ;;  ------------    export verilog stimulus ---------------------------
 
@@ -608,11 +561,7 @@ begin
     $finish;
 end
 "                   (portlists->tableformat (append (cell-clocks cell) (cell-inputs cell) (cell-outputs cell)))
-                    (stringlist->csv (append (clocklist->signallist (cell-clocks cell)) (inputlist->stimulilist (cell-inputs cell)) (outputlist->responselist (cell-outputs cell)))))
-                )
-            )
-        )
-    )
+                    (stringlist->csv (append (clocklist->signallist (cell-clocks cell)) (inputlist->stimulilist (cell-inputs cell)) (outputlist->responselist (cell-outputs cell)))))))))
 
 ;;  ------------    export verilog work bench   -----------------------
 
@@ -641,11 +590,7 @@ end
                     ; stimulus
                     (verilog:export-stimulus cell)
                     ; footer
-                    (verilog:export-footer)
-                )
-            )
-        )
-    )
+                    (verilog:export-footer)))))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
