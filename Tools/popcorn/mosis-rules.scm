@@ -2591,6 +2591,161 @@
         (lambda (tech)
             (look-up tech table-12.2)))
 
+;;  ------------    mosis:rule-12.3     -------------------------------
+
+;       Minimum electrode gate overlap of active
+
+;       |poly2  |       +--------------------------------
+;       |       |       |active
+;       |       |       |   +-------+       +-------+
+;       |       |       |   |       |       |       |
+;       |       |       |   |contact|       |contact|
+;       |       |       |   |       |       |       |         v
+;       |       |       |   +-------+       +-------+       -----
+;       |       |       |                                     | rule-12.3
+;       |       |       +--------------------------------   -----
+;                                                             ^
+;                      >|---|<
+;                     rule-12.3
+
+;   Contract:
+;   mosis:rule-12.3 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.3 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-12.3 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.3
+        (lambda (tech)
+            (look-up tech table-12.3)))
+
+;;  ------------    mosis:rule-12.4     -------------------------------
+
+;       Minimum spacing to active
+
+;       | active|       +--------------------------------
+;       |       |       |poly2
+;       |       |       |   +-------+       +-------+
+;       |       |       |   |       |       |       |
+;       |       |       |   |contact|       |contact|
+;       |       |       |   |       |       |       |
+;       |       |       |   +-------+       +-------+
+;       |       |       |
+;       |       |       +--------------------------------
+;
+;               |<----->|
+;               rule-12.4
+
+;   Contract:
+;   mosis:rule-12.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.4 "SUBM") => 1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       1           1           -1          -1
+    (define table-12.4 '#(1 1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.4
+        (lambda (tech)
+            (look-up tech table-12.4)))
+
+;;  ------------    mosis:rule-12.5     -------------------------------
+
+;       Minimum spacing or overlap of poly
+
+;               +--------------------------------
+;               |poly
+;               |                                     v
+;       +-------|................................   -----
+;       |       |                                     | rule-12.5
+;       |       |                                     |
+;       |       +--------------------------------   -----
+;       |                                             ^
+;       |poly2
+;       +----------------------------------------
+;
+
+;   Contract:
+;   mosis:rule-12.5 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.5 "SUBM") => 2
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           2           -1          -1
+    (define table-12.5 '#(2 2 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.5
+        (lambda (tech)
+            (look-up tech table-12.5)))
+
+;;  ------------    mosis:rule-12.6     -------------------------------
+
+;       Minimum spacing to poly or active contact
+
+;               +--------------------------------
+;               |poly
+;               |
+;       +-------|................................
+;       |       |
+;       |       |
+;       |       +--------------------------------
+;       |
+;       |poly2
+;       +----------------------------------------   -----
+;                                                     ^
+;               +--------------------------------     | rule-12.6
+;               |active                               v
+;               |   +-------+       +-------+       -----
+;               |   |       |       |       |
+;               |   |contact|       |contact|
+;               |   |       |       |       |
+;               |   +-------+       +-------+
+;               |
+;               +--------------------------------
+
+;   Contract:
+;   mosis:rule-12.6 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-12.6 "SUBM") => 3
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           3           -1          -1
+    (define table-12.6 '#(3 3 -1 -1))
+
+;   Definition:
+    (define mosis:rule-12.6
+        (lambda (tech)
+            (look-up tech table-12.6)))
+
 ;;  -------------------------------------------------------------------
 ;;                  POLY2 CONTACT
 ;;  -------------------------------------------------------------------
@@ -3105,6 +3260,466 @@
     (define mosis:rule-15.4
         (lambda (tech)
             (look-up tech table-15.4)))
+
+;;  -------------------------------------------------------------------
+;;                  PBASE
+;;  -------------------------------------------------------------------
+
+;;  ------------    mosis:rule-16.1     -------------------------------
+
+;       All active contact
+
+;   nwell
+;       ------------------------------------------------+
+;       |pbase                                          |
+;       |   +---------------+       +---------------+   |
+;       |   |     emitter n+|       |base p+        |   |
+;       |   |   +-------+   |       |   +-------+   |   |   -----
+;       |   |   |       |   |       |   |       |   |   |     ^
+;       |   |   |contact|   |       |   |contact|   |   |     | rule-16.1
+;       |   |   |       |   |       |   |       |   |   |     v
+;       |   |   +-------+   |       |   +-------+   |   |   -----
+;       |   |               |       |               |   |
+;       |   +---------------+       +---------------+   |
+;       |                                               |
+;               |<----->|               |<----->|
+;               rule-16.1               rule-16.1
+
+;   Contract:
+;   mosis:rule-16.1 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.1 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.1 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.1
+        (lambda (tech)
+            (look-up tech table-16.1)))
+
+;;  ------------    mosis:rule-16.2     -------------------------------
+
+;       Minimum emitter select overlap of contact
+
+;   nwell
+;       ------------------------------------------------+
+;       |pbase                                          |     v
+;       |   +---------------+       +---------------+   |   -----
+;       |   |     emitter n+|       |base p+        |   |     | rule-16.2
+;       |   |   +-------+   |       |   +-------+   |   |   -----
+;       |   |   |       |   |       |   |       |   |   |     ^
+;       |   |   |contact|   |       |   |contact|   |   |
+;       |   |   |       |   |       |   |       |   |   |     v
+;       |   |   +-------+   |       |   +-------+   |   |   -----
+;       |   |               |       |               |   |     | rule-16.2
+;       |   +---------------+       +---------------+   |   -----
+;       |                                               |     ^
+;          >|---|<     >|---|<
+;         rule-16.2   rule-16.2
+
+;   Contract:
+;   mosis:rule-16.2 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.2 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           -1          -1          -1
+    (define table-16.2 '#(3 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.2
+        (lambda (tech)
+            (look-up tech table-16.2)))
+
+;;  ------------    mosis:rule-16.3     -------------------------------
+
+;       Minimum pbase overlap of emitter select
+
+;   nwell                                                     v
+;       ------------------------------------------------+   -----
+;       |pbase                                          |     | rule-16.3
+;       |   +---------------+       +---------------+   |   -----
+;       |   |     emitter n+|       |base p+        |   |     ^
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   |contact|   |       |   |contact|   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |               |       |               |   |
+;       |   +---------------+       +---------------+   |
+;       |                                               |
+;
+;      >|---|<                                     >|---|<
+;         rule-16.3                               rule-16.3
+
+;   Contract:
+;   mosis:rule-16.3 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.3 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.3 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.3
+        (lambda (tech)
+            (look-up tech table-16.3)))
+
+;;  ------------    mosis:rule-16.4     -------------------------------
+
+;       Minimum spacing between emitter select and base select
+
+;   nwell
+;       ------------------------------------------------+
+;       |pbase                                          |
+;       |   +---------------+       +---------------+   |
+;       |   |     emitter n+|       |base p+        |   |
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   |contact|   |       |   |contact|   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |               |       |               |   |
+;       |   +---------------+       +---------------+   |
+;       |                                               |
+;                           |<----->|
+;                           rule-16.4
+
+;   Contract:
+;   mosis:rule-16.4 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.4 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       4           -1          -1          -1
+    (define table-16.4 '#(4 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.4
+        (lambda (tech)
+            (look-up tech table-16.4)))
+
+;;  ------------    mosis:rule-16.5     -------------------------------
+
+;       Minimum pbase overlap of base select
+
+;   nwell                                                     v
+;       ------------------------------------------------+   -----
+;       |pbase                                          |     | rule-16.5
+;       |   +---------------+       +---------------+   |   -----
+;       |   |     emitter n+|       |base p+        |   |     ^
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   |contact|   |       |   |contact|   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |               |       |               |   |
+;       |   +---------------+       +---------------+   |
+;
+;                                                  >|---|<
+;                                                 rule-16.5
+
+;   Contract:
+;   mosis:rule-16.5 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.5 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.5 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.5
+        (lambda (tech)
+            (look-up tech table-16.5)))
+
+;;  ------------    mosis:rule-16.6     -------------------------------
+
+;       Minimum base select overlap of contact
+
+;   nwell
+;       ------------------------------------------------+
+;       |pbase                                          |     v
+;       |   +---------------+       +---------------+   |   -----
+;       |   |     emitter n+|       |base p+        |   |     | rule-16.6
+;       |   |   +-------+   |       |   +-------+   |   |   -----
+;       |   |   |       |   |       |   |       |   |   |     ^
+;       |   |   |contact|   |       |   |contact|   |   |
+;       |   |   |       |   |       |   |       |   |   |
+;       |   |   +-------+   |       |   +-------+   |   |
+;       |   |               |       |               |   |
+;       |   +---------------+       +---------------+   |
+;
+;                                              >|---|<
+;                                             rule-16.6
+
+;   Contract:
+;   mosis:rule-16.6 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.6 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.6 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.6
+        (lambda (tech)
+            (look-up tech table-16.6)))
+
+;;  ------------    mosis:rule-16.7     -------------------------------
+
+;       Minimum nwell overlap of pbase
+
+;                                                                     v
+;       --------------------------------------------------------+   -----
+;       nwell                                                   |     | rule-16.7
+;                                                               |     |
+;       ------------------------------------------------+       |   -----
+;       |pbase                                          |       |     ^
+;       |   +---------------+       +---------------+   |       |
+;       |   |     emitter n+|       |base p+        |   |       |
+;       |   |   +-------+   |       |   +-------+   |   |       |
+;       |   |   |       |   |       |   |       |   |   |       |
+;       |   |   |contact|   |       |   |contact|   |   |       |
+;       |   |   |       |   |       |   |       |   |   |       |
+;       |   |   +-------+   |       |   +-------+   |   |       |
+;       |   |               |       |               |   |       |
+;       |   +---------------+       +---------------+   |       |
+
+;                                                       |<----->|
+;                                                       rule-16.7
+
+;   Contract:
+;   mosis:rule-16.7 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.7 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       6           -1          -1          -1
+    (define table-16.7 '#(6 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.7
+        (lambda (tech)
+            (look-up tech table-16.7)))
+
+;;  ------------    mosis:rule-16.8     -------------------------------
+
+;       Minimum spacing between pbase and collector active
+
+;       --------------------------------------------------------+
+;       nwell
+;
+;       ------------------------+   +-----------------------+
+;       |n+                     |   |pbase                  |
+;       |   +----------------+  |   |   +---------------+   |
+;       |   |collector active|  |   |   |emitter n+     |   |
+;       |   |   +-------+    |  |   |   |   +-------+   |   |
+;       |   |   |       |    |  |   |   |   |       |   |   |
+;       |   |   |contact|    |  |   |   |   |contact|   |   |
+;       |   |   |       |    |  |   |   |   |       |   |   |
+;       |   |   +-------+    |  |   |   |   +-------+   |   |
+;       |   |                |  |   |   |               |   |
+;       |   +----------------+  |   |   +---------------+   |
+;       |                       |   |                       |
+;       ------------------------+   +-----------------------+
+;                            |<---->|
+;                           rule-16.8
+
+;   Contract:
+;   mosis:rule-16.8 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.8 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       4           -1          -1          -1
+    (define table-16.8 '#(4 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.8
+        (lambda (tech)
+            (look-up tech table-16.8)))
+
+;;  ------------    mosis:rule-16.9     -------------------------------
+
+;       Minimum collector active overlap of contact
+
+;       --------------------------------------------------------+
+;       nwell
+;
+;       ------------------------+   +-----------------------+
+;       |n+                     |   |pbase                  |
+;       |   +----------------+  |   |   +---------------+   |
+;       |   |collector active|  |   |   |emitter n+     |   |
+;       |   |   +-------+    |  |   |   |   +-------+   |   |
+;       |   |   |       |    |  |   |   |   |       |   |   |
+;       |   |   |contact|    |  |   |   |   |contact|   |   |
+;       |   |   |       |    |  |   |   |   |       |   |   |
+;       |   |   +-------+    |  |   |   |   +-------+   |   |
+;       |   |                |  |   |   |               |   |
+;       |   +----------------+  |   |   +---------------+   |
+;       |                       |   |                       |
+;       ------------------------+   +-----------------------+
+;                      >|----|<
+;                      rule-16.9
+
+;   Contract:
+;   mosis:rule-16.9 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.9 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.9 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.9
+        (lambda (tech)
+            (look-up tech table-16.9)))
+
+;;  ------------    mosis:rule-16.10    -------------------------------
+
+;       Minimum nwell overlap of collector active
+
+;       -------------------------------------------
+;       nwell                         ^
+;                                     | rule-16.10
+;       ------------------------+     |
+;       |n+                     |     v
+;       |   +----------------+  |   -----
+;       |   |collector active|  |
+;       |   |   +-------+    |  |
+;       |   |   |       |    |  |
+;       |   |   |contact|    |  |
+;       |   |   |       |    |  |
+;       |   |   +-------+    |  |
+;       |   |                |  |
+;       |   +----------------+  |   -----
+;       |                       |     ^
+;       ------------------------+     | rule-16.10
+;                                     v
+;       -------------------------------------------
+
+;   Contract:
+;   mosis:rule-16.10 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.10 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       3           -1          -1          -1
+    (define table-16.10 '#(3 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.10
+        (lambda (tech)
+            (look-up tech table-16.10)))
+
+;;  ------------    mosis:rule-16.11    -------------------------------
+
+;       Minimum select overlap of collector active
+
+;       -------------------------------------------
+;       nwell
+;                                     v
+;       ------------------------+   -----
+;       |n+                     |     | rule-16.11
+;       |   +----------------+  |   -----
+;       |   |collector active|  |     ^
+;       |   |   +-------+    |  |
+;       |   |   |       |    |  |
+;       |   |   |contact|    |  |
+;       |   |   |       |    |  |
+;       |   |   +-------+    |  |
+;       |   |                |  |     v
+;       |   +----------------+  |   -----
+;       |                       |     | rule-16.11
+;       ------------------------+   -----
+;      >|---|<                        ^
+;    rule-16.11
+
+;   Contract:
+;   mosis:rule-16.11 : tech -> lambda
+
+;   Purpose:
+;   deliver rule value according tech
+
+;   Example:
+;   (mosis:rule-16.11 "SUBM") => -1
+
+;   +-----------+-----------+-----------+-----------+
+;   |  SCMOS    |   SUBM    |   DEEP    |   USER    |
+;   +-----------+-----------+-----------+-----------+
+;       2           -1          -1          -1
+    (define table-16.11 '#(2 -1 -1 -1))
+
+;   Definition:
+    (define mosis:rule-16.11
+        (lambda (tech)
+            (look-up tech table-16.11)))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
