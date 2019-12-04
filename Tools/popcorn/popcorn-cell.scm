@@ -58,7 +58,9 @@
            cell:expand-nand
            cell:expand-nor
            cell:expand-oai
-           cell:expand-aoi)
+           cell:expand-aoi
+           cell:expand-pu
+           cell:expand-pd)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
@@ -95,7 +97,8 @@
 ;   read in cell file as vector for further usage
 
 ;   Example:
-;   (cell:read-file file) => INV-cell
+;   (cell:read-file file)
+;       => INV-cell
 
 ;   Definition:
     (define (cell:read-file file-name)
@@ -112,69 +115,48 @@
                                 (cond
                                     ; ignore comment lines, read further
                                     [(equal? (string-ref line 0) #\#)
-                                        (function (read-line file))
-                                    ]
+                                        (function (read-line file))]
 
                                     ; .cell annotated line, get name
                                     [(equal? (substring line 0 4) ".cel")
                                         (begin
                                             (cell-id! return (string-upcase (string-copy line 6)))
-                                            (function (read-line file))
-                                        )
-                                    ]
+                                            (function (read-line file)))]
 
                                     ; .clocks annotated line, get list
                                     [(equal? (substring line 0 4) ".clo")
                                         (begin
                                             (cell-clocks! return (string-split (string-upcase (string-copy line 7)) #[ ]))
-                                            (function (read-line file))
-                                        )
-                                    ]
+                                            (function (read-line file)))]
 
                                     ; .inputs annotated line, get list
                                     [(equal? (substring line 0 4) ".inp")
                                         (begin
                                             (cell-inputs! return (string-split (string-upcase (string-copy line 8)) #[ ]))
-                                            (function (read-line file))
-                                        )
-                                    ]
+                                            (function (read-line file)))]
 
                                     ; .outputs annotated line, get list
                                     [(equal? (substring line 0 4) ".out")
                                         (begin
                                             (cell-outputs! return (string-split (string-upcase (string-copy line 9)) #[ ]))
-                                            (function (read-line file))
-                                        )
-                                    ]
+                                            (function (read-line file)))]
 
                                     ; .end annotated line, clean up
                                     [(equal? (substring line 0 4) ".end")
                                         (begin
                                             (cell-netlist! return netlist)
-                                            (eof-object)
-                                        )
-                                    ]
+                                            (eof-object))]
 
                                     ; collect netlist lines
                                     [else
                                         (begin
                                             (set! netlist (append netlist (list (stringlist->mosfet (string-split line #[ ])))))
 ;                                            (set! netlist (cons (stringlist->mosfet (string-split line #[ ])) netlist))
-                                            (function (read-line file))
-                                        )
-                                    ]
-                                )
-                            )
-                        )
-                    )
-                )
+                                            (function (read-line file)))])))))
             ; done, close file
             (close-input-port file)
             (sanity-cell? return)
-            return
-            )
-        )
-    )
+            return)))
 
 ;;  -------------------------------------------------------------------
 ;;                  WRITE CELL DESCRIPTIONS
@@ -189,7 +171,8 @@
 ;   convert mosfet vector into one long string
 
 ;   Example:
-;   (mosfet->string '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) => "nmos A Y GND GND 1 1 -1 1"
+;   (mosfet->string '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
+;       => "nmos A Y GND GND 1 1 -1 1"
 
 ;   Definition:
     (define mosfet->string
@@ -204,22 +187,17 @@
                     (number->string (mosfet-stacked mosfet))
                     (number->string (mosfet-xaxis mosfet))
                     (number->string (mosfet-yaxis mosfet))
-                    (mosfet-size mosfet)
-                )
-            )
-        )
-    )
+                    (mosfet-size mosfet)))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (mosfet->string '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) "nmos A Y GND GND 1 1 -1 1")
+            (if (equal? (mosfet->string '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
+                                           "nmos A Y GND GND 1 1 -1 1")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet->string test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    format netlist  -----------------------------------
 
@@ -230,7 +208,8 @@
 ;   take netlist and format them into string
 
 ;   Example
-;   (netlist->string (cell-netlist INV-cell)) => "pmos A Y VDD VDD 1 1 1 g\nnmos A Y GND GND 1 1 -1 1"
+;   (netlist->string (cell-netlist INV-cell))
+;       => "pmos A Y VDD VDD 1 1 1 g\nnmos A Y GND GND 1 1 -1 1"
 
 ;   Definition:
     (define netlist->string
@@ -238,21 +217,17 @@
             (cond
                 [(null? netlist) '()]
                 [else
-                    (cons (mosfet->string (car netlist)) (netlist->string (cdr netlist)))]
-            )
-        )
-    )
+                    (cons (mosfet->string (car netlist)) (netlist->string (cdr netlist)))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (netlist->string (cell-netlist INV-cell)) '("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1"))
+            (if (equal? (netlist->string (cell-netlist INV-cell))
+                        '("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " netlist->string test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    multiline format    -------------------------------
 
@@ -263,7 +238,8 @@
 ;   take list-of-string and feed format instruction
 
 ;   Example:
-;   (multiline-format (current-output-port) (netlist->string (cell-netlist INV-cell))) => ("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1")
+;   (multiline-format (current-output-port) (netlist->string (cell-netlist INV-cell)))
+;       => ("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1")
 
 ;   Definitimn:
     (define multiline-format
@@ -274,22 +250,17 @@
                     (format (at-port)
 "~a
 "                       (car stringlist))
-                    (multiline-format at-port (cdr stringlist))
-                )
-            )
-        )
-    )
+                    (multiline-format at-port (cdr stringlist))))))
 #|
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (multiline-formast (current-output-port) (cell-netlist INV-cell)) '("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1")
+            (if (equal? (multiline-formast (current-output-port) (cell-netlist INV-cell))
+                        '("pmos A Y VDD VDD 1 1 1 g" "nmos A Y GND GND 1 1 -1 1")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " netlist->string test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 |#
 ;;  ------------    write cell description  ---------------------------
 
@@ -300,7 +271,8 @@
 ;   write cell description to STDOUT
 
 ;   Example:
-;   (cell:write-file INV-cell) => --
+;   (cell:write-file INV-cell)
+;       => --
 
 ;   Definition:
     (define cell:write-file
@@ -328,23 +300,17 @@
                         ""
                         (format (at-port)
 ".clocks ~a
-"                           (string-join (cell-clocks cell)))
-                    )
+"                           (string-join (cell-clocks cell))))
                     ; additional, e.g. schematic
                     (if (null? (cell-additional cell))
                         ""
-                        (multiline-format at-port (cell-additional cell))
-                    )
+                        (multiline-format at-port (cell-additional cell)))
                     ; netlist
                     (multiline-format at-port (netlist->string (cell-netlist cell)))
                     ; done
                     (format (at-port)
 ".end
-"                   )
-                )
-            )
-        )
-    )
+"                   )))))
 
 ;;  -------------------------------------------------------------------
 ;;                  DRAW NETLIST SCHEMATIC
@@ -359,7 +325,8 @@
 ;   format fix-length string out ouf node name
 
 ;   Example:
-;   (format-node "A") => "A  "
+;   (format-node "A")
+;       => "A  "
 
 ;   Definition:
     (define format-node
@@ -369,22 +336,17 @@
                     [(eq? len 0) (string-append node "   ")]
                     [(eq? len 1) (string-append node "  ")]
                     [(eq? len 2) (string-append node " ")]
-                    [else (string-copy node 0 3)]
-                )
-            )
-        )
-    )
+                    [else (string-copy node 0 3)]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (format-node "A") "A  ")
+            (if (equal? (format-node "A")
+                        "A  ")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " format-node test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    netlist->sprites    -------------------------------
 
@@ -395,11 +357,12 @@
 ;   return all strings, representing the netlist as schematic of mosfet circuit
 
 ;   Example:
-;   (netlist->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1 1))) => '("           | GND    "
-;                                                                     "       | +--        "
-;                                                                     " A  ---| |  1       "
-;                                                                     "       | +--        "
-;                                                                     "           | Y      "))
+;   (netlist->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1 1)))
+;       => '("           | GND    "
+;            "       | +--        "
+;            " A  ---| |  1       "
+;            "       | +--        "
+;            "           | Y      "))
 
 ;   Definition:
     (define mosfet->sprites
@@ -432,36 +395,28 @@
                                             (string-append "          | " (format-node (mosfet-source mosfet)) "   "))
                                     (mosfet->sprites (cdr netlist) (+ xpos 1)))]
                             [else
-                                (cons empty-sprite (mosfet->sprites (cdr netlist) (+ xpos 1)))]
-                        )
+                                (cons empty-sprite (mosfet->sprites (cdr netlist) (+ xpos 1)))])
                         ; position (coordinates) is empty
-                        (cons empty-sprite (mosfet->sprites netlist (+ xpos 1)))
-                    )
-                )
-            )
-        )
-    )
+                        (cons empty-sprite (mosfet->sprites netlist (+ xpos 1))))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
             (if (equal? (mosfet->sprites '(#("nmos" "A" "Y" "GND" "GND" 1 2 -1 "1")) 1)
-                                         '(("                  "
-                                            "                  "
-                                            "                  "
-                                            "                  "
-                                            "                  ")
-                                           ("          | GND   "
-                                            "      | +--       "
-                                            "A  ---| |  1      "
-                                            "      | +--       "
-                                            "          | Y     ")))
+                        '(("                  "
+                           "                  "
+                           "                  "
+                           "                  "
+                           "                  ")
+                           ("          | GND   "
+                           "      | +--       "
+                           "A  ---| |  1      "
+                           "      | +--       "
+                           "          | Y     ")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " mosfet->sprites test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    get one sprite line     ---------------------------
 
@@ -472,28 +427,26 @@
 ;   return dedicated line of given sprites as string
 
 ;   Example:
-;   (get-one-sprite-line (mosfet->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) 1) 3) => "---| |  1"
+;   (get-one-sprite-line (mosfet->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) 1) 3)
+;       => "---| |  1"
 
 ;   Definition:
     (define get-one-sprite-line
         (lambda (sprites line)
             (if (or (null? sprites) (= line 0))
                 ""
-                (string-append (list-ref (car sprites) (- line 1)) (get-one-sprite-line (cdr sprites) line))
-            )
-        )
-    )
+                (string-append (list-ref (car sprites) (- line 1)) (get-one-sprite-line (cdr sprites) line)))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (get-one-sprite-line (mosfet->sprites '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1") #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1")) 1) 3) "A  ---| |  1      B  ---| |  1      ")
+            (if (equal? (get-one-sprite-line (mosfet->sprites '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")
+                                                                #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1")) 1) 3)
+                        "A  ---| |  1      B  ---| |  1      ")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-one-sprite-line test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    get one row of sprites  ---------------------------
 
@@ -504,33 +457,30 @@
 ;   return all lines of given sprites as strings
 
 ;   Example:
-;   (get-one-sprite-row (mosfet->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) 1) 5) => ?
+;   (get-one-sprite-row (mosfet->sprites ('#("nmos" "A" "Y" "GND" "GND" 1 1 -1)) 1) 5)
+;       => ?
 
 ;   Definition:
     (define get-one-sprite-row
         (lambda (sprites lines)
             (if (or (null? sprites) (= lines 0))
                 '()
-                (cons (string-append "# " (get-one-sprite-line sprites lines)) (get-one-sprite-row sprites (- lines 1)))
-            )
-        )
-    )
+                (cons (string-append "# " (get-one-sprite-line sprites lines)) (get-one-sprite-row sprites (- lines 1))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (get-one-sprite-row (mosfet->sprites '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1") #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1")) 1) 5) 
-                                                             '("#           | Y               | Y     "
-                                                               "#       | +--             | +--       "
-                                                               "# A  ---| |  1      B  ---| |  1      "
-                                                               "#       | +--             | +--       "
-                                                               "#           | GND             | GND   "))
+            (if (equal? (get-one-sprite-row (mosfet->sprites '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")
+                                                               #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1")) 1) 5) 
+                        '("#           | Y               | Y     "
+                          "#       | +--             | +--       "
+                          "# A  ---| |  1      B  ---| |  1      "
+                          "#       | +--             | +--       "
+                          "#           | GND             | GND   "))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-one-sprite-row test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    get-all-rows    -----------------------------------
 
@@ -541,7 +491,8 @@
 ;   crawl netlist and generate ascci-art line by line
 
 ;   Example:
-;   (get-all-rows (cell-netlist INV-cell)) => ?
+;   (get-all-rows (cell-netlist INV-cell))
+;       => ?
 
 ;   Definition:
     (define get-all-rows
@@ -559,10 +510,7 @@
                             (append
                                 (get-one-sprite-row (mosfet->sprites mosfets-on-row 1) 5)
                                 ; !! connectivity
-                                (get-all-rows netlist (- row 1))
-                            )
-                        )
-                    )]
+                                (get-all-rows netlist (- row 1)))))]
                 ; pulldown network
                 [(< row 0)
                     (let ((mosfets-on-row (sort-mosfet-ascending (filter-mosfet-row netlist row))))
@@ -571,34 +519,27 @@
                             (append
                                 (get-one-sprite-row (mosfet->sprites mosfets-on-row 1) 5)
                                 ; !! connectivity
-                                (get-all-rows netlist (- row 1))
-                            )
-                        )
-                    )]
-            )
-        )
-    )
+                                (get-all-rows netlist (- row 1)))))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (get-all-rows (cell-netlist INV-cell) 1) '("#           | VDD   "
-                                                                   "#       | +--       "
-                                                                   "# A  --o| |  g      "
-                                                                   "#       | +--       "
-                                                                   "#           | Y     "
-                                                                   ; !! connectivity
-                                                                   "#           | Y     "
-                                                                   "#       | +--       "
-                                                                   "# A  ---| |  1      "
-                                                                   "#       | +--       "
-                                                                   "#           | GND   "))
+            (if (equal? (get-all-rows (cell-netlist INV-cell) 1)
+                        '("#           | VDD   "
+                          "#       | +--       "
+                          "# A  --o| |  g      "
+                          "#       | +--       "
+                          "#           | Y     "
+                          ; !! connectivity
+                          "#           | Y     "
+                          "#       | +--       "
+                          "# A  ---| |  1      "
+                          "#       | +--       "
+                          "#           | GND   "))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " get-all-rows test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    ascii-art schematic -------------------------------
 
@@ -609,27 +550,24 @@
 ;   crawl netlist and generate ascii-art line by line
 
 ;   Example:
-;   (ascii-art-schematic (cell-netlist INV-cell)) => ?
+;   (ascii-art-schematic (cell-netlist INV-cell))
+;       => ?
 
 ;   Definition:
     (define ascii-art-schematic
         (lambda (netlist)
             (let ((yaxis (metric-highest-yaxis netlist)))
-                (get-all-rows netlist yaxis)
-            )
-        )
-    )
+                (get-all-rows netlist yaxis))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (ascii-art-schematic (cell-netlist INV-cell)) (cell-additional INV-cell))
+            (if (equal? (ascii-art-schematic (cell-netlist INV-cell))
+                        (cell-additional INV-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " ascii-art-schematic test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 
 ;;  -------------------------------------------------------------------
@@ -645,7 +583,8 @@
 ;   search for highest used node in network, calculate next
 
 ;   Example:
-;   (next-node-number "") => N1
+;   (next-node-number "")
+;       => N1
 
 ;   Definition:
     (define next-node-number
@@ -655,22 +594,17 @@
                     [(null? sorted-list)
                         (string-append (string (car node-space)) (number->string 1))] ; "N1"
                     [else
-                        (string-append (string (car node-space)) (number->string (+ (string->number (substring (car sorted-list) 1 (string-length (car sorted-list)))) 1)))]
-                )
-            )
-        )
-    )
+                        (string-append (string (car node-space)) (number->string (+ (string->number (substring (car sorted-list) 1 (string-length (car sorted-list)))) 1)))]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (next-node-number '("N1" "N2")) "N3")
+            (if (equal? (next-node-number '("N1" "N2"))
+                        "N3")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " next-node-number test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    calculate next input character node ---------------
 
@@ -681,7 +615,8 @@
 ;   check mosfet input node, calculate next
 
 ;   Example:
-;   (next-input-char-node '#("pmos" "A1 "Y" "GND" "GND" 1 1 -1 "g")) => "B"
+;   (next-input-char-node '#("pmos" "A1 "Y" "GND" "GND" 1 1 -1 "g"))
+;       => "B"
 
 ;   Definition:
     (define next-input-char-node
@@ -690,22 +625,17 @@
                 (cond
                     [(null? node) "A1"]
                     [else
-                        (string (car (cdr (memq (string-ref node 0) input-space))))]
-                )
-            )
-        )
-    )
+                        (string (car (cdr (memq (string-ref node 0) input-space))))]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (next-input-char-node '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "g")) "B")
+            (if (equal? (next-input-char-node '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "g"))
+                        "B")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " next-input-char-node test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    calculate next input number node    ---------------
 
@@ -716,7 +646,8 @@
 ;   check mosfet input node, calculate next
 
 ;   Example:
-;   (next-input-num-node '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "g")) => "A1"
+;   (next-input-num-node '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "g"))
+;       => "A1"
 
 ;   Definition:
     (define next-input-num-node
@@ -727,22 +658,17 @@
                     [(eqv? (string-length node) 1)
                         (string (string-ref node 0) #\1)]
                     [else
-                        (string (string-ref node 0) (integer->char (+ 1 (char->integer (string-ref node 1)))))]
-                )
-            )
-        )
-    )
+                        (string (string-ref node 0) (integer->char (+ 1 (char->integer (string-ref node 1)))))]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (next-input-num-node '#("pmos" "A1" "Y" "GND" "GND" 1 1 -1 "g")) "A2")
+            (if (equal? (next-input-num-node '#("pmos" "A1" "Y" "GND" "GND" 1 1 -1 "g"))
+                        "A2")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " next-input-num-node test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    calculate next output node  -----------------------
 
@@ -753,7 +679,8 @@
 ;   search for highest used output node, calculate next
 
 ;   Example:
-;   (next-output-node "Y") => "Z"
+;   (next-output-node "Y")
+;       => "Z"
 
 ;   Definition:
     (define next-output-node
@@ -762,22 +689,17 @@
                 (cond
                     [(null? sorted-list) "Y"]
                     [else
-                        (string (car (cdr (memq (string-ref (car sorted-list) 0) output-space))))]
-                )
-            )
-        )
-    )
+                        (string (car (cdr (memq (string-ref (car sorted-list) 0) output-space))))]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (next-output-node '("Y")) "Z")
+            (if (equal? (next-output-node '("Y"))
+                        "Z")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " next-output-node test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    find mosfet to expand   ---------------------------
 
@@ -788,7 +710,8 @@
 ;   crawl through network and find transistor to expand
 
 ;   Example:
-;   (find-mosfet-anchor (pullup-network (cell-netlist INV-cell))) => #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")
+;   (find-mosfet-anchor (pullup-network (cell-netlist INV-cell)))
+;       => #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")
 
 ;   Definition:
     (define find-mosfet-anchor
@@ -801,13 +724,7 @@
                             ; got it - candidate on path is below limit
                             candidate
                             ; waste path away, check next
-                            (find-mosfet-anchor (filter-mosfet-remove (cdr network) (mosfet-gate candidate)) limit)
-                        )
-                    )
-                )
-            )
-        )
-    )
+                            (find-mosfet-anchor (filter-mosfet-remove (cdr network) (mosfet-gate candidate)) limit)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
@@ -817,9 +734,7 @@
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " find-mosfet-anchor test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand netlist serial   ---------------------------
 
@@ -830,69 +745,68 @@
 ;   expand network by mosfet in serial
 
 ;   Example:
-;   (expand-netlist-serial (pulldown-network (cell-netlist INV-cell)) "N2" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "0")) =>
-;       (#("nmos" "A" "Y" "N2" "GND" 1 1 -1 "1") #("nmos" "B" "N2" "GND" "GND" 2 1 -2 "0"))
+;   (expand-netlist-serial (pulldown-network (cell-netlist INV-cell)) "N2" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "0"))
+;       => (#("nmos" "A" "Y" "N2" "GND" 1 1 -1 "1") #("nmos" "B" "N2" "GND" "GND" 2 1 -2 "0"))
 
 ;   Definition:
     (define expand-netlist-serial
-        (lambda (netlist new-node org-gate new-gate mosfet)
+        (lambda (netlist new-node org-gate new-gate anchor)
             (cond
                 ; netlist empty?
                 [(null? netlist)]
                 ; handle anchor transistor
-                [(equal? (car netlist) mosfet)
+                [(equal? (car netlist) anchor)
                     (let*  ((new-mosfet (generate-mosfet))
-                            (org-mosfet mosfet)
+                            (org-mosfet (generate-mosfet))
                             ; increment yaxis regarding network
-                            (new-yaxis (if (< (mosfet-yaxis org-mosfet) 0)
+                            (new-yaxis (if (< (mosfet-yaxis anchor) 0)
                                         ; negative, pulldown network
-                                        (- (mosfet-yaxis org-mosfet) 1)
+                                        (- (mosfet-yaxis anchor) 1)
                                         ; positive, pullup network
-                                        (+ (mosfet-yaxis org-mosfet) 1))))
+                                        (+ (mosfet-yaxis anchor) 1))))
                         (begin
-                            ; use same type as original
-                            (mosfet-type! new-mosfet (mosfet-type org-mosfet))
+                            ; clone anchor
+                            (mosfet-type! new-mosfet (mosfet-type anchor))
+                            (mosfet-type! org-mosfet (mosfet-type anchor))
                             ; use orginal and new generated gate node
                             (mosfet-gate! new-mosfet new-gate)
-                            ; rename orginal gate for aoi or oai methods
-                            (mosfet-gate! org-mosfet org-gate)
-                            ; use same source as original (hopefully a power rail)
-                            (mosfet-source! new-mosfet (mosfet-source org-mosfet))
-                            ; use new generated node number between original and new mosfet
-                            (mosfet-source! org-mosfet new-node)
-                            (mosfet-drain! new-mosfet new-node)
+                            (mosfet-gate! org-mosfet org-gate) ; eventually renamed by AOI and OAI
+                            ; use different sources
+                            (mosfet-source! new-mosfet (mosfet-source anchor)) ;  hopefully a power rail
+                            (mosfet-source! org-mosfet new-node) ; new connected
+                            ; use different drains
+                            (mosfet-drain! new-mosfet new-node) ; new connected
+                            (mosfet-drain! org-mosfet (mosfet-drain anchor))
                             ; use same bulk as original
-                            (mosfet-bulk! new-mosfet (mosfet-bulk org-mosfet))
+                            (mosfet-bulk! new-mosfet (mosfet-bulk anchor))
+                            (mosfet-bulk! org-mosfet (mosfet-bulk anchor))
                             ; increment stacked transistor number
-                            (mosfet-stacked! new-mosfet (+ (mosfet-stacked org-mosfet) 1))
+                            (mosfet-stacked! new-mosfet (+ (mosfet-stacked anchor) 1))
+                            (mosfet-stacked! org-mosfet (mosfet-stacked anchor))
                             ; use same xasis as original
-                            (mosfet-xaxis! new-mosfet (mosfet-xaxis org-mosfet))
+                            (mosfet-xaxis! new-mosfet (mosfet-xaxis anchor))
+                            (mosfet-xaxis! org-mosfet (mosfet-xaxis anchor))
                             ; assign free row
                             (mosfet-yaxis! new-mosfet new-yaxis)
+                            (mosfet-yaxis! org-mosfet (mosfet-yaxis anchor))
                             ; transistor sizing
                             (mosfet-size! new-mosfet "0") ; !! no size yet
+                            (mosfet-size! org-mosfet "0") ; !! no size yet
                             ; return
-                            (append (list new-mosfet org-mosfet) (cdr netlist))
-                        )
-                    )]
+                            (append (list new-mosfet org-mosfet) (cdr netlist))))]
                 [else
-                    (cons (car netlist) (expand-netlist-serial (cdr netlist) new-node org-gate new-gate mosfet))]
-            )
-        )
-    )
+                    (cons (car netlist) (expand-netlist-serial (cdr netlist) new-node org-gate new-gate anchor))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
             (if (equal? (expand-netlist-serial (pulldown-network (cell-netlist INV-cell)) "N1" "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
-                    '( #("nmos" "B" "N1" "GND" "GND" 2 1 -2 "0")
-                       #("nmos" "A" "Y"  "N1"  "GND" 1 1 -1 "1")))
+                        '(#("nmos" "B" "N1" "GND" "GND" 2 1 -2 "0")
+                          #("nmos" "A" "Y"  "N1"  "GND" 1 1 -1 "0")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " expand-netlist-serial test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand netlist parallel ---------------------------
 
@@ -903,63 +817,64 @@
 ;   expand network by mosfet in parallel
 
 ;   Example:
-;   (expand-netlist-parallel (pulldown-down (cell-netlist INV-cell)) "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")) =>
-;       (#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1") #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1"))
+;   (expand-netlist-parallel (pulldown-down (cell-netlist INV-cell)) "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
+;       => (#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1") #("nmos" "B" "Y" "GND" "GND" 1 2 -1 "1"))
 
 ;   Definition:
     (define expand-netlist-parallel
-        (lambda (netlist org-gate new-gate mosfet)
+        (lambda (netlist org-gate new-gate anchor)
             (cond
                 ; netlist empty?
                 [(null? netlist)]
                 ; handle anchor transistor
-                [(equal? (car netlist) mosfet)
+                [(equal? (car netlist) anchor)
                     (let*  ((new-mosfet (generate-mosfet))
-                            (org-mosfet mosfet)
+                            (org-mosfet (generate-mosfet))
                             ; increment xasis number
-                            (new-xaxis (+ (mosfet-xaxis org-mosfet) 1)))
+                            (new-xaxis (+ (mosfet-xaxis anchor) 1)))
                         (begin
-                            ; use same type as original
-                            (mosfet-type! new-mosfet (mosfet-type org-mosfet))
+                            ; clone anchor for orginal
+                            (mosfet-type! new-mosfet (mosfet-type anchor))
+                            (mosfet-type! org-mosfet (mosfet-type anchor))
                             ; use new generated gate node
                             (mosfet-gate! new-mosfet new-gate)
-                            (mosfet-gate! org-mosfet org-gate)
-                            ; use same source as original
-                            (mosfet-source! new-mosfet (mosfet-source org-mosfet))
-                            ; use same drain as original
-                            (mosfet-drain! new-mosfet (mosfet-drain org-mosfet))
-                            ; use same bulk as original
-                            (mosfet-bulk! new-mosfet (mosfet-bulk org-mosfet))
+                            (mosfet-gate! org-mosfet org-gate) ; eventually renamed for AOI, OAI
+                            ; use same source as anchor
+                            (mosfet-source! new-mosfet (mosfet-source anchor))
+                            (mosfet-source! org-mosfet (mosfet-source anchor))
+                            ; use same drain as anchor
+                            (mosfet-drain! new-mosfet (mosfet-drain anchor))
+                            (mosfet-drain! org-mosfet (mosfet-drain anchor))
+                            ; use same bulk as anchor
+                            (mosfet-bulk! new-mosfet (mosfet-bulk anchor))
+                            (mosfet-bulk! org-mosfet (mosfet-bulk anchor))
                             ; use same stacked transistor number
-                            (mosfet-stacked! new-mosfet (mosfet-stacked org-mosfet))
+                            (mosfet-stacked! new-mosfet (mosfet-stacked anchor))
+                            (mosfet-stacked! org-mosfet (mosfet-stacked anchor))
                             ; assign free column
                             (mosfet-xaxis! new-mosfet new-xaxis)
+                            (mosfet-xaxis! org-mosfet (mosfet-xaxis anchor))
                             ; use same yaxis number
-                            (mosfet-yaxis! new-mosfet (mosfet-yaxis org-mosfet))
+                            (mosfet-yaxis! new-mosfet (mosfet-yaxis anchor))
+                            (mosfet-yaxis! org-mosfet (mosfet-yaxis anchor))
                             ; transistor sizing
-                            (mosfet-size! new-mosfet (mosfet-size org-mosfet)) ; always same size
+                            (mosfet-size! new-mosfet (mosfet-size anchor)) ; always same size
+                            (mosfet-size! org-mosfet (mosfet-size anchor)) ; always same size
                             ; return
-                            (append (list new-mosfet org-mosfet) (cdr netlist))
-                        )
-                    )]
+                            (append (list new-mosfet org-mosfet) (cdr netlist))))]
                 [else
-                    (cons (car netlist) (expand-netlist-parallel (cdr netlist) org-gate new-gate mosfet))]
-            )
-        )
-    )
+                    (cons (car netlist) (expand-netlist-parallel (cdr netlist) org-gate new-gate anchor))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
             (if (equal? (expand-netlist-parallel (pulldown-network (cell-netlist INV-cell)) "A" "B" #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
-                         '(#("nmos" "B" "Y"  "GND" "GND" 1 2 -1 "1")
-                           #("nmos" "A" "Y"  "GND" "GND" 1 1 -1 "1")))
+                        '(#("nmos" "B" "Y"  "GND" "GND" 1 2 -1 "1")
+                          #("nmos" "A" "Y"  "GND" "GND" 1 1 -1 "1")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " expand-netlist-parallel test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand netlist w/ buffer    -----------------------
 
@@ -970,7 +885,8 @@
 ;   expand network by adding buffer
 
 ;   Example:
-;   (expand-netlist-buffer (cell-netlist INV-cell) "Y" 1) => (cell-netlist BUF-cell)
+;   (expand-netlist-buffer (cell-netlist INV-cell) "Y" 1)
+;       => (cell-netlist BUF-cell)
 
 ;   Definition:
     (define expand-netlist-buffer
@@ -1007,22 +923,17 @@
                     (mosfet-size! pmos-mosfet "g")
                     (mosfet-size! nmos-mosfet "1")
                     ; return
-                    (cons pmos-mosfet (cons nmos-mosfet netlist))
-                )
-            )
-        )
-    )
+                    (cons pmos-mosfet (cons nmos-mosfet netlist))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (replace-nodes (expand-netlist-buffer (cell-netlist INV-cell) "N1" "Z") "Y" "N1") (cell-netlist BUF-cell))
+            (if (equal? (replace-nodes (expand-netlist-buffer (cell-netlist INV-cell) "N1" "Z") "Y" "N1")
+                        (cell-netlist BUF-cell))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " expand-netlist-buffer test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand cell nand-wise   ---------------------------
 
@@ -1033,12 +944,15 @@
 ;   expand cell description by adding mosfet nand-like
 
 ;   Example:
-;   (cell:expand-nand INV-cell 2) => NAND2-cell
+;   (cell:expand-nand INV-cell 2)
+;       => NAND2-cell
 
 ;   Definition:
     (define cell:expand-nand
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let*  (;shortend netlist call
+            (let*  (; generate new emtpy cell
+                    (return (generate-cell))
+                    ; shortend netlist call
                     (netlist (cell-netlist cell))
                     ; search anchor mosfet
                     (anchor (find-mosfet-anchor (pulldown-network netlist) stacked-limit))
@@ -1051,42 +965,36 @@
                     ; expand original netlist with new mosfets
                     (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node (mosfet-gate anchor) 2nd-gate anchor) (mosfet-gate anchor) 2nd-gate complementary))
                     ; get next free node for potentialy buffer addition
-                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                    (out-node (next-node-number (intermediate-nodes new-netlist))))
                 (begin
-                    ; netlist
+                    ; check netlist regading buffer limit
                     (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
                         ; netlist is yet still not buffered but already on level
-                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        (cell-netlist! return (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" out-node)))
                         ; already bufferd, set netlist
-                        (cell-netlist! cell (sort-netlist new-netlist))
-                    )
+                        (cell-netlist! return (sort-netlist new-netlist)))
                     ; set new cell-id
-                    (cell-id! cell cell-name)
+                    (cell-id! return cell-name)
                     ; set new cell description
-                    (cell-text! cell cell-descr)
+                    (cell-text! return cell-descr)
                     ; set input nodes
-                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    (cell-inputs! return (sort-ports-descending (input-nodes (cell-netlist return))))
                     ; set output nodes
-                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    (cell-outputs! return (sort-ports-descending (output-nodes (cell-netlist return))))
                     ; set clock nodes
-                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    (cell-clocks! return (sort-ports-ascending (clock-nodes (cell-netlist return))))
                     ; set additionals
-                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                )
-            )
-        )
-    )
+                    (cell-additional! return (ascii-art-schematic (cell-netlist return)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (cell:expand-nand INV-cell 4 4 "NAND2" "a 2-input Not-AND (or NAND) gate") NAND2-cell)
+            (if (equal? (cell:expand-nand INV-cell 4 4 "NAND2" "a 2-input Not-AND (or NAND) gate")
+                        NAND2-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell:expand-nand test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand cell nor-wise    ---------------------------
 
@@ -1097,12 +1005,15 @@
 ;   expand cell description by adding mosfet nor-like
 
 ;   Example:
-;   (cell:expand-nor INV-cell 4 4) => NOR2-cell
+;   (cell:expand-nor INV-cell 4 4)
+;       => NOR2-cell
 
 ;   Definition:
     (define cell:expand-nor
         (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
-            (let*  (; shortend netlist call
+            (let*  (; generate new emtpy cell
+                    (return (generate-cell))
+                    ; shortend netlist call
                     (netlist (cell-netlist cell))
                     ; search anchor mosfet
                     (anchor (find-mosfet-anchor (pullup-network netlist) stacked-limit))
@@ -1115,42 +1026,36 @@
                     ; expand original netlist with new mosfets
                     (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node (mosfet-gate anchor) 2nd-gate anchor) (mosfet-gate anchor) 2nd-gate complementary))
                     ; get next free node for potentialy buffer addition
-                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                    (out-node (next-node-number (intermediate-nodes new-netlist))))
                 (begin
                     ; check netlist regading buffer limit
                     (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
                         ; netlist is yet still not buffered but already on level
-                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        (cell-netlist! return (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" out-node)))
                         ; already bufferd, set netlist
-                        (cell-netlist! cell (sort-netlist new-netlist))
-                    )
+                        (cell-netlist! return (sort-netlist new-netlist)))
                     ; set new cell-id
-                    (cell-id! cell cell-name)
+                    (cell-id! return cell-name)
                     ; set new cell description
-                    (cell-text! cell cell-descr)
+                    (cell-text! return cell-descr)
                     ; set input nodes
-                    (cell-inputs! cell (sort-ports-descending (input-nodes (cell-netlist cell))))
+                    (cell-inputs! return (sort-ports-descending (input-nodes (cell-netlist return))))
                     ; set output nodes
-                    (cell-outputs! cell (sort-ports-descending (output-nodes (cell-netlist cell))))
+                    (cell-outputs! return (sort-ports-descending (output-nodes (cell-netlist return))))
                     ; set clock nodes
-                    (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
+                    (cell-clocks! return (sort-ports-ascending (clock-nodes (cell-netlist return))))
                     ; set additionals
-                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                )
-            )
-        )
-    )
+                    (cell-additional! return (ascii-art-schematic (cell-netlist return)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (cell:expand-nor INV-cell 4 4 "NOR2" "a 2-input Not-OR (or NOR) gate") NOR2-cell)
+            (if (equal? (cell:expand-nor INV-cell 4 4 "NOR2" "a 2-input Not-OR (or NOR) gate")
+                        NOR2-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell:expand-nor test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand cell oai-wise    ---------------------------
 
@@ -1161,7 +1066,8 @@
 ;   expand cell description by adding mosfet oai-like
 
 ;   Example:
-;   (cell:expand-oai NAND2-cell) => OAI21-cell
+;   (cell:expand-oai NAND2-cell)
+;       => OAI21-cell
 
 ;   Definition:
     (define cell:expand-oai
@@ -1181,15 +1087,14 @@
                     ; expand original netlist with new mosfets
                     (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node 1st-gate 2nd-gate anchor) 1st-gate 2nd-gate complementary))
                     ; get next free node for potentialy buffer addition
-                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                    (out-node (next-node-number (intermediate-nodes new-netlist))))
                 (begin
                     ; check netlist regading buffer limit
                     (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
                         ; netlist is yet still not buffered but already on level
-                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" out-node)))
                         ; already bufferd, set netlist
-                        (cell-netlist! cell (sort-netlist new-netlist))
-                    )
+                        (cell-netlist! cell (sort-netlist new-netlist)))
                     ; set new cell-id
                     (cell-id! cell cell-name)
                     ; set new cell description
@@ -1201,22 +1106,17 @@
                     ; set clock nodes
                     (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                     ; set additionals
-                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                )
-            )
-        )
-    )
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (cell:expand-oai NAND2-cell 4 4 "OAI21" "a 2-1-input OR-AND-Invert (or OAI) gate") OAI21-cell)
+            (if (equal? (cell:expand-oai NAND2-cell 4 4 "OAI21" "a 2-1-input OR-AND-Invert (or OAI) gate")
+                        OAI21-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell:expand-oai test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
 
 ;;  ------------    expand cell aoi-wise    ---------------------------
 
@@ -1227,7 +1127,8 @@
 ;   expand cell description by adding mosfet aoi-like
 
 ;   Example:
-;   (cell:expand-aoi NOR2-cell) => AOI21-cell
+;   (cell:expand-aoi NOR2-cell)
+;       => AOI21-cell
 
 ;   Definition:
     (define cell:expand-aoi
@@ -1247,15 +1148,14 @@
                     ; expand original netlist with new mosfets
                     (new-netlist (expand-netlist-parallel (expand-netlist-serial netlist 1st-node 1st-gate 2nd-gate anchor) 1st-gate 2nd-gate complementary))
                     ; get next free node for potentialy buffer addition
-                    (2nd-node (next-node-number (intermediate-nodes new-netlist))))
+                    (out-node (next-node-number (intermediate-nodes new-netlist))))
                 (begin
                     ; check netlist regading buffer limit
                     (if (and (null? (buffer-network new-netlist)) (>= (metric-highest-stacked new-netlist) buffer-limit))
                         ; netlist is yet still not buffered but already on level
-                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" 2nd-node)))
+                        (cell-netlist! cell (sort-netlist (replace-nodes (expand-netlist-buffer new-netlist (next-node-number (intermediate-nodes new-netlist)) "Z") "Y" out-node)))
                         ; already bufferd, set netlist
-                        (cell-netlist! cell (sort-netlist new-netlist))
-                    )
+                        (cell-netlist! cell (sort-netlist new-netlist)))
                     ; set new cell-id
                     (cell-id! cell cell-name)
                     ; set new cell description
@@ -1267,22 +1167,65 @@
                     ; set clock nodes
                     (cell-clocks! cell (sort-ports-ascending (clock-nodes (cell-netlist cell))))
                     ; set additionals
-                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))
-                )
-            )
-        )
-    )
+                    (cell-additional! cell (ascii-art-schematic (cell-netlist cell)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if build-in-self-test?
         (begin
-            (if (equal? (cell:expand-aoi NOR2-cell 4 4 "AOI21" "a 2-1-input AND-OR-Invert (or AOI) gate") AOI21-cell)
+            (if (equal? (cell:expand-aoi NOR2-cell 4 4 "AOI21" "a 2-1-input AND-OR-Invert (or AOI) gate")
+                        AOI21-cell)
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " cell:expand-aoi test" (current-error-port))
-            (newline (current-error-port))
-        )
-    )
+            (newline (current-error-port))))
+
+;;  ------------    expand cell pu-wise     ---------------------------
+
+;   Contract:
+;   cell:expand-pu : cell -> cell
+
+;   Purpose:
+;   expand cell description by adding transistor chain in parallel to pull-up
+
+;   Example:
+;   (cell:expand-pu INV-cell)
+;       => OAI21-cell
+
+;   Definition:
+    (define cell:expand-pu
+        (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
+            (begin
+                cell    ; !! FIXME
+            )))
+
+;;  ------------    expand cell pd-wise     ---------------------------
+
+;   Contract:
+;   cell:expand-pd : cell -> cell
+
+;   Purpose:
+;   expand cell description by adding transistor chain in parallel to pull-down
+
+;   Example:
+;   (cell:expand-pd INV-cell)
+;       => AOI21-cell
+
+;   Definition:
+    (define cell:expand-pd
+        (lambda (cell stacked-limit buffer-limit cell-name cell-descr)
+            (begin
+                cell    ; !! FIXME
+            )))
+
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if build-in-self-test?
+        (begin
+            (if (equal? (cell:expand-pd INV-cell 2 3 "AOI21" "a 2-1-input AND-OR-Invert gate")
+                        AOI21-cell)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " cell:expand-pd test" (current-error-port))
+            (newline (current-error-port))))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
