@@ -36,13 +36,30 @@
     Circuit
     \begin{figure}[h]
         \begin{center}
-            \begin{circuitdiagram}{12}{10}
+            \begin{circuitdiagram}{24}{17}
+            \pin{1}{3}{L}{X}    % pin X
             \usgate
-            \flipflop[\clockin{p}\setin{n}]{d}{6}{4}{R}{}{}
-            \pin{1}{4}{L}{X}   % pin X
-            \pin{1}{6}{L}{D}   % pin D
-            \pin{6}{9}{U}{SN}  % pin SN
-            \pin{11}{6}{R}{Q}  % pin Q
+            \gate{not}{5}{3}{R}{}{}
+            \wire{8}{3}{10}{3}
+            \junct{9}{3}
+            \wire{9}{3}{9}{7}
+            \gate{not}{13}{3}{R}{}{}
+            \wire{16}{3}{17}{3}
+            \wire{17}{3}{17}{7}
+            \pin{1}{9}{L}{D}    % pin D
+            \wire{2}{9}{6}{9}
+            \gate[\tristate{Dp}]{not}{9}{9}{R}{}{}
+            \wire{12}{9}{14}{9}
+            \junct{13}{9}
+            \wire{13}{9}{13}{12}
+            \gate[\tristate{Dp}]{not}{17}{9}{L}{}{}
+            \pin{12}{16}{L}{SN}  % pin SN
+            \gate{nand}{16}{14}{R}{}{}
+            \wire{20}{9}{22}{9}
+            \junct{21}{9}
+            \wire{21}{9}{21}{14}
+            \wire{20}{14}{21}{14}
+            \pin{23}{9}{R}{Q}   % pin Q
             \end{circuitdiagram}
         \end{center}
     \end{figure}
