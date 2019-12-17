@@ -85,10 +85,10 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
         )
     )
 
-;;  ------------    build-in self test  -------------------------------
+;;  ------------    built-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #t)
+    (define built-in-self-test? #t)
 
 ;;  -------------------------------------------------------------------
 ;;                       GLOBAL OPTIONS
