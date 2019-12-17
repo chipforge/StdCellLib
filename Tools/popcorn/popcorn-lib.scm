@@ -126,15 +126,15 @@
            stringlist->mosfet)
   (begin
 
-;;  ------------    build-in self test  -------------------------------
+;;  ------------    built-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #t)
+    (define built-in-self-test? #t)
 
-;;  ------------    build-in sanity checks  ---------------------------
+;;  ------------    built-in sanity checks  ---------------------------
 
     ; use this switch during development only
-    (define build-in-sanity-checks? #t)
+    (define built-in-sanity-checks? #t)
 
 ;;  -------------------------------------------------------------------
 ;;                  DESCRIPTION
@@ -174,7 +174,7 @@
             (if (memq (string-ref node 0) input-space) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (and (input-space? "A0") (not (input-space? "Z")))
                 (display "++ passed" (current-error-port))
@@ -204,7 +204,7 @@
             (if (memq (string-ref node 0) output-space) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (and (output-space? "Z") (not (output-space? "A0")))
                 (display "++ passed" (current-error-port))
@@ -232,7 +232,7 @@
             (if (memq (string-ref node 0) clock-space) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (clock-space? "X0")
                 (display "++ passed" (current-error-port))
@@ -260,7 +260,7 @@
             (if (member (string-ref node 0) node-space) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (node-space? "N2")
                 (display "++ passed" (current-error-port))
@@ -294,7 +294,7 @@
             (if (member node supply-space string-ci=?) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (and (supply-space? "Vdd") (not (supply-space? "gnd")))
                 (display "++ passed" (current-error-port))
@@ -328,7 +328,7 @@
             (if (member node ground-space string-ci=?) #t #f)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (and (ground-space? "gnd") (not (ground-space? "vdd")))
                 (display "++ passed" (current-error-port))
@@ -390,7 +390,7 @@
             (make-vector 9 "")))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (generate-mosfet) 
                         #("" "" "" "" "" "" "" "" ""))
@@ -417,7 +417,7 @@
             (vector-ref mosfet |circuit-type#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-type '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                         "nmos")
@@ -445,7 +445,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-type! '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "1") "nmos")
                         '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -473,7 +473,7 @@
                     "nmos")))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (mosfet-nmos? '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                 (display "++ passed" (current-error-port))
@@ -500,7 +500,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-nmos! '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -528,7 +528,7 @@
                     "pmos")))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (mosfet-pmos? '#("pmos" "A" "Y" "VDD" "VDD" 1 1 1 "g"))
                 (display "++ passed" (current-error-port))
@@ -555,7 +555,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-pmos! '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "g"))
                                       '#("pmos" "A" "Y" "GND" "GND" 1 1 -1 "g"))
@@ -582,7 +582,7 @@
             (vector-ref mosfet |gate-node#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-gate '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                "A")
@@ -610,7 +610,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-gate! '#("nmos" "B" "Y" "GND" "GND" 1 1 -1 "1") "A")
                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -637,7 +637,7 @@
             (vector-ref mosfet |drain-node#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-drain '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                     "Y")
@@ -665,7 +665,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-drain! '#("nmos" "A" "Z" "GND" "GND" 1 1 -1 "1") "Y")
                                        '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -692,7 +692,7 @@
             (vector-ref mosfet |source-node#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-source '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                          "GND")
@@ -720,7 +720,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-source! '#("nmos" "A" "Y" "VDD" "GND" 1 1 -1 "1") "GND")
                                         '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -747,7 +747,7 @@
             (vector-ref mosfet |bulk-node#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-bulk '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                              "GND")
@@ -775,7 +775,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-bulk! '#("nmos" "A" "Y" "GND" "VDD" 1 1 -1 "1") "GND")
                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -802,7 +802,7 @@
             (vector-ref mosfet |stacked#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-stacked '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                                       1)
@@ -830,7 +830,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-stacked! '#("nmos" "A" "Y" "GND" "GND" 0 1 -1 "1") 1)
                                          '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -856,7 +856,7 @@
             (vector-ref mosfet |xaxis-point#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-xaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                                       1)
@@ -884,7 +884,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-xaxis! '#("nmos" "A" "Y" "GND" "GND" 1 0 -1 "1") 1)
                                        '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -911,7 +911,7 @@
             (vector-ref mosfet |yaxis-point#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-yaxis '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                                         -1)
@@ -939,7 +939,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-yaxis! '#("nmos" "A" "Y" "GND" "GND" 1 1  0 "1") -1)
                                        '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -966,7 +966,7 @@
             (vector-ref mosfet |size#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-size '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                                                                           "1")
@@ -994,7 +994,7 @@
             mosfet))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-size! '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "0") "g")
                                       '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "g"))
@@ -1018,7 +1018,7 @@
 ;   Definition
     (define sanity-mosfet?
         (lambda (mosfet)
-            (if build-in-sanity-checks?
+            (if built-in-sanity-checks?
                 (begin
                     ; circuit type
                     (let ((type (mosfet-type mosfet)))
@@ -1386,7 +1386,7 @@
             (make-vector 7 '())))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (generate-cell)
                         '#(() () () () () () ()))
@@ -1413,7 +1413,7 @@
             (vector-ref cell |cell-id#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-id INV-cell)
                         "INV")
@@ -1458,7 +1458,7 @@
             (vector-ref cell |cell-text#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-text INV-cell)
                         "a Not (or Inverter) gate")
@@ -1503,7 +1503,7 @@
             (vector-ref cell |cell-inputs#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-inputs INV-cell)
                         '("A"))
@@ -1548,7 +1548,7 @@
             (vector-ref cell |cell-outputs#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-outputs INV-cell)
                         '("Y"))
@@ -1593,7 +1593,7 @@
             (vector-ref cell |cell-clocks#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-clocks INV-cell)
                         '())
@@ -1639,7 +1639,7 @@
             (vector-ref cell |cell-netlist#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-netlist INV-cell)
                         '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g")
@@ -1686,7 +1686,7 @@
             (vector-ref cell |cell-additional#|)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (cell-additional INV-cell)
                         '())
@@ -1728,7 +1728,7 @@
 ;   Definition
     (define sanity-netlist?
         (lambda (netlist)
-            (if build-in-sanity-checks?
+            (if built-in-sanity-checks?
                 (if (and (list? netlist)
                         ; at least one list member
                         (> (length netlist) 0)
@@ -1756,7 +1756,7 @@
 ;   Definition
     (define sanity-cell?
         (lambda (cell)
-            (if build-in-sanity-checks?
+            (if built-in-sanity-checks?
                 (begin
                     ; cell-id
                     (let ((id (cell-id cell)))
@@ -1863,7 +1863,7 @@
                     (buffer-network (cdr netlist))])))
 
     ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (buffer-network (cell-netlist BUF-cell))
                         '(#("pmos" "N1" "Z" "VDD" "VDD" 1 2  1 "g")
@@ -1907,7 +1907,7 @@
                 [else (pullup-network (cdr netlist))])))
 
     ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (pullup-network (cell-netlist INV-cell))
                         '(#("pmos" "A" "Y" "VDD" "VDD" 1 1 1 "g")))
@@ -1950,7 +1950,7 @@
                 [else (pulldown-network (cdr netlist))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (pulldown-network (cell-netlist INV-cell))
                         '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")))
@@ -1990,7 +1990,7 @@
                 [else (vdd-mosfets (cdr netlist))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (vdd-mosfets (cell-netlist INV-cell))
                         '(#("pmos" "A" "Y" "VDD" "VDD" 1 1 1 "g")))
@@ -2030,7 +2030,7 @@
                 [else (gnd-mosfets (cdr netlist))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (gnd-mosfets (cell-netlist INV-cell))
                         '(#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")))
@@ -2070,7 +2070,7 @@
                 [else (input-mosfets (cdr netlist) node)])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (input-mosfets (cell-netlist INV-cell) "A")
                         (cell-netlist INV-cell))
@@ -2108,7 +2108,7 @@
                     [else #f]))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (complementary-mosfets (cell-netlist INV-cell) #("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g"))
                         #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
@@ -2154,7 +2154,7 @@
             (list-sort mosfet<? netlist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-mosfet-ascending '(#("nmos" "A1" "N1" "GND" "GND" 2 1 -2 "2")
                                                  #("nmos" "A" "Y" "N1" "GND" 1 1 -1 "2")))
@@ -2183,7 +2183,7 @@
             (list-sort mosfet>? netlist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-mosfet-descending '(#("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g")
                                                   #("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g")))
@@ -2213,7 +2213,7 @@
                 (append pullup pulldown))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-netlist '(#("pmos" "A1" "Y"  "VDD" "VDD" 1 2  1 "g")
                                         #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
@@ -2255,7 +2255,7 @@
                 [else (filter-mosfet-char (cdr netlist) node)])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (filter-mosfet-char (cell-netlist NAND2-cell) "A")
                         (cell-netlist NAND2-cell))
@@ -2293,7 +2293,7 @@
                 [else (cons (car netlist) (filter-mosfet-remove (cdr netlist) node))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (filter-mosfet-remove (cell-netlist AOI21-cell) "B1")
                         '(#("pmos" "A" "Y"  "VDD" "VDD" 1 1  1 "2g")
@@ -2332,7 +2332,7 @@
                 [else (filter-mosfet-column (cdr netlist) column)])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (filter-mosfet-column (cell-netlist NAND2-cell) 2)
                         '(#("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g")))
@@ -2371,7 +2371,7 @@
                 [else (filter-mosfet-row (cdr netlist) row)])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (filter-mosfet-row (cell-netlist NAND2-cell) 1)
                         '(#("pmos" "A1" "Y" "VDD" "VDD" 1 2  1 "g")
@@ -2410,7 +2410,7 @@
                         [else (input-nodes (cdr netlist))])))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (input-nodes (cell-netlist NOR2-cell))
                         '("A" "A1"))
@@ -2460,7 +2460,7 @@
                         (cons mosfet (replace-nodes (cdr netlist) old-node new-node)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (replace-nodes (cell-netlist INV-cell)  "Y" "Z")
                         '(#("pmos" "A" "Z" "VDD" "VDD" 1 1  1 "g")
@@ -2501,7 +2501,7 @@
                         [else (intermediate-nodes (cdr netlist))])))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (intermediate-nodes (cell-netlist NOR2-cell))
                         '("N1"))
@@ -2539,7 +2539,7 @@
                         [else (clock-nodes (cdr netlist))])))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (clock-nodes (cell-netlist INV-cell))
                         '())
@@ -2577,7 +2577,7 @@
                         [else (output-nodes (cdr netlist))])))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (output-nodes (cell-netlist INV-cell))
                         '("Y"))
@@ -2688,7 +2688,7 @@
             (list-sort >node nodelist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-nodes-descending '("N1" "N2" "N3"))
                                                '("N3" "N2" "N1"))
@@ -2715,7 +2715,7 @@
             (list-sort <node nodelist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-nodes-ascending '("N3" "N2" "N1"))
                                               '("N1" "N2" "N3"))
@@ -2742,7 +2742,7 @@
             (list-sort <port portlist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-ports-ascending '("A1" "B" "A"))
                                               '("A" "A1" "B"))
@@ -2769,7 +2769,7 @@
             (list-sort >port portlist)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (sort-ports-descending '("A" "B" "B1"))
                                                '("B1" "B" "A"))
@@ -2807,7 +2807,7 @@
                         (max stacked (metric-tp-stacked (cdr netlist))))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-tp-stacked (cell-netlist OAI21-cell))
                         2)
@@ -2841,7 +2841,7 @@
                         (max stacked (metric-tn-stacked (cdr netlist))))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-tn-stacked (cell-netlist OAI21-cell))
                         2)
@@ -2868,7 +2868,7 @@
             (max (metric-tp-stacked netlist) (metric-tn-stacked netlist))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-highest-stacked (cell-netlist NAND2-cell))
                         2)
@@ -2898,7 +2898,7 @@
                     (max xaxis (metric-highest-xaxis (cdr netlist)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-highest-xaxis (cell-netlist OAI21-cell))
                         2)
@@ -2928,7 +2928,7 @@
                     (max yaxis (metric-highest-yaxis (cdr netlist)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-highest-yaxis (cell-netlist AOI21-cell))
                         2)
@@ -2958,7 +2958,7 @@
                     (min yaxis (metric-lowest-yaxis (cdr netlist)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (metric-lowest-yaxis (cell-netlist AOI21-cell))
                         -2)
@@ -2992,7 +2992,7 @@
                         (mosfet-by-position (cdr netlist) xaxis yaxis))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (mosfet-by-position (cell-netlist INV-cell) 1 1)
                         #("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g"))
@@ -3032,7 +3032,7 @@
                 (+ 1970 (exact (floor (/ (current-second) tropical-year)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (> (copyleft-year) 2018)
                 (display "++ passed" (current-error-port))
@@ -3060,7 +3060,7 @@
                 (string-append (car string-list) ", " (stringlist->csv (cdr string-list))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (stringlist->csv '("C2" "B1" "A0"))
                                            "C2, B1, A0")
@@ -3097,7 +3097,7 @@
                 mosfet)))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (stringlist->mosfet '("nmos" "A" "Y" "GND" "GND" "1" "1" "-1" "0"))
                                            '#("nmos" "A" "Y" "GND" "GND" 1 1 -1 "0"))
