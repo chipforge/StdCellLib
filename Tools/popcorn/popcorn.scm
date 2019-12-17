@@ -107,7 +107,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
    -H number           set cell high in metal tracks
    -l number           set maximum number of stacked transistors
    -m method           enlarge cell - nand nor aoi oia
-   -T file             specify technology file
+   -T file             TOML configuration file
    -v                  print verbose messages
    --version           print version and exit"
              eigen-name)
@@ -140,7 +140,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
     (define expansion-method 'none)
 
 ;   -T file
-    (define technology-file "scmos.tech")
+    (define toml-file "LS1u_std.toml")
 
 ;   -v
     (define verbose-mode #f)
@@ -229,7 +229,7 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                 [(equal? (car arguments) "-T")
                     (let ([value (car (cdr arguments))]
                           [tail (cddr arguments)])
-                        (set! technology-file value)  ; !! value check missing)]
+                        (set! toml-file value)  ; !! value check missing)]
                         (set-parameters-with-args! eigen-name tail))]
 
                 ; -v
@@ -298,8 +298,8 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
 
                     ; -T file
                     (format (at-port)
-"Technology File: ~a"
-                     technology-file)
+"TOML File: ~a"
+                     toml-file)
                     (newline (at-port))
 
                     ; -v
