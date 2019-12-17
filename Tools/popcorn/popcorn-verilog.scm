@@ -56,10 +56,10 @@
           verilog:export-bench)
   (begin
 
-;;  ------------    build-in self test  -------------------------------
+;;  ------------    built-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test? #f)
+    (define built-in-self-test? #f)
 
 ;;  -------------------------------------------------------------------
 ;;                  AUXILARY FUNCTIONS
@@ -86,7 +86,7 @@
                             (inputlist->stimulilist (cdr input-list)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (inputlist->stimulilist '("C" "B" "A"))
                         '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
@@ -116,7 +116,7 @@
                             (outputlist->responselist (cdr output-list)))))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (outputlist->responselist '("Z" "Y"))
                         '("response[1]" "response[0]"))
@@ -144,7 +144,7 @@
                 (cons "clk_tb" '()))))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (clocklist->signallist (list "X"))
                         '("clk_tb"))
@@ -177,7 +177,7 @@
                 [else (string-append "\\t\%b" (portlists->tableformat (cdr port-list)))])))
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test?
+    (if built-in-self-test?
         (begin
             (if (equal? (portlists->tableformat '("A" "Y"))
                         "\\t%b\\t:\\t%b")
