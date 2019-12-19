@@ -156,6 +156,7 @@ sub mymax($$)
 foreach my $mag(<*.mag>)
 {
   my $cellname=$mag; $cellname=~s/\.mag$//;
+  next if(defined($ENV{'CELL'}) && $ENV{'CELL'} ne $cellname);
 
   my @mins=();
   my @maxs=();
