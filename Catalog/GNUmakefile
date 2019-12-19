@@ -96,7 +96,7 @@ clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
 	$(RM) $(CELLS)
 	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
-	$(RM) *.mag *.svg
+	$(RM) *.mag *.svg *.ext *.res.ext *.spice *.nodes *.sp *.sim *.al *.res.lump
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
@@ -121,7 +121,11 @@ endif
 endif
 
 .PHONY: catalog
-catalog:    $(CELLS) libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
+catalog:    $(CELLS) 
+	
+.PHONY: layout
+layout: libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
+
 
 libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/transistor.sp
 	../Tools/perl/cell2spice.pl
@@ -142,32 +146,32 @@ qflow:	libresilicon.lef libresilicon.lib
 	cp libresilicon.lef /usr/local/share/qflow/tech/ls050/ls050_stdcells.lef
 	cp libresilicon.lib /usr/local/share/qflow/tech/ls050/ls05_stdcells.lib
 
-AND4.cell: NAND3.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
-
-NAND2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
-
-NAND3.cell: NAND2.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
-
-AOI21.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n aoi -c $@ $<
-
-OAI21.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n oai -c $@ $<
-
-NOR2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
-
-NOR3.cell: NOR2.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
-
-OR4.cell: NOR3.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ -b $(LIMIT) $<
+#AND4.cell: NAND3.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
+#
+#NAND2.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+#
+#NAND3.cell: NAND2.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+#
+#AOI21.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n aoi -c $@ $<
+#
+#OAI21.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n oai -c $@ $<
+#
+#NOR2.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
+#
+#NOR3.cell: NOR2.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
+#
+#OR4.cell: NOR3.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ -b $(LIMIT) $<
 
 doc/StdCellLib.pdf: *.cell libresilicon.sp
-	doc/docu.sh
+#	doc/docu.sh
 
 .PHONY: importQflow
 importQflow:
@@ -186,12 +190,14 @@ svgs=$(mags:.mag=.svg)
 svg: $(svgs)
 
 test:
+	echo For debugging run "export PySpiceLogLevel=DEBUG" before make
 	lctime --debug --liberty libresilicon.lib \
 	--include ../Tech/libresilicon.m \
-	--spice INV.sp \
+	--spice INV.spice \
 	--cell INV \
 	--output INV.lib
 	libertyviz -l INV.lib --cell INV --pin Y --related-pin A --table cell_rise
+	libertymerge -b libresilicon.lib -o output_liberty.lib -u INV.lib AND2X1.lib
 
 test2:
 	/usr/local/bin/lctime --debug --liberty ~/FreePDK45/osu_soc/lib/files/gscl45nm.lib \
