@@ -1,4 +1,7 @@
 from lclayout.layout.layers import *
+from lclayout.writer.magic_writer import MagWriter
+from lclayout.writer.lef_writer import LefWriter
+from lclayout.writer.gds_writer import GdsWriter
 
 # Physical size of one data base unit in meters.
 # Libresilicon: We wanted to choose 100nm, so 1 lambda is 5 units of 1e-7, so every lambda value has to be multiplied by 5
@@ -7,6 +10,7 @@ db_unit = 1e-9
 
 # Lambda - how many db_units is 1 lambda?
 l = 500
+um = 1000
 
 # Scale transistor width.
 transistor_channel_width_sizing = 1
@@ -48,12 +52,42 @@ output_map = {
     l_abutment_box: my_abutment_box
 }
 
+# Define a list of output writers.
+output_writers = [
+    MagWriter(
+        tech_name='scmos',
+        scale_factor=0.001, # Scale all coordinates by this factor (rounded down to next integer).
+        output_map={
+            l_via1: 'm2contact',
+            l_poly: 'polysilicon',
+            l_abutment_box: ['fence'],
+            l_metal1: 'metal1',
+            l_metal1_label: 'metal1',
+            l_metal2_label: 'metal2',
+            l_active: 'ndiffusion',
+            l_metal2_pin: 'metal2',
+            l_poly_contact: 'polycontact',
+            l_diff_contact: 'pdcontact'
+        }
+    ),
+
+    LefWriter(
+        db_unit=db_unit,
+        output_map=output_map
+    ),
+
+    GdsWriter(
+        db_unit=db_unit,
+        output_map=output_map
+    )
+]
+
 # Define how layers can be used for routing.
 # Example for a layer that can be used for horizontal and vertical tracks: {'MyLayer1' : 'hv'}
 # Example for a layer that can be contacted but not used for routing: {'MyLayer2' : ''}
 routing_layers = {
-    l_active: '',
-    l_poly: 'hv',
+    l_active: '', # Allow adding shapes on active layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
+    l_poly: '',
     l_metal1: 'hv',
     l_metal2: 'hv',
 }
@@ -94,16 +128,20 @@ gate_length = 2*l # 2.4.1 -> 2l
 # Minimum length a polysilicon gate must overlap the silicon.
 gate_extension = 2*l # 2.4.4 -> 2l
 
-# Routing pitch
-routing_grid_pitch_x = 4*l # unit_cell_width // 8
-routing_grid_pitch_y = 4*l # unit_cell_height // 30
+# Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
+transistor_offset_y = 12*l
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
 # `unit_cell_width` also corresponds to the pitch of the gates because gates are spaced on a regular grid.
-unit_cell_width = routing_grid_pitch_x      * 1 * 2
-unit_cell_height = max(routing_grid_pitch_y * 1 * 10,160) # minimum 16um due to pwell width + nwell-pwell spacing
+unit_cell_width = 16 * l
+unit_cell_height = 64 * l # minimum 16um due to pwell width + nwell-pwell spacing
+assert unit_cell_height >= 16*um, "minimum 16um due to pwell width + nwell-pwell spacing"
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
+
+# Routing pitch
+routing_grid_pitch_x = unit_cell_width // 2 // 1
+routing_grid_pitch_y = 2*l # unit_cell_height // 8 // 2
 
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
 grid_offset_x = routing_grid_pitch_x
@@ -125,6 +163,7 @@ minimum_pin_width = 2*l # 2l said leviathanch
 
 # Width of routing wires.
 wire_width = {
+    l_active: 2*l,
     l_poly: 2*l,   # 2.4.1 -> 2l
     l_metal1: 4*l, # 2.7.1 -> 4l
     l_metal2: 4*l, # 2.9.1 -> 4l
@@ -132,6 +171,7 @@ wire_width = {
 
 # Width of horizontal routing wires (overwrites `wire_width`).
 wire_width_horizontal = {
+    l_active: 2*l,
     l_poly: 2*l, # 2.4.1 -> 2l
     l_metal1: 4*l, # 2.7.1 -> 4l
     l_metal2: 4*l, # 2.9.1 -> 4l
@@ -195,11 +235,13 @@ orientation_change_penalty = 100
 
 # Routing edge weights per data base unit.
 weights_horizontal = {
+    l_active: 10000,
     l_poly: 10,
     l_metal1: 1,
     l_metal2: 2,
 }
 weights_vertical = {
+    l_active: 10000,
     l_poly: 10,
     l_metal1: 1,
     l_metal2: 2,
