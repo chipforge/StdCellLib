@@ -40,7 +40,7 @@ PROJECT =       StdCellLib
 #   directory pathes
 
 DOCUMENTSDIR =  .
-OUTPUTDIR =     ..
+OUTPUTDIR =     ../../$(RELEASEDIR)
 
 #   tool variables
 
