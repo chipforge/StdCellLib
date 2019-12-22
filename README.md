@@ -12,7 +12,7 @@ Any feedback is welcome by [Email](mailto://stdcelllib@nospam.chipforge.org "std
 
 ### LaTeX
 
-The Standard Cell Library uses LaTeX for documentation. On Debian based systems, LaTeX can be installed with
+The Standard Cell Library uses LaTeX for documentation. On Debian based systems, LaTeX can be installed (as root) with
 
 ```
 apt-get install texlive-latex-extra texlive-extra-utils texlive-latex-recommended
@@ -43,6 +43,20 @@ gosh -V
 
 some more "conservative" distributions with Long-Time-Support (LTS) are probably stuck at older versions.
 
+### gEDA
+
+The GPL'd suite and toolkit of Electronic Design Automation tools is re-used for the Standard Cell Library also; especially gschem for Schematic Entry special cells. While not using the PCB tools, a partial installation with
+
+```
+apt-get install geda-gschem geda-gnetlist geda-doc geda-gattrib geda-gsymchek
+```
+
+is sufficient. For simulation Icarus Verilog is used; also sailing under the gEDA flag.
+
+```
+apt-get install iverilog gtkwave
+```
+
 ### Magic
 
 Another software for the Popcorn tool, which should be installed before usage, is [Magic](http://opencircuitdesign.com/magic "http://opencircuitdesign.com/magic"). Magic is Open Source, but not part of all Linux distributions (it is missing on OpenSuse, Arch Linux etc). On Debian based systems,
@@ -55,17 +69,23 @@ works.
 
 ## Usage
 
-Please build and use the Standard Cells (and the cell generator) with the GNUmakefile system.
+The Standard Cells (and the cell generator) are controlled / ruled with GNU Make. On Debian based systems, Make can be installed with
+
+```
+apt-get install make
+```
+
+Please make yourself familiar with the GNUmakefile system - assure your are not root anymore - by typing:
 
 ```
 make
 ```
 
-shows a help screen with available targets.
+which shows a help screen with available targets.
 
 ### Popcorn Preparing
 
-Please prepare Popcorn first by typing
+First prepare Popcorn by typing
 
 ```
 make popcorn
@@ -75,7 +95,7 @@ This will generate the very usefull manual pages about the tool and the formats,
 
 ### Generate Cell Descriptions
 
-Once Popcorn is installed, you might run
+Once Popcorn is installed, you might copy and adapt a TOML configuration file from ./Template/TOML directory into your project root directory and run
 
 ```
 make catalog
@@ -89,7 +109,7 @@ Please re-generate the catalog only, if you know what you're doing and have stro
 
 t.b.d
 
-### Generate Library Documentation
+### Distribution
 
 Once all cells in all cell representations you need (library files, layout files, simulation models, etc.) are complete, you should run
 
@@ -100,14 +120,12 @@ make doc
 and build the holistic Standard Cell Library documention under
 
 ```
-./Documents/StdCellLib.pdf
+./Distribution/StdCellLib.pdf
 ```
 
 with all already generated cells.
 
-### Distribution
-
-Hopefully, you did a great job, did not forget a piece of work, and all things went fine.
+Hopefully, you did a great job, did not forget a piece of work, and all things went fine. Please check the documentation. Finaly
 
 ```
 make dist
