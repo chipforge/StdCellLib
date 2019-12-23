@@ -42,8 +42,9 @@ include include.mk
 SIMULATOR1 ?=   iverilog -g2 # -Wall
 SIMULATOR2 ?=   vvp # -v
 WAVEVIEWER ?=   gtkwave
+RAWVIEWER  ?=   gwave
 
-SPICE ?=        ngspice -b -c
+SPICE ?=        ngspice -b
 #NETLIST ?=     gnetlist -g spice-noqsi -o
 #NETLIST ?=      gnetlist -g spice -o
 NETLIST ?=      gnetlist -g spice-sdb -o
@@ -88,10 +89,14 @@ endif
 #                   RUN SPICE SIMULATION
 #   ----------------------------------------------------------------
 
-record: $(SIMULATIONDIR)/spice/$(CELL)_record.txt
+.PHONY: record
+record: $(SIMULATIONDIR)/spice/$(CELL).txt
 
-$(SIMULATIONDIR)/spice/$(CELL)_record.txt: $(RELEASEDIR)/spice/$(CELL).cir $(RELEASEDIR)/spice/BUF2.cir $(TBENCHDIR)/spice/$(CELL)_tb.sp
-	$(SPICE) $? > $@
+$(SIMULATIONDIR)/spice/$(CELL).txt: $(RELEASEDIR)/spice/$(CELL).cir $(RELEASEDIR)/spice/BUF2.cir $(TBENCHDIR)/spice/$(CELL)_tb.sp
+	$(SPICE) -r $@.raw -c $? > $@
+ifeq ($(MODE), gui)
+	$(RAWVIEWER) $@.raw
+endif
 
 $(TBENCHDIR)/spice/$(CELL)_tb.sp: $(TBENCHDIR)/geda/$(CELL)_tb.sch $(TBENCHDIR)/spice/$(CELL)_tb.cmd
 	$(NETLIST) $@ $<
