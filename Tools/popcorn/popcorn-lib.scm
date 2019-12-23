@@ -2296,7 +2296,7 @@
     (if built-in-self-test?
         (begin
             (if (equal? (filter-mosfet-remove (cell-netlist AOI21-cell) "B1")
-                        '(#("pmos" "A" "Y"  "VDD" "VDD" 1 1  1 "2g")
+                        '(#("pmos" "A" "Y"  "N1" "VDD" 1 1  1 "2g")
                           #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
