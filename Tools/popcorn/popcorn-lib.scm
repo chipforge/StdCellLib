@@ -129,7 +129,7 @@
 ;;  ------------    built-in self test  -------------------------------
 
     ; use this switch during development only
-    (define built-in-self-test? #t)
+    (define built-in-self-test? #f)
 
 ;;  ------------    built-in sanity checks  ---------------------------
 
