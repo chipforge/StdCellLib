@@ -33,23 +33,13 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
-#   project name
+#   common definitions
 
-PROJECT =       StdCellLib
+include ../../include.mk
 
 #   directory pathes
 
-DOCUMENTSDIR =  .
 OUTPUTDIR =     ../../$(RELEASEDIR)
-
-#   tool variables
-
-CAT ?=          @cat
-ECHO ?=         @echo # -e
-MV ?=           mv
-RM ?=           rm -f
-TAR ?=          tar -zh
-DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
@@ -63,15 +53,15 @@ LATEX ?=        pdflatex # -output-directory $(OUTPUTDIR)
 
 .PHONY: help
 help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) "    clean      - clean up all intermediate files"
-	$(ECHO) ""
-	$(ECHO) "    doc        - compile documentation"
-	$(ECHO) ""
+	#   ----------------------------------------------------------
+	#       available targets:
+	#   ----------------------------------------------------------
+	#
+	#   help       - print this help screen
+	#   clean      - clean up all intermediate files
+	#
+	#   doc        - compile documentation"
+	#
 
 
 .PHONY: clean
@@ -85,8 +75,14 @@ clean:
 .PHONY: doc
 doc:    pdf clean
 
+#   grep all hierarchical LaTeX files and build the up-to-date PDF
+
 .PHONY: pdf
 pdf:    $(PROJECT).tex
 	$(LATEX) $<
 	$(LATEX) $<
 	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
+
+%:
+	# generate datasheet / manual page
+

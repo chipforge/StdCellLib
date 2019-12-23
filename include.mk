@@ -56,8 +56,8 @@ RELEASEDIR =    Library
 #   tool variables
 
 CAT ?=          @cat
-ECHO ?=         @echo # -e
 MV ?=           mv
+RM ?=           rm -f
 TAR ?=          tar -zh
 GREP ?=         grep
 SED ?=          sed
