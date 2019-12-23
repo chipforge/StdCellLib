@@ -17,7 +17,7 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <stdcelllib@nospam.chipforge.org>
+#   Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -37,13 +37,10 @@
 
 include include.mk
 
-DISTRIBUTION =  $(CATALOGDIR)/ \
-                $(DOCUMENTSDIR)/*.pdf \
-                $(RELEASEDIR) \
-#               $(SIMULATIONDIR) \
-                $(SOURCESDIR) \
-                $(SYNTHESISDIR) \
-                $(TBENCHDIR)
+DISTRIBUTION =  $(RELEASEDIR)/*.pdf \
+                $(RELEASEDIR)/magic \
+                $(RELEASEDIR)/spice \
+                # still incomplete
 
 #   collect available cells
 
@@ -58,47 +55,37 @@ CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
 
 .PHONY: help
 help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) "    dist       - build a tarball with all important files"
-	$(ECHO) "    clean      - clean up all intermediate files"
-	$(ECHO) ""
-	$(ECHO) "    tools      - generate POPCORN tool"
-	$(ECHO) "    catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)"
-	$(ECHO) "    doc        - generate data book"
-	$(ECHO) ""
-	$(ECHO) "    alf [CELL=<cell>]      - generate ALF export"
-	$(ECHO) "    record [CELL=<cell>]   - measure / characterize cell"
-	$(ECHO) "    magic [CELL=<cell>]    - generate MAGIC layout"
-	$(ECHO) "    spice [CELL=<cell>]    - generate SPICE models"
-	$(ECHO) "    svg [CELL=<cell>]      - generate SVG layout"
-	$(ECHO) "    verilog [CELL=<cell>]  - generate VERILOG cell models"
-	$(ECHO) ""
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available cells:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "$(CELLS)"
-	$(ECHO) ""
+	#   ----------------------------------------------------------
+	#       available targets:
+	#   ----------------------------------------------------------
+	#
+	#   help       - print this help screen
+	#   dist       - build a tarball with all important files
+	#   clean      - clean up all intermediate files
+	#
+	#   tools      - generate POPCORN tool
+	#   catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)
+	#   doc        - generate complete data book
+	#
+	#   datasheet [CELL=<cell>] - generate cell data sheet
+	#   record [CELL=<cell>]   - measure / characterize cell
+	#
+	#   ----------------------------------------------------------
+	#       available cells:
+	#   ----------------------------------------------------------
+	#
+	#   $(CELLS)
+	#
 
-#   make archive by building a tarball with all important files
-
-.PHONY: dist
-dist: clean
-	$(ECHO) "---- build a tarball with all important files ----"
-	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
-
-#   well, 'clean' directories before distributing
+#   'clean' directories
 
 .PHONY: clean
 clean:
-	$(ECHO) "---- clean up all intermediate files ----"
+	# ---- clean up all intermediate files ----
 	$(MAKE) -f simulation.mk $@
 	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
 #               TOOLS
@@ -142,9 +129,34 @@ record:
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
 
+#   generate data sheet for one dedicated cell
+
+.PHONY: datasheet
+datasheet:
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $(CELL)
+
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
 doc:
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+
+#   ----------------------------------------------------------------
+#               DISTRIBUTION
+#   ----------------------------------------------------------------
+
+#   make archive by building a tarball with all important files
+
+.PHONY: dist
+dist: $(CELLS) clean doc
+	# ---- build a tarball with all important files ----"
+	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
+
+#   make all distributed file formats
+
+%:
+	# 1st, ..
+	# 2nd, ..
+	# done, make data sheets
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 
