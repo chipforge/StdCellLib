@@ -78,6 +78,7 @@
            NAND2-cell
            NOR2-cell
            OAI21-cell
+           OOAI22-cell
            AOI21-cell
            ; cell descriptions
            generate-cell
@@ -184,7 +185,7 @@
 
 ;;  ------------    output node names   -------------------------------
 
-    (define output-space '(#\Q #\Y #\Z))
+    (define output-space '(#\Y #\Z #\Q))
 
 ;   Contract:
 ;   output-space? list-of-ports -> boolean
@@ -1161,10 +1162,10 @@
 
     (define BUF-cell '#("BUF" "a non-inverting Buffer gate"
                         ("A") ("Z") ()
-                        (#("pmos" "N1" "Z" "VDD" "VDD" 1 2  1 "g")
-                         #("nmos" "N1" "Z" "GND" "GND" 1 2 -1 "1")
-                         #("pmos" "A" "N1" "VDD" "VDD" 1 1  1 "g")
-                         #("nmos" "A" "N1" "GND" "GND" 1 1 -1 "1"))
+                        (#("pmos" "Y" "Z" "VDD" "VDD" 1 2  1 "g")
+                         #("nmos" "Y" "Z" "GND" "GND" 1 2 -1 "1")
+                         #("pmos" "A" "Y" "VDD" "VDD" 1 1  1 "g")
+                         #("nmos" "A" "Y" "GND" "GND" 1 1 -1 "1"))
                         ()))
 
 ;;  ------------    Example : NAND2-cell    ---------------------------
@@ -1293,8 +1294,8 @@
                            ("B1" "B" "A1" "A") ("Y") ()
                            (#("pmos" "B1" "N2" "VDD" "VDD" 2 2  2 "2g")
                             #("pmos" "B"  "Y"  "N2"  "VDD" 1 2  1 "2g")
-                            #("pmos" "A1" "N1" "VDD" "VDD" 2 1  2 "g")
-                            #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "g")
+                            #("pmos" "A1" "N1" "VDD" "VDD" 2 1  2 "2g")
+                            #("pmos" "A"  "Y"  "VDD" "VDD" 1 1  1 "2g")
                             #("nmos" "A"  "Y"  "N3"  "GND" 1 1 -1 "2")
                             #("nmos" "A1" "Y"  "N3"  "GND" 1 2 -1 "2")
                             #("nmos" "B"  "N3" "GND" "GND" 2 1 -2 "2")

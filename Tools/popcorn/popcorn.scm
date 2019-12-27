@@ -368,6 +368,18 @@ Copyright (c) 2019 by chipforge - <popcorn@nospam.chipforge.org>"
                                     (cell:write-file (cell:expand-oai (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
                                     0)] ; exit value
 
+                            ; pu-wise
+                            [(equal? expansion-method 'pu)
+                                (begin
+                                    (cell:write-file (cell:expand-pu (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                                    0)] ; exit value
+
+                            ; pd-wise
+                            [(equal? expansion-method 'pd)
+                                (begin
+                                    (cell:write-file (cell:expand-pd (cell:read-file cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                                    0)] ; exit value
+
                             ; selection failed, unknown expansion-method
                             [else
                                 (begin
