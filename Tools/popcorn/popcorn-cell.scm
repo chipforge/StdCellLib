@@ -1237,7 +1237,7 @@
                         ; use same type as anchor
                         (mosfet-type! new-mosfet (mosfet-type anchor))
                         ; use new-gate node
-                        (mosfet-gate! new-mosfet (string-append (string (string-ref new-gate 0)) (combine-input-num-node new-gate (- stacked-limit 1))))
+                        (mosfet-gate! new-mosfet (string-append (combine-input-num-node (string (string-ref new-gate 0)) (- stacked-limit 1))))
                         ; use same source as anchor (hopefully a power rail)
                         (mosfet-source! new-mosfet (mosfet-source anchor))
                         ; use new-node number between original and new mosfet
@@ -1258,8 +1258,9 @@
 ;   Test:   !! replace code by a portable SRFI test environemt
     (if built-in-self-test?
         (begin
-            (if (equal? (generate-netlist-row "B" "N1" #("pmos" "A" "Y" "VDD" "VDD" 1 1 1 "g") 2)
-                        (pullup-network (cell-netlist AOI21-cell)))
+            (if (equal? (generate-netlist-row "B" "N3" #("pmos" "A1" "Y" "VDD" "VDD" 1 2 1 "2g") 2)
+                          '(#("pmos" "B1" "N3" "VDD" "VDD" 2 2  2 "2g")
+                            #("pmos" "B"  "N3" "VDD" "VDD" 2 1  2 "2g")))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " generate-netlist-row test" (current-error-port))
@@ -1377,7 +1378,6 @@
                     (cell-text! return cell-descr)
                     ; set input nodes
                     (cell-inputs! return (sort-ports-descending (input-nodes (cell-netlist return))))
-(sanity-cell? return) ; !!!
                     ; set output nodes
                     (cell-outputs! return (sort-ports-descending (output-nodes (cell-netlist return))))
                     ; set clock nodes
