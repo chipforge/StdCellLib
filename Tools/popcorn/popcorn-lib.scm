@@ -80,6 +80,7 @@
            OAI21-cell
            OOAI22-cell
            AOI21-cell
+           AAOI22-cell
            ; cell descriptions
            generate-cell
            cell-id          cell-id!
@@ -1339,6 +1340,45 @@
                            #("nmos" "B1" "N2" "GND" "GND" 2 2 -2 "2"))
                           ()))
 
+;;  ------------    Example : AAOI22-cell   ---------------------------
+
+;               ^ Vdd               ^ Vdd
+;               |                   |
+;           | --+               | --+
+;      B --o| |   2g      B1 --o| |   2g
+;           | --+               | --+
+;               | N3                |
+;               *-------------------*
+;               |                   |
+;           | --+               | --+
+;      A --o| |   2g      A1 --o| |   2g
+;           | --+               | --+
+;               |                   |
+;               *-------------------*---- Y
+;               |                   |
+;           | --+               | --+
+;      A ---| |   2        B ---|     2
+;           | --+               | --+
+;               | N1                | N2
+;               |                   |
+;           | --+               | --+
+;     A1 ---| |   2       B1 ---|     2
+;           | --+               | --+
+;               |                   |
+;              _|_ Gnd             _|_ Gnd
+
+    (define AAOI22-cell '#("AAOI22" "a 2-2-input AND-AND-OR-Invert gate"
+                          ("A1" "A") ("Y") ()
+                          (#("pmos" "B1" "N3" "VDD" "VDD" 2 2  2 "2g")
+                           #("pmos" "B"  "N3" "VDD" "VDD" 2 1  2 "2g")
+                           #("pmos" "A1" "Y"  "N3"  "VDD" 1 2  1 "2g")
+                           #("pmos" "A"  "Y"  "N3"  "VDD" 1 1  1 "2g")
+                           #("nmos" "A"  "Y"  "N1"  "GND" 1 1 -1 "2")
+                           #("nmos" "A1" "N1" "GND" "GND" 2 1 -2 "2")
+                           #("nmos" "B"  "Y"  "N2"  "GND" 1 2 -1 "2")
+                           #("nmos" "B1" "N2" "GND" "GND" 2 2 -2 "2"))
+                          ()))
+
 ;;  -------------------------------------------------------------------
 ;;                  CELL DATA STRUCTURE
 ;;  -------------------------------------------------------------------
@@ -1826,10 +1866,13 @@
                     ))))    ;; !!
 
     (sanity-cell? INV-cell)
+    (sanity-cell? BUF-cell)
     (sanity-cell? NAND2-cell)
     (sanity-cell? NOR2-cell)
     (sanity-cell? OAI21-cell)
+    (sanity-cell? OOAI22-cell)
     (sanity-cell? AOI21-cell)
+    (sanity-cell? AAOI22-cell)
 
 ;;  -------------------------------------------------------------------
 ;;                  FUNCTIONS on NETLISTs
