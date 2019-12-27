@@ -121,7 +121,7 @@ ratio = 1.5
 #   as n-channel mosfets. Unfortunately, the carrier mobility in both
 #   types differs - p-channel mosfets are slower. To compensate this,
 #   cells usually use wider p-channel mosfets than n-channels ones. The
-#   relationship between this sizes is called γ (gamma); and of course
+#   relationship between these sizes is called γ (gamma); and of course
 #   depends on technology (or the doping to be more precise). Ideal
 #   values are somewhere around 3, but such a value may be considered
 #   impractically large; quite common is 2.
