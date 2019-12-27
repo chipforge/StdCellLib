@@ -34,14 +34,9 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
-#   project name
+#   common definitions
 
-PROJECT =           StdCellLib
-
-#   directory pathes
-
-DOCUMENTSDIR =      .
-OUTPUTDIR =         ..
+include ../include.mk
 
 #   tool variables
 
@@ -82,22 +77,21 @@ POPCORN ?=          ../Tools/popcorn/popcorn \
 
 .PHONY: help
 help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) "    clean      - clean up all intermediate files"
-	$(ECHO) ""
-	$(ECHO) "    catalog    - compile *all* catalog cells (see list below)"
-	$(ECHO) "    cell CELL=<cell> - compile up to dedicated catalog cell"
-	$(ECHO) ""
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available cells [limit=" $(LIMIT) "+ buffer=" $(BUFFER)"]:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) $(CELLS)
-	$(ECHO) ""
+	#   ----------------------------------------------------------
+	#       available targets:
+	#   ----------------------------------------------------------
+	#
+	#   help       - print this help screen
+	#   clean      - clean up all intermediate files
+	#
+	#   catalog    - compile *all* catalog cells (see list below)
+	#   cell CELL=<cell> - compile up to dedicated catalog cell
+	#
+	#   ----------------------------------------------------------
+	#       available cells [limit=$(LIMIT) + buffer=$(BUFFER)]:
+	#   ----------------------------------------------------------
+	#   $(CELLS)
+	#
 
 .PHONY: clean
 clean:
@@ -105,11 +99,11 @@ clean:
 
 .PHONY: header
 header:
-	$(ECHO) "\t _ __   ___  _ __   ___ ___  _ __ _ __"
-	$(ECHO) "\t| '_ \ / _ \| '_ \ / __/ _ \| '__| '_ \\"
-	$(ECHO) "\t| |_) | (_) | |_) | (_| (_) | |  | | | |"
-	$(ECHO) "\t| .__/ \___/| .__/ \___\___/|_|  |_| |_|"
-	$(ECHO) "\t|_|    run: |_| $(DATE)"
+	#    _ __   ___  _ __   ___ ___  _ __ _ __
+	#   | '_ \ / _ \| '_ \ / __/ _ \| '__| '_ \\
+	#   | |_) | (_) | |_) | (_| (_) | |  | | | |
+	#   | .__/ \___/| .__/ \___\___/|_|  |_| |_|
+	#   |_|launched:|_| $(DATE)
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
