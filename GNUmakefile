@@ -33,9 +33,12 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
+#   project root directory, relative, used inside include.mk file
+PRD =               .
+
 #   common definitions
 
-include include.mk
+include $(PRD)/include.mk
 
 DISTRIBUTION =  $(RELEASEDIR)/*.pdf \
                 $(RELEASEDIR)/magic \

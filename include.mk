@@ -43,15 +43,15 @@ PROJECT =       StdCellLib
 
 #   directory paths
 
-CATALOGDIR =    Catalog
-DOCUMENTSDIR =  Documents
-SIMULATIONDIR = Simulation
-SOURCESDIR =    Sources
-SYNTHESISDIR =  Synthesis
-TEMPDIR =       Intermediate
-TBENCHDIR =     TBench
-TOOLSDIR =      Tools
-RELEASEDIR =    Library
+CATALOGDIR =    $(PRD)/Catalog
+DOCUMENTSDIR =  $(PRD)/Documents
+SIMULATIONDIR = $(PRD)/Simulation
+SOURCESDIR =    $(PRD)/Sources
+SYNTHESISDIR =  $(PRD)/Synthesis
+TEMPDIR =       $(PRD)/Intermediate
+TBENCHDIR =     $(PRD)/TBench
+TOOLSDIR =      $(PRD)/Tools
+RELEASEDIR =    $(PRD)/Library
 
 #   tool variables
 

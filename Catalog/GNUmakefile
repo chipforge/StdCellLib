@@ -34,13 +34,15 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
+#   project root directory, relative, used inside include.mk file
+PRD =               ..
+
 #   common definitions
 
-include ../include.mk
+include $(PRD)/include.mk
 
 #   tool variables
 
-ECHO ?=             @echo # -e
 MV ?=               mv
 RM ?=               rm -f
 TAR ?=              tar -zh
@@ -64,7 +66,7 @@ LEVEL ?=            $(LIMIT)
 # textual description for cell functionality
 DESCR ?=            '?'
 
-POPCORN ?=          ../Tools/popcorn/popcorn \
+POPCORN ?=          $(TOOLSDIR)/popcorn/popcorn \
                     -l $(LEVEL) \
                     -b $(BUFFER) \
                     -D $(DESCR)
