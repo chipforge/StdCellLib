@@ -66,7 +66,7 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   project tools
 
-POPCORN ?=      $(TOOLSDIR)/popcorn/popcorn # -v
+#POPCORN ?=      $(TOOLSDIR)/popcorn/popcorn # -v
 SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
