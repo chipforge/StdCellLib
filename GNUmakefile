@@ -88,6 +88,7 @@ clean:
 	$(MAKE) -f simulation.mk $@
 	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+	# ---- clean generated catalog files ----
 	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
