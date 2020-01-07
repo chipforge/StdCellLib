@@ -66,7 +66,7 @@ help:
 
 .PHONY: clean
 clean:
-	$(RM) *.aux *.idx *.log *.toc *.out
+	-$(RM) *.aux *.idx *.log *.toc *.out
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS

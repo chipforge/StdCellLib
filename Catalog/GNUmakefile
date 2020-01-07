@@ -97,7 +97,7 @@ help:
 
 .PHONY: clean
 clean:
-	$(RM) $(CELLS)
+	-$(RM) $(CELLS)
 
 .PHONY: header
 header:
