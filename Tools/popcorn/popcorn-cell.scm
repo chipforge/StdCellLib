@@ -66,12 +66,12 @@
 ;;  ------------    built-in self test  -------------------------------
 
     ; use this switch during development only
-    (define built-in-self-test? #t)
+    (define built-in-self-test? #f)
 
 ;;  ------------    built-in sanity checks  ---------------------------
 
     ; use this switch during development only
-    (define built-in-sanity-checks? #t)
+    (define built-in-sanity-checks? #f)
 
 ;;  -------------------------------------------------------------------
 ;;                  DESCRIPTION
@@ -1341,8 +1341,8 @@
 ;   expand cell description by adding transistor chain in parallel to pull-up
 
 ;   Example:
-;   (cell:expand-pu INV-cell)
-;       => OAI21-cell
+;   (cell:expand-pu NAND2-cell)
+;       => OOAI22-cell
 
 ;   Definition:
     (define cell:expand-pu
@@ -1352,7 +1352,7 @@
                     ; shortend netlist call
                     (org-netlist (cell-netlist cell))
                     ; search anchor mosfet
-                    (anchor (find-mosfet-anchor (pulldown-network org-netlist) stacked-limit))
+                    (anchor (find-mosfet-anchor (pullup-network org-netlist) stacked-limit))
                     ; get complementary mosfet regarding anchor
                     (complementary (complementary-mosfets org-netlist anchor))
                     ; get next gate node
@@ -1386,6 +1386,17 @@
                     (cell-additional! return (ascii-art-schematic (cell-netlist return)))
                     ))))
 
+;   Test:   !! replace code by a portable SRFI test environemt
+    (if built-in-self-test?
+        (begin
+(display (cell-netlist (cell:expand-pu NAND2-cell 3 2 "OOAI22" "a 2-2-input OR-OR-AND-Invert gate")) (current-error-port))
+            (if (equal? (cell:expand-pu NAND2-cell 3 2 "OOAI22" "a 2-2-input OR-OR-AND-Invert gate")
+                        OOAI22-cell)
+                (display "++ passed" (current-error-port))
+                (display "-- failed" (current-error-port)))
+            (display " cell:expand-pu test" (current-error-port))
+            (newline (current-error-port))))
+
 ;;  ------------    expand cell pd-wise     ---------------------------
 
 ;   Contract:
@@ -1396,7 +1407,7 @@
 
 ;   Example:
 ;   (cell:expand-pd INV-cell)
-;       => AOI21-cell
+;       => AAOI22-cell
 
 ;   Definition:
     (define cell:expand-pd

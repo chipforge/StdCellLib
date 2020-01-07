@@ -136,7 +136,7 @@
 ;;  ------------    built-in sanity checks  ---------------------------
 
     ; use this switch during development only
-    (define built-in-sanity-checks? #t)
+    (define built-in-sanity-checks? #f)
 
 ;;  -------------------------------------------------------------------
 ;;                  DESCRIPTION
