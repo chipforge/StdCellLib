@@ -39,7 +39,7 @@ include include.mk
 
 DISTRIBUTION =  $(CATALOGDIR)/ \
                 $(DOCUMENTSDIR)/*.pdf \
-                $(RELEASEDIR) \
+#                $(RELEASEDIR) \
 #               $(SIMULATIONDIR) \
                 $(SOURCESDIR) \
                 $(SYNTHESISDIR) \
