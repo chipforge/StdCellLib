@@ -62,6 +62,7 @@ output_writers = [
             l_poly: 'polysilicon',
             l_abutment_box: ['fence'],
             l_metal1: 'metal1',
+            l_metal2: 'metal2',
             l_metal1_label: 'metal1',
             l_metal2_label: 'metal2',
             l_active: 'ndiffusion',
