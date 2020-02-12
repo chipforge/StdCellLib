@@ -4,6 +4,10 @@
  
 .model  PMOS_VTL  pmos  level = 54
 
+.model  nmos  nmos  level = 54
+ 
+.model  pmos  pmos  level = 54
+
 .model  nfet  nmos  level = 54
  
 .model  pfet  pmos  level = 54
