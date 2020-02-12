@@ -42,6 +42,8 @@ EOF
 
 our $labels="";
 
+our $row=0;
+
 foreach(@cells)
 {
   my @mins=();
@@ -72,21 +74,33 @@ foreach(@cells)
   my $height=$maxs[0]-$mins[0];
   my $width=$maxs[1]-$mins[1];
 
+  my $dir=($row%2)?"-1":"1";
+
+  my $bx=$x;
+  my $by=$y-$mins[0];
+
+  if($row%2)
+  {
+    $bx=$x+$width;
+    $by=$y+$height+$mins[0];
+  }
 
   print "use $name  $name"."_0\n";
   print "timestamp $timestamp\n";
-  print "transform 1 0 $x 0 1 $y\n";
+  print "transform $dir 0 $bx 0 $dir $by\n";
   print "box 0 0 $width $height\n";
 
   my $lx=$x+$width/2;
   my $ly=$y+$height/2;
-  $labels.="flabel space $lx $ly $lx $ly 0 FreeSans 1600 0 0 0 $name\n";
+
+  $labels.="flabel space $lx $ly $lx $ly 0 FreeSans 80 0 0 0 $name\n";
 
   $x+=$width;
   if(int($counter/$squared)>int(($counter-1)/$squared))
   {
     $x=0;
     $y+=$height;
+    $row++;
   }
 
   $counter++; 
