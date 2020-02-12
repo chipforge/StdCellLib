@@ -142,9 +142,9 @@ libresilicon.lib: *.cell libresilicon.sp
 
 .PHONY: qflow
 qflow:	libresilicon.lef libresilicon.lib
-	mkdir -p /usr/local/share/qflow/tech/ls050
-	cp libresilicon.lef /usr/local/share/qflow/tech/ls050/ls050_stdcells.lef
-	cp libresilicon.lib /usr/local/share/qflow/tech/ls050/ls05_stdcells.lib
+	sudo mkdir -p /usr/local/share/qflow/tech/ls050
+	sudo cp libresilicon.lef /usr/local/share/qflow/tech/ls050/ls050_stdcells.lef
+	sudo cp libresilicon.lib /usr/local/share/qflow/tech/ls050/ls05_stdcells.lib
 
 #AND4.cell: NAND3.cell
 #	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
