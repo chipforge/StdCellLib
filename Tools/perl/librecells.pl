@@ -9,7 +9,7 @@ my $sp=$ARGV[0]||"libresilicon.sp";
 $ENV{'PySpiceLogLevel'}="DEBUG" if($debug);
 undef($ENV{'PySpiceLogLevel'}) unless($debug);
 
-open IN,"<$sp";
+open IN,"<$sp" || die "Could not open file $sp: $!\n";
 while(<IN>)
 {
   if(m/^\.subckt (\w+)/)
@@ -29,12 +29,14 @@ while(<IN>)
     print "$cmd\n";
     system $cmd;
 
-    if(-f "outputlib/$cellname.mag")
+    if(-f "outputlib/$cellname.mag") # Has lclayout exported magic directly?
     {
+      # Then we dont have to convert it
       system "cp outputlib/$cellname.mag $cellname.mag";
     }
     else
     {
+      # otherwise convert GDS2 to magic:
       # For this processing step, the refrenced libresilicon.tech file needs to contain the cifinput section to import from GDS and the extract section to do the parasitic extraction:
       open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech ".($debug?"":">/dev/null 2>/dev/null");
       print OUT <<EOF
@@ -53,11 +55,14 @@ quit -noprompt
 EOF
 ; # $cellname.spice
       close OUT;
-
       exit;
     }
 
-    system "cp $cellname.fixed $cellname.mag" if(-f "$cellname.fixed");
+    if(-f "$cellname.fixed")
+    {
+      print "We found a manually fixed $cellname.fixed magic file for testing so we using that one instead.\n";
+      system "cp $cellname.fixed $cellname.mag";
+    }
     unlink "$cellname.nodes";
     unlink "$cellname.res.ext";
     unlink "$cellname.spice";
@@ -107,26 +112,16 @@ quit -noprompt
 EOF
 ;
     close OUT;
-    #system "grep -v \"option scale\" $cellname.spice >$cellname.spice2";
-    open SIN,"<$cellname.spice";
-    open SOUT,">$cellname.spice2";
-    while(<SIN>)
-    {
-      s/\.option scale=1u//;
-      s/w=1000/w=1u/;
-      s/l=1000/l=1u/;
-      print SOUT $_;
-    }
-    close SIN;
-    close SOUT;
 
-    system "mv $cellname.spice2 $cellname.spice";
-
+    print "Generating Liberty Template:\n";
     system "../Tools/perl/libgen.pl >$cellname.libtemplate";
-    system "lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib";
-    system "lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp --cell $cellname --output $cellname.lib";
+    $cmd="lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib"; # This is for fully extracted parasitics
+    #print "$cmd\n"; system($cmd);
 
-    #system "libertyviz -l INV.lib --cell INV --pin Y --related-pin A --table cell_rise";
+    $cmd="lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib"; # This is for pure spice files without parasitics
+    print "$cmd\n"; system($cmd);
+
+    print "Visualisation: libertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
 
 
 
