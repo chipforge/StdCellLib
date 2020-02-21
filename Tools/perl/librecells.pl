@@ -2,7 +2,7 @@
 
 mkdir "outputlib";
 
-my $debug=1;
+my $debug=0;
 
 my $sp=$ARGV[0]||"libresilicon.sp";
 
@@ -115,10 +115,10 @@ EOF
 
     print "Generating Liberty Template:\n";
     system "../Tools/perl/libgen.pl >$cellname.libtemplate";
-    $cmd="lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib"; # This is for fully extracted parasitics
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
-    $cmd="lctime --debug --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib"; # This is for pure spice files without parasitics
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
 
     print "Visualisation: libertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
