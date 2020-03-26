@@ -130,6 +130,8 @@ layout: libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag do
 libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/transistor.sp
 	../Tools/perl/cell2spice.pl
 	../Tools/perl/librecells.pl
+	rm -f libresilicon.lib
+	libertymerge -b libresilicon.libtemplate -o libresilicon.lib -u *.lib
 
 demoboard.mag: *.cell libresilicon.sp
 	perl ../Tools/perl/demoboard.pl >demoboard.mag
@@ -138,7 +140,10 @@ libresilicon.lef: *.cell libresilicon.sp
 	../Tools/perl/lefgen.pl outputlib/*.lef >libresilicon.lef
 
 libresilicon.lib: *.cell libresilicon.sp
-	../Tools/perl/libgen.pl >libresilicon.lib
+	../Tools/perl/libgen.pl >libresilicon.libtemplate
+	rm -f libresilicon.lib
+	libertymerge -b libresilicon.libtemplate -o libresilicon.lib -u *.lib
+
 
 .PHONY: qflow
 qflow:	libresilicon.lef libresilicon.lib
