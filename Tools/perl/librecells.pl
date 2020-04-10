@@ -25,7 +25,7 @@ while(<IN>)
     }
     unlink "outputlib/$cellname.mag";
     system "../Tools/perl/cell2spice.pl $cellname";
-    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer";
+    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer >$cellname.log 2>$cellname.err";
     print "$cmd\n";
     system $cmd;
 
@@ -38,7 +38,7 @@ while(<IN>)
     {
       # otherwise convert GDS2 to magic:
       # For this processing step, the refrenced libresilicon.tech file needs to contain the cifinput section to import from GDS and the extract section to do the parasitic extraction:
-      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech ".($debug?"":">/dev/null 2>/dev/null");
+      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
       print OUT <<EOF
 drc off
 cellname rename (UNNAMED) $cellname
@@ -71,7 +71,7 @@ EOF
     unlink "$cellname.res.lump";
     unlink "$cellname.sim";
     print "First magic call:\n";
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag ".($debug?"":">/dev/null 2>/dev/null");
+    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 extract warn all
 extract all
@@ -93,7 +93,7 @@ EOF
     #system "cat $cellname.res.ext >>$cellname.ext";
     system "cat $cellname.ext";
     print "Second magic call:\n";
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag ".($debug?"":">/dev/null 2>/dev/null");
+    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 ext2sim rthresh 0
 ext2sim cthresh 0
@@ -114,11 +114,11 @@ EOF
     close OUT;
 
     print "Generating Liberty Template:\n";
-    system "../Tools/perl/libgen.pl >$cellname.libtemplate";
-    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib"; # This is for fully extracted parasitics
+    system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
-    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib"; # This is for pure spice files without parasitics
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
 
     print "Visualisation: libertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
