@@ -157,6 +157,7 @@ foreach my $mag(<*.mag>)
 {
   my $cellname=$mag; $cellname=~s/\.mag$//;
   next if(defined($ENV{'CELL'}) && $ENV{'CELL'} ne $cellname);
+  next unless(-f "$cellname.cell"); # We only want generated cells, no demoboards or other stuff
 
   my @mins=();
   my @maxs=();
@@ -191,7 +192,7 @@ foreach my $mag(<*.mag>)
   }
   else
   {
-    print STDERR "Could not read: $!\n";
+    print STDERR "Could not read cell $cellname.cell: $!\n";
   }
   my $area=defined($maxs[0])?($maxs[0]-$mins[0])*($maxs[1]-$mins[1]):1;
 
