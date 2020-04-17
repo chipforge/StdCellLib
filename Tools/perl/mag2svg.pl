@@ -11,8 +11,8 @@ print "Usage: mag2svg input.mag output.svg\n";
 
 if(-f "$mag.mag")
 {
-  open MAGIC,"|magic -d XR -noconsole -nowindow $mag";
-  print MAGIC "plot svg $svg\nquit\n";
+  open MAGIC,"|magic -d XR -noconsole -nowindow -T libresilicon $mag";
+  print MAGIC "plot svg $svg\nexit\n";
   close MAGIC;
   print "$svg written.\n" if(-f $svg);
   print "Could not generate $svg , perhaps magic is not installed or missing Kairos support?\nThe cairo library development files need to be installed and magic needs to be configured with --with-cairo.\nMake sure that magic configure says 'Cairo: yes' in the summary.\n" if(! -f $svg);
