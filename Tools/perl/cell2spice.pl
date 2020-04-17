@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+use strict;
 
 my $tech="w=1.0u l=1.0u";
 
