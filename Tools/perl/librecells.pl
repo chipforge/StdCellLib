@@ -7,15 +7,37 @@ my $debug=0;
 my $sp=$ARGV[0]||"libresilicon.sp";
 
 $ENV{'PySpiceLogLevel'}="DEBUG" if($debug);
-undef($ENV{'PySpiceLogLevel'}) unless($debug);
+$ENV{'PySpiceLogLevel'}="ERROR" if(!$debug);
+#undef($ENV{'PySpiceLogLevel'}) unless($debug);
+
 
 open IN,"<$sp" || die "Could not open file $sp: $!\n";
 while(<IN>)
 {
   if(m/^\.subckt (\w+)/)
   {
-    my $cellname=$1;	   
+    our $cellname=$1;
     next if(defined($ENV{'CELL'}) && $cellname ne $ENV{'CELL'});
+    if(-s "$cellname.lib")
+    {
+      print STDERR "INFO: $cellname.lib already exists, so we are skipping it.\n";
+      next;
+    }
+    unlink "$cellname.log";
+    unlink "$cellname.err";
+
+    sub step($)
+    {
+      print "$_[0]\n";
+      open LOG,">>$cellname.log";
+      print LOG $_[0]."\n";
+      close LOG;
+      open LOG,">>$cellname.err";
+      print LOG $_[0]."\n";
+      close LOG;
+    }
+
+    step("NEXT CELL: $cellname");
 
     my $placer=""; $placer="--placer=hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
     if($cellname eq "CLKBUF3")
@@ -24,8 +46,9 @@ while(<IN>)
       next;
     }
     unlink "outputlib/$cellname.mag";
-    system "../Tools/perl/cell2spice.pl $cellname";
-    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer >$cellname.log 2>$cellname.err";
+    step("NEXT STEP: Running cell2spice");
+    system "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
+    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer >>$cellname.log 2>>$cellname.err";
     print "$cmd\n";
     system $cmd;
 
@@ -36,7 +59,7 @@ while(<IN>)
     }
     else
     {
-      # otherwise convert GDS2 to magic:
+      print STDERR "lclayout has not exported magic, so we try to convert GDS2:\n";
       # For this processing step, the refrenced libresilicon.tech file needs to contain the cifinput section to import from GDS and the extract section to do the parasitic extraction:
       open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
       print OUT <<EOF
@@ -55,12 +78,13 @@ quit -noprompt
 EOF
 ; # $cellname.spice
       close OUT;
-      exit;
+      #exit;
     }
 
     if(-f "$cellname.fixed")
     {
       print "We found a manually fixed $cellname.fixed magic file for testing so we using that one instead.\n";
+      step("NEXT STEP: Fixing file $cellname.fixed -> $cellname.mag");
       system "cp $cellname.fixed $cellname.mag";
     }
     unlink "$cellname.nodes";
@@ -71,6 +95,7 @@ EOF
     unlink "$cellname.res.lump";
     unlink "$cellname.sim";
     print "First magic call:\n";
+    step("NEXT STEP: magic2");
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 extract warn all
@@ -91,8 +116,9 @@ EOF
 ;
     close OUT;
     #system "cat $cellname.res.ext >>$cellname.ext";
-    system "cat $cellname.ext";
+    #system "cat $cellname.ext";
     print "Second magic call:\n";
+    step("NEXT STEP: magic3");
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 ext2sim rthresh 0
@@ -113,20 +139,27 @@ EOF
 ;
     close OUT;
 
-    print "Generating Liberty Template:\n";
+    step("NEXT STEP: Generating Liberty Template");
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
+
+    step("NEXT STEP: Characterization");
     $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
     $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
 
-    print "Visualisation: libertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
+    step("NEXT STEP: Visualisation");
+    print "Visualisation:\nlibertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
 
-
-
+    step("NEXT STEP: gds2mag");
     #system "gds2mag --config ~/libresilicon/gds2mag/example/example_config.toml -i outputlib/$1.gds -o _$1.mag";
     #    exit; # Stop after doing one cell
+
+    step("NEXT STEP: mag2svg");
+    system "../Tools/perl/mag2svg.pl $cellname.mag $cellname.svg" if(-f "$cellname.mag");
+
   }
 }
 
+system "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
