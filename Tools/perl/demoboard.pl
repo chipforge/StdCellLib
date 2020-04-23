@@ -59,6 +59,7 @@ foreach(@cells)
       $timestamp=$1 if(m/^timestamp (\d+)/);	      
       if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
       { 
+        print STDERR "$name min:@mins max:@maxs $_";
         my @a=split " ",$_;
         foreach(1 .. 4)
         {
@@ -89,6 +90,7 @@ foreach(@cells)
   print "timestamp $timestamp\n";
   print "transform $dir 0 $bx 0 $dir $by\n";
   print "box 0 0 $width $height\n";
+  print STDERR "$name $width $height\n";
 
   my $lx=$x+$width/2;
   my $ly=$y+$height/2;
