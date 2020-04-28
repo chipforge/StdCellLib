@@ -7,16 +7,12 @@ Or you could import the netlists from a given existing standard cell library.
 The second step is the automatic generation (layouting, characterization) of all the standard cells.
 In the final step, all the files are collected into the library files together that can then be used by e.g. qflow, yosys to go from RTL to GDS.
 
-# How to help
-Please test it and report any issues, or in the respective repositories of the partner-projects.
-And please, do not hesitate to contact the Authors of Standard Cell Library for Patches, Feature additions or Questions.
-Any feedback welcome under [Email](mailto://stdcelllib@nospam.chipforge.org "stdcelllib@nospam.chipforge.org").
 
 ## Requirements
 
 ### Linux (Debian/Ubuntu or derivative)
 
-For Debian/Ubuntu based distributions we are currently offering an installation script that installs all the necessary requirements:
+For Debian/Ubuntu based distributions (with Python >=3.6, e.g. Debian Buster) we are currently offering an installation script that installs all the necessary requirements:
 
 ```
 wget https://pdk.libresilicon.com/tools.sh
@@ -26,39 +22,22 @@ bash tools.sh
 It will download, build and install all required tools, and at the end try to build a standard cell library.
 
 
-### Partner Tools
-
-We use LibreCell from Thomas Kramer https://codeberg.org/tok/librecell/ for Layouting and Characterization of the standard cells.
-We use Magic from Tim Edwards: http://opencircuitdesign.com/magic/ for parasitic extraction and visualisation. Thanks a lot for your support!
-We use the great CircDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). (http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia")
-
-### Scheme
-
-Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R^7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
-
-### Magic
-
-Another software for the Popcorn tool, which should be installed before usage, is [Magic](http://opencircuitdesign.com/magic "http://opencircuitdesign.com/magic"). Magic is Open Source, but not part of all Linux distributions (lacks on OpenSuse, Arch Linux etc).
-
 ## Usage
 
 Please build and use the Standard Cells (and the cell generator) with the GNUmakefile system.
 
 ```
+cd StdCellLib/Catalog
 make
-```
-
-shows e.g. a help screen with available targets.
-
-### Popcorn Preparing
-
-Please prepare Popcorn first by typing
-
-```
 make popcorn
+make catalog
+make layout
+make docs
 ```
 
-this will generate the very usefull Manual Pages about the tool and the formats, Popcorn is using. Please read them.
+make alone shows e.g. a help screen with available targets.
+make popcorn will prepare Popcorn and generate the very useful Manual Pages about the tool and the formats, Popcorn is using. Please read them.
+
 
 ### Generate Cell Descriptions
 
@@ -128,4 +107,20 @@ to install the standard cell library into qflow as "libresilicon"
 
 BTW, the Tooling should *not* be part of the Distribution.
 
+
 Congratulations! You generated a Standard Cell Library :-) There aren't many people who can say they've done that.
+
+# How to help
+Please test it and report any issues, or in the respective repositories of the partner-projects.
+And please, do not hesitate to contact the Authors of Standard Cell Library for Patches, Feature additions or Questions.
+Any feedback welcome under [Email](mailto://stdcelllib@nospam.chipforge.org "stdcelllib@nospam.chipforge.org").
+
+### Partner Tools
+
+We use LibreCell from Thomas Kramer https://codeberg.org/tok/librecell/ for Layouting and Characterization of the standard cells.
+We use Magic from Tim Edwards: http://opencircuitdesign.com/magic/ for Popcorn, parasitic extraction and visualisation. Thanks a lot for your help!
+We use the great CircDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). (http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia")
+
+### Scheme
+
+Popcorn (as the tool which does the Voodoo stuff and generates the Standard Cells) is written in R^7RS Scheme. While this Standard is already a couple of years old, not so many tools supporting them. Chibi-Scheme as a pre-build package is not available on most systems, so we are using Gauche Scheme (or gosh) in Version 0.9.6 or higher.
