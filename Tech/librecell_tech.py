@@ -99,7 +99,9 @@ routing_layers = {
 
 # Minimum spacing rules for layer pairs.
 min_spacing = {
-    (l_ndiffusion, l_pdiffusion): 3*l, # 3 -> 3l
+    (l_ndiffusion, l_ndiffusion): 3*l, # 3 -> 3l
+    (l_pdiffusion, l_ndiffusion): 3*l, # 3 -> 3l
+    (l_pdiffusion, l_pdiffusion): 3*l, # 3 -> 3l
     (l_ndiffusion, l_poly_contact): 4*l, # 2.6.6 -> 4l
     (l_pdiffusion, l_poly_contact): 4*l, # 2.6.6 -> 4l
     (l_nwell, l_nwell): 10*l, # 3 -> 10l
