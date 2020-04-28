@@ -16,7 +16,8 @@ um = 1000
 transistor_channel_width_sizing = 1
 
 # GDS2 layer numbers for final output.
-my_active = (1, 0) # all DIFF's + all FET's (pdiff+ndiff)
+my_ndiffusion = (1, 0)
+my_pdiffusion = (1, 7)
 my_nwell = (2, 0)
 #my_nwell2 = (2, 1) # a copy of the nwell layer due to limitations of other tools we don't need
 my_pwell = (2, 7)
@@ -36,7 +37,8 @@ my_abutment_box = (200, 0)
 # For the final output the layers can be remapped with a mapping
 # defined in this dictioinary.
 output_map = {
-    l_active: my_active,
+    l_ndiffusion: my_ndiffusion,
+    l_pdiffusion: my_pdiffusion,
     l_nwell: my_nwell, # [my_nwell, my_nwell2],  # Map l_nwell to two output layers.
     l_pwell: my_pwell,  # Output layer for pwell. Uncomment this if needed. For instance for twin-well processes.
     l_poly: my_poly,
@@ -65,7 +67,8 @@ output_writers = [
             l_metal2: 'metal2',
             l_metal1_label: 'metal1',
             l_metal2_label: 'metal2',
-            l_active: 'ndiffusion',
+            l_ndiffusion: 'ndiffusion',
+            l_pdiffusion: 'pdiffusion',
             l_metal2_pin: 'metal2',
             l_poly_contact: 'polycontact',
             l_diff_contact: 'pdcontact'
@@ -87,7 +90,8 @@ output_writers = [
 # Example for a layer that can be used for horizontal and vertical tracks: {'MyLayer1' : 'hv'}
 # Example for a layer that can be contacted but not used for routing: {'MyLayer2' : ''}
 routing_layers = {
-    l_active: '', # Allow adding shapes on active layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
+    l_ndiffusion: '', # Allow adding shapes on diffusion layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
+    l_pdiffusion: '', # Allow adding shapes on diffusion layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
     l_poly: '',
     l_metal1: 'hv',
     l_metal2: 'hv',
@@ -95,13 +99,15 @@ routing_layers = {
 
 # Minimum spacing rules for layer pairs.
 min_spacing = {
-    (l_active, l_active): 3*l, # 3 -> 3l
-    (l_active, l_poly_contact): 4*l, # 2.6.6 -> 4l
+    (l_ndiffusion, l_pdiffusion): 3*l, # 3 -> 3l
+    (l_ndiffusion, l_poly_contact): 4*l, # 2.6.6 -> 4l
+    (l_pdiffusion, l_poly_contact): 4*l, # 2.6.6 -> 4l
     (l_nwell, l_nwell): 10*l, # 3 -> 10l
     (l_nwell, l_pwell): 12*l, # 2.2.4->12l
     (l_pwell, l_pwell): 10*l, # 3 -> 10l
     #(l_poly, l_nwell): 10, # No rule?
-    (l_poly, l_active): 1*l, # 2.4.6 -> 1l
+    (l_poly, l_ndiffusion): 1*l, # 2.4.6 -> 1l
+    (l_poly, l_pdiffusion): 1*l, # 2.4.6 -> 1l
     (l_poly, l_poly): 1*l, # 3 POLY -> 2l  XXX: TODO: THIS NEEDS TO BE INCREASED TO 2l BUT AT THE MOMENT IT WOULD BREAK THE ROUTING
     (l_poly, l_diff_contact): 2*l, # The maximum "minimum spacing" from poly to anything else is 2l
     (l_diff_contact, l_diff_contact): 2*l, # 3 -> 2l
@@ -109,7 +115,8 @@ min_spacing = {
     (l_metal2, l_metal2): 4*l, # 3 METAL2 -> 4l
     (l_via1, l_via1): 3*l, # 3 VIA1 -> 3l
     (l_via1, l_diff_contact): 2*l, # 2.8.3 -> 2l
-    (l_via1, l_active): 2*l, # 2.8.4 -> 2l
+    (l_via1, l_ndiffusion): 2*l, # 2.8.4 -> 2l
+    (l_via1, l_pdiffusion): 2*l, # 2.8.4 -> 2l
     (l_poly_contact, l_diff_contact): 4*l,
 }
 
@@ -164,7 +171,8 @@ minimum_pin_width = 2*l # 2l said leviathanch
 
 # Width of routing wires.
 wire_width = {
-    l_active: 2*l,
+    l_ndiffusion: 2*l,
+    l_pdiffusion: 2*l,
     l_poly: 2*l,   # 2.4.1 -> 2l
     l_metal1: 4*l, # 2.7.1 -> 4l
     l_metal2: 4*l, # 2.9.1 -> 4l
@@ -172,7 +180,8 @@ wire_width = {
 
 # Width of horizontal routing wires (overwrites `wire_width`).
 wire_width_horizontal = {
-    l_active: 2*l,
+    l_ndiffusion: 2*l,
+    l_pdiffusion: 2*l,
     l_poly: 2*l, # 2.4.1 -> 2l
     l_metal1: 4*l, # 2.7.1 -> 4l
     l_metal2: 4*l, # 2.9.1 -> 4l
@@ -188,7 +197,8 @@ via_size = {
 
 # Minimum width rules.
 minimum_width = {
-    l_active: 2*l, # 4 l
+    l_ndiffusion: 2*l, # 4 l
+    l_pdiffusion: 2*l, # 4 l
     l_poly: gate_length, # 2.4.1-> 2l
     l_metal1: 4*l, # 2.7.1 -> 4l
     l_metal2: 4*l, # 2.9.1 -> 4l
@@ -198,23 +208,25 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_active, l_diff_contact): 1*l, # 2.3.3 -> 6l  Source/Drain are DIFF's
+    (l_ndiffusion, l_diff_contact): 1*l, # 2.3.3 -> 6l  Source/Drain are DIFF's
+    (l_pdiffusion, l_diff_contact): 1*l, # 2.3.3 -> 6l  Source/Drain are DIFF's
     (l_poly, l_poly_contact): 1*l, # 2.6.2 -> 1l ?!?!? PLEASE VERIFY WHETHER THIS IS CORRECT
     (l_metal1, l_diff_contact): 1*l, # 2.7.3 -> 1l
     (l_metal1, l_poly_contact): 1*l, # 2.7.3 -> 1l
     (l_metal1, l_via1): 1*l,# 2.7.3 -> 1l
     (l_metal2, l_via1): 1*l,# 2.9.3 -> 1l
 
-    # l_nwell must overlap l_active
-    (l_nwell, l_active): 2*l, # 2.3.3 -> 2l
-    (l_pwell, l_active): 2*l, # 2.3.3 -> 2l
+    # l_*well must overlap l_*diffusion
+    (l_nwell, l_pdiffusion): 2*l, # 2.3.3 -> 2l
+    (l_pwell, l_ndiffusion): 2*l, # 2.3.3 -> 2l
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
 }
 
 # Minimum notch rules.
 minimum_notch = {
-    l_active: 1*l,
+    l_ndiffusion: 1*l,
+    l_pdiffusion: 1*l,
     l_poly: 1*l,
     l_metal1: 1*l,
     l_metal2: 1*l,
@@ -236,13 +248,15 @@ orientation_change_penalty = 100
 
 # Routing edge weights per data base unit.
 weights_horizontal = {
-    l_active: 10000,
+    l_ndiffusion: 10000,
+    l_pdiffusion: 10000,
     l_poly: 10,
     l_metal1: 1,
     l_metal2: 2,
 }
 weights_vertical = {
-    l_active: 10000,
+    l_ndiffusion: 10000,
+    l_pdiffusion: 10000,
     l_poly: 10,
     l_metal1: 1,
     l_metal2: 2,
@@ -250,7 +264,8 @@ weights_vertical = {
 
 # Via weights.
 via_weights = {
-    (l_metal1, l_active): 500,
+    (l_metal1, l_ndiffusion): 500,
+    (l_metal1, l_pdiffusion): 500,
     (l_metal1, l_poly): 500,
     (l_metal1, l_metal2): 400
 }
