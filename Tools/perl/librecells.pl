@@ -10,6 +10,7 @@ $ENV{'PySpiceLogLevel'}="DEBUG" if($debug);
 $ENV{'PySpiceLogLevel'}="ERROR" if(!$debug);
 #undef($ENV{'PySpiceLogLevel'}) unless($debug);
 
+system "perl ../Tools/perl/cell2spice.pl";
 
 open IN,"<$sp" || die "Could not open file $sp: $!\n";
 while(<IN>)
