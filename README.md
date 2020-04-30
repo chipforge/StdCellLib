@@ -21,6 +21,7 @@ bash tools.sh
 
 It will download, build and install all required tools, and at the end try to build a standard cell library.
 
+For other operating systems it is likely quite some work to get it running due to the high number of dependencies. But any ports to other systems are very welcome!
 
 ## Usage
 
@@ -29,7 +30,6 @@ Please build and use the Standard Cells (and the cell generator) with the GNUmak
 ```
 cd StdCellLib/Catalog
 make
-make popcorn
 make catalog
 make layout
 make docs
