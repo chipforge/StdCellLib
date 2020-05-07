@@ -9,7 +9,7 @@ print OUT "<html><head><title>Build Report Libresilicon</title></head><body>";
 print OUT "<h1>Build Report</h1>";
 print OUT "Generated: ".localtime()." by <a href='https://www.libresilicon.com/' target='_blank'>LibreSilicon</a> <a href='https://github.com/thesourcerer8/StdCellLib' target='_blank'>Standard Cell Generator</a><br/>\n";
 
-print OUT "<h2>Input files: PDK, DRC, layer definitions, parameters:</h2>";
+print OUT "<h2>Input files: PDK, DRC, layer definitions, process parameters:</h2>";
 my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> for <a href='https://klayout.de/' target='_blank'>KLayout</a>","librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transitor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a>","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and Parasitic <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>extraction parameters</a>","transistor.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %inputs)
@@ -92,8 +92,8 @@ foreach my $file (<*.cell>)
 print OUT "</table><br/>";
 
 
-print OUT "<h2>Output files:</h2>";
-my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library");
+print OUT "<h2>Output files (those are needed by qflow or other RTL2GDS tools):</h2>";
+my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %outputs)
 {
