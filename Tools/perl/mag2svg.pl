@@ -11,7 +11,7 @@ print "Usage: mag2svg input.mag output.svg\n";
 
 if(-f "$mag.mag")
 {
-  open MAGIC,"|magic -d XR -noconsole -nowindow -T libresilicon $mag";
+  open MAGIC,"|magic -d XR -noconsole -nowindow -T ../Tech/libresilicon.tech $mag";
   print MAGIC "plot svg $svg\nexit\n";
   close MAGIC;
   print "$svg written.\n" if(-f $svg);
