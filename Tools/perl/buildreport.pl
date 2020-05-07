@@ -11,7 +11,7 @@ print OUT "<title>Build Report Libresilicon</title></head><body>";
 print OUT "<h1>Build Report</h1>";
 print OUT "Generated: ".localtime()." by <a href='https://www.libresilicon.com/' target='_blank'>LibreSilicon</a> <a href='https://github.com/thesourcerer8/StdCellLib' target='_blank'>Standard Cell Generator</a><br/>\n";
 
-print OUT "<h2>Input files: PDK, DRC, layer definitions, process parameters:</h2>";
+print OUT "<h2>Input files: PDK, <a href='https://download.libresilicon.com/process/v1/process_design_rules.pdf' target='_blank'>DRC</a>, layer definitions, process parameters:</h2>";
 my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> for <a href='https://klayout.de/' target='_blank'>KLayout</a>","librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transitor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a>","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and Parasitic <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>extraction parameters</a>","transistor.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %inputs)
