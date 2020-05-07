@@ -5,7 +5,9 @@
 my $report="buildreport.html";
 
 open OUT,">$report";
-print OUT "<html><head><title>Build Report Libresilicon</title></head><body>";
+print OUT "<html><head>";
+print OUT '<meta http-equiv="refresh" content="30">' if(!-f ".done");
+print OUT "<title>Build Report Libresilicon</title></head><body>";
 print OUT "<h1>Build Report</h1>";
 print OUT "Generated: ".localtime()." by <a href='https://www.libresilicon.com/' target='_blank'>LibreSilicon</a> <a href='https://github.com/thesourcerer8/StdCellLib' target='_blank'>Standard Cell Generator</a><br/>\n";
 
@@ -92,7 +94,7 @@ foreach my $file (<*.cell>)
 print OUT "</table><br/>";
 
 
-print OUT "<h2>Output files (those are needed by qflow or other RTL2GDS tools):</h2>";
+print OUT "<h2>Output files (those are needed by <a href='http://opencircuitdesign.com/qflow/' target='_blank'>qflow</a> or other RTL2GDS tools):</h2>";
 my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %outputs)
