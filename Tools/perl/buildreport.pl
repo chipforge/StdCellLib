@@ -38,6 +38,7 @@ foreach my $file (<*.cell>)
   my $leffile="outputlib/".$file; $leffile=~s/\.cell$/.lef/;
   my $gdsfile="outputlib/".$file; $gdsfile=~s/\.cell$/.gds/;
   my $spicefile=$file; $spicefile=~s/\.cell$/.spice/;
+  my $runfile=$file; $runfile=~s/\.cell$/.running/;
 
   my $area="";
   my $lvs="";
@@ -47,8 +48,10 @@ foreach my $file (<*.cell>)
   my $errors="";
   my $routing="";
   my %ports=();
+  my $b1=(-f $runfile)?"<b>":"";
+  my $b2=(-f $runfile)?"<b>":"";
 
-  print OUT "<tr><td>$file</td>";
+  print OUT "<tr><td>$b1$file$b2</td>";
   print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $magfile ? "<a href='$magfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $svgfile ? "<a href='$svgfile' target='_blank'><font color='green'>&radic;</font><img src='$pngfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
@@ -85,6 +88,8 @@ foreach my $file (<*.cell>)
   }
   $lvs=~s/FAILED/<font color='red'>FAILED<\/font>/;
 
+  $errors.=" <b>This cell is currently building...</b>" if(-f $runfile);
+
   print OUT "<td align='right'>$area</td><td>$lvs</td><td>$euler</td><td>$layouttime</td><td>$nets</td><td>".scalar(keys %ports)."</td><td>$routing</td><td><a href='$errfile' target='_blank'><font color='red'>$errors</font></a></td>";
 
   print OUT "</tr>";
@@ -94,8 +99,8 @@ foreach my $file (<*.cell>)
 print OUT "</table><br/>";
 
 
-print OUT "<h2>Output files (needed by RTL2GDS tools like <a href='http://opencircuitdesign.com/qflow/' target='_blank'>qflow</a>, <a href='https://theopenroadproject.org/' target='_blank'>, Cadence, Synopsys, ...):</h2>";
-my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library");
+print OUT "<h2>Output files (needed by RTL2GDS tools like <a href='http://opencircuitdesign.com/qflow/' target='_blank'>qflow</a>, <a href='https://theopenroadproject.org/' target='_blank'>OpenROAD</a>, Cadence, Synopsys, ...):</h2>";
+my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library","demoboard.mag"=>"Demoboard: <a href='demoboard.svg' target='_blank'><img src='demoboard.svg' width='200' border='0'/></a> with all cells");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %outputs)
 {

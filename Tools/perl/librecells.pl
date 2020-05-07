@@ -24,8 +24,11 @@ while(<IN>)
       print STDERR "INFO: $cellname.lib already exists, so we are skipping it.\n";
       next;
     }
+    unlink "$cellname.done";
     unlink "$cellname.log";
     unlink "$cellname.err";
+    open OUT,">$cellname.running";
+    close OUT;
 
     sub step($)
     {
@@ -44,6 +47,7 @@ while(<IN>)
     if($cellname eq "CLKBUF3")
     {
       print STDERR "TODO: CLKBUF3 currently takes too much time to generate so we have to skip it, librecell needs to be improved\n";
+      unlink "$cellname.running";
       next;
     }
     unlink "outputlib/$cellname.mag";
@@ -159,8 +163,12 @@ EOF
 
     step("NEXT STEP: mag2svg");
     system "../Tools/perl/mag2svg.pl $cellname.mag $cellname.svg" if(-f "$cellname.mag");
-
+    unlink "$cellname.running";
   }
 }
 
-system "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
+if(!defined($ENV{'CELL'}))
+{
+  system "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
+}
+
