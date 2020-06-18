@@ -4,12 +4,12 @@ use Getopt::Long;
 
 # Parameters and their default values:
 our $debug=0;
-our $format="text"; # html latex liberty
+our $format="text"; # html latex text liberty verilog
 
 # Parsing the commandline parameters:
 GetOptions ("debug" => \$debug,
 	    "v" => \$debug,
-            "format=s" => \$format); # text,html,latex,liberty
+            "format=s" => \$format); # text,html,latex,liberty,verilog
 
 # Convert a value to the gray code value:
 sub bin2gray
@@ -263,7 +263,7 @@ EOF
     }
     elsif($format eq "html")
     {
-      print "<table border='1'><th>".join("</th><th>",@ins)."</th><th><b>".join("</b></th><th><b>",@outs)."</b></th></tr>";
+      print "<table border='1' class='truthtable'>\n<tr><th>".join("</th><th>",@ins)."</th><th><b>".join("</b></th><th><b>",@outs)."</b></th></tr>\n";
     }
 
     my %values=();
@@ -275,10 +275,13 @@ EOF
       # We count from 0 .. 2^n-1 and take the graycode, and then interpret that as a binary value for the input stimulus:
       my $gray=bin2gray($i); 
       print "            " if($format eq "latex");
+      print "<tr>" if($format eq "html");
       foreach(0 .. $ninputs-1)
       {
 	print "& " if($format eq "latex" && $_>0);
+        print "<td>" if($format eq "html");
         print "".($gray&(1<<$_))?"1 ":"0 " unless($format eq "liberty");
+        print "</td>" if($format eq "html");
 	$values{$ins[$_]}=($gray&(1<<$_))?1:0;
       }
       # Here we are using the truth function to calculate all network states for the given inputs:
@@ -311,8 +314,10 @@ EOF
       {
         print "<td><b>$res{$_}</b></td>" foreach(@outs);
       }
+      print "</tr>" if($format eq "html");
       print "\n" unless($format eq "liberty");
     }
+    print "</table>\n" if($format eq "html");
 
       foreach my $out (@outs) # We might have more than one output of a cell
       {
