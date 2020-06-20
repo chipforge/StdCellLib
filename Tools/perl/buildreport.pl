@@ -35,6 +35,7 @@ th
 {
 	text-align: left;
 	font-size: 100%;
+	background-color: #f0f0f0;
 	padding: 3px 3px 3px 3px;
 }
 td
@@ -65,10 +66,11 @@ EOF
 ;
 print OUT "<title>Build Report Libresilicon</title></head><body>";
 print OUT "<h1>Build Report</h1>";
-print OUT "Generated: ".localtime()." by <a href='https://www.libresilicon.com/' target='_blank'>LibreSilicon</a> <a href='https://github.com/thesourcerer8/StdCellLib' target='_blank'>Standard Cell Generator</a><br/>\n";
+print OUT "Generated: ".localtime()." by <a href='https://libresilicon.com/' target='_blank'>LibreSilicon</a> <a href='https://github.com/thesourcerer8/StdCellLib' target='_blank'>Standard Cell Library Generator</a><br/>\n";
 
-print OUT "<h2>Input files: PDK, <a href='https://download.libresilicon.com/process/v1/process_design_rules.pdf' target='_blank'>DRC</a>, layer definitions, process parameters:</h2>";
-my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> for <a href='https://klayout.de/' target='_blank'>KLayout</a>","librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transitor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a>","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and Parasitic <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>extraction parameters</a>","transistor.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
+print OUT "<h2>Input files: PDK, <a href='https://download.libresilicon.com/process/v1/process_design_rules.pdf' target='_blank' title='Design Rules'>DRC</a>, <a title='layer colours, resistances, layer numbers'>layer definitions</a>, process parameters:</h2>";
+print OUT "These input files are necessary to define the rules and parameters for the standard cell library. All those files are collected in the <b>Tech</b> directory.<br/>";
+my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> rules for <a href='https://klayout.de/' target='_blank'>KLayout</a> GDS Viewer","librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transistor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> model SPICE <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a> (*.lib files in other tools)","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>Parasitic extraction parameters</a>","transistor.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %inputs)
 {
@@ -79,6 +81,7 @@ foreach(sort keys %inputs)
 print OUT "</table>";
 
 print OUT "<h2>Standard Cells:</h2>\n";
+print OUT "These are the generated standard cells. ";
 print OUT "You can click on the green ticks and the error messages to get more details or download the files. By moving the mouse over the header line you will get explanations for each column.<br/>\n";
 
 print OUT "<table border='1'>";
@@ -112,7 +115,7 @@ foreach my $file (<*.cell>)
   print OUT "<tr><td>$b1$file$b2</td>";
   print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $magfile ? "<a href='$magfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $svgfile ? "<a href='$svgfile' target='_blank'><font color='green'>&radic;</font><img src='$pngfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
+  print OUT "<td>".(-f $svgfile ? "<a href='$svgfile' target='_blank'><font color='green'>&radic;</font><img src='$svgfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $schfile ? "<a href='$schfile' target='_blank'><font color='green'>&radic;</font><img src='$schfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $logfile ? "<a href='$logfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $errfile ? "<a href='$errfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
@@ -160,14 +163,16 @@ print OUT "</table><br/>";
 
 
 print OUT "<h2>Output files (needed by RTL2GDS tools like <a href='http://opencircuitdesign.com/qflow/' target='_blank'>qflow</a>, <a href='https://theopenroadproject.org/' target='_blank'>OpenROAD</a>, Cadence, Synopsys, ...):</h2>";
-my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library","demoboard.mag"=>"Demoboard: <a href='demoboard.svg' target='_blank'><img src='demoboard.svg' width='200' border='0'/></a> with all cells");
+print OUT "These are the resulting output files, you can download and use them with other EDA tools to build your chips:<br/>\n";
+my %outputs=("libresilicon.sp"=>"<a href='https://en.wikipedia.org/wiki/SPICE' target='_blank'>SPICE</a> netlist with all cells","libresilicon.lib"=>"<a href='https://people.eecs.berkeley.edu/~alanmi/publications/other/liberty07_03.pdf' target='_blank'>LIBERTY</a> File with Characterization of all cells, can be viewed with <a href='https://codeberg.org/tok/librecell/src/branch/master/librecell-lib' target='_blank'>libertyviz</a>","libresilicon.lef"=>"<a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> (LEF) File with all cells","library.gds"=>"<a href='https://en.wikipedia.org/wiki/GDSII' target='_blank'>GDS-II</a> file with masks for all cells, can be viewed with <a href='https://www.klayout.de/' target='_blank'>KLayout</a>","../Documents/StdCellLib.pdf"=>"PDF Documentation of the Standard cell library","demoboard.mag"=>"Demoboard: <a href='demoboard.svg' target='_blank'>".(-s "demoboard.svg"?"<img src='demoboard.svg' width='200' border='0'/>":"")."</a> with all cells");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %outputs)
 {
-  print OUT "<tr><td>".(-f $_? "<a href='$_' target='_blank'><font color='green'>&radic;</font>$_</a>":"<font color='red'>X</font>$_")."</td><td>$outputs{$_}</td></tr>";
+  print OUT "<tr><td>".(-f $_? "<a href='$_' target='_blank'><font color='green'>&radic;</font> $_</a>":"<font color='red'>X</font>$_")."</td><td>$outputs{$_}</td></tr>";
 }
 print OUT "</table>";
 
+print OUT "If you want to build your own standard cell library, you can try our <a href='https://pdk.libresilicon.com/'>Online Standard Cell Library Generator</a> or download the <a href='https://github.com/thesourcerer8/StdCellLib/'>generator software</a> and run it yourself.<br/>\n";
 
 print OUT "</body></html>";
 print "firefox $report\n";
