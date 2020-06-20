@@ -92,6 +92,8 @@ proc length? {path from to netlist} {
 
     set length 0
     set result 0
+    verb "length from $from to $to is $length for $path"
+
     foreach mosfet $netlist {
         # check mosfet type
         if {[string compare -nocase [lindex $mosfet 3] $from] == 0} {
