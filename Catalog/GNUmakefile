@@ -131,7 +131,7 @@ libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ..
 	../Tools/perl/cell2spice.pl
 	../Tools/perl/librecells.pl
 	rm -f libresilicon.lib
-	libertymerge -b libresilicon.libtemplate -o libresilicon.lib -u *.lib
+	libertymerge -b INV.libtemplate -o libresilicon.lib -u *.lib
 
 demoboard.mag: *.cell libresilicon.sp
 	perl ../Tools/perl/demoboard.pl >demoboard.mag
