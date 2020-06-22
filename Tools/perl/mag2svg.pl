@@ -49,7 +49,7 @@ if(-f "$mag.mag")
     }
     elsif(m/^use/ && !$usewarning)
     {
-      print STDERR "WARNING: Hierarchical magic files are not supported yet!\n";
+      print STDERR "WARNING: Hierarchical magic files are not supported yet! If you want to see the sub-layouts, please flatten the magic file first.\n";
       $usewarning=1; 
     }	     
     elsif(m/^rect (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*)/)
