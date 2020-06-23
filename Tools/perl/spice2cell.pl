@@ -78,6 +78,11 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
     elsif(m/^M\d+ (\w+#?) (\w+#?) (\w+#?) (\w+#?) (pfet|nfet|nmos|pmos|hnfet|hpfet)/)
     {
       my ($g,$d,$s,$m)=($2,$1,$3,$5);
+      if($d=~m/^(vdd|gnd)$/i)
+      {
+        print "EXCHANGING SOURCE AND DRAIN: $_\n";	      
+        ($s,$d)=($d,$s);
+      }	
       $g=internal($g);
       $d=internal($d);
       $s=internal($s);
