@@ -1,13 +1,70 @@
 #!/usr/bin/perl -w
 
 
-# Now we need magic 4.2 with kairos support compiled in for SVG export:
-my $mag=$ARGV[0]; $mag=~s/\.mag$//i; $mag=~s/\.svg$//i;
+my $mag=$ARGV[0] || ""; $mag=~s/\.mag$//i; $mag=~s/\.svg$//i;
 my $svgvar=$mag; $svgvar.=".svg";
 my $svg=$ARGV[1] || $svgvar;
 
 print "mag2svg - Convert magic files to SVG\n";
 print "Usage: mag2svg input.mag output.svg\n" if(scalar(@ARGV)<1);
+
+our %colors=();
+our %styles=();
+our $csscolors="";
+
+sub initColors()
+{
+  my $dir=$ARGV{'MAGIC_DIR'} || "/usr/local/lib/magic/sys";	 
+  open IN,"<$dir/mos.24bit.std.cmap";
+  while(<IN>)
+  {
+    if(m/^(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\w+)\s*$/)
+    {
+      $colors{$4}=sprintf("#%02X%02X%02X",$1,$2,$3);
+      #print "$4:$colors{$4}\n";
+    }
+  }
+  close IN;
+  for my $style (<$dir/mos.24bit.dstyle>)
+  {
+    open IN,"<$style";
+    while(<IN>)
+    {
+      if(m/^(\d+)\s+(\w+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\S+)\s+(\w+)/)
+      {
+	my $c=$colors{$3}||sprintf("#%02x%02x%02x",rand()*256,rand()*256,rand()*256);
+	$styles{$8}=$c;
+	#print "$8:$c\n";
+      }
+    }
+    close IN;    
+  }
+  foreach my $tech (<$dir/*.tech>)
+  {
+    #print "tech$tech\n";	  
+    open IN,"<$tech";
+    while(<IN>)
+    {
+      if(m/^\s*styles\s*$/)
+      {
+	#print "styles found\n";
+        while(<IN>)
+        {
+          last if(m/^\s*end\s*$/);
+	  if(m/^\s*(\w+)\s+(\w+)/)
+	  {
+            my $s=$styles{$2}||"";
+	    #print "$1 $s\n" if($s);
+            $csscolors.=".$1 { fill:$s; }\n";
+	  }
+	}	
+      }
+    }
+    close(IN);
+  }
+
+}
+initColors();
 
 sub mymin($$)
 {
@@ -28,12 +85,12 @@ our $usewarning=0;
 
 if(-f "$mag.mag")
 {
-	#  open MAGIC,"|magic -d XR -noconsole -nowindow -T ../Tech/libresilicon.tech $mag";
-	#  print MAGIC "plot svg $svg\nexit\n";
-	#  close MAGIC;
-	#  print "$svg written.\n" if(-f $svg);
-	#  print "Could not generate $svg , perhaps magic is not installed or missing Kairos support?\nThe cairo library development files need to be installed and magic needs to be configured with --with-cairo.\nMake sure that magic configure says 'Cairo: yes' in the summary.\n" if(! -f $svg);
-
+  # Now we need magic 4.2 with kairos support compiled in for SVG export:
+  #  open MAGIC,"|magic -d XR -noconsole -nowindow -T ../Tech/libresilicon.tech $mag";
+  #  print MAGIC "plot svg $svg\nexit\n";
+  #  close MAGIC;
+  #  print "$svg written.\n" if(-f $svg);
+  #  print "Could not generate $svg , perhaps magic is not installed or missing Kairos support?\nThe cairo library development files need to be installed and magic needs to be configured with --with-cairo.\nMake sure that magic configure says 'Cairo: yes' in the summary.\n" if(! -f $svg);
 
   open IN,"<$mag.mag";
   #<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1419pt" height="760pt" viewBox="0 0 1419 760" version="1.1">
@@ -61,7 +118,8 @@ if(-f "$mag.mag")
       $limits[2]=mymin($limits[2],$2);
       $limits[3]=mymax($limits[3],$3);
       $limits[4]=mymax($limits[4],$4);
-      $rects.="<rect x='$1' y='$2' width='$width' height='$height' class='$layer'/>\n";
+      my $ny=-$4;
+      $rects.="<rect x='$1' y='$ny' width='$width' height='$height' class='$layer'/>\n";
     }
             #rlabel metal1 0 61 64 67 0 vdd
     elsif(m/rlabel (\S+) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (.*)/)
@@ -70,14 +128,16 @@ if(-f "$mag.mag")
       my $y=($3+$5)/2;
       my $width=$4-$2;
       my $height=$5-$3;
-      $rects.="<rect x='$2' y='$3' width='$width' height='$height' class='port'/>\n";
+      my $ny=-$5;
+      $rects.="<rect x='$2' y='$ny' width='$width' height='$height' class='port'/>\n";
 
-      $rects.="<text x='$x' y='$5'>$7</text>\n";
+      $rects.="<text x='$x' y='$ny'>$7</text>\n";
     }
   }
   close IN;
   my $width=($limits[3]||0)-($limits[1]||0);
   my $height=($limits[4]||0)-($limits[2]||0);
+  $limits[2]=-$limits[4];
   if($width)
   {
     print "Writing $svg\n";
@@ -102,6 +162,7 @@ rect { fill-opacity: 0.9; stroke-width:0.3px; stroke-opacity:0.5 }
 .labels { fill:#ffffff; }
 .port { stroke:#505050; fill:none}
 text { font: normal 7px sans-serif; text-anchor: middle;}
+$csscolors
 </style>
 $rects
 </svg>
