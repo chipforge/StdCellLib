@@ -4,6 +4,7 @@
 my $mag=$ARGV[0] || ""; $mag=~s/\.mag$//i; $mag=~s/\.svg$//i;
 my $svgvar=$mag; $svgvar.=".svg";
 my $svg=$ARGV[1] || $svgvar;
+my $tech=$ARGV[2] || "../Tech/libresilicon.tech";
 
 print "mag2svg - Convert magic files to SVG\n";
 print "Usage: mag2svg input.mag output.svg\n" if(scalar(@ARGV)<1);
@@ -14,7 +15,7 @@ our $csscolors="";
 
 sub initColors()
 {
-  my $dir=$ARGV{'MAGIC_DIR'} || "/usr/local/lib/magic/sys";	 
+  my $dir=$ENV{'MAGIC_DIR'} || "/usr/local/lib/magic/sys";	 
   open IN,"<$dir/mos.24bit.std.cmap";
   while(<IN>)
   {
@@ -106,8 +107,18 @@ if(-f "$mag.mag")
     }
     elsif(m/^use/ && !$usewarning)
     {
-      print STDERR "WARNING: Hierarchical magic files are not supported yet! If you want to see the sub-layouts, please flatten the magic file first.\n";
-      $usewarning=1; 
+      close IN; # We dont need it anymore, we use a different approach now:
+
+      open MAGIC,"|magic -noconsole -nowindow -T $tech $mag";
+      my $flat="tmp".int(rand()*10000).".mag";
+      unlink $flat;
+      $flat=~s/\.mag$//i; # We need to remove the extension otherwise load will not work
+      print MAGIC "select\nexpand\nflatten $flat\nload $flat\nsave\n";
+      print MAGIC "exit\n";
+      close MAGIC;
+      system "$0 $flat.mag $svg $tech";
+      #unlink $flat;
+      exit;
     }	     
     elsif(m/^rect (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*)/)
     {
@@ -130,7 +141,7 @@ if(-f "$mag.mag")
       my $height=$5-$3;
       my $ny=-$5;
       $rects.="<rect x='$2' y='$ny' width='$width' height='$height' class='port'/>\n";
-
+      $ny+=$height;
       $rects.="<text x='$x' y='$ny'>$7</text>\n";
     }
   }
