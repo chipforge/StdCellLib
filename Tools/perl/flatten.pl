@@ -10,7 +10,7 @@ print "Usage: flatten.pl input.mag output.mag [Technology]\n";
 
 if(-f "$mag.mag")
 {
-  open MAGIC,"|magic -noconsole -nowindow -T EFS8A $mag";
+  open MAGIC,"|magic -noconsole -nowindow -T $tech $mag";
   unlink $flat;
   $flat=~s/\.mag$//i; # We need to remove the extension otherwise load will not work
   print MAGIC "select\nexpand\nflatten $flat\nload $flat\nsave\n";
