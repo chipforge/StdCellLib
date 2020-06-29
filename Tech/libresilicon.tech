@@ -1039,8 +1039,8 @@ drc
     edge4way ~(ndiff,ndc/a,nfet,enfet,nffet,wcap)/act ndiff,ndc,nfet 4 ~(psd,psc/a)/act ndiff,ndc/a,nfet,enfet,nffet,wcap 2 \
  "Backedge of diffusion must be 4 from substrate diff (MOSIS rule #4.2.b)"
 # 1383 "scmos.tech.out"
-    width pc 4 \
- "Poly contact width must be at least 4 (MOSIS rule #5B.1,2,3)"
+    width pc 2 \
+ "Poly contact width must be at least 2 (MOSIS rule #5B.1,2,3)"
 
 
 
@@ -1058,8 +1058,8 @@ drc
     spacing pc ndiff,ndc/a,nfet,enfet,nffet,wcap,pdiff,pdc/a,pfet,epfet,pffet,nsd,nsc/a,psd,psc/a 1 touching_illegal \
  "Poly contact must be 1 unit from diffusion (MOSIS rule #5B.6)"
 # 1409 "scmos.tech.out"
-    width ndc,pdc 4 \
- "Diffusion contact width must be at least 4 (MOSIS rule #6B.1,2,3)"
+    width ndc,pdc 2 \
+ "Diffusion contact width must be at least 2 (MOSIS rule #6B.1,2,3)"
     width nsc,psc 4 \
  "Substrate contact width must be at least 4 (MOSIS rule #6B.1,2,3)"
 # 1433 "scmos.tech.out"
@@ -1124,8 +1124,8 @@ drc
     spacing pdc/m1,ndc/m1,psc/m1,nsc/m1,hpdc/m1,hndc/m1,hpsc/m1,hnsc/m1,pc/m1,ec/m1,capc/m1,clc/m1,emc/m1,nbdc/m1,m1,m2c/m1,gc,pad/m1 pdc/m1,ndc/m1,psc/m1,nsc/m1,hpdc/m1,hndc/m1,hpsc/m1,hnsc/m1,pc/m1,ec/m1,capc/m1,clc/m1,emc/m1,nbdc/m1,m1,m2c/m1,gc,pad/m1 3 touching_ok \
  "First-level metal spacing must be at least 3 (MOSIS rule #7.2)"
 # 1511 "scmos.tech.out"
-    width m2c 4 \
- "Contact width must be at least 4 (MOSIS rule #8.1,2,3)"
+    width m2c 2 \
+ "Contact width must be at least 2 (MOSIS rule #8.1,2,3)"
 # 1540 "scmos.tech.out"
     width m2,m2c/m2,m3c/m2,pad 3 \
  "Second-level metal width must be at least 3 (MOSIS rule #9.1)"
