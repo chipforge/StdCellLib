@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-my $mag=$ARGV[0]; $mag=~s/\.mag$//i; 
+my $mag=$ARGV[0] || ""; $mag=~s/\.mag$//i;
 my $sp=$mag; $sp.=".par.sp";
 my $par=$ARGV[1] || $sp;
 
@@ -9,11 +9,56 @@ print "Usage: parasitics.pl input.mag output.par.sp\n";
 
 if(-f "$mag.mag")
 {
-  open MAGIC,"|magic -d XR -noconsole -nowindow -T ../Tech/libresilicon.tech $mag";
-  print MAGIC "extract all\next2spice cthresh 0 rthresh 0 $par\next2spice\nquit\n";
-  close MAGIC;
-  #print "$svg written.\n" if(-f $svg);
-  #print "Could not generate $svg , perhaps magic is not installed or missing Kairos support?\nThe cairo library development files need to be installed and magic needs to be configured with --with-cairo.\nMake sure that magic configure says 'Cairo: yes' in the summary.\n" if(! -f $svg);
+    unlink "$mag.nodes";
+    unlink "$mag.res.ext";
+    unlink "$mag.spice";
+    unlink "$mag.ext";
+    unlink "$mag.al";
+    unlink "$mag.res.lump";
+    unlink "$mag.sim";
+
+    print "First magic call:\n";
+    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $mag.mag";
+    print OUT <<EOF
+extract warn all
+extract all
+ext2sim rthresh 0
+ext2sim cthresh 0
+ext2sim alias on
+ext2sim labels on
+ext2sim
+extresist tolerance 10
+extresist simplify off
+extresist extout on
+extresist lumped on
+extresist geometry
+extresist all
+quit -noprompt
+EOF
+;
+    close OUT;
+    #system "cat $cellname.res.ext >>$cellname.ext";
+    #system "cat $cellname.ext";
+    print "Second magic call:\n";
+    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $mag.mag";
+    print OUT <<EOF
+ext2sim rthresh 0
+ext2sim cthresh 0
+ext2sim alias on
+ext2sim labels on
+ext2sim
+ext2spice cthresh 0
+ext2spice rthresh 0
+ext2spice format ngspice
+ext2spice subcircuits on
+ext2spice extresist off
+ext2spice hierarchy on
+ext2spice $mag.spice
+ext2spice
+quit -noprompt
+EOF
+;
+    close OUT;
 }
 else
 {
