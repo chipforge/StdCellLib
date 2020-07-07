@@ -4,6 +4,8 @@ my $mag=$ARGV[0] || ""; $mag=~s/\.mag$//i;
 my $sp=$mag; $sp.=".par.sp";
 my $par=$ARGV[1] || $sp;
 
+my $tech=$ARGV[2] || "../Tech/libresilicon.tech";
+
 print "parasitics.pl - Extract parasitics from a .mag file for characterization into a .par.sp (PARasitics-SPice) file\n";
 print "Usage: parasitics.pl input.mag output.par.sp\n";
 
@@ -18,7 +20,7 @@ if(-f "$mag.mag")
     unlink "$mag.sim";
 
     print "First magic call:\n";
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $mag.mag";
+    open OUT,"|magic -dnull -noconsole -T $tech $mag.mag";
     print OUT <<EOF
 extract warn all
 extract all
@@ -40,7 +42,7 @@ EOF
     #system "cat $cellname.res.ext >>$cellname.ext";
     #system "cat $cellname.ext";
     print "Second magic call:\n";
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $mag.mag";
+    open OUT,"|magic -dnull -noconsole -T $tech $mag.mag";
     print OUT <<EOF
 ext2sim rthresh 0
 ext2sim cthresh 0
