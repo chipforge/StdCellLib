@@ -39,11 +39,13 @@ include include.mk
 
 DISTRIBUTION =  $(CATALOGDIR)/ \
                 $(DOCUMENTSDIR)/*.pdf \
+		$(TECHDIR) \
 #                $(RELEASEDIR) \
 #               $(SIMULATIONDIR) \
                 $(SOURCESDIR) \
                 $(SYNTHESISDIR) \
-                $(TBENCHDIR)
+                $(TBENCHDIR) \
+
 
 #   collect available cells
 
