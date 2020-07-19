@@ -2,7 +2,7 @@
 
 mkdir "outputlib";
 
-my $debug=0;
+my $debug=1;
 
 my $sp=$ARGV[0]||"libresilicon.sp";
 
@@ -49,16 +49,18 @@ while(<IN>)
 
 
     my $placer=""; $placer="--placer=hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
-    if($cellname eq "CLKBUF3")
+    if(-f "$cellname.dontlayout")
     {
-      print STDERR "TODO: CLKBUF3 currently takes too much time to generate so we have to skip it, librecell needs to be improved\n";
+      print STDERR "TODO: $cellname is disabled by $cellname.dontlayout this is likely because it takes too much time to generate it\n";
       unlink "$cellname.running";
       next;
     }
     unlink "outputlib/$cellname.mag";
     step("NEXT STEP: Running cell2spice");
     system "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
-    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer >>$cellname.log 2>>$cellname.err";
+    step("NEXT STEP: Running lclayout");
+
+    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --ignore-lvs >>$cellname.log 2>>$cellname.err";
     print "$cmd\n";
     system $cmd;
 
