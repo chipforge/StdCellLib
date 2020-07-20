@@ -33,16 +33,13 @@ our $y=0;
 
 my $now=time();
 
-print <<EOF
-magic
-tech scmos
-timestamp $now
-EOF
-;
+my $usedtech="scmos";
 
 our $labels="";
 
 our $row=0;
+
+our $printedheader=0;
 
 foreach(@cells)
 {
@@ -56,10 +53,11 @@ foreach(@cells)
   {
     while(<IN>)
     {
+      $usedtech=$1 if(m/^tech (\w+)/);
       $timestamp=$1 if(m/^timestamp (\d+)/);	      
       if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
       { 
-        print STDERR "$name min:@mins max:@maxs $_";
+        #print STDERR "$name min:@mins max:@maxs $_";
         my @a=split " ",$_;
         foreach(1 .. 4)
         {
@@ -71,6 +69,20 @@ foreach(@cells)
     close IN;
   }
   next unless(defined($maxs[0]));
+
+
+  if(!$printedheader)
+  {
+    print <<EOF
+magic
+tech $usedtech
+timestamp $now
+EOF
+;
+    $printedheader=1;
+  }
+
+
 
   my $height=$maxs[0]-$mins[0];
   my $width=$maxs[1]-$mins[1];
@@ -90,7 +102,7 @@ foreach(@cells)
   print "timestamp $timestamp\n";
   print "transform $dir 0 $bx 0 $dir $by\n";
   print "box 0 0 $width $height\n";
-  print STDERR "$name $width $height\n";
+  #print STDERR "$name $width $height\n";
 
   my $lx=$x+$width/2;
   my $ly=$y+$height/2;
