@@ -137,6 +137,10 @@ libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ..
 demoboard.mag: *.cell libresilicon.sp
 	perl ../Tools/perl/demoboard.pl >demoboard.mag
 
+.PHONY: buildreport
+buildreport:
+	bash ../Tools/reporter.sh
+
 libresilicon.lef: *.cell libresilicon.sp
 	../Tools/perl/lefgen.pl outputlib/*.lef >libresilicon.lef
 
