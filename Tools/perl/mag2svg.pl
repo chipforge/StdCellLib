@@ -148,7 +148,7 @@ if(-f "$mag.mag")
   close IN;
   my $width=($limits[3]||0)-($limits[1]||0);
   my $height=($limits[4]||0)-($limits[2]||0);
-  $limits[2]=-$limits[4];
+  $limits[2]=-($limits[4] || 0);
   if($width)
   {
     print "Writing $svg\n";
@@ -159,15 +159,18 @@ if(-f "$mag.mag")
 <style type="text/css">
 rect { fill-opacity: 0.9; stroke-width:0.3px; stroke-opacity:0.5 }
 .polysilicon { fill:#dc5f5f; }
+.poly { fill:#dc5f5f; }
 .li1 { fill:#8ca3da; }
 .metal1 { fill:#9cb3ea; }
+.met1 { fill:#9cb3ea; }
 .m2contact { fill:#8b87c2; }
-.licon { fill:#8b87c2; }
+.licon1 { fill:#8b87c2; }
 .metal2 { fill:#c3b3d3; }
 .metal3 { fill:#e2abc9; }
 .ndiffusion { fill:#42d542; }
 .pdiffusion { fill:#caa073; }
 .pdcontact { fill:#8592c8; }
+.mcon { fill:#8592c8; }
 .polycontact { fill:#8e2aaa; }
 .nwell { fill:#bdbdbd; }
 .pwell { fill:#ccccbd; }
