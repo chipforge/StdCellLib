@@ -52,6 +52,7 @@ TEMPDIR =       Intermediate
 TBENCHDIR =     TBench
 TOOLSDIR =      Tools
 RELEASEDIR =    Library
+TECHDIR = 	Tech
 
 #   tool variables
 
