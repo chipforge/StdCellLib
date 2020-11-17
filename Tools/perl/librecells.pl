@@ -19,7 +19,7 @@ while(<IN>)
   {
     our $cellname=$1;
     next if(defined($ENV{'CELL'}) && $cellname ne $ENV{'CELL'});
-    if(-s "$cellname.lib")
+    if(-s "$cellname.lib" && (-s "$cellname.mag")>55)
     {
       print STDERR "INFO: $cellname.lib already exists, so we are skipping it.\n";
       next;
