@@ -76,7 +76,7 @@ output_writers = [
         scale_factor=0.1, # Scale all coordinates by this factor (rounded down to next integer).
         output_map={
             l_nwell: 'nwell',
-            l_via1: 'mcon',
+            l_via1: 'viali',
             l_poly: 'poly',
             l_abutment_box: ['properties'],
             l_metal1: 'li1',
