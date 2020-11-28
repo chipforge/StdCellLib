@@ -78,7 +78,7 @@ output_writers = [
             l_nwell: 'nwell',
             l_via1: 'mcon',
             l_poly: 'poly',
-            l_abutment_box: ['bound'],
+            l_abutment_box: ['properties'],
             l_metal1: 'li1',
             l_metal2: 'met1',
             l_metal1_label: 'li1',
@@ -87,13 +87,13 @@ output_writers = [
             l_metal2_pin: 'met1',
             l_ndiffusion: 'ndiffusion',
             l_pdiffusion: 'pdiffusion',
-            l_poly_contact: 'licon1',
-            l_diff_contact: 'licon1'
+            l_poly_contact: 'polycont',
+            l_diff_contact: 'pdiffc'
         }
     ),
 
     LefWriter(
-        db_unit=db_unit,
+        db_unit=1e-6, # LEF Fileformat always needs Microns
         output_map=output_map
     ),
 
