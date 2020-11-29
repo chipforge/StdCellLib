@@ -3,9 +3,9 @@ echo This script generates a build report every 10 seconds, so that you can moni
 rm -f .done
 perl ../Tools/perl/buildreport.pl 
 firefox buildreport.html &
-while true
+while [ ! -f .done ] ;
 do
-perl ../Tools/perl/buildreport.pl 
-sleep 10
+	perl ../Tools/perl/buildreport.pl 
+	sleep 10
 done
 
