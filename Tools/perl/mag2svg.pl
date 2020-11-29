@@ -56,7 +56,7 @@ sub initColors()
 	  {
             my $s=$styles{$2}||"";
 	    #print "$1 $s\n" if($s);
-            $csscolors.=".$1 { fill:$s; }\n";
+            $csscolors.=".$1 { fill:$s; }\n" if($s ne "");
 	  }
 	}	
       }
@@ -117,7 +117,7 @@ if(-f "$mag.mag")
       print MAGIC "exit\n";
       close MAGIC;
       system "$0 $flat.mag $svg $tech";
-      #unlink $flat;
+      unlink $flat;
       exit;
     }	     
     elsif(m/^rect (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*)/)
@@ -178,6 +178,7 @@ rect { fill-opacity: 0.9; stroke-width:0.3px; stroke-opacity:0.5 }
 .bound { stroke:#c8c8c8; fill:none }
 .labels { fill:#ffffff; }
 .port { stroke:#505050; fill:none}
+.abutment { fill:none; stroke:#ffffff; stroke-width:2 }
 text { font: normal 7px sans-serif; text-anchor: middle;}
 $csscolors
 </style>
