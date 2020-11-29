@@ -64,10 +64,19 @@ while(<IN>)
     print "$cmd\n";
     system $cmd;
 
-    if(-f "outputlib/$cellname.mag") # Has lclayout exported magic directly?
+    if((-s "outputlib/$cellname.mag") > 51) # Has lclayout exported magic directly?
     {
       # Then we dont have to convert it
-      system "cp outputlib/$cellname.mag $cellname.mag";
+      open MAGIN,"<outputlib/$cellname.mag";
+      open MAGOUT,">$cellname.mag";
+      my $old=$/;
+      undef $/;
+      my $magcontent=<MAGIN>;
+      $/=$old;
+      $magcontent=~s/<< abutment >>\nrect /<< properties >>\nstring FIXED_BBOX /s;
+      print MAGOUT $magcontent;
+      close MAGIN;
+      close MAGOUT;
     }
     else
     {
