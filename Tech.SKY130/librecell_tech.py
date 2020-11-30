@@ -78,7 +78,7 @@ output_writers = [
             l_nwell: 'nwell',
             l_via1: 'viali',
             l_poly: 'poly',
-            l_abutment_box: ['properties'],
+            l_abutment_box: ['abutment'],
             l_metal1: 'li1',
             l_metal2: 'met1',
             l_metal1_label: 'li1',
@@ -155,13 +155,13 @@ gate_length = 150*nm # (poly.1a)
 gate_extension = 2*150*nm # (poly.8) # !!!! Rule says only 130nm, but this way we try to work around (difftap.2) which demands 420nm width for the channel
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 6*130*nm # !!! This likely needs to be tuned later on
+transistor_offset_y = 5*130*nm # !!! This likely needs to be tuned later on
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
 # `unit_cell_width` also corresponds to the pitch of the gates because gates are spaced on a regular grid.
-unit_cell_width = 8 * 130*nm
-unit_cell_height = 32 * 130*nm # minimum 16um due to pwell width + nwell-pwell spacing
+unit_cell_width = 920*nm # 920 is 2*0.46um (unithd SITE),  8 * 130*nm
+unit_cell_height = 2720*nm #270*nm # 32 * 130*nm # minimum 16um due to pwell width + nwell-pwell spacing
 #assert unit_cell_height >= 16*um, "minimum 16um due to pwell width + nwell-pwell spacing"
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
 
