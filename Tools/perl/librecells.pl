@@ -64,7 +64,8 @@ while(<IN>)
     print "$cmd\n";
     system $cmd;
 
-    if((-s "outputlib/$cellname.mag") > 51) # Has lclayout exported magic directly?
+    my $magfile="outputlib/$cellname.mag";
+    if(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
     {
       # Then we dont have to convert it
       open MAGIN,"<outputlib/$cellname.mag";
