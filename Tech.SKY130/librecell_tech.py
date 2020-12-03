@@ -33,7 +33,7 @@ my_poly_gate = (66, 9) # poly gates? Why do we have a second layer for gates?
 my_poly_label = (66, 5)
 
 my_licon1 = (66, 44) # licon1 is used to contact both polysilicon and diffusion in SKY130.
-my_li1 = (66, 44) # "Local Interconnect"  (like the first metal layer)
+my_li1 = (67, 20) # "Local Interconnect"  (like the first metal layer)
 my_li1_label = (67, 5)
 my_li1_pin = (67, 16)
 
