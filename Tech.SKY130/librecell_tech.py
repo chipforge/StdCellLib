@@ -156,7 +156,7 @@ gate_length = 150*nm # (poly.1a)
 gate_extension = 2*150*nm # (poly.8) # !!!! Rule says only 130nm, but this way we try to work around (difftap.2) which demands 420nm width for the channel
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 5*130*nm # !!! This likely needs to be tuned later on
+transistor_offset_y = 420*nm # !!! This likely needs to be tuned later on
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -225,13 +225,13 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_ndiffusion, l_diff_contact): 40*nm, # (licon.5a)
-    (l_pdiffusion, l_diff_contact): 40*nm, # (licon.5a)
+    (l_ndiffusion, l_diff_contact): 60*nm, # (licon.5a)
+    (l_pdiffusion, l_diff_contact): 60*nm, # (licon.5a)
     (l_poly, l_poly_contact): 80*nm, # (licon.8a) !!! OR (licon.4) ?
     (l_metal1, l_diff_contact): 80*nm, # (li.5)
     (l_metal1, l_poly_contact): 80*nm, # (li.5)
     (l_metal1, l_via1): 0,# (ct.4)
-    (l_metal2, l_via1): 30*nm,# (m1.4)
+    (l_metal2, l_via1): 60*nm,# (m1.4)
 
     # l_*well must overlap l_*diffusion
     (l_nwell, l_pdiffusion): 180*nm+150*nm, # (difftap.8)
