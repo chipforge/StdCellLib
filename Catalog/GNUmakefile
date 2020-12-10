@@ -124,7 +124,7 @@ endif
 catalog:    $(CELLS) 
 	
 .PHONY: layout
-layout: libresilicon.sp libresilicon.lef libresilicon.lib qflow demoboard.mag doc/StdCellLib.pdf
+layout: libresilicon.sp libresilicon.lef libresilicon.lib demoboard.mag doc/StdCellLib.pdf
 
 
 libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/transistor.sp
@@ -221,7 +221,7 @@ test2:
 	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin B --table fall_transition &
 
 
-%.svg:
+%.svg : %.mag
 	perl ../Tools/perl/mag2svg.pl $@
 
 
