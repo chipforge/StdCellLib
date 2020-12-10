@@ -94,7 +94,8 @@ output_writers = [
 
     LefWriter(
         db_unit=1e-6, # LEF Fileformat always needs Microns
-        output_map=output_map
+        output_map=output_map,
+        use_rectangles_only=True
     ),
 
     GdsWriter(
@@ -174,7 +175,7 @@ grid_offset_x = routing_grid_pitch_x
 grid_offset_y = (routing_grid_pitch_y // 2 ) -0
 
 # Width of power rail.
-power_rail_width = 3*130*nm # decided by the standard cell library architect
+power_rail_width = 480*nm # compatible to SKY130 #  3*130*nm # decided by the standard cell library architect
 
 # Minimum width of polysilicon gate stripes.
 # It increases w and l from the spice netlist, so it must be width from the spice netlist
@@ -217,6 +218,7 @@ minimum_width = {
     l_poly: gate_length, 
     l_metal1: 170*nm, # (li.1)
     l_metal2: 140*nm, # (m1.1)
+    l_nwell: 1000*nm
 }
 
 # Minimum enclosure rules.
@@ -232,7 +234,7 @@ minimum_enclosure = {
     (l_metal2, l_via1): 30*nm,# (m1.4)
 
     # l_*well must overlap l_*diffusion
-    (l_nwell, l_pdiffusion): 180*nm, # (difftap.8)
+    (l_nwell, l_pdiffusion): 180*nm+150*nm, # (difftap.8)
     (l_pwell, l_ndiffusion): 180*nm, # (difftap.8)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
@@ -245,8 +247,8 @@ minimum_notch = {
     l_poly: 130*nm,
     l_metal1: 130*nm,
     l_metal2: 130*nm,
-    l_nwell: 130*nm,
-    l_pwell: 130*nm,
+    l_nwell: 5*130*nm,
+    l_pwell: 5*130*nm,
 }
 
 # Minimum area rules.
@@ -290,22 +292,5 @@ multi_via = {
     (l_metal1, l_poly): 1,
     (l_metal1, l_metal2): 1,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
