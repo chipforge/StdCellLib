@@ -159,10 +159,10 @@ connectable_layers = {l_nwell, l_pwell}
 gate_length = 150*nm # (poly.1a)
 
 # Minimum length a polysilicon gate must overlap the silicon.
-gate_extension = 2*150*nm # (poly.8) # !!!! Rule says only 130nm, but this way we try to work around (difftap.2) which demands 420nm width for the channel
+gate_extension = 130*nm # (poly.8)
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 420*nm # !!! This likely needs to be tuned later on
+transistor_offset_y = 330*nm # !!! This likely needs to be tuned later on
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -242,7 +242,7 @@ minimum_enclosure = {
     (l_metal2, l_via1): 60*nm,# (m1.4)
 
     # l_*well must overlap l_*diffusion
-    (l_nwell, l_pdiffusion): 180*nm+150*nm, # (difftap.8)
+    (l_nwell, l_pdiffusion): 180*nm+130*nm, # (difftap.8)
     (l_pwell, l_ndiffusion): 180*nm, # (difftap.8)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
