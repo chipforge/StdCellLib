@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 mkdir "outputlib";
+mkdir "debuglib";
 
 my $debug=1;
 
@@ -60,9 +61,13 @@ while(<IN>)
     system "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
     step("NEXT STEP: Running lclayout");
 
-    my $cmd="lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --ignore-lvs >>$cellname.log 2>>$cellname.err";
-    print "$cmd\n";
-    system $cmd;
+    foreach my $deb(0,1)
+    {
+      next if($deb && !$debug);
+      my $cmd="lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
+      print "$cmd\n";
+      system $cmd;
+    }
 
     my $magfile="outputlib/$cellname.mag";
     if(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
