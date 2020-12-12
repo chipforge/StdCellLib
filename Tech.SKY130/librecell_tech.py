@@ -57,7 +57,8 @@ output_map = {
     #l_pwell: my_pwell,  # Output layer for pwell. Uncomment this if needed. For instance for twin-well processes.
     l_poly: my_poly,
     l_poly_contact: my_licon1,
-    l_diff_contact: my_licon1,
+    l_pdiff_contact: my_licon1,
+    l_ndiff_contact: my_licon1,
     l_metal1: my_li1, # Metal1 from lclayout gets li1 from SKY130
     l_metal1_label: my_li1_label,
     l_metal1_pin: my_li1_pin,
@@ -65,7 +66,6 @@ output_map = {
     l_metal2: my_metal1, # Metal2 from lclayout gets met1 from SKY130
     l_metal2_label: my_metal1_label,
     l_metal2_pin: my_metal1_pin,
-
     l_abutment_box: my_abutment_box
 }
 
@@ -88,7 +88,8 @@ output_writers = [
             l_ndiffusion: 'ndiffusion',
             l_pdiffusion: 'pdiffusion',
             l_poly_contact: 'polycont',
-            l_diff_contact: 'pdiffc'
+            l_pdiff_contact: 'pdiffc',
+            l_ndiff_contact: 'ndiffc'
         }
     ),
 
@@ -128,15 +129,20 @@ min_spacing = {
     (l_poly, l_ndiffusion): 75*nm, # (poly.4)
     (l_poly, l_pdiffusion): 75*nm, # (poly.4)
     (l_poly, l_poly): 210*nm, # (poly.2)
-    (l_poly, l_diff_contact): 55*nm, # (licon.11)
-    (l_diff_contact, l_diff_contact): 270*nm, # (difftap.3)
+    (l_poly, l_pdiff_contact): 55*nm, # (licon.11)
+    (l_poly, l_ndiff_contact): 55*nm, # (licon.11)
+    (l_pdiff_contact, l_pdiff_contact): 270*nm, # (difftap.3)
+    (l_ndiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
+    (l_pdiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
     (l_metal1, l_metal1): 170*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
     (l_metal2, l_metal2): 140*nm, # (m1.2) # huge_met2
     (l_via1, l_via1): 190*nm, # (ct.2)
     # (l_via1, l_diff_contact): 2*l, # NO RULES FOR LICON-MCON spacing found
     #(l_via1, l_ndiffusion): 2*l, # NO RULES FOR MCON-DIFF spacing found
     #(l_via1, l_pdiffusion): 2*l, # NO RULES FOR MCON-DIFF spacing found
-    (l_poly_contact, l_diff_contact): 170*nm, # (licon.2)
+    (l_poly_contact, l_pdiff_contact): 170*nm, # (licon.2)
+    (l_poly_contact, l_ndiff_contact): 170*nm, # (licon.2)
+
 }
 
 # Layer for the pins.
@@ -206,7 +212,8 @@ wire_width_horizontal = {
 # Side lengths of vias (square shaped).
 via_size = {
     l_poly_contact: 170*nm, # (ct.1)
-    l_diff_contact: 170*nm, # (ct.1)
+    l_ndiff_contact: 170*nm, # (ct.1)
+    l_pdiff_contact: 170*nm, # (ct.1)
     l_via1: 170*nm # (licon.1)
 #    l_via2: 150*nm # (via.1a)
 }
@@ -225,10 +232,11 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_ndiffusion, l_diff_contact): 60*nm, # (licon.5a)
-    (l_pdiffusion, l_diff_contact): 60*nm, # (licon.5a)
+    (l_ndiffusion, l_ndiff_contact): 60*nm, # (licon.5a)
+    (l_pdiffusion, l_pdiff_contact): 60*nm, # (licon.5a)
     (l_poly, l_poly_contact): 80*nm, # (licon.8a) !!! OR (licon.4) ?
-    (l_metal1, l_diff_contact): 80*nm, # (li.5)
+    (l_metal1, l_pdiff_contact): 80*nm, # (li.5)
+    (l_metal1, l_ndiff_contact): 80*nm, # (li.5)
     (l_metal1, l_poly_contact): 80*nm, # (li.5)
     (l_metal1, l_via1): 0,# (ct.4)
     (l_metal2, l_via1): 60*nm,# (m1.4)
