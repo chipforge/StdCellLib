@@ -124,13 +124,13 @@ min_spacing = {
     (l_ndiffusion, l_poly_contact): 190*nm, # (licon.14)
     (l_pdiffusion, l_poly_contact): 190*nm, # (licon.14)
     (l_nwell, l_nwell): 1270*nm, # (nwell.2a)
-    (l_nwell, l_pwell): 1270*nm, # p_well not needed for SKY130
+    (l_nwell, l_pwell): 250*nm, # p_well not needed for SKY130, but lclayout uses it for sizing the wells!
     (l_pwell, l_pwell): 1270*nm, # p_well not needed for SKY130
     (l_poly, l_ndiffusion): 75*nm, # (poly.4)
     (l_poly, l_pdiffusion): 75*nm, # (poly.4)
     (l_poly, l_poly): 210*nm, # (poly.2)
-    (l_poly, l_pdiff_contact): 55*nm, # (licon.11)
-    (l_poly, l_ndiff_contact): 55*nm, # (licon.11)
+    (l_poly, l_pdiff_contact): 155*nm, # 55*nm # (licon.11)
+    (l_poly, l_ndiff_contact): 155*nm, # 55*nm # (licon.11)
     (l_pdiff_contact, l_pdiff_contact): 270*nm, # (difftap.3)
     (l_ndiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
     (l_pdiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
@@ -153,7 +153,7 @@ power_layer = l_metal2 # metal2 = metal1 on SKY130
 
 # Layers that can be connected/merged without changing the schematic.
 # This can be used to resolve spacing/notch violations by just filling the space.
-connectable_layers = {l_nwell, l_pwell}
+connectable_layers = {l_nwell, l_pwell, l_poly}
 # Width of the gate polysilicon stripe.
 # is reused as the minimum_width for the l_poly layer
 gate_length = 150*nm # (poly.1a)
@@ -162,7 +162,7 @@ gate_length = 150*nm # (poly.1a)
 gate_extension = 130*nm # (poly.8)
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 330*nm # !!! This likely needs to be tuned later on
+transistor_offset_y = 240*nm # !!! This likely needs to be tuned later on
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -173,12 +173,12 @@ unit_cell_height = 2720*nm #270*nm # 32 * 130*nm # minimum 16um due to pwell wid
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
 
 # Routing pitch
-routing_grid_pitch_x = unit_cell_width // 2 // 1
-routing_grid_pitch_y = 130*nm # unit_cell_height // 8 // 2
+routing_grid_pitch_x = unit_cell_width // 4
+routing_grid_pitch_y = 180*nm # unit_cell_height // 8 // 2
 
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
 grid_offset_x = routing_grid_pitch_x
-grid_offset_y = (routing_grid_pitch_y // 2 ) -0
+grid_offset_y = 0 # (routing_grid_pitch_y // 2 ) -10
 
 # Width of power rail.
 power_rail_width = 480*nm # compatible to SKY130 #  3*130*nm # decided by the standard cell library architect
@@ -275,14 +275,14 @@ orientation_change_penalty = 100000
 weights_horizontal = {
     l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
     l_pdiffusion: 197000, # (mohms/square)
-    l_poly: 48200, # (mohms/square)
+    l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
     l_metal1: 12800, # SKY130_Li1 Local Interconnect! (mohms/square)
     l_metal2: 125, # SKY130_Metal1
 }
 weights_vertical = {
     l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
     l_pdiffusion: 197000, # (mohms/square)
-    l_poly: 48200, # (mohms/square)
+    l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
     l_metal1: 12800, # SKY130_Li1 Local Interconnect! (mohms/square)
     l_metal2: 125, # SKY130_Metal1
 }
