@@ -166,6 +166,18 @@ EOF
 ;
     close OUT;
 
+    step("NEXT STEP: DRC Check with Magic");
+    system "../Tools/perl/drccheck.pl $cellname.mag";
+
+    step("NEXT STEP: DRC Fix");
+    system "../Tools/perl/drcfix.pl $cellname.mag.drc";
+    if(-f "corr.$cellname.mag")
+    {
+      unlink "$cellname.mag";
+      rename "corr.$cellname.mag","$cellname.mag";
+      print "DRC errors in $cellname corrected\n";
+    }
+
     step("NEXT STEP: Generating Liberty Template");
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
 
