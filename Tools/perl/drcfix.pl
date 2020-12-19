@@ -2,7 +2,7 @@
 
 print "Handling $ARGV[0]\n";
 open IN,"<".$ARGV[0];
-my $mag=$ARGV[0];$mag=~s/\.drc$//;
+my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/;
 my $mode=0;
 
 sub form($)
@@ -10,15 +10,25 @@ sub form($)
   return int($_[0]*100);
 }
 
+my $insert="";
+
 while(<IN>)
 {
   if(m/Mcon spacing < 0\.17um \(Mcon 2\)/)
   {
-    $mode=1;
+    $mode="viali";
     my $dummy=<IN>;
     print "Found my rule\n";
     next;
   }
+  if(m/Diffusion contact spacing < 0.17um \(LIcon 2\)/)
+  {
+    $mode="ndiffc";
+    my $dummy=<IN>;
+    print "Found my rule\n";
+    next;
+  }
+
   if(m/\-\-\-\-\-\-\-\-\-\-\-/)
   {
     $mode=0;
@@ -37,25 +47,30 @@ while(<IN>)
     {
       print "Vertikal\n";
       print "@line1 - @line2\n";
-      open MAG,"<$mag";
-      open CORR,">corr.$mag";
-      print "Reading from $mag Writing to $mag\n";
-      while(<MAG>)
-      {
-        print CORR $_;
-        if(m/<< viali >>/)
-        {	
-          print CORR "<< viali >>\nrect ".form($line1[0])." ".form($line1[3])." ".form($line1[2])." ".form($line2[1])."\n";
-	  while(<MAG>)
-	  {
-            print CORR $_;
-          }
-	}
-      }
-      close CORR;
-      close MAG;
+      $insert.="<< $mode >>\nrect ".form($line1[0])." ".form($line1[3])." ".form($line1[2])." ".form($line2[1])."\n";
+    }
+    elsif($line1[1] eq $line2[1] && $line1[3] eq $line2[3] && $line1[0]<$line2[0])
+    {
+      print "Horizontal\n";
+      print "@line1 - @line2\n";
+      $insert.="<< $mode >>\nrect ".form($line1[2])." ".form($line1[1])." ".form($line2[3])." ".form($line1[1])."\n";
     }
 
   }
 }
 close IN;
+
+open MAG,"<$mag";
+open CORR,">corr.$mag";
+print "Reading from $mag Writing to $mag\n";
+while(<MAG>)
+{
+  if(m/<< end >>/)
+  {	
+    print CORR $insert;
+  }
+  print CORR $_;
+}
+close CORR;
+close MAG;
+

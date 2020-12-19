@@ -10,10 +10,10 @@ foreach my $magfile (<*.mag>)
   my $cellname=$magfile; $cellname=~s/\.mag$//;	
 
   step("NEXT STEP: DRC Check with Magic");
-  system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
+  system "../Tools/perl/drccheck.pl $cellname.mag";
 
   step("NEXT STEP: DRC Fix");
-  system "../Tools/perl/drcfix.pl $cellname.mag.drc";
+  system "../Tools/perl/drcfix.pl $cellname.drc";
   if(-f "corr.$cellname.mag")
   {
     unlink "$cellname.mag";
