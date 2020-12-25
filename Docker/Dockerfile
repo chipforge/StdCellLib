@@ -55,6 +55,8 @@ WORKDIR StdCellLib/Catalog
 #RUN make catalog
 RUN make importQflow
 
+RUN rm /usr/local/lib/python3.8/dist-packages/PySMT-0.9.1.dev86-py3.8.egg/six.py
+
 #echo "Installation of the StdCellLib is finished."
 #echo "To build a whole standard cell library you can now run:"
 #echo "make layout ; make doc ; perl ../Tools/perl/buildreport.pl ; cd .. ; make dist"
