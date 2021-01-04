@@ -68,7 +68,8 @@ help:
 	#   clean      - clean up all intermediate files
 	#
 	#   tools      - generate POPCORN tool
-	#   catalog    - re-generate combinatorial catalog (DON'T DO THAT!!)
+	#   catalog    - (re-)generate combinatorial catalog (DON'T DO THAT!!)
+	#   layout     - generate physical layouts
 	#   doc        - generate complete data book
 	#
 	#   datasheet [CELL=<cell>] - generate cell data sheet
@@ -86,6 +87,7 @@ help:
 .PHONY: clean
 clean:
 	# ---- clean up all intermediate files ----
+	$(MAKE) -f layout.mk $@
 	$(MAKE) -f simulation.mk $@
 	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
@@ -111,8 +113,16 @@ tools:
 #   while following steps might overwrite your manual efforts
 
 .PHONY: catalog
-catalog:   tools
+catalog:
 	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
+
+#   ----------------------------------------------------------------
+#               LAYOUT TARGETS
+#   ----------------------------------------------------------------
+
+.PHONY: layout
+layout:
+	$(MAKE) -f layout.mk CELL=$(CELL) magic
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
