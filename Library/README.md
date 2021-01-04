@@ -4,8 +4,26 @@ This Directory is part of the LibreSilicon's Standard Cell Library distribution 
 
 ## Directory Structure
 
-    Layout
-        / LEF
-        / magic
-        / SVG
+    README.md
+    StdCellLib.pdf
+
+    Layout/
+        LEF/
+            README.md
+            INV.lef
+            ...
+        magic/
+            README.md
+            INV.mag
+            ...
+        SVG/
+            README.md
+            INV.svg
+            ...
+
+    Models/
+        spice/
+            README.md
+            INV.cir
+            ...
 
