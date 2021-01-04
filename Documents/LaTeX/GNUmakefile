@@ -17,7 +17,8 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+#   Copyright (c) 2018 - 2021 by
+#                 chipforge <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
