@@ -9,16 +9,17 @@
 ;;                          www.chipforge.org
 ;;                  there are projects from small cores up to PCBs, too.
 ;;
-;;  File:           StdCellLib/Tools/popcorn/mosis-rules.scm
+;;  File:           StdCellLib/Tools/cobblestone/mosis-rules.scm
 ;;
-;;  Purpose:        vendor-independet, scalable design rules
+;;  Purpose:        vendor-independent, scalable design rules for
+;;                  the 'cobblestone' layout tool
 ;;
 ;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
 ;;  Copyright (c)   2019 - 2021 by
-;;                  chipforge <popcorn@nospam.chipforge.org>
+;;                  chipforge <cobblestone@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
 ;;  provided that this copyright statement is not removed from the
