@@ -44,10 +44,12 @@
 #   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 #   ////////////////////////////////////////////////////////////////////
 
-#   tool variables
+#   project root directory, relative, used inside include.mk file
+PRD =               ..
 
-ECHO ?=         @echo # -e
-RM ?=           rm -f
+#   common definitions
+
+include $(PRD)/include.mk
 
 #   usefull tools
 
@@ -61,16 +63,16 @@ TROFF ?=        groff -t -mdoc
 
 .PHONY: help
 help:
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) "    available targets:"
-	$(ECHO) "-------------------------------------------------------------------"
-	$(ECHO) ""
-	$(ECHO) "    help       - print this help screen"
-	$(ECHO) "    clean      - clean up all intermediate files"
-	$(ECHO) ""
-	$(ECHO) "    manual     - generate Manual Pages"
-	$(ECHO) "    tools      - generate all dependencies"
-	$(ECHO) ""
+	#   ----------------------------------------------------------
+	#    available targets:
+	#   ----------------------------------------------------------
+	#
+	#    help       - print this help screen
+	#    clean      - clean up all intermediate files
+	#
+	#    manual     - generate Manual Pages
+	#    tools      - generate all dependencies
+	#
 
 
 .PHONY: clean
