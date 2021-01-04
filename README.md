@@ -83,31 +83,33 @@ make
 
 which shows a help screen with available targets.
 
-### Popcorn Preparing
+### Tool Preparing
 
-First prepare Popcorn by typing
+First prepare all home-tailored tools by typing
 
 ```
-make popcorn
+make tools
 ```
 
-This will generate the very usefull manual pages about the tool and the formats, Popcorn is using. Please read them.
+This will generate helpfull manual pages about the tools and the formats, the Standard Cell Library is using. Please read them (inside the ./Tool directory).
 
 ### Generate Cell Descriptions
 
-Once Popcorn is installed, you might copy and adapt a TOML configuration file from ./Template/TOML directory into your project root directory and run
+Once all tools are installed, you might copy and adapt a TOML configuration file from ./Template/TOML directory into your project root directory and run
 
 ```
 make catalog
 ```
 
-which re-generates the majority of the Cell Description Catalog, and overwrites older, already generated cells. Doing so, GNU make sees the new timestamp and redoes the following (time-consuming) steps once again. All manual changes on cells in the catalog will be lost.
+which re-generates the majority of the Cell Description Catalog, and overwrites older, already generated cells. Doing so, GNU Make sees the new timestamp and redoes the following (time-consuming) steps once again. All manual changes on cells in the catalog will be lost.
 
 Please re-generate the catalog only, if you know what you're doing and have strong reasons for that.
 
 ### Generate Cell Layouts
 
-t.b.d
+```
+make layout
+```
 
 ### Distribution
 
