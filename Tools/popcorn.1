@@ -17,8 +17,8 @@
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
-.\" Copyright (c)   2019 by
-.\"                 chipforge - <popcorn@nospam.chipforge.org>
+.\" Copyright (c)   2019 - 2021 by
+.\"                 chipforge <popcorn@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
 .\" provided that this copyright statement is not removed from the
@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd October 26, 2019
+.Dd January 2, 2021
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -59,16 +59,17 @@
 .Ar cell-file
 .Nm
 .Op Fl v
-.Op Fl e Ar format
-.Op Fl H Ar number
 .Op Fl T Ar file
+.Op Fl m Ar method
+.Op Fl c Ar name
+.Op Fl D Ar string
 .Ar cell-file
 .Nm
 .Fl h | \-help
 .Nm
 .Fl \-version
 .Sh DESCRIPTION
-First, the
+The
 .Nm
 utility expands a given combinatorial cell by different methods (
 .Em nand ,
@@ -80,11 +81,6 @@ utility expands a given combinatorial cell by different methods (
 )  and writes out the new derived cell information on
 .Dv STDOUT .
 The new cell name and a cell description for the new cell can be specified.
-Second, the
-.Nm
-utility can be used to derive Schematics, Layouts and Documentation in dedicated
-formats for cell representations, also written to
-.Dv STDOUT .
 .Pp
 In principle every combinatorial cell (in CMOS technology) contains two
 functional complementary networks.
@@ -114,18 +110,11 @@ Example Schematic for Inverter Cell (INV)
 .Nm
 functionality is to take one combinatorial cell and expand both networks
 by adding complementary transistors for each network.
-The new combinatorial cell can be exported in different file formats for
-documentation, layout and simulation.
 .Pp
-.Nm
-can be used recursively.
+The generator functionality can be used recursively.
 This implies that one new generated cell becomes the seed for at least one more
 generated cell.
 .Pp
-Or given a cell descriptions,
-.Nm
-is used to fully deploy all information, which is needed for a Standard
-Cell Library.
 .Sh OPTIONS
 .Ss \-b number
 Append inverting buffer to current cell description, when one path (in one of
@@ -139,37 +128,8 @@ Specify the cell-name for the new generated cell.
 .Ss \-D string
 Specify the new cell functionality in a quoted string, e.g. "Not (or Inverter)
 gate" which occurs in generated cell documentation.
-.Ss \-e format
-Export cell description in one of the following file
-.Em formats :
-.Bl -tag -width 14n -compact
-.It Em alf
-IEEE 1603 / IEC 62265 (ALF 2.0)
-.It Em liberty
-Liberty file format (UC Berkeley, Synopsys)
-.It Em layout_magic
-Layout (Magic)
-.It Em layout_svg
-Layout (Scalable Vector Graphics)
-.It Em model_verilog
-`celldefine Model in Verilog (Verilog '95)
-.It Em schematic_gaf
-Schematic (gEDA and friends)
-.It Em schematic_tex
-Schematic (TeX with Circdia package)
-.It Em truthtable_tex
-Truth Table (TeX)
-.It Em verilog-slm
-Switch-level Model (Verilog '95)
-.It Em verilog-bench
-Stimulation Work Bench (Verilog '95)
-.El
 .Ss \-h, \-\-help
 Display help message and exit.
-.Ss \-H number
-Specify the Highth of cells by number of metal tracks (eg. 7).
-Fractional numbers could work inaccurate.
-The Width of cells varies with transistor sizes and numbers.
 .Ss \-l number
 Limit the longest path of stacked transistors between output and any supply line
 to
@@ -208,7 +168,9 @@ Specify the configuration file (written in TOML) with all user-defined values.
 This file contains at least the path to the technology file, transistor sizes
 and cell hight.
 Values in the configuration file can be over-ruled by command-line options,
-when feasible, e.g. -l limit and -b buffer.
+when feasible, e.g.
+.Op Fl l Ar number
+.Op Fl b Ar number .
 .Ss \-v
 Print verbose messages at
 .Dv STDERR .
@@ -228,7 +190,7 @@ For the exact file format, see
 Not yet known.
 Please do not hesitate to report your findings.
 .Sh COPYRIGHT
-Copyright (c) 2018-2019 Author and Contributors.
+Copyright (c) 2018-2021 Author and Contributors.
 .Pp
 GNU General Public License v3.0
 .UR
