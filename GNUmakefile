@@ -87,7 +87,7 @@ help:
 clean:
 	# ---- clean up all intermediate files ----
 	$(MAKE) -f simulation.mk $@
-	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
+	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 	# ---- clean generated catalog files ----
 	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
@@ -100,7 +100,7 @@ clean:
 
 .PHONY: tools
 tools:
-	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
+	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
 #               CATATLOG TARGETS

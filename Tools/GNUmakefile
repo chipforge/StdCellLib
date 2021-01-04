@@ -9,16 +9,17 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Tools/popcorn/GNUmakefile
+#   File:           StdCellLib/Tools/GNUmakefile
 #
-#   Purpose:        Makefile for Popcorn Tool Dependencies
+#   Purpose:        Makefile for Standard Cell Library Tool Dependencies
 #
 #   ************    GNU Make 3.80 Source Code       ****************
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2019 by
-#                   chipforge - <popcorn@nospam.chipforge.org>
+#   Copyright (c) 2019 - 2021 by
+#                 chipforge <popcorn@nospam.chipforge.org>
+#   All rights reserved.
 #
 #   This source file may be used and distributed without restriction
 #   provided that this copyright statement is not removed from the
@@ -43,20 +44,12 @@
 #   GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 #   ////////////////////////////////////////////////////////////////////
 
-#   project name
-
-PROJECT =       Popcorn
-
 #   tool variables
 
-CAT ?=          @cat
 ECHO ?=         @echo # -e
-MV ?=           mv
 RM ?=           rm -f
-TAR ?=          tar -zh
-DATE :=         $(shell date +%Y%m%d)
 
-#   project tools
+#   usefull tools
 
 TROFF ?=        groff -t -mdoc
 
@@ -75,14 +68,14 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    manual     - generate Manual Pages for Popcorn"
+	$(ECHO) "    manual     - generate Manual Pages"
 	$(ECHO) "    tools      - generate all dependencies"
 	$(ECHO) ""
 
 
 .PHONY: clean
 clean:
-	-$(RM) ../*.ps
+	-$(RM) *.ps
 
 #   ----------------------------------------------------------------
 #               MANUAL PAGES
@@ -90,23 +83,29 @@ clean:
 
 #   man 5 cell
 
-.PHONY: ../cell.5.ps
-../cell.5.ps: ../cell.5
+.PHONY: cell.5.ps
+cell.5.ps: cell.5
 	$(TROFF) $< > $@
 
 #   man 5 table
 
-.PHONY: ../table.5.ps
-../table.5.ps: ../table.5
+.PHONY: table.5.ps
+table.5.ps: table.5
+	$(TROFF) $< > $@
+
+#   man 1 cobblestone
+
+.PHONY: cobblestone.1.ps
+cobblestone.1.ps: cobblestone.1
 	$(TROFF) $< > $@
 
 #   man 1 popcorn
 
-.PHONY: ../popcorn.1.ps
-../popcorn.1.ps: ../popcorn.1
+.PHONY: popcorn.1.ps
+popcorn.1.ps: popcorn.1
 	$(TROFF) $< > $@
 
-manual: ../cell.5.ps ../table.5.ps ../popcorn.1.ps
+manual: cell.5.ps table.5.ps cobblestone.1.ps popcorn.1.ps
 
 #   ----------------------------------------------------------------
 #               TOOLING
