@@ -25,7 +25,7 @@ refdes=M1
 T 44700 47900 5 8 1 1 0 0 1
 model-name=pmos4
 T 44700 47600 5 8 1 0 0 0 1
-w='PNratio*Wunit'
+w='g*Wmin'
 T 44700 47400 5 8 1 0 0 0 1
 l=1u
 }
@@ -107,7 +107,7 @@ device=directive
 T 40400 47900 5 10 1 1 0 0 1
 refdes=A4
 T 40400 47600 5 10 1 1 0 0 1
-value=.PARAM Wunit=1.5u
+value=.PARAM Wmin=1.5u
 }
 C 40300 46700 1 0 0 spice-directive-1.sym
 {
@@ -116,7 +116,7 @@ device=directive
 T 40400 47100 5 10 1 1 0 0 1
 refdes=A5
 T 40400 46800 5 10 1 1 0 0 1
-value=.PARAM PNratio=2
+value=.PARAM g=2
 }
 C 47200 47300 1 0 0 asic-pmos-1.sym
 {
@@ -127,7 +127,7 @@ refdes=M5
 T 48000 47900 5 8 1 1 0 0 1
 model-name=pmos4
 T 48000 47600 5 8 1 0 0 0 1
-w='PNratio*Wunit'
+w='g*Wmin'
 T 48000 47400 5 8 1 0 0 0 1
 l=1u
 }
@@ -140,7 +140,7 @@ refdes=M6
 T 48000 43400 5 8 1 1 0 0 1
 model-name=nmos4
 T 48000 43100 5 8 1 0 0 0 1
-w='Wunit'
+w='Wmin'
 T 48000 42900 5 8 1 0 0 0 1
 l=1u
 }
@@ -153,7 +153,7 @@ refdes=M4
 T 44700 43400 5 8 1 1 0 0 1
 model-name=nmos4
 T 44700 43100 5 8 1 0 0 0 1
-w='2*Wunit'
+w='2*Wmin'
 T 44700 42900 5 8 1 0 0 0 1
 l=1u
 }
@@ -196,7 +196,7 @@ refdes=M8
 T 51600 46400 5 8 1 1 0 0 1
 model-name=pmos4
 T 51600 46100 5 8 1 0 0 0 1
-w='2*PNratio*Wunit'
+w='2*g*Wmin'
 T 51600 45900 5 8 1 0 0 0 1
 l=1u
 }
@@ -209,7 +209,7 @@ refdes=M9
 T 51600 44900 5 8 1 1 0 0 1
 model-name=nmos4
 T 51600 44600 5 8 1 0 0 0 1
-w='2*Wunit'
+w='2*Wmin'
 T 51600 44400 5 8 1 0 0 0 1
 l=1u
 }
@@ -222,7 +222,7 @@ refdes=M10
 T 51600 43400 5 8 1 1 0 0 1
 model-name=nmos4
 T 51600 43100 5 8 1 0 0 0 1
-w='2*Wunit'
+w='2*Wmin'
 T 51600 42900 5 8 1 0 0 0 1
 l=1u
 }
@@ -235,7 +235,7 @@ refdes=M7
 T 51600 47900 5 8 1 1 0 0 1
 model-name=pmos4
 T 51600 47600 5 8 1 0 0 0 1
-w='2*PNratio*Wunit'
+w='2*g*Wmin'
 T 51600 47400 5 8 1 0 0 0 1
 l=1u
 }
@@ -276,7 +276,7 @@ refdes=M11
 T 54000 46400 5 8 1 1 0 0 1
 model-name=pmos4
 T 54000 46100 5 8 1 0 0 0 1
-w='PNratio*Wunit'
+w='g*Wmin'
 T 54000 45900 5 8 1 0 0 0 1
 l=1u
 }
@@ -289,7 +289,7 @@ refdes=M12
 T 54000 44900 5 8 1 1 0 0 1
 model-name=nmos4
 T 54000 44600 5 8 1 0 0 0 1
-w='Wunit'
+w='Wmin'
 T 54000 44400 5 8 1 0 0 0 1
 l=1u
 }
@@ -306,7 +306,7 @@ refdes=M14
 T 56400 46400 5 8 1 1 0 0 1
 model-name=pmos4
 T 56400 46100 5 8 1 0 0 0 1
-w='2*PNratio*Wunit'
+w='2*g*Wmin'
 T 56400 45900 5 8 1 0 0 0 1
 l=1u
 }
@@ -319,7 +319,7 @@ refdes=M15
 T 56400 44900 5 8 1 1 0 0 1
 model-name=nmos4
 T 56400 44600 5 8 1 0 0 0 1
-w='2*Wunit'
+w='2*Wmin'
 T 56400 44400 5 8 1 0 0 0 1
 l=1u
 }
@@ -332,7 +332,7 @@ refdes=M16
 T 56400 43400 5 8 1 1 0 0 1
 model-name=nmos4
 T 56400 43100 5 8 1 0 0 0 1
-w='2*Wunit'
+w='2*Wmin'
 T 56400 42900 5 8 1 0 0 0 1
 l=1u
 }
@@ -345,7 +345,7 @@ refdes=M13
 T 56400 47900 5 8 1 1 0 0 1
 model-name=pmos4
 T 56400 47600 5 8 1 0 0 0 1
-w='2*PNratio*Wunit'
+w='2*g*Wmin'
 T 56400 47400 5 8 1 0 0 0 1
 l=1u
 }
@@ -420,7 +420,7 @@ refdes=M3
 T 44300 44900 5 8 1 1 0 6 1
 model-name=nmos4
 T 44300 44600 5 8 1 0 0 6 1
-w='2*Wunit'
+w='2*Wmin'
 T 44300 44400 5 8 1 0 0 6 1
 l=1u
 }
@@ -433,7 +433,7 @@ refdes=M2
 T 45200 46400 5 8 1 1 0 6 1
 model-name=pmos4
 T 45200 46100 5 8 1 0 0 6 1
-w='PNratio*Wunit'
+w='g*Wmin'
 T 45200 45900 5 8 1 0 0 6 1
 l=1u
 }

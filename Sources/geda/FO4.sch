@@ -8,7 +8,7 @@ refdes=M2
 T 52400 43600 5 8 1 1 0 0 1
 model-name=nmos4
 T 52400 43300 5 8 1 0 0 0 1
-w='Fan*Wunit'
+w='Fan*Wmin'
 T 52400 43100 5 8 1 0 0 0 1
 l=1u
 }
@@ -25,7 +25,7 @@ refdes=M4
 T 54800 43600 5 8 1 1 0 0 1
 model-name=nmos4
 T 54800 43300 5 8 1 0 0 0 1
-w='Fan*Fan*Wunit'
+w='Fan*Fan*Wmin'
 T 54800 43100 5 8 1 0 0 0 1
 l=1u
 }
@@ -38,7 +38,7 @@ refdes=M1
 T 52400 45100 5 8 1 1 0 0 1
 model-name=pmos4
 T 52400 44800 5 8 1 0 0 0 1
-w='Fan*PNratio*Wunit'
+w='Fan*g*Wmin'
 T 52400 44600 5 8 1 0 0 0 1
 l=1u
 }
@@ -51,7 +51,7 @@ refdes=M3
 T 54800 45100 5 8 1 1 0 0 1
 model-name=pmos4
 T 54800 44800 5 8 1 0 0 0 1
-w='Fan*Fan*PNratio*Wunit'
+w='Fan*Fan*g*Wmin'
 T 54800 44600 5 8 1 0 0 0 1
 l=1u
 }
@@ -150,7 +150,7 @@ device=directive
 T 48100 45500 5 10 1 1 0 0 1
 refdes=A4
 T 48100 45200 5 10 1 1 0 0 1
-value=.PARAM Wunit=1.5u
+value=.PARAM Wmin=1.5u
 }
 C 48000 44500 1 0 0 spice-directive-1.sym
 {
@@ -159,7 +159,7 @@ device=directive
 T 48100 44900 5 10 1 1 0 0 1
 refdes=A5
 T 48100 44600 5 10 1 1 0 0 1
-value=.PARAM PNratio=2
+value=.PARAM g=2
 }
 C 51100 42100 1 0 0 gnd-1.sym
 C 54600 46700 1 0 0 spice-subcircuit-LL-1.sym
