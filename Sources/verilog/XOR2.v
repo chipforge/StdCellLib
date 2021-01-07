@@ -11,13 +11,14 @@
 //
 //  File:           StdCellLib/Sources/verilog/XOR2.v
 //
-//  Purpose:        XOR2 cell model
+//  Purpose:        XOR2 macro
 //
 //  ************    IEEE Std 1364-1995 (Verilog HDL)    ***************
 //
 //  ///////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+//  Copyright (c) 2021 by
+//                  chipforge <stdcelllib@nospam.chipforge.org>
 //  All rights reserved.
 //
 //      This Standard Cell Library is licensed under the Libre Silicon
@@ -33,28 +34,23 @@
 //
 //  ///////////////////////////////////////////////////////////////////
 
-`include "timescale.v"
-
 //  -------------------------------------------------------------------
-//                          CELL MODEL
+//                          MACRO
 //  -------------------------------------------------------------------
 
-`celldefine
-module XOR2 (Z, B, A);
+module XOR2 (Z, A1, A);
 
-    output              Z;
-    input               B;
-    input               A;
+    output  Z;
+    input   A1, A;
 
-//  ------------    functional  ---------------------------------------
+    wire y;
 
-assign Z = (B ^ A);     // XOR
+//  ------------    1st Stage   ---------------------------------------
 
-//  ------------    parameter   ---------------------------------------
+    NAND2 (y, A1, A);
 
-//specify
-//specparam
+//  ------------    2nd Stage   ---------------------------------------
 
-//endspecify
+    OAI21 (Z, A1, A, y);
+
 endmodule
-`endcelldefine
