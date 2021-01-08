@@ -133,7 +133,7 @@
 
     (define (method-node-listed? node name-space)
         "Checks, wether node occures in name space. Returns boolean."
-        (if (member node name-space string-ci=?) #t #f))
+        (pair? (member node name-space string-ci=?)))
 
 ;;  ------------    %input-node-object  -------------------------------
 
