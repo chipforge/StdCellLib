@@ -3,4 +3,4 @@
 TOOLDIR=`dirname $0`
 
 #   wrap Gauche/gosh exec call
-gosh -I $TOOLDIR -r 7 -m r7rs.user $0.scm "$@"
+gosh -I $TOOLDIR/.. -r 7 -m r7rs.user $0.scm "$@"
