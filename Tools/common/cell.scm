@@ -52,12 +52,12 @@
           (srfi 13)         ; string-tokenize
           (srfi 78)         ; test suite
 ) (export ; node objects
-          input-node-object
-          clock-node-object
-          output-node-object
-          internal-node-object
-          supply-node-object
-          ground-plane-object
+          %input-node-object
+          %clock-node-object
+          %output-node-object
+          %internal-node-object
+          %supply-node-object
+          %ground-plane-object
           ; location representations
           location location?
           x-axis set-x-axis!
@@ -76,7 +76,7 @@
           cell cell?
           id set-id!
           description set-description!
-          intputs set-inputs!
+          inputs set-inputs!
           outputs set-outputs!
           clocks set-clocks!
           netlist set-netlist!
@@ -124,7 +124,7 @@
 
     (define (method-node-valid? node name-space)
         "Checks, wether node seems to be valid. Returns boolean."
-        (if (memq (string-ref node 0) name-space) #t #f))
+        (pair? (memq (string-ref node 0) name-space)))
 
 ;;  ------------    method-node-listed? -------------------------------
 
@@ -135,9 +135,9 @@
         "Checks, wether node occures in name space. Returns boolean."
         (if (member node name-space string-ci=?) #t #f))
 
-;;  ------------    input-node-object   -------------------------------
+;;  ------------    %input-node-object  -------------------------------
 
-    (define (input-node-object method node)
+    (define (%input-node-object method node)
         "Deals with input nodes. Returns next or validity"
         (let* ((name-space '(#\A #\B #\C #\D #\E #\F #\H #\I #\K
                              #\L #\M #\P #\R #\S #\T #\U #\W)))
@@ -150,23 +150,23 @@
                     (method-node-valid? node name-space)])))
 
 ;   Checks:
-    (check (input-node-object 'valid? "A0") => #t) ; !!
-    (check (input-node-object 'valid? "GND") => #f)
-    (check (input-node-object 'valid? "N1") => #f)
-    (check (input-node-object 'valid? "V") => #f)
-    (check (input-node-object 'valid? "X") => #f)
-    (check (input-node-object 'valid? "Z") => #f)
+    (check (%input-node-object 'valid? "A0") => #t) ; !!
+    (check (%input-node-object 'valid? "GND") => #f)
+    (check (%input-node-object 'valid? "N1") => #f)
+    (check (%input-node-object 'valid? "V") => #f)
+    (check (%input-node-object 'valid? "X") => #f)
+    (check (%input-node-object 'valid? "Z") => #f)
 
-    (check (input-node-object 'next-char '()) => "A")
-    (check (input-node-object 'next-char "A0") => "B")
+    (check (%input-node-object 'next-char '()) => "A")
+    (check (%input-node-object 'next-char "A0") => "B")
 
-    (check (input-node-object 'next-number '()) => "A")
-    (check (input-node-object 'next-number "A") => "A1")
-    (check (input-node-object 'next-number "A1") => "A2")
+    (check (%input-node-object 'next-number '()) => "A")
+    (check (%input-node-object 'next-number "A") => "A1")
+    (check (%input-node-object 'next-number "A1") => "A2")
 
-;;  ------------    clock-node-object   -------------------------------
+;;  ------------    %clock-node-object  -------------------------------
 
-    (define (clock-node-object method node)
+    (define (%clock-node-object method node)
         "Deals with clock nodes. Returns next node or validity"
         (let* ((name-space '(#\X)))
             (cond
@@ -176,20 +176,20 @@
                     (method-node-valid? node name-space)])))
 
 ;   Checks:
-    (check (clock-node-object 'valid? "A0") => #f)
-    (check (clock-node-object 'valid? "GND") => #f)
-    (check (clock-node-object 'valid? "N1") => #f)
-    (check (clock-node-object 'valid? "V") => #f)
-    (check (clock-node-object 'valid? "X") => #t) ; !!
-    (check (clock-node-object 'valid? "Z") => #f)
+    (check (%clock-node-object 'valid? "A0") => #f)
+    (check (%clock-node-object 'valid? "GND") => #f)
+    (check (%clock-node-object 'valid? "N1") => #f)
+    (check (%clock-node-object 'valid? "V") => #f)
+    (check (%clock-node-object 'valid? "X") => #t) ; !!
+    (check (%clock-node-object 'valid? "Z") => #f)
 
-    (check (clock-node-object 'next-number '()) => "X")
-    (check (clock-node-object 'next-number "X") => "X1")
-    (check (clock-node-object 'next-number "X1") => "X2")
+    (check (%clock-node-object 'next-number '()) => "X")
+    (check (%clock-node-object 'next-number "X") => "X1")
+    (check (%clock-node-object 'next-number "X1") => "X2")
 
-;;  ------------    output-node-object  -------------------------------
+;;  ------------    %output-node-object -------------------------------
 
-    (define (output-node-object method node)
+    (define (%output-node-object method node)
         "Deals with output nodes. Returns next node or validity"
         (let* ((name-space '(#\Y #\Z #\Q)))
             (cond
@@ -199,22 +199,22 @@
                     (method-node-valid? node name-space)])))
 
 ;   Checks:
-    (check (output-node-object 'valid? "Y") => #t) ; !!
-    (check (output-node-object 'valid? "Z") => #t) ; !!
-    (check (output-node-object 'valid? "Q") => #t) ; !!
-    (check (output-node-object 'valid? "V") => #f)
-    (check (output-node-object 'valid? "A") => #f)
-    (check (output-node-object 'valid? "N1") => #f)
-    (check (output-node-object 'valid? "X") => #f)
+    (check (%output-node-object 'valid? "Y") => #t) ; !!
+    (check (%output-node-object 'valid? "Z") => #t) ; !!
+    (check (%output-node-object 'valid? "Q") => #t) ; !!
+    (check (%output-node-object 'valid? "V") => #f)
+    (check (%output-node-object 'valid? "A") => #f)
+    (check (%output-node-object 'valid? "N1") => #f)
+    (check (%output-node-object 'valid? "X") => #f)
 
-    (check (output-node-object 'next-char '()) => "Y")
-    (check (output-node-object 'next-char "Y") => "Z")
+    (check (%output-node-object 'next-char '()) => "Y")
+    (check (%output-node-object 'next-char "Y") => "Z")
 
-;;  ------------    internal-node-object -------------------------------
+;;  ------------    %internal-node-object   ----------------------------
 
 ;   provide object with a couple of methods for dealing with nodes, see functions above
 
-    (define (internal-node-object method node)
+    (define (%internal-node-object method node)
         "Deals with internal nodes. Returns next node or validity"
         (let* ((name-space '(#\N)))
             (cond
@@ -224,58 +224,58 @@
                     (method-node-valid? node name-space)])))
 
 ;   Checks:
-    (check (internal-node-object 'valid? "Y") => #f)
-    (check (internal-node-object 'valid? "Z") => #f)
-    (check (internal-node-object 'valid? "Q") => #f)
-    (check (internal-node-object 'valid? "V") => #f)
-    (check (internal-node-object 'valid? "A") => #f)
-    (check (internal-node-object 'valid? "N1") => #t) ; !!
-    (check (internal-node-object 'valid? "X") => #f)
+    (check (%internal-node-object 'valid? "Y") => #f)
+    (check (%internal-node-object 'valid? "Z") => #f)
+    (check (%internal-node-object 'valid? "Q") => #f)
+    (check (%internal-node-object 'valid? "V") => #f)
+    (check (%internal-node-object 'valid? "A") => #f)
+    (check (%internal-node-object 'valid? "N1") => #t) ; !!
+    (check (%internal-node-object 'valid? "X") => #f)
 
-    (check (internal-node-object 'next-number "N") => "N1")
-    (check (internal-node-object 'next-number "N2") => "N3")
+    (check (%internal-node-object 'next-number "N") => "N1")
+    (check (%internal-node-object 'next-number "N2") => "N3")
 
-;;  ------------    supply-node-object  -------------------------------
+;;  ------------    %supply-node-object -------------------------------
 
 ;   provide object with a couple of methods for dealing with nodes, see functions above
 
-    (define (supply-node-object method node)
+    (define (%supply-node-object method node)
         "Deals with supply nodes. Returns still validity"
         (let* ((name-space '("VDD" "VCC")))
             (method-node-listed? node name-space)))
 
 ;   Checks:
-    (check (supply-node-object 'valid? "VDD") => #t) ; !!
-    (check (supply-node-object 'valid? "Vdd") => #t) ; !!
-    (check (supply-node-object 'valid? "VCC") => #t) ; !!
-    (check (supply-node-object 'valid? "Vcc") => #t) ; !!
-    (check (supply-node-object 'valid? "GND") => #f)
-    (check (supply-node-object 'valid? "vss") => #f)
-    (check (supply-node-object 'valid? "Q") => #f)
-    (check (supply-node-object 'valid? "A") => #f)
-    (check (supply-node-object 'valid? "N1") => #f)
-    (check (supply-node-object 'valid? "X") => #f)
+    (check (%supply-node-object 'valid? "VDD") => #t) ; !!
+    (check (%supply-node-object 'valid? "Vdd") => #t) ; !!
+    (check (%supply-node-object 'valid? "VCC") => #t) ; !!
+    (check (%supply-node-object 'valid? "Vcc") => #t) ; !!
+    (check (%supply-node-object 'valid? "GND") => #f)
+    (check (%supply-node-object 'valid? "vss") => #f)
+    (check (%supply-node-object 'valid? "Q") => #f)
+    (check (%supply-node-object 'valid? "A") => #f)
+    (check (%supply-node-object 'valid? "N1") => #f)
+    (check (%supply-node-object 'valid? "X") => #f)
 
-;;  ------------    ground-plane-object -------------------------------
+;;  ------------    %ground-plane-object    ---------------------------
 
 ;   provide object with a couple of methods for dealing with nodes, see functions above
 
-    (define (ground-plane-object method node)
+    (define (%ground-plane-object method node)
         "Deals with ground planes. Returns still validity"
         (let* ((name-space '("GND" "VSS")))
             (method-node-listed? node name-space)))
 
 ;   Checks:
-    (check (ground-plane-object 'valid? "VDD") => #f)
-    (check (ground-plane-object 'valid? "Vdd") => #f)
-    (check (ground-plane-object 'valid? "VCC") => #f)
-    (check (ground-plane-object 'valid? "Vcc") => #f)
-    (check (ground-plane-object 'valid? "GND") => #t) ; !!
-    (check (ground-plane-object 'valid? "vss") => #t) ; !!
-    (check (ground-plane-object 'valid? "Q") => #f)
-    (check (ground-plane-object 'valid? "A") => #f)
-    (check (ground-plane-object 'valid? "N1") => #f)
-    (check (ground-plane-object 'valid? "X") => #f)
+    (check (%ground-plane-object 'valid? "VDD") => #f)
+    (check (%ground-plane-object 'valid? "Vdd") => #f)
+    (check (%ground-plane-object 'valid? "VCC") => #f)
+    (check (%ground-plane-object 'valid? "Vcc") => #f)
+    (check (%ground-plane-object 'valid? "GND") => #t) ; !!
+    (check (%ground-plane-object 'valid? "vss") => #t) ; !!
+    (check (%ground-plane-object 'valid? "Q") => #f)
+    (check (%ground-plane-object 'valid? "A") => #f)
+    (check (%ground-plane-object 'valid? "N1") => #f)
+    (check (%ground-plane-object 'valid? "X") => #f)
 
 ;;  -------------------------------------------------------------------
 ;;                  LOCATION RECORD STRUCTURE
@@ -379,7 +379,7 @@
 
 ;   current cell
 
-    (define current-cell (cell "EMPTY" "" "" "" "" "" ""))
+    (define current-cell (cell "" "" "" "" "" "" ""))
 
 ;;  ------------    comment syntax rule -------------------------------
 
@@ -447,27 +447,18 @@
                         (let function ((nextline (read-line file)))
                             (unless (eof-object? nextline)
 (begin
-                               (write (map string->symbol (string-tokenize nextline)))
-                               (map string->symbol (string-tokenize nextline))
+                                (map string->symbol (string-tokenize nextline))
                                 (function (read-line file))
     )
                             )
                         )
                     )
                 )
-;                (display (id current-cell)) (newline)
             )
         )
+        current-cell
     )
 
-    (.cell "INV")
-    (.inputs "A")
-    (.outputs "Y")
-;    (pmos "A" "Y" "vdd" "vdd" 1 1  1 "g")
-;    (nmos "A" "Y "gnd "gnd" 1 1 -1 "1")
-    (.end)
-    (write (id current-cell)) (newline)
-    (write (inputs current-cell)) (newline)
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
 ;;  ===================================================================
