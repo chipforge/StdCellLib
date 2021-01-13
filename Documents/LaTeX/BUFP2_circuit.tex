@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/CGP2_manpage.tex
+%%  File:           StdCellLib/Documents/LaTeX/BUFP2_circuit.tex
 %%
-%%  Purpose:        Manual Page File for CGP2
+%%  Purpose:        Circuit File for BUFP2
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,32 +32,16 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\label{CGP2}
-\paragraph{Cell}
-\begin{quote}
-    \textbf{CGP2} - Clock Gating for positive Clock with 2x Drive Strength (skewed)
-\end{quote}
-
-\paragraph{Synopsys}
-\begin{quote}
-    CGP2(XO, E, XI)
-\end{quote}
-
-\paragraph{Description}
-\input{CGP2_circuit.tex}
-%\input{CGP2_schematic.tex}
-
-%\paragraph{Truth Table}
-%\input{CGP2_truthtable.tex}
-
-\paragraph{Usage}
-
-\paragraph{Fan-in / Fan-out}
-\begin{quote}
-    ?
-\end{quote}
-
-\paragraph{Layout}
-
-\paragraph{Files}
-%\input{CGP2_files.tex}
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{14}{6}
+            \pin{1}{3}{L}{A}    % pin A
+            \gate{not}{5}{3}{R}{}{} % 1st buffer
+            \gate{not}{11}{3}{Rc}{}{2x} % 2nd buffer
+            \pin{15}{3}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
