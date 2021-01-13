@@ -29,22 +29,22 @@ fname=MUXIE41
 T 53700 41100 5 14 1 1 0 4 1
 title=MUXIE41 - inverting 4-to-1 Multiplexor w/ high-active Enable
 }
-C 47400 52100 1 0 0 spice-model-1.sym
+C 42600 52200 1 0 0 spice-model-1.sym
 {
-T 47500 52700 5 10 1 1 0 0 1
+T 42700 52800 5 10 1 1 0 0 1
 refdes=A1
-T 48700 52400 5 10 1 1 0 0 1
+T 43900 52500 5 10 1 1 0 0 1
 model-name=nmos4
-T 47900 52200 5 10 1 1 0 0 1
+T 43100 52300 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 50700 52100 1 0 0 spice-model-1.sym
+C 45900 52200 1 0 0 spice-model-1.sym
 {
-T 50800 52700 5 10 1 1 0 0 1
+T 46000 52800 5 10 1 1 0 0 1
 refdes=A2
-T 52000 52400 5 10 1 1 0 0 1
+T 47200 52500 5 10 1 1 0 0 1
 model-name=pmos4
-T 51200 52200 5 10 1 1 0 0 1
+T 46400 52300 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 56700 46900 1 0 0 spice-subcircuit-IO-1.sym
@@ -67,29 +67,29 @@ C 34300 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 34300 42700 5 10 1 1 0 0 1
 refdes=P10
 }
-C 54000 52300 1 0 0 spice-subcircuit-LL-1.sym
+C 49200 52400 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 54100 52700 5 10 1 1 0 0 1
+T 49300 52800 5 10 1 1 0 0 1
 refdes=A3
-T 54100 52400 5 10 1 1 0 0 1
+T 49300 52500 5 10 1 1 0 0 1
 model-name=MUXIE41
 }
-C 32700 50800 1 0 0 spice-directive-1.sym
+C 52000 52400 1 0 0 spice-directive-1.sym
 {
-T 32800 51100 5 10 0 1 0 0 1
+T 52100 52700 5 10 0 1 0 0 1
 device=directive
-T 32800 51200 5 10 1 1 0 0 1
+T 52100 52800 5 10 1 1 0 0 1
 refdes=A4
-T 32800 50900 5 10 1 1 0 0 1
+T 52100 52500 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 32700 50000 1 0 0 spice-directive-1.sym
+C 54600 52400 1 0 0 spice-directive-1.sym
 {
-T 32800 50300 5 10 0 1 0 0 1
+T 54700 52700 5 10 0 1 0 0 1
 device=directive
-T 32800 50400 5 10 1 1 0 0 1
+T 54700 52800 5 10 1 1 0 0 1
 refdes=A5
-T 32800 50100 5 10 1 1 0 0 1
+T 54700 52500 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 N 47200 46800 47500 46800 4

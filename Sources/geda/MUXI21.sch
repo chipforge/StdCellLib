@@ -30,10 +30,11 @@ w='g*Wmin'
 T 46100 47300 5 8 1 0 0 0 1
 l=1u
 }
-T 42800 40500 9 10 1 0 0 0 3
-see [???]
-Braker:
-"CMOS .."
+T 42800 40600 9 10 1 0 0 0 4
+see [WESTE, 2005]
+Weste, H.E. Neil; HARRIS, David:
+"CMOS VLSI Design. A Circuits and Systems Perspective". 3rd Edition, 2005.
+Figure 1.28, Page 19.
 B 42700 40400 6500 1000 19 10 1 0 -1 -1 0 -1 -1 -1 -1 -1
 C 49500 40000 1 0 0 cvstitleblock-1.sym
 {
@@ -48,22 +49,22 @@ fname=MUXI21.sch
 T 52900 41100 5 14 1 1 0 4 1
 title=MUXI21 - inverting 2-to-1 Multiplexor
 }
-C 44900 49100 1 0 0 spice-model-1.sym
+C 43200 49100 1 0 0 spice-model-1.sym
 {
-T 45000 49700 5 10 1 1 0 0 1
+T 43300 49700 5 10 1 1 0 0 1
 refdes=A1
-T 46200 49400 5 10 1 1 0 0 1
+T 44500 49400 5 10 1 1 0 0 1
 model-name=nmos4
-T 45400 49200 5 10 1 1 0 0 1
+T 43700 49200 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 48200 49100 1 0 0 spice-model-1.sym
+C 46500 49100 1 0 0 spice-model-1.sym
 {
-T 48300 49700 5 10 1 1 0 0 1
+T 46600 49700 5 10 1 1 0 0 1
 refdes=A2
-T 49500 49400 5 10 1 1 0 0 1
+T 47800 49400 5 10 1 1 0 0 1
 model-name=pmos4
-T 48700 49200 5 10 1 1 0 0 1
+T 47000 49200 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 53300 44800 1 270 0 spice-subcircuit-IO-1.sym
@@ -91,29 +92,29 @@ C 44300 42600 1 180 0 spice-subcircuit-IO-1.sym
 T 44300 42600 5 10 1 1 0 0 1
 refdes=P6
 }
-C 51500 49300 1 0 0 spice-subcircuit-LL-1.sym
+C 49600 49300 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 51600 49700 5 10 1 1 0 0 1
+T 49700 49700 5 10 1 1 0 0 1
 refdes=A3
-T 51600 49400 5 10 1 1 0 0 1
+T 49700 49400 5 10 1 1 0 0 1
 model-name=MUXI21
 }
-C 41600 47400 1 0 0 spice-directive-1.sym
+C 52300 49300 1 0 0 spice-directive-1.sym
 {
-T 41700 47700 5 10 0 1 0 0 1
+T 52400 49600 5 10 0 1 0 0 1
 device=directive
-T 41700 47800 5 10 1 1 0 0 1
+T 52400 49700 5 10 1 1 0 0 1
 refdes=A4
-T 41700 47500 5 10 1 1 0 0 1
+T 52400 49400 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 41600 46600 1 0 0 spice-directive-1.sym
+C 54700 49300 1 0 0 spice-directive-1.sym
 {
-T 41700 46900 5 10 0 1 0 0 1
+T 54800 49600 5 10 0 1 0 0 1
 device=directive
-T 41700 47000 5 10 1 1 0 0 1
+T 54800 49700 5 10 1 1 0 0 1
 refdes=A5
-T 41700 46700 5 10 1 1 0 0 1
+T 54800 49400 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 47300 47200 1 0 0 asic-pmos-1.sym

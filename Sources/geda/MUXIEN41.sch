@@ -29,22 +29,22 @@ fname=MUXIEN41
 T 53700 41100 5 14 1 1 0 4 1
 title=MUXIEN41 - inverting 4-to-1 Multiplexor w/ low-active Enable
 }
-C 47400 52100 1 0 0 spice-model-1.sym
+C 42800 52000 1 0 0 spice-model-1.sym
 {
-T 47500 52700 5 10 1 1 0 0 1
+T 42900 52600 5 10 1 1 0 0 1
 refdes=A1
-T 48700 52400 5 10 1 1 0 0 1
+T 44100 52300 5 10 1 1 0 0 1
 model-name=nmos4
-T 47900 52200 5 10 1 1 0 0 1
+T 43300 52100 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 50700 52100 1 0 0 spice-model-1.sym
+C 46100 52000 1 0 0 spice-model-1.sym
 {
-T 50800 52700 5 10 1 1 0 0 1
+T 46200 52600 5 10 1 1 0 0 1
 refdes=A2
-T 52000 52400 5 10 1 1 0 0 1
+T 47400 52300 5 10 1 1 0 0 1
 model-name=pmos4
-T 51200 52200 5 10 1 1 0 0 1
+T 46600 52100 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 56700 46900 1 0 0 spice-subcircuit-IO-1.sym
@@ -67,29 +67,29 @@ C 35200 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 35200 42700 5 10 1 1 0 0 1
 refdes=P10
 }
-C 54000 52300 1 0 0 spice-subcircuit-LL-1.sym
+C 49400 52200 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 54100 52700 5 10 1 1 0 0 1
+T 49500 52600 5 10 1 1 0 0 1
 refdes=A3
-T 54100 52400 5 10 1 1 0 0 1
+T 49500 52300 5 10 1 1 0 0 1
 model-name=MUXIEN41
 }
-C 33200 50900 1 0 0 spice-directive-1.sym
+C 52100 52200 1 0 0 spice-directive-1.sym
 {
-T 33300 51200 5 10 0 1 0 0 1
+T 52200 52500 5 10 0 1 0 0 1
 device=directive
-T 33300 51300 5 10 1 1 0 0 1
+T 52200 52600 5 10 1 1 0 0 1
 refdes=A4
-T 33300 51000 5 10 1 1 0 0 1
+T 52200 52300 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 33200 50100 1 0 0 spice-directive-1.sym
+C 54500 52200 1 0 0 spice-directive-1.sym
 {
-T 33300 50400 5 10 0 1 0 0 1
+T 54600 52500 5 10 0 1 0 0 1
 device=directive
-T 33300 50500 5 10 1 1 0 0 1
+T 54600 52600 5 10 1 1 0 0 1
 refdes=A5
-T 33300 50200 5 10 1 1 0 0 1
+T 54600 52300 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 N 47200 46800 47500 46800 4
@@ -105,7 +105,7 @@ T 51800 48400 5 10 1 1 0 0 1
 refdes=M21
 T 51800 48200 5 8 1 1 0 0 1
 model-name=pmos4
-T 51400 47900 5 8 1 0 0 0 1
+T 51800 47900 5 8 1 0 0 0 1
 w='3*g*Wmin'
 T 51800 47700 5 8 1 0 0 0 1
 l=1u
@@ -144,7 +144,7 @@ T 51800 51300 5 10 1 1 0 0 1
 refdes=M19
 T 51800 51100 5 8 1 1 0 0 1
 model-name=pmos4
-T 51400 50800 5 8 1 0 0 0 1
+T 51800 50800 5 8 1 0 0 0 1
 w='3*g*Wmin'
 T 51800 50600 5 8 1 0 0 0 1
 l=1u
@@ -221,7 +221,7 @@ T 51800 49900 5 10 1 1 0 0 1
 refdes=M20
 T 51800 49700 5 8 1 1 0 0 1
 model-name=pmos4
-T 51400 49400 5 8 1 0 0 0 1
+T 51800 49400 5 8 1 0 0 0 1
 w='3*g*Wmin'
 T 51800 49200 5 8 1 0 0 0 1
 l=1u
