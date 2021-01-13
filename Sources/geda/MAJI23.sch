@@ -32,22 +32,22 @@ fname=MAJI23.sch
 T 53100 41400 5 14 1 1 0 4 1
 title=MAJI23 - inverting 2-of-3 Majority Gate
 }
-C 47400 52100 1 0 0 spice-model-1.sym
+C 43300 52300 1 0 0 spice-model-1.sym
 {
-T 47500 52700 5 10 1 1 0 0 1
+T 43400 52900 5 10 1 1 0 0 1
 refdes=A1
-T 48700 52400 5 10 1 1 0 0 1
+T 44600 52600 5 10 1 1 0 0 1
 model-name=nmos4
-T 47900 52200 5 10 1 1 0 0 1
+T 43800 52400 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 50700 52100 1 0 0 spice-model-1.sym
+C 46600 52300 1 0 0 spice-model-1.sym
 {
-T 50800 52700 5 10 1 1 0 0 1
+T 46700 52900 5 10 1 1 0 0 1
 refdes=A2
-T 52000 52400 5 10 1 1 0 0 1
+T 47900 52600 5 10 1 1 0 0 1
 model-name=pmos4
-T 51200 52200 5 10 1 1 0 0 1
+T 47100 52400 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 56800 46900 1 0 0 spice-subcircuit-IO-1.sym
@@ -70,29 +70,29 @@ C 46600 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 46600 42700 5 10 1 1 0 0 1
 refdes=P6
 }
-C 54000 52300 1 0 0 spice-subcircuit-LL-1.sym
+C 49900 52500 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 54100 52700 5 10 1 1 0 0 1
+T 50000 52900 5 10 1 1 0 0 1
 refdes=A3
-T 54100 52400 5 10 1 1 0 0 1
+T 50000 52600 5 10 1 1 0 0 1
 model-name=MAJI23
 }
-C 43400 50900 1 0 0 spice-directive-1.sym
+C 52600 52500 1 0 0 spice-directive-1.sym
 {
-T 43500 51200 5 10 0 1 0 0 1
+T 52700 52800 5 10 0 1 0 0 1
 device=directive
-T 43500 51300 5 10 1 1 0 0 1
+T 52700 52900 5 10 1 1 0 0 1
 refdes=A4
-T 43500 51000 5 10 1 1 0 0 1
+T 52700 52600 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 43400 50100 1 0 0 spice-directive-1.sym
+C 55000 52500 1 0 0 spice-directive-1.sym
 {
-T 43500 50400 5 10 0 1 0 0 1
+T 55100 52800 5 10 0 1 0 0 1
 device=directive
-T 43500 50500 5 10 1 1 0 0 1
+T 55100 52900 5 10 1 1 0 0 1
 refdes=A5
-T 43500 50200 5 10 1 1 0 0 1
+T 55100 52600 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 N 47600 47200 47900 47200 4
