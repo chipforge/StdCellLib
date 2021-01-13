@@ -46,22 +46,22 @@ fname=LATEN.sch
 T 52900 41100 5 14 1 1 0 4 1
 title=LATEN - Low-active D-Latch w/ low-active Enable
 }
-C 44000 49200 1 0 0 spice-model-1.sym
+C 42500 49200 1 0 0 spice-model-1.sym
 {
-T 44100 49800 5 10 1 1 0 0 1
+T 42600 49800 5 10 1 1 0 0 1
 refdes=A1
-T 45300 49500 5 10 1 1 0 0 1
+T 43800 49500 5 10 1 1 0 0 1
 model-name=nmos4
-T 44500 49300 5 10 1 1 0 0 1
+T 43000 49300 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 47300 49200 1 0 0 spice-model-1.sym
+C 45800 49200 1 0 0 spice-model-1.sym
 {
-T 47400 49800 5 10 1 1 0 0 1
+T 45900 49800 5 10 1 1 0 0 1
 refdes=A2
-T 48600 49500 5 10 1 1 0 0 1
+T 47100 49500 5 10 1 1 0 0 1
 model-name=pmos4
-T 47800 49300 5 10 1 1 0 0 1
+T 46300 49300 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 54700 44900 1 270 0 spice-subcircuit-IO-1.sym
@@ -94,29 +94,29 @@ C 43400 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 43400 42700 5 10 1 1 0 0 1
 refdes=P6
 }
-C 50600 49400 1 0 0 spice-subcircuit-LL-1.sym
+C 49100 49400 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 50700 49800 5 10 1 1 0 0 1
+T 49200 49800 5 10 1 1 0 0 1
 refdes=A3
-T 50700 49500 5 10 1 1 0 0 1
+T 49200 49500 5 10 1 1 0 0 1
 model-name=LATEN
 }
-C 40700 47500 1 0 0 spice-directive-1.sym
+C 51900 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47800 5 10 0 1 0 0 1
+T 52000 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47900 5 10 1 1 0 0 1
+T 52000 49800 5 10 1 1 0 0 1
 refdes=A4
-T 40800 47600 5 10 1 1 0 0 1
+T 52000 49500 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 40700 46700 1 0 0 spice-directive-1.sym
+C 54400 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47000 5 10 0 1 0 0 1
+T 54500 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47100 5 10 1 1 0 0 1
+T 54500 49800 5 10 1 1 0 0 1
 refdes=A5
-T 40800 46800 5 10 1 1 0 0 1
+T 54500 49500 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 47500 47300 1 0 0 asic-pmos-1.sym

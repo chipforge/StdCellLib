@@ -49,22 +49,22 @@ fname=LATP.sch
 T 52900 41100 5 14 1 1 0 4 1
 title=LATP - High-active D-Latch
 }
-C 44000 49200 1 0 0 spice-model-1.sym
+C 43100 49200 1 0 0 spice-model-1.sym
 {
-T 44100 49800 5 10 1 1 0 0 1
+T 43200 49800 5 10 1 1 0 0 1
 refdes=A1
-T 45300 49500 5 10 1 1 0 0 1
+T 44400 49500 5 10 1 1 0 0 1
 model-name=nmos4
-T 44500 49300 5 10 1 1 0 0 1
+T 43600 49300 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 47300 49200 1 0 0 spice-model-1.sym
+C 46400 49200 1 0 0 spice-model-1.sym
 {
-T 47400 49800 5 10 1 1 0 0 1
+T 46500 49800 5 10 1 1 0 0 1
 refdes=A2
-T 48600 49500 5 10 1 1 0 0 1
+T 47700 49500 5 10 1 1 0 0 1
 model-name=pmos4
-T 47800 49300 5 10 1 1 0 0 1
+T 46900 49300 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 54700 44900 1 270 0 spice-subcircuit-IO-1.sym
@@ -92,29 +92,29 @@ C 43400 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 43400 42700 5 10 1 1 0 0 1
 refdes=P5
 }
-C 50600 49400 1 0 0 spice-subcircuit-LL-1.sym
+C 49500 49400 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 50700 49800 5 10 1 1 0 0 1
+T 49600 49800 5 10 1 1 0 0 1
 refdes=A3
-T 50700 49500 5 10 1 1 0 0 1
+T 49600 49500 5 10 1 1 0 0 1
 model-name=LATP
 }
-C 40700 47500 1 0 0 spice-directive-1.sym
+C 52200 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47800 5 10 0 1 0 0 1
+T 52300 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47900 5 10 1 1 0 0 1
+T 52300 49800 5 10 1 1 0 0 1
 refdes=A4
-T 40800 47600 5 10 1 1 0 0 1
+T 52300 49500 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 40700 46700 1 0 0 spice-directive-1.sym
+C 54700 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47000 5 10 0 1 0 0 1
+T 54800 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47100 5 10 1 1 0 0 1
+T 54800 49800 5 10 1 1 0 0 1
 refdes=A5
-T 40800 46800 5 10 1 1 0 0 1
+T 54800 49500 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 46400 47300 1 0 0 asic-pmos-1.sym

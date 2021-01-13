@@ -89,29 +89,29 @@ C 43400 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 43400 42700 5 10 1 1 0 0 1
 refdes=P7
 }
-C 50600 49400 1 0 0 spice-subcircuit-LL-1.sym
+C 50500 49400 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 50700 49800 5 10 1 1 0 0 1
+T 50600 49800 5 10 1 1 0 0 1
 refdes=A3
-T 50700 49500 5 10 1 1 0 0 1
+T 50600 49500 5 10 1 1 0 0 1
 model-name=LATERN
 }
-C 40700 47500 1 0 0 spice-directive-1.sym
+C 53300 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47800 5 10 0 1 0 0 1
+T 53400 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47900 5 10 1 1 0 0 1
+T 53400 49800 5 10 1 1 0 0 1
 refdes=A4
-T 40800 47600 5 10 1 1 0 0 1
+T 53400 49500 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 40700 46700 1 0 0 spice-directive-1.sym
+C 55900 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47000 5 10 0 1 0 0 1
+T 56000 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47100 5 10 1 1 0 0 1
+T 56000 49800 5 10 1 1 0 0 1
 refdes=A5
-T 40800 46800 5 10 1 1 0 0 1
+T 56000 49500 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 46800 47300 1 0 0 asic-pmos-1.sym

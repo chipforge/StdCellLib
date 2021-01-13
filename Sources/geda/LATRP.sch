@@ -96,22 +96,22 @@ refdes=A3
 T 50700 49500 5 10 1 1 0 0 1
 model-name=LATRP
 }
-C 40700 47500 1 0 0 spice-directive-1.sym
+C 53300 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47800 5 10 0 1 0 0 1
+T 53400 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47900 5 10 1 1 0 0 1
+T 53400 49800 5 10 1 1 0 0 1
 refdes=A4
-T 40800 47600 5 10 1 1 0 0 1
+T 53400 49500 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 40700 46700 1 0 0 spice-directive-1.sym
+C 55800 49400 1 0 0 spice-directive-1.sym
 {
-T 40800 47000 5 10 0 1 0 0 1
+T 55900 49700 5 10 0 1 0 0 1
 device=directive
-T 40800 47100 5 10 1 1 0 0 1
+T 55900 49800 5 10 1 1 0 0 1
 refdes=A5
-T 40800 46800 5 10 1 1 0 0 1
+T 55900 49500 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 46400 47300 1 0 0 asic-pmos-1.sym
