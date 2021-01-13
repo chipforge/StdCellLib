@@ -44,25 +44,25 @@ T 59300 40200 5 10 1 1 0 0 1
 auth=<stdcelllib@nospam.chipforge.org>
 T 55400 40800 5 10 1 1 0 0 1
 fname=CGN2.sch
-T 58600 41200 5 14 1 1 0 4 1
-title=CGN2 - Clock Gating Buffer for negative Clock, Drive 2x
+T 58700 41200 5 14 1 1 0 4 1
+title=CGN2 - Clock Gating for negative Clock, Drive 2x (skewed)
 }
-C 45700 48900 1 0 0 spice-model-1.sym
+C 45200 49100 1 0 0 spice-model-1.sym
 {
-T 45800 49500 5 10 1 1 0 0 1
+T 45300 49700 5 10 1 1 0 0 1
 refdes=A1
-T 47000 49200 5 10 1 1 0 0 1
+T 46500 49400 5 10 1 1 0 0 1
 model-name=nmos4
-T 46200 49000 5 10 1 1 0 0 1
+T 45700 49200 5 10 1 1 0 0 1
 file=Technology/spice/ls1unmos.mod
 }
-C 49000 48900 1 0 0 spice-model-1.sym
+C 48500 49100 1 0 0 spice-model-1.sym
 {
-T 49100 49500 5 10 1 1 0 0 1
+T 48600 49700 5 10 1 1 0 0 1
 refdes=A2
-T 50300 49200 5 10 1 1 0 0 1
+T 49800 49400 5 10 1 1 0 0 1
 model-name=pmos4
-T 49500 49000 5 10 1 1 0 0 1
+T 49000 49200 5 10 1 1 0 0 1
 file=Technology/spice/ls1upmos.mod
 }
 C 50300 45900 1 180 0 spice-subcircuit-IO-1.sym
@@ -85,29 +85,29 @@ C 45000 42700 1 180 0 spice-subcircuit-IO-1.sym
 T 45000 42700 5 10 1 1 0 0 1
 refdes=P5
 }
-C 52300 49100 1 0 0 spice-subcircuit-LL-1.sym
+C 51600 49300 1 0 0 spice-subcircuit-LL-1.sym
 {
-T 52400 49500 5 10 1 1 0 0 1
+T 51700 49700 5 10 1 1 0 0 1
 refdes=A3
-T 52400 49200 5 10 1 1 0 0 1
+T 51700 49400 5 10 1 1 0 0 1
 model-name=CGN2
 }
-C 55700 49100 1 0 0 spice-directive-1.sym
+C 54400 49300 1 0 0 spice-directive-1.sym
 {
-T 55800 49400 5 10 0 1 0 0 1
+T 54500 49600 5 10 0 1 0 0 1
 device=directive
-T 55800 49500 5 10 1 1 0 0 1
+T 54500 49700 5 10 1 1 0 0 1
 refdes=A4
-T 55800 49200 5 10 1 1 0 0 1
+T 54500 49400 5 10 1 1 0 0 1
 value=.PARAM Wmin=1.5u
 }
-C 58800 49100 1 0 0 spice-directive-1.sym
+C 57000 49300 1 0 0 spice-directive-1.sym
 {
-T 58900 49400 5 10 0 1 0 0 1
+T 57100 49600 5 10 0 1 0 0 1
 device=directive
-T 58900 49500 5 10 1 1 0 0 1
+T 57100 49700 5 10 1 1 0 0 1
 refdes=A5
-T 58900 49200 5 10 1 1 0 0 1
+T 57100 49400 5 10 1 1 0 0 1
 value=.PARAM g=2
 }
 C 47100 47300 1 0 0 asic-pmos-1.sym
@@ -484,7 +484,7 @@ model-name=pmos4
 T 61700 45900 5 8 1 0 0 0 1
 l=1u
 T 61700 46100 5 8 1 0 0 0 1
-w='2*g*Wmin'
+w='(drive*skew)*g*Wmin'
 }
 C 60900 44300 1 0 0 asic-nmos-1.sym
 {
@@ -495,7 +495,7 @@ refdes=M20
 T 61700 44900 5 8 1 1 0 0 1
 model-name=nmos4
 T 61700 44600 5 8 1 0 0 0 1
-w='2*Wmin'
+w='drive*Wmin'
 T 61700 44400 5 8 1 0 0 0 1
 l=1u
 }
@@ -528,11 +528,30 @@ netname=XI
 }
 N 59100 46300 59200 46300 4
 N 59200 46300 59200 48700 4
-T 57600 41700 9 10 1 0 0 0 3
+T 57500 41700 9 10 1 0 0 0 3
 Clock Gate:
 - gate Clock input with latched Enable
    (via NOR)
-T 61000 41900 9 10 1 0 0 0 2
+T 60700 41700 9 10 1 0 0 0 3
 Clock Output Buffer:
 - higher driving strength
+- down-sized pMOS (LOW skewed)
 N 59100 47800 59200 47800 4
+C 59500 49300 1 0 0 spice-directive-1.sym
+{
+T 59600 49600 5 10 0 1 0 0 1
+device=directive
+T 59600 49700 5 10 1 1 0 0 1
+refdes=A6
+T 59600 49400 5 10 1 1 0 0 1
+value=.PARAM drive=2
+}
+C 59500 48700 1 0 0 spice-directive-1.sym
+{
+T 59600 49000 5 10 0 1 0 0 1
+device=directive
+T 59600 49100 5 10 1 1 0 0 1
+refdes=A7
+T 59600 48800 5 10 1 1 0 0 1
+value=.PARAM skew=.5
+}
