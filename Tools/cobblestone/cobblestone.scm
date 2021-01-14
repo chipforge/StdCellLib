@@ -17,8 +17,8 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2019 - 2021 by
-;;                  chipforge <popcorn@nospam.chipforge.org>
+;;  Copyright (c) 2019 - 2021 by
+;;                  chipforge <cobblestone@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
 ;;  provided that this copyright statement is not removed from the
@@ -56,6 +56,12 @@
             (exporter svg)
     )
 
+;;  ------------    srfi-78 test suite  -------------------------------
+
+    ; change this switch during development only
+    ; mode must be a symbol in '(off summary report-failed report)
+    (check-set-mode! 'off)
+
 ;;  -------------------------------------------------------------------
 ;;                       PROGRAM
 ;;  -------------------------------------------------------------------
@@ -67,10 +73,10 @@
 
 ;;  ------------    version "screen"    -------------------------------
 
-    (define (+version+ eigen-name @port)
+    (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a (\"Cobblestone\") - Version 2021-01-04
+"~a - Version 2021-01-04
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -87,11 +93,14 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
         (newline (@port))
     )
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;  ------------    purpose "screen"    -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
-    (check-set-mode! 'off)
+    (define (+purpose+ @port)
+        "Formats program purpose @port."
+        (format (@port)
+"Generate physical VLSI layout.
+
+"   ))
 
 ;;  -------------------------------------------------------------------
 ;;                       GLOBAL OPTIONS
@@ -99,21 +108,21 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
 
 ;;  ------------    usage "screen"  -----------------------------------
 
-    (define (+usage+ eigen-name @port)
+    (define (+usage+ @port)
         "Formats usage print-out @port."
         (format (@port)
-"Usage: ~a - Generate physical VLSI layout
+"Usage: ~a [options] cell-file
    -e format           specify exporter format - lef, magic or svg
    -h | --help         print help screen and exit
    -H number           set cell highth in metal tracks
    -s rule-set         MOSIS rule set - scmos, subm, deep or user
    -T file             TOML configuration file
+
    -v                  print verbose messages
    --version           print version and exit"
          eigen-name)
         (newline (@port))
-        (exit 2)
-    )
+        (exit 2))
 
 ;;  ------------    command line options    ---------------------------
 
@@ -132,23 +141,27 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
 ;   -v
     (define verbose-mode #f)
 
-;   cell desciption
+;   cell file
     (define cell-file "")
 
 ;;  ------------    command line parsing    ---------------------------
 
     ; auxiliary function
-    (define (parsing-error wrong-arg)
+    (define (parsing-error)
         "Displays unknown command line option @current-error-port."
-        (begin (display "command line parsing failed: " (current-error-port))
-               (display wrong-arg (current-error-port))
+        (begin (display "command line parsing failed." (current-error-port))
+               (newline (current-error-port))
                (newline (current-error-port))))
 
-    (define (set-parameters-with-args! eigen-name arguments)
+    (define (set-parameters-with-args! arguments)
         "Set options by command line arguments."
         (cond
             ; empty list?
-            [(null? arguments) parsing-error]
+            [(null? arguments) 
+                (begin
+                    (parsing-error)
+                    (+usage+ current-error-port)
+                    (exit 1))] ; done, do not parse further
 
             ; -e format
             [(equal? (car arguments) "-e")
@@ -160,13 +173,15 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
             ; -h
             [(equal? (car arguments) "-h")
                 (begin
-                    (+usage+ eigen-name current-error-port)
+                    (+purpose+ current-error-port)
+                    (+usage+ current-error-port)
                     (exit 2))] ; done, do not parse further
 
             ; --help
             [(equal? (car arguments) "--help")
                 (begin
-                    (+usage+ eigen-name current-error-port)
+                    (+purpose+ current-error-port)
+                    (+usage+ current-error-port)
                     (exit 2))] ; done, do not parse further
 
 
@@ -195,12 +210,12 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
             [(equal? (car arguments) "-v")
                 (let ([tail (cdr arguments)])
                     (set! verbose-mode #t)
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; --version
             [(equal? (car arguments) "--version")
                 (begin
-                    (+version+ eigen-name current-error-port)
+                    (+version+ current-error-port)
                     (exit 3))]; done, do not parse further
 
             ; cell file name
@@ -208,46 +223,50 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
                 (set! cell-file (car arguments))]
 
             ; unkown arguments
-            [else (parsing-error (car arguments))]))
+            [else
+                (begin
+                    (parsing-error)
+                    (+usage+ current-error-port)
+                    (exit 1))])) ; done, do not parse further
 
     (define (print-parameters @port)
         "Formats all options by value @port."
         (begin
-                ; -e format
-                (format (@port)
+            ; -e format
+            (format (@port)
 "Exporter Format: ~a"
-                 exporter-format)
-                (newline (@port))
+             exporter-format)
+            (newline (@port))
 
-                ; -H number
-                (format (@port)
+            ; -H number
+            (format (@port)
 "Cell High: ~a metal tracks"
-                 track-high)
-                (newline (@port))
+             track-high)
+            (newline (@port))
 
-                ; -s rule-set
-                (format (@port)
+            ; -s rule-set
+            (format (@port)
 "MOSIS rule set: ~a"
-                 rule-set)
-                (newline (@port))
+             rule-set)
+            (newline (@port))
 
-                ; -T file
-                (format (@port)
+            ; -T file
+            (format (@port)
 "TOML File: ~a"
-                 toml-file)
-                (newline (@port))
+             toml-file)
+            (newline (@port))
 
-                ; -v
-                (format (@port)
+            ; -v
+            (format (@port)
 "Verbose Mode: ~a"
-                 verbose-mode)
-                (newline (@port))
+             verbose-mode)
+            (newline (@port))
 
-                ; cell decription
-                (format (@port)
-"Cell Description: ~a"
-                 cell-file)
-                (newline (@port))))
+            ; cell decription
+            (format (@port)
+"Cell File: ~a"
+             cell-file)
+            (newline (@port))))
 
 ;;  -------------------------------------------------------------------
 ;;                       MAIN
@@ -259,33 +278,32 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
     "Main program."
     (begin
         ; parse command line and set values / modes
-        (let ((eigen-name (car args)))
-            (set-parameters-with-args! eigen-name (or (cdr args) '("--help")))
-            (if verbose-mode (print-parameters current-error-port))
+        (set-parameters-with-args! (cdr args))
+        (if verbose-mode (print-parameters current-error-port))
 
-            ; select work load
-            (cond
-                ; generate magic layout format
-                [(equal? exporter-format 'magic)
-                    (begin
-                        (exporter:layout-magic (common:dataset-cell cell-file))
-                        0)] ; exit value
+        ; select work load
+        (cond
+            ; generate magic layout format
+            [(equal? exporter-format 'magic)
+                (begin
+                    (exporter:layout-magic (common:dataset-cell cell-file))
+                    0)] ; exit value
 
-                ; generate lef layout format
-                [(equal? exporter-format 'lef)
-                    (begin
-                        (exporter:layout-lef (common:dataset-cell cell-file))
-                        0)] ; exit value
+            ; generate lef layout format
+            [(equal? exporter-format 'lef)
+                (begin
+                    (exporter:layout-lef (common:dataset-cell cell-file))
+                    0)] ; exit value
 
-                ; generate svg layout format
-                [(equal? exporter-format 'svg)
-                    (begin
-                        (exporter:layout-svg (common:dataset-cell cell-file))
-                        0)] ; exit value
+            ; generate svg layout format
+            [(equal? exporter-format 'svg)
+                (begin
+                    (exporter:layout-svg (common:dataset-cell cell-file))
+                    0)] ; exit value
 
-                ; selection failed, unknown exporter-format value
-                [else
-                    (begin
-                        (+usage+ eigen-name current-error-port)
-                        2)])))) ; exit value - wrong usage
+            ; selection failed, unknown exporter-format value
+            [else
+                (begin
+                    (+usage+ current-error-port)
+                    2)]))) ; exit value - wrong usage
 
