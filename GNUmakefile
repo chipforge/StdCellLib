@@ -46,11 +46,6 @@ DISTRIBUTION =  $(RELEASEDIR)/*.pdf \
                 $(RELEASEDIR)/spice \
                 # still incomplete
 
-#   collect available cells
-
-IGNORE := $(wildcard $(CATALOGDIR)/*.mk $(CATALOGDIR)/GNUmakefile)
-CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
-
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
 #   ----------------------------------------------------------------
@@ -73,7 +68,6 @@ help:
 	#   doc        - generate complete data book
 	#
 	#   datasheet [CELL=<cell>] - generate cell data sheet
-	#   record [CELL=<cell>]   - measure / characterize cell
 	#
 	#   ----------------------------------------------------------
 	#       available cells:
@@ -89,6 +83,7 @@ clean:
 	# ---- clean up all intermediate files ----
 	$(MAKE) -f layout.mk $@
 	$(MAKE) -f simulation.mk $@
+	$(MAKE) -f datasheet.mk $@
 	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
 	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 	# ---- clean generated catalog files ----
@@ -125,22 +120,6 @@ layout:
 	$(MAKE) -f layout.mk CELL=$(CELL) magic
 
 #   ----------------------------------------------------------------
-#               CELL TARGETS
-#   ----------------------------------------------------------------
-
-#   generate truth table
-
-.PHONY: table-file
-table-file:
-	$(MAKE) -f simulation.mk CELL=$(CELL) table-file
-
-#   measure / characterize cells
-
-.PHONY: record
-record:
-	$(MAKE) -f simulation.mk CELL=$(CELL) record
-
-#   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
 
@@ -148,7 +127,7 @@ record:
 
 .PHONY: datasheet
 datasheet:
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $(CELL)
+	$(MAKE) -f datasheet.mk CELL=$(CELL) datasheet
 
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
@@ -166,12 +145,4 @@ doc:
 dist: $(CELLS) clean doc
 	# ---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
-
-#   make all distributed file formats
-
-%:
-	# 1st, ..
-	# 2nd, ..
-	# done, make data sheets
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
 

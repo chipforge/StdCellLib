@@ -17,7 +17,8 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <stdcelllib@nospam.chipforge.org>
+#   Copyright (c) 2018 - 2021 by
+#                   chipforge <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -64,10 +65,14 @@ SED ?=          sed
 MKDIR ?=        mkdir -p
 DATE :=         $(shell date +%Y%m%d)
 
-#   project tools
+#   collect available cells
 
-#POPCORN ?=      $(TOOLSDIR)/popcorn/popcorn # -v
-SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
-MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
-SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
+IGNORE := $(wildcard *.mk GNUmakefile)
+CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
+
+#   supportive tools
+
+COBBLESTONE = $(TOOLSDIR)/cobblestone/cobblestone
+DATASHEET = $(TOOLSDIR)/datasheet/datasheet
+POPCORN = $(TOOLSDIR)/popcorn/popcorn
 
