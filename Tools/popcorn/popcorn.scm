@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2019 - 2021 by
+;;  Copyright (c) 2019 - 2021 by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -54,6 +54,12 @@
             (exporter cell)
     )
 
+;;  ------------    srfi-78 test suite  -------------------------------
+
+    ; change this switch during development only
+    ; mode must be a symbol in '(off summary report-failed report)
+    (check-set-mode! 'off)
+
 ;;  -------------------------------------------------------------------
 ;;                       PROGRAM
 ;;  -------------------------------------------------------------------
@@ -65,10 +71,10 @@
 
 ;;  ------------    version "screen"    -------------------------------
 
-    (define (+version+ eigen-name @port)
+    (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a (\"Popcorn\") - Version 2021-01-02
+"~a - Version 2021-01-02
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,11 +91,14 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
         (newline (@port))
     )
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;  ------------    purpose "screen"    -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
-    (check-set-mode! 'off)
+    (define (+purpose+ @port)
+        "Formats program purpose @port."
+        (format (@port)
+"Generate new combinatorial cell.
+
+"   ))
 
 ;;  -------------------------------------------------------------------
 ;;                       GLOBAL OPTIONS
@@ -97,15 +106,15 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 
 ;;  ------------    usage "screen"  -----------------------------------
 
-    (define (+usage+ eigen-name @port)
+    (define (+usage+ @port)
         "Formats usage print-out @port."
         (format (@port)
-"Usage: ~a - Generate new combinatorial cells
+"Usage: ~a [options] cell-file
    -b number           set threshold value for output buffer
    -c cellname         cell name for generated output
    -e format           specify cell export format
    -h | --help         print help screen and exit
-   -H number           set cell high in metal tracks
+   -H number           set cell highth in metal tracks
    -l number           set maximum number of stacked transistors
    -m method           enlarge cell - nand nor aoi oia
    -T file             TOML configuration file
@@ -113,8 +122,7 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
    --version           print version and exit"
          eigen-name)
         (newline (@port))
-        (exit 2)
-    )
+        (exit 2))
 
 ;;  ------------    command line options    ---------------------------
 
@@ -142,161 +150,171 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 ;   -v
     (define verbose-mode #f)
 
-;   cell desciption
+;   cell file
     (define cell-file "")
 
 ;;  ------------    command line parsing    ---------------------------
 
     ; auxiliary function
-    (define parsing-error
-        (lambda (wrong-arg)
-            (begin (display "command line parsing failed: " (current-error-port))
-                   (display wrong-arg (current-error-port))
-                   (newline (current-error-port)))))
+    (define (parsing-error)
+        "Displays unknown command line option @current-error-port."
+        (begin (display "command line parsing failed." (current-error-port))
+               (newline (current-error-port))
+               (newline (current-error-port))))
 
-    (define set-parameters-with-args!
-        (lambda (eigen-name arguments)
-            (cond
-                ; empty list?
-                [(null? arguments) parsing-error]
+    (define (set-parameters-with-args! arguments)
+        "Set options by command line arguments."
+        (cond
+            ; empty list?
+            [(null? arguments) 
+                (begin
+                    (parsing-error)
+                    (+usage+ current-error-port)
+                    (exit 1))] ; done, do not parse further
 
-                ; -b number
-                [(equal? (car arguments) "-b")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! buffer-limit (string->number value))   ; !! value check missing
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -b number
+            [(equal? (car arguments) "-b")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! buffer-limit (string->number value))   ; !! value check missing
+                    (set-parameters-with-args! tail))]
 
-                ; -c cellname
-                [(equal? (car arguments) "-c")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! cell-name value)
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -c cellname
+            [(equal? (car arguments) "-c")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! cell-name value)
+                    (set-parameters-with-args! tail))]
 
-                ; -D string
-                [(equal? (car arguments) "-D")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! cell-descr value)
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -D string
+            [(equal? (car arguments) "-D")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! cell-descr value)
+                    (set-parameters-with-args! tail))]
 
-                ; -h
-                [(equal? (car arguments) "-h")
-                    (begin
-                        (+usage+ eigen-name current-error-port)
-                        (exit 2))] ; done, do not parse further
+            ; -h
+            [(equal? (car arguments) "-h")
+                (begin
+                    (+purpose+ current-error-port)
+                    (+usage+ current-error-port)
+                    (exit 2))] ; done, do not parse further
 
-                ; --help
-                [(equal? (car arguments) "--help")
-                    (begin
-                        (+usage+ eigen-name current-error-port)
-                        (exit 2))] ; done, do not parse further
+            ; --help
+            [(equal? (car arguments) "--help")
+                (begin
+                    (+purpose+ current-error-port)
+                    (+usage+ current-error-port)
+                    (exit 2))] ; done, do not parse further
 
 
-                ; -H number
-                [(equal? (car arguments) "-H")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! track-high (string->number value))  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -H number
+            [(equal? (car arguments) "-H")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! track-high (string->number value))  ; !! value check missing)]
+                    (set-parameters-with-args! tail))]
 
-                ; -l number
-                [(equal? (car arguments) "-l")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! stacked-limit (string->number value))  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -l number
+            [(equal? (car arguments) "-l")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! stacked-limit (string->number value))  ; !! value check missing)]
+                    (set-parameters-with-args! tail))]
 
-                ; -m method
-                [(equal? (car arguments) "-m")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! expansion-method (string->symbol value))
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -m method
+            [(equal? (car arguments) "-m")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! expansion-method (string->symbol value))
+                    (set-parameters-with-args! tail))]
 
-                ; -T file
-                [(equal? (car arguments) "-T")
-                    (let ([value (car (cdr arguments))]
-                          [tail (cddr arguments)])
-                        (set! toml-file value)  ; !! value check missing)]
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -T file
+            [(equal? (car arguments) "-T")
+                (let ([value (car (cdr arguments))]
+                      [tail (cddr arguments)])
+                    (set! toml-file value)  ; !! value check missing)]
+                    (set-parameters-with-args! tail))]
 
-                ; -v
-                [(equal? (car arguments) "-v")
-                    (let ([tail (cdr arguments)])
-                        (set! verbose-mode #t)
-                        (set-parameters-with-args! eigen-name tail))]
+            ; -v
+            [(equal? (car arguments) "-v")
+                (let ([tail (cdr arguments)])
+                    (set! verbose-mode #t)
+                    (set-parameters-with-args! tail))]
 
-                ; --version
-                [(equal? (car arguments) "--version")
-                    (begin
-                        (+version+ eigen-name current-error-port)
-                        (exit 3))]; done, do not parse further
+            ; --version
+            [(equal? (car arguments) "--version")
+                (begin
+                    (+version+ current-error-port)
+                    (exit 3))]; done, do not parse further
 
-                ; cell file name
-                [(null? (cdr arguments))
-                    (set! cell-file (car arguments))]
+            ; cell file name
+            [(null? (cdr arguments))
+                (set! cell-file (car arguments))]
 
-                ; unkown arguments
-                [else (parsing-error (car arguments))])))
+            ; unkown arguments
+            [else
+                (begin
+                    (parsing-error)
+                    (+usage+ current-error-port)
+                    (exit 1))])) ; done, do not parse further
 
-    (define print-parameters
-        (lambda (@port)
-            (begin
-                    ; -b number
-                    (format (@port)
+    (define (print-parameters @port)
+        "Formats all options by value @port."
+        (begin
+            ; -b number
+            (format (@port)
 "Buffer Limit: ~a stacked transistors"
-                     buffer-limit)
-                    (newline (@port))
+            buffer-limit)
+            (newline (@port))
 
-                    ; -c cellname
-                    (format (@port)
+            ; -c cellname
+            (format (@port)
 "Cell Name: ~a"
-                     cell-name)
-                    (newline (@port))
+             cell-name)
+            (newline (@port))
 
-                    ; -D string
-                    (format (@port)
+            ; -D string
+            (format (@port)
 "Cell Description: ~a"
-                     cell-descr)
-                    (newline (@port))
+             cell-descr)
+            (newline (@port))
 
-                    ; -H number
-                    (format (@port)
+            ; -H number
+            (format (@port)
 "Cell High: ~a metal tracks"
-                     track-high)
-                    (newline (@port))
+             track-high)
+            (newline (@port))
 
-                    ; -l number
-                    (format (@port)
+            ; -l number
+            (format (@port)
 "Stacked Transistor Limit: ~a"
-                     stacked-limit)
-                    (newline (@port))
+             stacked-limit)
+            (newline (@port))
 
-                    ; -m method
-                    (format (@port)
+            ; -m method
+            (format (@port)
 "Expansion Method: ~a"
-                     expansion-method)
-                    (newline (@port))
+             expansion-method)
+            (newline (@port))
 
-                    ; -T file
-                    (format (@port)
+            ; -T file
+            (format (@port)
 "TOML File: ~a"
-                     toml-file)
-                    (newline (@port))
+             toml-file)
+            (newline (@port))
 
-                    ; -v
-                    (format (@port)
+            ; -v
+            (format (@port)
 "Verbose Mode: ~a"
-                     verbose-mode)
-                    (newline (@port))
+             verbose-mode)
+            (newline (@port))
 
-                    ; cell decription
-                    (format (@port)
-"Cell Description: ~a"
-                     cell-file)
-                    (newline (@port)))))
+            ; cell decription
+            (format (@port)
+"Cell File: ~a"
+             cell-file)
+            (newline (@port))))
 
 ;;  -------------------------------------------------------------------
 ;;                       MAIN
@@ -308,52 +326,50 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
     "Main program."
     (begin
         ; parse command line and set values / modes
-        (let ((eigen-name (car args)))
-            (set-parameters-with-args! eigen-name (or (cdr args) '("--help")))
-            (if verbose-mode (print-parameters current-error-port))
+        (set-parameters-with-args! (cdr args))
+        (if verbose-mode (print-parameters current-error-port))
 
-            ; select work load
-            (cond
-                ; nand-wise
-                [(equal? expansion-method 'nand)
-                    (begin
-                        (exporter:dataset-cell (cell:expand-nand (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        0)]   ; exit value
+        ; select work load
+        (cond
+            ; nand-wise
+            [(equal? expansion-method 'nand)
+                (begin
+                    (exporter:dataset-cell (cell:expand-nand (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)]   ; exit value
 
-                ; nor-wise
-                [(equal? expansion-method 'nor)
-                    (begin
-                        (exporter:dataset-cell (cell:expand-nor (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        0)] ; exit value
+            ; nor-wise
+            [(equal? expansion-method 'nor)
+                (begin
+                    (exporter:dataset-cell (cell:expand-nor (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)] ; exit value
 
-                ; aoi-wise
-                [(equal? expansion-method 'aoi)
-                    (begin
-;                       (exporter:dataset-cell (cell:expand-aoi (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        (map display (exporter:dataset-cell (common:dataset-cell cell-file)))
-                        0)] ; exit value
+            ; aoi-wise
+            [(equal? expansion-method 'aoi)
+                (begin
+                    (exporter:dataset-cell (cell:expand-aoi (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)] ; exit value
 
-                ; oai-wise
-                [(equal? expansion-method 'oai)
-                    (begin
-                        (exporter:dataset-cell (cell:expand-oai (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        0)] ; exit value
+            ; oai-wise
+            [(equal? expansion-method 'oai)
+                (begin
+                    (exporter:dataset-cell (cell:expand-oai (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)] ; exit value
 
-                ; pu-wise
-                [(equal? expansion-method 'pu)
-                    (begin
-                        (exporter:dataset-cell (cell:expand-pu (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        0)] ; exit value
+            ; pu-wise
+            [(equal? expansion-method 'pu)
+                (begin
+                    (exporter:dataset-cell (cell:expand-pu (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)] ; exit value
 
-                ; pd-wise
-                [(equal? expansion-method 'pd)
-                    (begin
-                        (exporter:dataset-cell (cell:expand-pd (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
-                        0)] ; exit value
+            ; pd-wise
+            [(equal? expansion-method 'pd)
+                (begin
+                    (exporter:dataset-cell (cell:expand-pd (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                    0)] ; exit value
 
-                ; selection failed, unknown expansion-method
-                [else
-                    (begin
-                        (+usage+ eigen-name current-error-port)
-                        2)]))))    ; exit value - wrong usage
+            ; selection failed, unknown expansion-method
+            [else
+                (begin
+                    (+usage+ current-error-port)
+                    2)])))  ; exit value - wrong usage
 
