@@ -101,13 +101,19 @@ table.5.ps: table.5
 cobblestone.1.ps: cobblestone.1
 	$(TROFF) $< > $@
 
+#   man 1 datasheet
+
+.PHONY: datasheet.1.ps
+datasheet.1.ps: datasheet.1
+	$(TROFF) $< > $@
+
 #   man 1 popcorn
 
 .PHONY: popcorn.1.ps
 popcorn.1.ps: popcorn.1
 	$(TROFF) $< > $@
 
-manual: cell.5.ps table.5.ps cobblestone.1.ps popcorn.1.ps
+manual: cell.5.ps table.5.ps cobblestone.1.ps datasheet.1.ps popcorn.1.ps
 
 #   ----------------------------------------------------------------
 #               TOOLING
