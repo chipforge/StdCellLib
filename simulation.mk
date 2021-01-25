@@ -66,7 +66,7 @@ clean:
 	-$(RM) $(SIMULATIONDIR)/verilog/*.table
 	-$(RM) $(SIMULATIONDIR)/spice/*_record.txt
 	-$(RM) $(TBENCHDIR)/spice/*_tb.sp
-	-$(RM) $(RELEASEDIR)/spice/*.cir
+	-$(RM) $(RELEASEDIR)/Models/spice/*.cir
 
 #   ----------------------------------------------------------------
 #                   RUN VERILOG SIMULATION
