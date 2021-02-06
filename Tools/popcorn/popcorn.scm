@@ -331,52 +331,12 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
         (if verbose-mode (print-parameters current-error-port))
 
         ; select work load
-        (cond
-            ; nand-wise
-            [(equal? expansion-method 'nand)
-                 (let ([cell (expand-nand (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+        (case expansion-method
+            ((nand nor aoi oai pu pd)
+                 (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method stacked-limit buffer-limit cell-name cell-descr)])
                     ; beautify annotation with schematic here !!
                     (rdisplay (exporter:dataset-cell cell))
-                    0)]   ; exit value
-
-            ; nor-wise
-            [(equal? expansion-method 'nor)
-                (let ([cell (expand-nor (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
-                    ; beautify annotation with schematic here !!
-                    (rdisplay (exporter:dataset-cell cell))
-                    0)] ; exit value
-
-            ; aoi-wise
-            [(equal? expansion-method 'aoi)
-                (let ([cell (expand-aoi (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
-                    ; beautify annotation with schematic here !!
-                    (rdisplay (exporter:dataset-cell cell))
-                    0)] ; exit value
-
-            ; oai-wise
-            [(equal? expansion-method 'oai)
-                (let ([cell (expand-oai (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
-                    ; beautify annotation with schematic here !!
-                    (rdisplay (exporter:dataset-cell cell))
-                    0)] ; exit value
-
-            ; pu-wise
-            [(equal? expansion-method 'pu)
-                (let ([cell (expand-pu (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
-                    ; beautify annotation with schematic here !!
-                    (rdisplay (exporter:dataset-cell cell))
-                    0)] ; exit value
-
-            ; pd-wise
-            [(equal? expansion-method 'pd)
-                (let ([cell (expand-pd (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
-                    ; beautify annotation with schematic here !!
-                    (rdisplay (exporter:dataset-cell cell))
-                    0)] ; exit value
-
-            ; selection failed, unknown expansion-method
-            [else
-                (begin
+                    0))   ; exit value
+        (else => (begin
                     (+usage+ current-error-port)
-                    2)])))  ; exit value - wrong usage
-
+                    2)))))  ; exit value - wrong usage

@@ -49,12 +49,7 @@
           ; r7rs modules for StdCellLib also
           (common cell)
 ) (export ; expander methods
-          expand-nand
-          expand-nor
-          expand-aoi
-          expand-oai
-          expand-pu
-          expand-pd
+          expand-cell
 ) (begin
 
 ;;  ------------    srfi-78 test suite  -------------------------------
@@ -67,45 +62,25 @@
 ;;                       FUNCTIONALITY
 ;;  -------------------------------------------------------------------
 
-;;  ------------    expand-nand     -----------------------------------
+;;  ------------    expand-cell     -----------------------------------
 
-    (define (expand-nand cell stacked-limit buffer-limit cell-name cell-descr)
-        "Expand cell description according parameters to new cell description.  Use NAND-method
-        (mosfet parallel in pull-up network, mosfet serial in pull-down network) and update
-        current port character with next number.  Returns <cell> structure."
-        cell
-    )
+    (define (expand-cell cell expansion-method stacked-limit buffer-limit cell-name cell-descr)
+        "Expand cell description according parameters to new cell description.  Use named method
+        and update current port character with next number.  Returns <cell> structure."
+        (let* ([new-cell (generate-cell)])
+            (begin
+                (set-id! new-cell cell-name)
+                (set-description! new-cell cell-descr)
 
-;;  ------------    expand-nor      -----------------------------------
+                ; !! fixme: add netlist manipulation here
+                (set-netlist! new-cell (netlist cell))
 
-    (define (expand-nor cell stacked-limit buffer-limit cell-name cell-descr)
-        "Expand cell description according parameters to new cell description.  Use NOR-method
-        (mosfet serial in pull-up network, mosfet parallel in pull-down network) and update
-        current port character with next number.  Returns <cell> structure."
-        cell
-    )
-
-;;  ------------    expand-aoi      -----------------------------------
-
-    (define (expand-aoi cell stacked-limit buffer-limit cell-name cell-descr)
-        "Expand cell description according parameters to new cell description.  Use AOI-method
-        (mosfet serial in pull-up network, mosfet parallel in pull-down network) and update
-        current port character with next number.  Returns <cell> structure."
-        cell
-    )
-
-;;  ------------    expand-oai      -----------------------------------
-
-    (define (expand-oai cell stacked-limit buffer-limit cell-name cell-descr)
-        "Expand cell description according parameters to new cell description.  Use OAI-method
-        (mosfet parallel in pull-up network, mosfet serial in pull-down network) and update
-        current port with next character name.  Returns <cell> structure."
-        cell
-    )
-
-;;  ------------    expand-pu       -----------------------------------
-
-;;  ------------    expand-pd       -----------------------------------
+                (set-inputs! new-cell (inputs cell))
+                (set-outputs! new-cell (outputs cell))
+                (set-clocks! new-cell (clocks cell))
+                (set-ascii-art! new-cell (ascii-art cell))
+            )
+            new-cell))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
