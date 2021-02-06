@@ -66,8 +66,7 @@ LEVEL ?=            $(LIMIT)
 # textual description for cell functionality
 DESCR ?=            '?'
 
-POPCORN ?=          $(TOOLSDIR)/popcorn/popcorn \
-                    -l $(LEVEL) \
+POPCORN +=          -l $(LEVEL) \
                     -b $(BUFFER) \
                     -D $(DESCR)
 
