@@ -51,6 +51,8 @@
             (srfi 78)                   ; test suite
             ; r7rs modules for StdCellLib also
             (common cell)
+            (popcorn expander)
+            (exporter generic)
             (exporter cell)
     )
 
@@ -112,7 +114,6 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 "Usage: ~a [options] cell-file
    -b number           set threshold value for output buffer
    -c cellname         cell name for generated output
-   -e format           specify cell export format
    -h | --help         print help screen and exit
    -H number           set cell highth in metal tracks
    -l number           set maximum number of stacked transistors
@@ -174,22 +175,22 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 
             ; -b number
             [(equal? (car arguments) "-b")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! buffer-limit (string->number value))   ; !! value check missing
                     (set-parameters-with-args! tail))]
 
             ; -c cellname
             [(equal? (car arguments) "-c")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! cell-name value)
                     (set-parameters-with-args! tail))]
 
             ; -D string
             [(equal? (car arguments) "-D")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! cell-descr value)
                     (set-parameters-with-args! tail))]
 
@@ -210,35 +211,35 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 
             ; -H number
             [(equal? (car arguments) "-H")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! track-high (string->number value))  ; !! value check missing)]
                     (set-parameters-with-args! tail))]
 
             ; -l number
             [(equal? (car arguments) "-l")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! stacked-limit (string->number value))  ; !! value check missing)]
                     (set-parameters-with-args! tail))]
 
             ; -m method
             [(equal? (car arguments) "-m")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! expansion-method (string->symbol value))
                     (set-parameters-with-args! tail))]
 
             ; -T file
             [(equal? (car arguments) "-T")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! toml-file value)  ; !! value check missing)]
                     (set-parameters-with-args! tail))]
 
             ; -v
             [(equal? (car arguments) "-v")
-                (let ([tail (cdr arguments)])
+                (let* ([tail (cdr arguments)])
                     (set! verbose-mode #t)
                     (set-parameters-with-args! tail))]
 
@@ -333,38 +334,44 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
         (cond
             ; nand-wise
             [(equal? expansion-method 'nand)
-                (begin
-                    (exporter:dataset-cell (cell:expand-nand (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                 (let ([cell (expand-nand (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)]   ; exit value
 
             ; nor-wise
             [(equal? expansion-method 'nor)
-                (begin
-                    (exporter:dataset-cell (cell:expand-nor (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                (let ([cell (expand-nor (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)] ; exit value
 
             ; aoi-wise
             [(equal? expansion-method 'aoi)
-                (begin
-                    (exporter:dataset-cell (cell:expand-aoi (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                (let ([cell (expand-aoi (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)] ; exit value
 
             ; oai-wise
             [(equal? expansion-method 'oai)
-                (begin
-                    (exporter:dataset-cell (cell:expand-oai (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                (let ([cell (expand-oai (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)] ; exit value
 
             ; pu-wise
             [(equal? expansion-method 'pu)
-                (begin
-                    (exporter:dataset-cell (cell:expand-pu (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                (let ([cell (expand-pu (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)] ; exit value
 
             ; pd-wise
             [(equal? expansion-method 'pd)
-                (begin
-                    (exporter:dataset-cell (cell:expand-pd (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr))
+                (let ([cell (expand-pd (common:dataset-cell cell-file) stacked-limit buffer-limit cell-name cell-descr)])
+                    ; beautify annotation with schematic here !!
+                    (rdisplay (exporter:dataset-cell cell))
                     0)] ; exit value
 
             ; selection failed, unknown expansion-method
