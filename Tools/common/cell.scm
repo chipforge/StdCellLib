@@ -45,6 +45,7 @@
 
 (define-library (common cell)
   (import (scheme base)
+          (scheme cxr)      ; caddr & co
           (scheme char)     ; digit-value
           (scheme file)     ; file io
           (scheme read)     ; read
@@ -60,18 +61,23 @@
           %ground-plane-object
           ; location representations
           location location?
+          stacked set-stacked!
           x-axis set-x-axis!
           y-axis set-y-axis!
-          stacked set-stacked!
+          generate-location
+          pretty-print-location
           ; mosfet representations
           mosfet mosfet?
           type set-type!
           gate set-gate!
           drain set-drain!
           source set-source!
-          buld set-bulk!
-          place set-place!
+          bulk set-bulk!
           size set-size!
+          place set-place!
+          generate-mosfet
+          pretty-print-mosfet
+          pretty-print-netlist
           ; cell representations
           cell cell?
           id set-id!
@@ -81,8 +87,10 @@
           clocks set-clocks!
           netlist set-netlist!
           ascii-art set-ascii-art!
+          generate-cell
+          pretty-print-cell
           ; cell read file
-          current-cell common:dataset-cell
+          common:dataset-cell
 ) (begin
 
 ;;  ------------    srfi-78 test suite  -------------------------------
@@ -284,22 +292,40 @@
 ;   define a 'location' as record
 
 ;       +---------------+       e.g.:
+;       | annotation    | ->    1
+;       +---------------+
 ;       | x-axis point  | ->    1
 ;       +---------------+
-;       | y-axis point  | ->    1
-;       +---------------+
-;       | annotation    | ->    1
+;       | y-axis point  | ->    +1
 ;       +---------------+
 
     (define-record-type <location>
         ; constructor
-        (location x-location y-location stack-annotation)
+        (location stack-annotation x-location y-location)
         ; predicate
         location?
         ; getters & setters (omit the setters from immutable fields)
+        (stack-annotation stacked set-stacked!)
         (x-location x-axis set-x-axis!)
-        (y-location y-axis set-y-axis!)
-        (stack-annotation stacked set-stacked!))
+        (y-location y-axis set-y-axis!))
+
+;;  ------------    generate empty <location>   -----------------------
+
+    (define (generate-location)
+        "Generate empty <location> record structure.  Returns <location>."
+        (location 0 0 0))
+
+;;  ------------    pretty print <location>     -----------------------
+
+    (define (pretty-print-location record)
+        "Pretty-Print a <location> record structure.  Returns a list."
+        (list
+            (stacked record) " "
+            (x-axis record) " "
+            (y-axis record)))
+            ;0 0 0))
+
+    (check (pretty-print-location (generate-location)) => '(0 0 0))
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -317,15 +343,15 @@
 ;       | source node   | ->    "VDD"
 ;       +---------------+
 ;       | bulk node     | ->    "VDD"
-;       +---------------+       +---------------+---------------+---------------+
-;       | place         | ->    |  x-location   |  y-location   |  annotation   |
-;       +---------------+       +---------------+---------------+---------------+
-;       | size          | ->    "gamma"
 ;       +---------------+
+;       | size          | ->    "g"
+;       +---------------+       +---------------+---------------+---------------+
+;       | place         | ->    |  annotation   |  x-location   |  y-location   |
+;       +---------------+       +---------------+---------------+---------------+
 
     (define-record-type <mosfet>
         ; constructor
-        (mosfet circuit-type gate-node drain-node source-node bulk-node circuit-place circuit-size)
+        (mosfet circuit-type gate-node drain-node source-node bulk-node circuit-size circuit-place)
         ; predicate
         mosfet?
         ; getters & setters (omit the setters from immutable fields)
@@ -334,8 +360,40 @@
         (drain-node drain set-drain!)
         (source-node source set-source!)
         (bulk-node bulk set-bulk!)
-        (circuit-place place set-place!)
-        (circuit-size size set-size!))
+        (circuit-size size set-size!)
+        (circuit-place place set-place!))
+
+;;  ------------    generate empty <mosfet>     -----------------------
+
+    (define (generate-mosfet)
+        "Generate empty <mosfet> record structure.  Returns <mosfet>."
+        (mosfet "" "" "" "" "" "" (generate-location)))
+
+;;  ------------    pretty print <mosfet>   ---------------------------
+
+    (define (pretty-print-mosfet record)
+        "Pretty-Print a <mosfet> record structure.  Returns a list."
+        (list
+            "\n"
+            (type record) " "
+            (gate record) " "
+            (drain record) " "
+            (source record) " "
+            (bulk record) " "
+            (size record) " "
+            (pretty-print-location (place record))))
+
+    (check (pretty-print-mosfet (generate-location)) => '("" "" "" "" "" "" (0 0 0)))
+
+;;  ------------    pretty print netlist    ---------------------------
+
+    (define (pretty-print-netlist netlist)
+        "Pretty-Print a netlist of <mosfet> record structures.  Returns a list."
+        (list
+            (pretty-print-mosfet (car netlist))
+            (if (null? (cdr netlist))
+                '()
+                (pretty-print-netlist (cdr netlist)))))
 
 ;;  -------------------------------------------------------------------
 ;;                  CELL DATA STRUCTURE
@@ -373,72 +431,94 @@
         (cell-netlist netlist set-netlist!)
         (cell-ascii-art ascii-art set-ascii-art!))
 
+;;  ------------    generate empty <mosfet>     -----------------------
+
+    (define (generate-cell)
+        "Generate empty <cell> record structure.  Returns <cell>."
+        (cell "" "" '() '() '() '() '()))
+
+;;  ------------    pretty print <cell>     ---------------------------
+
+    (define (pretty-print-cell record)
+        "Pretty-Print a <cell> record structure.  Returns a list."
+        (list
+            (id record)
+            (description record)
+            (inputs record)
+            (outputs record)
+            (clocks record)
+            (pretty-print-netlist (netlist record))
+;           (ascii-art record)
+            ))
+
 ;;  -------------------------------------------------------------------
 ;;                  READ CELL STRUCTURE
 ;;  -------------------------------------------------------------------
 
-;   current cell
+;;  ------------    read one pmos line  -------------------------------
 
-    (define current-cell (cell "" "" "" "" "" "" ""))
-
-;;  ------------    comment syntax rule -------------------------------
-
-    (define-syntax //
-        (syntax-rules ()
-            ((_ ) ())
-            ((_ a) ())
-            ((_ a ... ) ())
+    (define (read-pmos-line! arguments)
+        "Read arguments for pmos circuits and feed the corresponding
+        field inside the <mosfet> structure.  Returns <mosfet> structure."
+        (let* ([pmos (generate-mosfet)])
+            (set-type! pmos "pmos")
+            (set-gate! pmos (car arguments))
+            (set-drain! pmos (cadr arguments))
+            (set-source! pmos (caddr arguments))
+            (set-bulk! pmos (cadddr arguments))
+            (set-size! pmos (car (cddddr arguments)))
+;            (set-place! pmos (car (cdr (cddddr arguments))))
+            pmos
+;            (display (pretty-print-mosfet pmos)) (newline)
             ))
 
-;;  ------------    .cell syntax rule   -------------------------------
+;;  ------------    read one nmos line  -------------------------------
 
-    (define-syntax |.cell|
-        (syntax-rules ()
-            ((_ id) (set-id! current-cell id))
+    (define (read-nmos-line! arguments)
+        "Read arguments for nmos circuits and feed the corresponding
+        field inside the <mosfet> structure.  Returns <mosfet> structure."
+        (let* ([nmos (generate-mosfet)])
+            (set-type! nmos "nmos")
+            (set-gate! nmos (car arguments))
+            (set-drain! nmos (cadr arguments))
+            (set-source! nmos (caddr arguments))
+            (set-bulk! nmos (cadddr arguments))
+            (set-size! nmos (car (cddddr arguments)))
+;            (set-place! nmos (car (cdr (cddddr arguments))))
+            nmos
+;            (display (pretty-print-mosfet nmos)) (newline)
             ))
 
-;;  ------------    .inputs syntax rule -------------------------------
+;;  ------------    read one tagged line    ---------------------------
 
-    (define-syntax |.inputs|
-        (syntax-rules ()
-            ((_ a) (set-inputs! current-cell (list a)))
-            ((_ a b) (set-inputs! current-cell (list a b)))
-            ((_ a b ...) (set-inputs! current-cell (list a b ...)))
-            ))
+    (define (read-tagged-line! current-cell textline)
+        "Check the textline for known tags and feed the corresponding
+        field inside the <cell> record.  Returns <cell> structure."
+        (cond
+            ; emtpy list?
+            [(null? textline) current-cell]
 
-;;  ------------    .outputs syntax rule    ---------------------------
-
-    (define-syntax |.outputs|
-        (syntax-rules ()
-            ((_ y) (set-outputs! current-cell (list y)))
-            ((_ y z) (set-outputs! current-cell (list y z)))
-            ((_ y z ...) (set-outputs! current-cell (list y z ...)))
-            ))
-
-;;  ------------    pmos transistor rule    ---------------------------
-
-    (define-syntax pmos
-        (syntax-rules ()
-            ((_ ) ())
-            ((_ a) ())
-            ((_ a ... ) ())
-            ))
-
-;;  ------------    .end syntax rule    -------------------------------
-
-    (define-syntax |.end|
-        (syntax-rules ()
-            ((_ ) ())
-            ((_ a) ())
-            ((_ a ... ) ())
-            ))
+            [(equal? (car textline) '|.cell|)
+                (set-id! current-cell (cadr textline))]
+            [(equal? (car textline) '|.inputs|)
+                (set-inputs! current-cell (cdr textline))]
+            [(equal? (car textline) '|.outputs|)
+                (set-outputs! current-cell (cdr textline))]
+            [(equal? (car textline) '|.clocks|)
+                (set-clocks! current-cell (cdr textline))]
+            [(equal? (car textline) 'pmos)
+                (set-netlist! current-cell (cons (read-pmos-line! (cdr textline)) (netlist current-cell)))]
+            [(equal? (car textline) 'nmos)
+                (set-netlist! current-cell (cons (read-nmos-line! (cdr textline)) (netlist current-cell)))]
+            [else ;(equal? (car textline) '|.end|)
+                current-cell]))
 
 ;;  ------------    read in cell file   -------------------------------
 
     (define (common:dataset-cell file-name)
-        "Read in cell-file. Returns a <cell> structure."
-        (let ((file (open-input-file file-name))
-              (current-netlist '()))
+        "Read in cell-file.  Returns a <cell> structure."
+        (let* ([file (open-input-file file-name)]
+               [current-cell (generate-cell)])
             (let x ((1stline (read-line file)))
                 (if (eof-object? 1stline)
                     '()
@@ -446,18 +526,10 @@
                         (set-description! current-cell 1stline)
                         (let function ((nextline (read-line file)))
                             (unless (eof-object? nextline)
-(begin
-                                (map string->symbol (string-tokenize nextline))
-                                (function (read-line file))
-    )
-                            )
-                        )
-                    )
-                )
-            )
-        )
-        current-cell
-    )
+                                (let ([parsed-line (map string->symbol (string-tokenize nextline))])
+                                    current-cell (read-tagged-line! current-cell parsed-line)
+                                    (function (read-line file))))))))
+        current-cell))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
