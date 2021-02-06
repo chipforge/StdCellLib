@@ -17,6 +17,6 @@ Not (or Inverter) gate
 #       | +-.
 #           |
 #          _|_ Gnd
-pmos A Y vdd vdd 1 1  1 g
-nmos A Y gnd gnd 1 1 -1 1
+pmos A Y vdd vdd g 1 1 +1
+nmos A Y gnd gnd 1 1 1 -1
 .end

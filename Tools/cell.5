@@ -17,7 +17,7 @@
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
-.\" Copyright (c)   2019 by
+.\" Copyright (c)   2018 - 2021 by
 .\"                 chipforge - <popcorn@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
@@ -42,16 +42,15 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd October 26, 2019
+.Dd February 6, 2021
 .Dt CELL 5 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
 .Nm cell
 .Nd description file format for popcorn
 .Sh DESCRIPTION
-This is the essential file format for the
-.Xr popcorn 1
-utility, inspired by the Berkeley Logic Interchange Format (BLIF) and
+This is the essential file format for the allmost all Standard Cell Library
+utilities and was inspired by the Berkeley Logic Interchange Format (BLIF) and
 Simulation Program with Integrated Circuit Emphasis (SPICE) - both from UC
 Berkeley.
 .Pp
@@ -64,7 +63,7 @@ circuit becomming part of the cell netlist; except the first line which becomes
 the cell description.
 .Ss #
 A hash mark indicates the beginning of a comment; subsequent characters up to
-the end of the line are not interpreted by the routines which search the file.
+the end of the line are not interpreted by the routines which greps the file.
 .Ss .cell
 This dot-command is a string giving the unique cell identifier inside the
 Standard Cell Library.
@@ -83,7 +82,7 @@ declared.
 This dot-command follows a white-space-separated list of strings (terminated by
 the end of the line) giving the formatl output signals for the cell being
 delared.
-.Ss .clock
+.Ss .clocks
 This dot-command follows a white-space-separated list of strings (terminated by
 the end of the line) giving the clocks for the model being declared.
 This command is optional; e.g., for purely combinational circuits.
@@ -96,7 +95,7 @@ transistor) with some arguments.
 .Pp
 Every circuits line contains this arguments in the following order:
 .Bd -literal
-type   gate   drain   source   bulk   stacked   xgrid   ygrid   size
+type  gate  drain  source  bulk  size  stacked  xgrid  ygrid
 .Ed
 .Bl -ohang
 .It Em type
@@ -110,6 +109,9 @@ The transistor type used for this circuit (e.g., pmos or nmos).
 .It Em bulk
 (Network-) Node connected to the bulk of the circuit, mostly a power supply
 like VDD or Ground.
+.It Em size
+Size (as integer) of the mosfet; representing the number of minimum sized
+transistor length for width parameter.
 .It Em stacked
 Order of current stacked transistor in pull-up or pull-down network.
 .It Em xgrid
@@ -119,9 +121,6 @@ This coordinates rising up from left (1st grid position is 1) to right.
 Y-position (as integer) inside the grid; always positive for pMOS transistors
 and always negative for nMOS transistors.
 This coordinates are aligned to the output with zero.
-.It Em size
-Size (as integer) of the mosfet; representing the number of minimum sized
-transistor length for width parameter.
 .El
 .Sh AUTHORS
 .An chipforge Aq popcorn@nospam.chipforge.org
@@ -129,7 +128,7 @@ transistor length for width parameter.
 Not yet known.
 Please do not hesitate to report your findings.
 .Sh COPYRIGHT
-Copyright (c) 2018-2019 Author and Contributors.
+Copyright (c) 2018-2021 Author and Contributors.
 .Pp
 GNU General Public License v3.0
 .UR
@@ -137,8 +136,9 @@ http://www.gnu.org/licenses/gpl-3.0.html
 .UE
 .Sh SEE ALSO
 .Xr popcorn 1
+.Xr cobblestone 1
 and
 .UR
 https://github.com/chipforge/StdCellLib
 .UE
-for current version and others auxilary tools around.
+for current version and others auxilary utilities around.
