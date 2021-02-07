@@ -50,6 +50,7 @@
           (scheme file)     ; file io
           (scheme read)     ; read
           (scheme write)    ; display
+          (scheme sort)     ; list-sort
           (srfi 13)         ; string-tokenize
           (srfi 78)         ; test suite
 ) (export ; node objects
@@ -64,8 +65,8 @@
           stacked set-stacked!
           x-axis set-x-axis!
           y-axis set-y-axis!
-          generate-location
-          pretty-print-location
+          method-generate-location
+          method-pretty-print-location
           ; mosfet representations
           mosfet mosfet?
           type set-type!
@@ -75,9 +76,13 @@
           bulk set-bulk!
           size set-size!
           place set-place!
-          generate-mosfet
-          pretty-print-mosfet
-          pretty-print-netlist
+          method-generate-mosfet
+          method-pretty-print-mosfet
+          ; netlist operations
+          sort-netlist-ascending
+          sort-netlist-descending
+          sort-netlist-normalized
+          method-pretty-print-netlist
           ; cell representations
           cell cell?
           id set-id!
@@ -87,8 +92,8 @@
           clocks set-clocks!
           netlist set-netlist!
           ascii-art set-ascii-art!
-          generate-cell
-          pretty-print-cell
+          method-generate-cell
+          method-pretty-print-cell
           ; cell read file
           common:dataset-cell
 ) (begin
@@ -103,7 +108,7 @@
 ;;                  NODE OBJECT SPACES
 ;;  -------------------------------------------------------------------
 
-;   handle nodes as 'objects' and encapsulate their functionality, so
+;   handle nodes as 'object' and encapsulate their functionality, so
 ;   provide a couple of methods for dealing with nodes
 
 ;;  ------------    method-next-char-node   ---------------------------
@@ -149,13 +154,10 @@
         "Deals with input nodes. Returns next or validity"
         (let* ((name-space '(#\A #\B #\C #\D #\E #\F #\H #\I #\K
                              #\L #\M #\P #\R #\S #\T #\U #\W)))
-            (cond
-                [(equal? method 'next-char) ; => "node"
-                    (method-next-char-node node name-space)]
-                [(equal? method 'next-number) ; => "node
-                    (method-next-number-node node name-space)]
-                [else ; => boolean
-                    (method-node-valid? node name-space)])))
+            (case method
+                [(next-char) (method-next-char-node node name-space)]
+                [(next-number) (method-next-number-node node name-space)]
+                [else => (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%input-node-object 'valid? "A0") => #t) ; !!
@@ -177,11 +179,9 @@
     (define (%clock-node-object method node)
         "Deals with clock nodes. Returns next node or validity"
         (let* ((name-space '(#\X)))
-            (cond
-                [(equal? method 'next-number) ; => "node
-                    (method-next-number-node node name-space)]
-                [else ; => boolean
-                    (method-node-valid? node name-space)])))
+            (case method
+                [(next-number) (method-next-number-node node name-space)]
+                [else  => (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%clock-node-object 'valid? "A0") => #f)
@@ -200,11 +200,9 @@
     (define (%output-node-object method node)
         "Deals with output nodes. Returns next node or validity"
         (let* ((name-space '(#\Y #\Z #\Q)))
-            (cond
-                [(equal? method 'next-char) ; => "node"
-                    (method-next-char-node node name-space)]
-                [else ; => boolean
-                    (method-node-valid? node name-space)])))
+            (case method
+                [(next-char) (method-next-char-node node name-space)]
+                [else => (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%output-node-object 'valid? "Y") => #t) ; !!
@@ -225,11 +223,9 @@
     (define (%internal-node-object method node)
         "Deals with internal nodes. Returns next node or validity"
         (let* ((name-space '(#\N)))
-            (cond
-                [(equal? method 'next-number) ; => "node"
-                    (method-next-number-node node name-space)]
-                [else ; => boolean
-                    (method-node-valid? node name-space)])))
+            (case method 
+                [(next-number) (method-next-number-node node name-space)]
+                [else => (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%internal-node-object 'valid? "Y") => #f)
@@ -289,7 +285,7 @@
 ;;                  LOCATION RECORD STRUCTURE
 ;;  -------------------------------------------------------------------
 
-;   define a 'location' as record
+;   define a <location> as record
 
 ;       +---------------+       e.g.:
 ;       | annotation    | ->    1
@@ -309,23 +305,23 @@
         (x-location x-axis set-x-axis!)
         (y-location y-axis set-y-axis!))
 
-;;  ------------    generate empty <location>   -----------------------
+;   handle <location> as 'object' and encapsulate their functionality, so
+;   provide a couple of methods for dealing with <location>
 
-    (define (generate-location)
-        "Generate empty <location> record structure.  Returns <location>."
+;;  ------------    method generate <location>  -----------------------
+
+    (define (method-generate-location)
+        "Generate empty <location> structure.  Returns <location>."
         (location 0 0 0))
 
 ;;  ------------    pretty print <location>     -----------------------
 
-    (define (pretty-print-location record)
-        "Pretty-Print a <location> record structure.  Returns a list."
+    (define (method-pretty-print-location record)
+        "Pretty-Print a <location> structure.  Returns a list."
         (list
             (stacked record) " "
             (x-axis record) " "
             (y-axis record)))
-            ;0 0 0))
-
-    (check (pretty-print-location (generate-location)) => '(0 0 0))
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -363,15 +359,18 @@
         (circuit-size size set-size!)
         (circuit-place place set-place!))
 
+;   handle <mosfet> as 'object' and encapsulate their functionality, so
+;   provide a couple of methods for dealing with <mosfet>
+
 ;;  ------------    generate empty <mosfet>     -----------------------
 
-    (define (generate-mosfet)
+    (define (method-generate-mosfet)
         "Generate empty <mosfet> record structure.  Returns <mosfet>."
-        (mosfet "" "" "" "" "" "" (generate-location)))
+        (mosfet "" "" "" "" "" "" (method-generate-location)))
 
 ;;  ------------    pretty print <mosfet>   ---------------------------
 
-    (define (pretty-print-mosfet record)
+    (define (method-pretty-print-mosfet record)
         "Pretty-Print a <mosfet> record structure.  Returns a list."
         (list
             "\n"
@@ -381,19 +380,68 @@
             (source record) " "
             (bulk record) " "
             (size record) " "
-            (pretty-print-location (place record))))
+            (method-pretty-print-location (place record))))
 
-    (check (pretty-print-mosfet (generate-location)) => '("" "" "" "" "" "" (0 0 0)))
+;;  -------------------------------------------------------------------
+;;                  NETLIST OPERATIONS
+;;  -------------------------------------------------------------------
+
+;;  ------------    sort netlist ascending  ---------------------------
+
+    (define (mosfet<? first second)
+        "sort < operatator for sorting mosfets by gate names and types.
+        nmos A, B, C; pmos A, B, C.  Returns boolean."
+        (if (string-ci=? (type first) (type second))
+            ; both mosfet type are equal
+            (string-ci<? (gate first) (gate second))
+            ; both mosfet types differs, nmos first, pmos second
+            (string-ci<? (type first) (type second))))
+
+    (define (sort-netlist-ascending netlist)
+        "Sort netlist transistors ascending.
+        nmos A, B, C; pmos A, B, C.  Returns boolean."
+        (list-sort mosfet<? netlist))
+
+;;  ------------    sort netlist descending     -----------------------
+
+    (define (mosfet>? first second)
+        "sort > operatator for sorting mosfets by gate names and types.
+        pmos C, B, A; nmos C, B, A.  Returns boolean."
+        (if (string-ci=? (type first) (type second))
+            ; both mosfet type are equal
+            (string-ci>? (gate first) (gate second))
+            ; both mosfet types differs, nmos first, pmos second
+            (string-ci>? (type first) (type second))))
+
+    (define (sort-netlist-descending netlist)
+        "Sort netlist transistors descending.  Returns netlist."
+        (list-sort mosfet>? netlist))
+
+;;  ------------    sort netlist normalized     -----------------------
+
+    (define (mosfet><? first second)
+        "sort >< operatator for sorting mosfets by position.
+        From left -> right, from top -> buttom.  Returns boolean."
+        (if (= (x-axis (place first)) (x-axis (place second)))
+            ; same position on x
+            (> (y-axis (place first)) (y-axis (place second)))
+            ; different positions on x
+            (> (x-axis (place first)) (x-axis (place second)))))
+
+    (define (sort-netlist-normalized netlist)
+        "Sort netlist transistors normalized (by position).
+        From left -> right, from top -> buttom.  Returns netlist."
+        (list-sort mosfet><? netlist))
 
 ;;  ------------    pretty print netlist    ---------------------------
 
-    (define (pretty-print-netlist netlist)
+    (define (method-pretty-print-netlist netlist)
         "Pretty-Print a netlist of <mosfet> record structures.  Returns a list."
         (list
-            (pretty-print-mosfet (car netlist))
+            (method-pretty-print-mosfet (car netlist))
             (if (null? (cdr netlist))
                 '()
-                (pretty-print-netlist (cdr netlist)))))
+                (method-pretty-print-netlist (cdr netlist)))))
 
 ;;  -------------------------------------------------------------------
 ;;                  CELL DATA STRUCTURE
@@ -433,13 +481,13 @@
 
 ;;  ------------    generate empty <mosfet>     -----------------------
 
-    (define (generate-cell)
+    (define (method-generate-cell)
         "Generate empty <cell> record structure.  Returns <cell>."
         (cell "" "" '() '() '() '() '()))
 
 ;;  ------------    pretty print <cell>     ---------------------------
 
-    (define (pretty-print-cell record)
+    (define (method-pretty-print-cell record)
         "Pretty-Print a <cell> record structure.  Returns a list."
         (list
             (id record)
@@ -460,7 +508,7 @@
     (define (read-pmos-line! arguments)
         "Read arguments for pmos circuits and feed the corresponding
         field inside the <mosfet> structure.  Returns <mosfet> structure."
-        (let* ([pmos (generate-mosfet)])
+        (let* ([pmos (method-generate-mosfet)])
             (set-type! pmos "pmos")
             (set-gate! pmos (car arguments))
             (set-drain! pmos (cadr arguments))
@@ -477,7 +525,7 @@
     (define (read-nmos-line! arguments)
         "Read arguments for nmos circuits and feed the corresponding
         field inside the <mosfet> structure.  Returns <mosfet> structure."
-        (let* ([nmos (generate-mosfet)])
+        (let* ([nmos (method-generate-mosfet)])
             (set-type! nmos "nmos")
             (set-gate! nmos (car arguments))
             (set-drain! nmos (cadr arguments))
@@ -518,7 +566,7 @@
     (define (common:dataset-cell file-name)
         "Read in cell-file.  Returns a <cell> structure."
         (let* ([file (open-input-file file-name)]
-               [current-cell (generate-cell)])
+               [current-cell (method-generate-cell)])
             (let x ((1stline (read-line file)))
                 (if (eof-object? 1stline)
                     '()
