@@ -73,7 +73,7 @@
             (if (null? (clocks record))
                 ""
                 "\n.clocks ") (clocks record)
-            (pretty-print-netlist (netlist record))
+            (method-pretty-print-netlist (netlist record))
             "\n.end"))
 
 ;;  ===================================================================
