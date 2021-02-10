@@ -41,13 +41,6 @@ PRD =               ..
 
 include $(PRD)/include.mk
 
-#   tool variables
-
-MV ?=               mv
-RM ?=               rm -f
-TAR ?=              tar -zh
-DATE :=             $(shell date -R --utc)
-
 #   project settings
 
 CELLS =
@@ -70,6 +63,14 @@ POPCORN +=          -l $(LEVEL) \
                     -b $(BUFFER) \
                     -D $(DESCR)
 
+#   tool variables
+
+TRACE.DOT ?=        trace.dot
+TRACE.PS ?=         trace.ps
+DOT ?=              dot -Tps $(TRACE.DOT) -o $(TRACE.PS)
+
+TRACING ?=          -@echo "    $< -> $@" >> $(TRACE.DOT)
+
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
 #   ----------------------------------------------------------------
@@ -87,6 +88,7 @@ help:
 	#
 	#   catalog    - compile *all* catalog cells (see list below)
 	#   cell CELL=<cell> - compile up to dedicated catalog cell
+	#   trace      - generate catalog's cell generation tree
 	#
 	#   ----------------------------------------------------------
 	#       available cells [limit=$(LIMIT) + buffer=$(BUFFER)]:
@@ -97,6 +99,7 @@ help:
 .PHONY: clean
 clean:
 	-$(RM) $(CELLS)
+	-$(RM) $(TRACE.DOT) $(TRACE.PS)
 
 .PHONY: header
 header:
@@ -105,6 +108,8 @@ header:
 	#   | |_) | (_) | |_) | (_| (_) | |  | | | |
 	#   | .__/ \___/| .__/ \___\___/|_|  |_| |_|
 	#   |_|launched:|_| $(DATE)
+	-@echo "digraph catalog {" > $(TRACE.DOT)
+	-@echo "    node[shape=box]" >> $(TRACE.DOT)
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
@@ -125,7 +130,16 @@ endif
 endif
 
 .PHONY: catalog
-catalog:    header $(CELLS)
+catalog:    header $(CELLS) footer
 
 .PHONY: cell
 cell:       $(CELL)
+
+#   ----------------------------------------------------------------
+#               POST PROCESSING
+#   ----------------------------------------------------------------
+
+.PHONY: trace
+trace:
+	-@echo "}" >> $(TRACE.DOT)
+	$(DOT)

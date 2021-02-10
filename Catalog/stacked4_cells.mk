@@ -73,75 +73,93 @@ CELLS +=        AAOA321 \
 AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
 AAOA321:        AAOA221
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
 AAOA331:        LIMIT = 4
 AAOA331:        AAOA321
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AND4:           DESCR = "4-input AND gate"
 AND4:           AND3
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AO23:           DESCR = "2-3-input AND-OR gate"
 AO23:           OR4
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 AO33:           DESCR = "3-3-input AND-OR gate"
 AO33:           AO23
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AO41:           DESCR = "4-1-input AND-OR gate"
 AO41:           AO31
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
 AOA212:         OA22
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOA311:         DESCR = "3-1-1-input AND-OR-AND gate"
 AOA311:         AOA211
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 OA22:           DESCR = "2-2-input OR-AND gate"
 OA22:           AND3
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA23:           DESCR = "2-3-input OR-AND gate"
 OA23:           AND4
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA33:           DESCR = "3-3-input OR-AND gate"
 OA33:           OA23
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA41:           DESCR = "4-1-input OR-AND gate"
 OA41:           OA31
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA43:           DESCR = "4-3-input OR-AND gate"
 OA43:           OA33
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAO311:         DESCR = "3-1-1-input OR-AND-OR gate"
 OAO311:         OAO211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAOA2211:       DESCR = "2-2-1-1-input OR-AND-OR-AND gate"
 OAOA2211:       AOA311
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
 OAOA3211:       OAOA2211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
 OOAO321:        OOAO221
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OR4:            DESCR = "4-input OR gate"
 OR4:            OR3
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 #   --------    now buffered    ------------------------------------
 
@@ -171,75 +189,93 @@ CELLS +=        AAOA321 \
 AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
 AAOA321:        AAOAI221
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
 AAOA331:        LIMIT = 4
 AAOA331:        AAOA321
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AND4:           DESCR = "4-input AND gate"
 AND4:           NAND3
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AO23:           DESCR = "2-3-input AND-OR gate"
 AO23:           OR4
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 AO33:           DESCR = "3-3-input AND-OR gate"
 AO33:           AO23
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AO41:           DESCR = "4-1-input AND-OR gate"
 AO41:           AOI31
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
 AOA212:         OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOA311:         DESCR = "3-1-1-input AND-OR-AND gate"
 AOA311:         AOAI211
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 OA22:           DESCR = "2-2-input OR-AND gate"
 OA22:           AND3
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA23:           DESCR = "2-3-input OR-AND gate"
 OA23:           AND4
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA33:           DESCR = "3-3-input OR-AND gate"
 OA33:           OA23
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA41:           DESCR = "4-1-input OR-AND gate"
 OA41:           OAI31
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OA43:           DESCR = "4-3-input OR-AND gate"
 OA43:           OA33
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAO311:         DESCR = "3-1-1-input OR-AND-OR gate"
 OAO311:         OAOI211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAOA2211:       DESCR = "2-2-1-1-input OR-AND-OR-AND gate"
 OAOA2211:       AOA311
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
 OAOA3211:       OAOA2211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
 OOAO321:        OOAOI221
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OR4:            DESCR = "4-input OR gate"
 OR4:            NOR3
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 BUFFERED = true
 
@@ -268,71 +304,88 @@ CELLS +=        AAOAI321 \
 AAOAI321:       DESCR = "3-2-1-input AND-AND-OR-AND-Invert gate"
 AAOAI321:       AAOAI221
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AAOAI331:       DESCR = "3-3-1-input AND-AND-OR-AND-Invert gate"
 AAOAI331:       LIMIT = 4
 AAOAI331:       AAOAI321
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOAI212:        DESCR = "2-1-2-input AND-OR-AND-Invert gate"
 AOAI212:        OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOAI311:        DESCR = "3-1-1-input AND-OR-AND-Invert gate"
 AOAI311:        AOAI211
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 AOI23:          DESCR = "2-3-input AND-OR-Invert gate"
 AOI23:          NOR4
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 AOI33:          DESCR = "3-3-input AND-OR-Invert gate"
 AOI33:          AOI23
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOI41:          DESCR = "4-1-input AND-OR-Invert gate"
 AOI41:          AOI31
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 NAND4:          DESCR = "4-input Not-AND (or NAND) gate"
 NAND4:          NAND3
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 NOR4:           DESCR = "4-input Not-OR (or NOR) gate"
 NOR4:           NOR3
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OAI23:          DESCR = "2-3-input OR-AND-Invert gate"
 OAI23:          NAND4
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAI41:          DESCR = "4-1-input OR-AND-Invert gate"
 OAI41:          OAI31
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAI33:          DESCR = "3-1-input OR-AND-Invert gate"
 OAI33:          OAI23
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAI43:          DESCR = "4-3-input OR-AND-Invert gate"
 OAI43:          OAI33
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAOAI2211:      DESCR = "2-2-1-1-input OR-AND-OR-AND-Invert gate"
 OAOAI2211:      AOAI311
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OAOAI3211:      DESCR = "3-2-1-1-input OR-AND-OR-AND-Invert gate"
 OAOAI3211:      OAOAI2211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OAOI311:        DESCR = "3-1-1-input OR-AND-OR-Invert gate"
 OAOI311:        OAOI211
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OOAOI321:       DESCR = "3-2-1-input OR-OR-AND-OR-Invert gate"
 OOAOI321:       OOAOI221
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 endif
 endif

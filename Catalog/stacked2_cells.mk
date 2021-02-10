@@ -59,27 +59,33 @@ AAO22:          DESCR = "2-2-input AND-AND-OR gate"
 AAO22:          LEVEL = 2
 AAO22:          AO21
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AND2:           DESCR = "2-input AND gate"
 AND2:           INV
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AO21:           DESCR = "2-1-input AND-OR gate"
 AO21:           OR2
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 OA21:           DESCR = "2-1-input OR-AND gate"
 OA21:           AND2
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OOA22:          DESCR = "2-2-input OR-OR-AND gate"
 OOA22:          LEVEL = 2
 OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OR2:            DESCR = "2-input OR gate"
 OR2:            INV
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 BUFFERED = true
 
@@ -98,27 +104,33 @@ AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
 AAOI22:         LEVEL = 2
 AAOI22:         AOI21
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
 AOI21:          NOR2
 	$(POPCORN) -m aoi -c $@ $< > $@
+	$(TRACING)
 
 NAND2:          DESCR = "2-input Not-AND (or NAND) gate"
 NAND2:          INV
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(TRACING)
 
 NOR2:           DESCR = "2-input Not-OR (or NOR) gate"
 NOR2:           LEVEL = 2
 NOR2:           INV
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 OAI21:          DESCR = "2-1-input OR-AND-Invert gate"
 OAI21:          NAND2
 	$(POPCORN) -m oai -c $@ $< > $@
+	$(TRACING)
 
 OOAI22:         DESCR = "2-2-input OR-OR-AND-Invert gate"
 OOAI22:         LEVEL = 2
 OOAI22:         OAI21
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(TRACING)
 
 endif
