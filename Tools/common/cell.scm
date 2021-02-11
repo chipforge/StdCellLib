@@ -60,6 +60,7 @@
           %internal-node-object
           %supply-node-object
           %ground-plane-object
+          sort-nodes-descending
           ; location representations
           location location?
           stacked set-stacked!
@@ -76,6 +77,7 @@
           bulk set-bulk!
           size set-size!
           place set-place!
+          nmos? pmos?
           method-generate-mosfet
           method-pretty-print-mosfet
           ; netlist operations
@@ -83,6 +85,12 @@
           sort-netlist-descending
           sort-netlist-normalized
           method-pretty-print-netlist
+          grep-input-nodes
+          grep-clock-nodes
+          grep-output-nodes
+          grep-internal-nodes
+          grep-supply-nodes
+          grep-ground-planes
           ; cell representations
           cell cell?
           id set-id!
@@ -157,7 +165,7 @@
             (case method
                 [(next-char) (method-next-char-node node name-space)]
                 [(next-number) (method-next-number-node node name-space)]
-                [else => (method-node-valid? node name-space)])))
+                [else (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%input-node-object 'valid? "A0") => #t) ; !!
@@ -181,7 +189,7 @@
         (let* ((name-space '(#\X)))
             (case method
                 [(next-number) (method-next-number-node node name-space)]
-                [else  => (method-node-valid? node name-space)])))
+                [else  (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%clock-node-object 'valid? "A0") => #f)
@@ -202,7 +210,7 @@
         (let* ((name-space '(#\Y #\Z #\Q)))
             (case method
                 [(next-char) (method-next-char-node node name-space)]
-                [else => (method-node-valid? node name-space)])))
+                [else (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%output-node-object 'valid? "Y") => #t) ; !!
@@ -225,7 +233,7 @@
         (let* ((name-space '(#\N)))
             (case method 
                 [(next-number) (method-next-number-node node name-space)]
-                [else => (method-node-valid? node name-space)])))
+                [else (method-node-valid? node name-space)])))
 
 ;   Checks:
     (check (%internal-node-object 'valid? "Y") => #f)
@@ -280,6 +288,12 @@
     (check (%ground-plane-object 'valid? "A") => #f)
     (check (%ground-plane-object 'valid? "N1") => #f)
     (check (%ground-plane-object 'valid? "X") => #f)
+
+;;  ------------    sort-nodes-descending   ---------------------------
+
+    (define (sort-nodes-descending nodes)
+        "Sort list of nodes into descending order.  Returns a list."
+        (list-sort string>? nodes))
 
 ;;  -------------------------------------------------------------------
 ;;                  LOCATION RECORD STRUCTURE
@@ -359,6 +373,7 @@
         (circuit-size size set-size!)
         (circuit-place place set-place!))
 
+
 ;   handle <mosfet> as 'object' and encapsulate their functionality, so
 ;   provide a couple of methods for dealing with <mosfet>
 
@@ -367,6 +382,30 @@
     (define (method-generate-mosfet)
         "Generate empty <mosfet> record structure.  Returns <mosfet>."
         (mosfet "" "" "" "" "" "" (method-generate-location)))
+
+;;  ------------    pmos? predicate     -------------------------------
+
+    (define (pmos? record)
+        "Check record for pmos transistor.  As every predicate returns boolean."
+        (and (mosfet? record)
+             (equal? (type record) "pmos")))
+
+;   Checks:
+    (check (pmos? (mosfet "pmos" "" "" "" "" "" (method-generate-location))) => #t) ; !!
+    (check (pmos? (mosfet "nmos" "" "" "" "" "" (method-generate-location))) => #f)
+    (check (pmos? (method-generate-mosfet)) => #f)
+
+;;  ------------    nmos? predicate     -------------------------------
+
+    (define (nmos? record)
+        "Check record for nmos transistor.  As every predicate returns boolean."
+        (and (mosfet? record)
+             (equal? (type record) "nmos")))
+
+;   Checks:
+    (check (nmos? (mosfet "nmos" "" "" "" "" "" (method-generate-location))) => #t) ; !!
+    (check (nmos? (mosfet "pmos" "" "" "" "" "" (method-generate-location))) => #f)
+    (check (nmos? (method-generate-mosfet)) => #f)
 
 ;;  ------------    pretty print <mosfet>   ---------------------------
 
@@ -442,6 +481,72 @@
             (if (null? (cdr netlist))
                 '()
                 (method-pretty-print-netlist (cdr netlist)))))
+
+;;  ------------    grep input nodes    -------------------------------
+
+    (define (grep-input-nodes netlist)
+        "Just grep the netlist for input nodes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([gate-node (symbol->string (gate (car netlist)))])
+                (if (%input-node-object 'valid? gate-node)
+                    (cons gate-node (grep-input-nodes (cdr netlist)))
+                    (grep-input-nodes (cdr netlist))))))
+
+;;  ------------    grep clock nodes    -------------------------------
+
+    (define (grep-clock-nodes netlist)
+        "Just grep the netlist for clock nodes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([gate-node (symbol->string (gate (car netlist)))])
+                (if (%clock-node-object 'valid? gate-node)
+                    (cons gate-node (grep-clock-nodes (cdr netlist)))
+                    (grep-clock-nodes (cdr netlist))))))
+
+;;  ------------    grep output nodes   -------------------------------
+
+    (define (grep-output-nodes netlist)
+        "Just grep the netlist for output nodes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([drain-node (symbol->string (drain (car netlist)))])
+                (if (%output-node-object 'valid? drain-node)
+                    (cons drain-node (grep-output-nodes (cdr netlist)))
+                    (grep-output-nodes (cdr netlist))))))
+
+;;  ------------    grep internal nodes     ---------------------------
+
+    (define (grep-internal-nodes netlist)
+        "Just grep the netlist for internal nodes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([drain-node (symbol->string (drain (car netlist)))])
+                (if (%internal-node-object 'valid? drain-node)
+                    (cons drain-node (grep-internal-nodes (cdr netlist)))
+                    (grep-internal-nodes (cdr netlist))))))
+
+;;  ------------    grep supply nodes   -------------------------------
+
+    (define (grep-supply-nodes netlist)
+        "Just grep the netlist for supply nodes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([source-node (symbol->string (source (car netlist)))])
+                (if (%supply-node-object 'valid? source-node)
+                    (cons source-node (grep-supply-nodes (cdr netlist)))
+                    (grep-supply-nodes (cdr netlist))))))
+
+;;  ------------    grep ground planes  -------------------------------
+
+    (define (grep-ground-planes netlist)
+        "Just grep the netlist for ground planes.  Returns a list."
+        (if (null? netlist)
+            '()
+            (let* ([source-node (symbol->string (source (car netlist)))])
+                (if (%ground-plane-object 'valid? source-node)
+                    (cons source-node (grep-ground-planes (cdr netlist)))
+                    (grep-ground-planes (cdr netlist))))))
 
 ;;  -------------------------------------------------------------------
 ;;                  CELL DATA STRUCTURE
