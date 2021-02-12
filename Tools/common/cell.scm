@@ -61,6 +61,7 @@
           %supply-node-object
           %ground-plane-object
           sort-nodes-descending
+          remove-doubled-nodes
           ; location representations
           location location?
           stacked set-stacked!
@@ -294,6 +295,24 @@
     (define (sort-nodes-descending nodes)
         "Sort list of nodes into descending order.  Returns a list."
         (list-sort string>? nodes))
+
+;   Checks:
+    (check (sort-nodes-descending '("A" "A1" "B")) => '("B" "A1" "A")) ; !!
+
+;;  ------------    remove doubled nodes    ---------------------------
+
+    (define (remove-doubled-nodes nodes)
+        "Remove doublicates from list of nodes.  Returns a list."
+        (if (null? nodes)
+            '()
+            (let* ([node (car nodes)]
+                   [tail (cdr nodes)])
+                (if (pair? (member node tail string-ci=?))
+                    (remove-doubled-nodes tail)
+                    (cons node tail)))))
+
+;   Checks:
+    (check (remove-doubled-nodes '("A1" "A1" "B")) => '("A1" "B")) ; !!
 
 ;;  -------------------------------------------------------------------
 ;;                  LOCATION RECORD STRUCTURE
