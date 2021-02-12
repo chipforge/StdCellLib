@@ -96,6 +96,7 @@
           grep-internal-nodes
           grep-supply-nodes
           grep-ground-planes
+          grep-highest-stacked-transistor
           ; cell representations
           cell cell?
           id set-id!
@@ -623,6 +624,14 @@
                 (if (%ground-plane-object 'valid? source-node)
                     (cons source-node (grep-ground-planes (cdr netlist)))
                     (grep-ground-planes (cdr netlist))))))
+
+;;  ------------    grep highest stacked transistor -------------------
+
+    (define (grep-highest-stacked-transistor netlist)
+        "Just grep the netlist for the hightest stacked transistor.  Returns a integer."
+        (if (null? netlist)
+            0
+            (max (stacked (place (car netlist))) (grep-highest-stacked-transistor (cdr netlist)))))
 
 ;;  -------------------------------------------------------------------
 ;;                  CELL DATA STRUCTURE
