@@ -83,6 +83,9 @@
           method-generate-mosfet
           method-pretty-print-mosfet
           ; netlist operations
+          method-netlist-buffered?
+          method-netlist-pullup?
+          method-netlist-pulldown?
           sort-netlist-ascending
           sort-netlist-descending
           sort-netlist-normalized
@@ -232,8 +235,9 @@
 
     (define (%internal-node-object method node)
         "Deals with internal nodes. Returns next node or validity"
-        (let* ((name-space '(#\N)))
+        (let* ((name-space '(#\N #\O)))
             (case method 
+                [(next-char) (method-next-char-node node name-space)]
                 [(next-number) (method-next-number-node node name-space)]
                 [else (method-node-valid? node name-space)])))
 
@@ -244,10 +248,12 @@
     (check (%internal-node-object 'valid? "V") => #f)
     (check (%internal-node-object 'valid? "A") => #f)
     (check (%internal-node-object 'valid? "N1") => #t) ; !!
+    (check (%internal-node-object 'valid? "O1") => #t) ; !!
     (check (%internal-node-object 'valid? "X") => #f)
 
     (check (%internal-node-object 'next-number "N") => "N1")
     (check (%internal-node-object 'next-number "N2") => "N3")
+    (check (%internal-node-object 'next-char "N99") => "O")
 
 ;;  ------------    %supply-node-object -------------------------------
 
@@ -453,6 +459,48 @@
 ;;                  NETLIST OPERATIONS
 ;;  -------------------------------------------------------------------
 
+;;  ------------    netlist already buffered?   -----------------------
+
+    (define (method-netlist-buffered? netlist)
+        "Guess which transistores form a output buffer and collect them.
+        Returns a short netlist."
+        (if (null? netlist)
+            '()
+            (if (and ; 1st indicator: transistor drain is an output node
+                    (%output-node-object 'valid? (drain (car netlist)))
+                    ; 2nd indicator: transistor gate is an internal node
+                    (%internal-node-object 'valid? (gate (car netlist))))
+                (cons (car netlist) (method-netlist-buffered? (cdr netlist)))
+                (method-netlist-buffered? (cdr netlist)))))
+
+;;  ------------    netlist pull-up network?    -----------------------
+
+    (define (method-netlist-pullup? netlist)
+        "Guess which transistores form a pull-up network and collect them.
+        Returns a short netlist."
+        (if (null? netlist)
+            '()
+            (if (and ; 1st indicator: transistors are pmos
+                    (pmos? (car netlist))
+                    ; 2nd indicator: transistor gate is an input node
+                    (%input-node-object 'valid? (gate (car netlist))))
+                (cons (car netlist) (method-netlist-pullup? (cdr netlist)))
+                (method-netlist-pullup? (cdr netlist)))))
+
+;;  ------------    netlist pull-down network?  -----------------------
+
+    (define (method-netlist-pulldown? netlist)
+        "Guess which transistores form a pull-down network and collect them.
+        Returns a short netlist."
+        (if (null? netlist)
+            '()
+            (if (and ; 1st indicator: transistors are nmos
+                    (nmos? (car netlist))
+                    ; 2nd indicator: transistor gate is an input node
+                    (%input-node-object 'valid? (gate (car netlist))))
+                (cons (car netlist) (method-netlist-pulldown? (cdr netlist)))
+                (method-netlist-pulldown? (cdr netlist)))))
+
 ;;  ------------    sort netlist ascending  ---------------------------
 
     (define (mosfet<? first second)
@@ -504,10 +552,10 @@
 
     (define (method-pretty-print-netlist netlist)
         "Pretty-Print a netlist of <mosfet> record structures.  Returns a list."
-        (list
-            (method-pretty-print-mosfet (car netlist))
-            (if (null? (cdr netlist))
-                '()
+        (if (null? netlist)
+            ""
+            (list
+                (method-pretty-print-mosfet (car netlist))
                 (method-pretty-print-netlist (cdr netlist)))))
 
 ;;  ------------    grep input nodes    -------------------------------
