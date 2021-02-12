@@ -516,7 +516,7 @@
         "Just grep the netlist for input nodes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([gate-node (symbol->string (gate (car netlist)))])
+            (let* ([gate-node (gate (car netlist))])
                 (if (%input-node-object 'valid? gate-node)
                     (cons gate-node (grep-input-nodes (cdr netlist)))
                     (grep-input-nodes (cdr netlist))))))
@@ -527,7 +527,7 @@
         "Just grep the netlist for clock nodes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([gate-node (symbol->string (gate (car netlist)))])
+            (let* ([gate-node (gate (car netlist))])
                 (if (%clock-node-object 'valid? gate-node)
                     (cons gate-node (grep-clock-nodes (cdr netlist)))
                     (grep-clock-nodes (cdr netlist))))))
@@ -538,7 +538,7 @@
         "Just grep the netlist for output nodes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([drain-node (symbol->string (drain (car netlist)))])
+            (let* ([drain-node (drain (car netlist))])
                 (if (%output-node-object 'valid? drain-node)
                     (cons drain-node (grep-output-nodes (cdr netlist)))
                     (grep-output-nodes (cdr netlist))))))
@@ -549,7 +549,7 @@
         "Just grep the netlist for internal nodes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([drain-node (symbol->string (drain (car netlist)))])
+            (let* ([drain-node (drain (car netlist))])
                 (if (%internal-node-object 'valid? drain-node)
                     (cons drain-node (grep-internal-nodes (cdr netlist)))
                     (grep-internal-nodes (cdr netlist))))))
@@ -560,7 +560,7 @@
         "Just grep the netlist for supply nodes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([source-node (symbol->string (source (car netlist)))])
+            (let* ([source-node (source (car netlist))])
                 (if (%supply-node-object 'valid? source-node)
                     (cons source-node (grep-supply-nodes (cdr netlist)))
                     (grep-supply-nodes (cdr netlist))))))
@@ -571,7 +571,7 @@
         "Just grep the netlist for ground planes.  Returns a list."
         (if (null? netlist)
             '()
-            (let* ([source-node (symbol->string (source (car netlist)))])
+            (let* ([source-node (source (car netlist))])
                 (if (%ground-plane-object 'valid? source-node)
                     (cons source-node (grep-ground-planes (cdr netlist)))
                     (grep-ground-planes (cdr netlist))))))
@@ -636,6 +636,17 @@
 ;;                  READ CELL STRUCTURE
 ;;  -------------------------------------------------------------------
 
+;;  ------------    read location arguments ---------------------------
+
+    (define (read-location arguments)
+        "Read arguments for circuits and feed the corresponding fields
+        inside <location> structures.  Returns <location> structure."
+        (let* ([place  (method-generate-location)])
+            (set-stacked! place (string->number (list-ref arguments 5)))
+            (set-x-axis! place (string->number (list-ref arguments 6)))
+            (set-y-axis! place (string->number (list-ref arguments 7)))
+            place))
+
 ;;  ------------    read one pmos line  -------------------------------
 
     (define (read-pmos-line! arguments)
@@ -643,12 +654,12 @@
         field inside the <mosfet> structure.  Returns <mosfet> structure."
         (let* ([pmos (method-generate-mosfet)])
             (set-type! pmos "pmos")
-            (set-gate! pmos (car arguments))
-            (set-drain! pmos (cadr arguments))
-            (set-source! pmos (caddr arguments))
-            (set-bulk! pmos (cadddr arguments))
-            (set-size! pmos (car (cddddr arguments)))
-;            (set-place! pmos (car (cdr (cddddr arguments))))
+            (set-gate! pmos (list-ref arguments 0))
+            (set-drain! pmos (list-ref arguments 1))
+            (set-source! pmos (list-ref arguments 2))
+            (set-bulk! pmos (list-ref arguments 3))
+            (set-size! pmos (list-ref arguments 4))
+            (set-place! pmos (read-location arguments))
             pmos
 ;            (display (pretty-print-mosfet pmos)) (newline)
             ))
@@ -660,12 +671,12 @@
         field inside the <mosfet> structure.  Returns <mosfet> structure."
         (let* ([nmos (method-generate-mosfet)])
             (set-type! nmos "nmos")
-            (set-gate! nmos (car arguments))
-            (set-drain! nmos (cadr arguments))
-            (set-source! nmos (caddr arguments))
-            (set-bulk! nmos (cadddr arguments))
-            (set-size! nmos (car (cddddr arguments)))
-;            (set-place! nmos (car (cdr (cddddr arguments))))
+            (set-gate! nmos (list-ref arguments 0))
+            (set-drain! nmos (list-ref arguments 1))
+            (set-source! nmos (list-ref arguments 2))
+            (set-bulk! nmos (list-ref arguments 3))
+            (set-size! nmos (list-ref arguments 4))
+            (set-place! nmos (read-location arguments))
             nmos
 ;            (display (pretty-print-mosfet nmos)) (newline)
             ))
@@ -679,17 +690,17 @@
             ; emtpy list?
             [(null? textline) current-cell]
 
-            [(equal? (car textline) '|.cell|)
+            [(equal? (string->symbol (car textline)) '|.cell|)
                 (set-id! current-cell (cadr textline))]
-            [(equal? (car textline) '|.inputs|)
+            [(equal? (string->symbol (car textline)) '|.inputs|)
                 (set-inputs! current-cell (cdr textline))]
-            [(equal? (car textline) '|.outputs|)
+            [(equal? (string->symbol (car textline)) '|.outputs|)
                 (set-outputs! current-cell (cdr textline))]
-            [(equal? (car textline) '|.clocks|)
+            [(equal? (string->symbol (car textline)) '|.clocks|)
                 (set-clocks! current-cell (cdr textline))]
-            [(equal? (car textline) 'pmos)
+            [(equal? (string->symbol (car textline)) 'pmos)
                 (set-netlist! current-cell (cons (read-pmos-line! (cdr textline)) (netlist current-cell)))]
-            [(equal? (car textline) 'nmos)
+            [(equal? (string->symbol (car textline)) 'nmos)
                 (set-netlist! current-cell (cons (read-nmos-line! (cdr textline)) (netlist current-cell)))]
             [else ;(equal? (car textline) '|.end|)
                 current-cell]))
@@ -707,7 +718,7 @@
                         (set-description! current-cell 1stline)
                         (let function ((nextline (read-line file)))
                             (unless (eof-object? nextline)
-                                (let ([parsed-line (map string->symbol (string-tokenize nextline))])
+                                (let ([parsed-line (string-tokenize nextline)])
                                     current-cell (read-tagged-line! current-cell parsed-line)
                                     (function (read-line file))))))))
         current-cell))
