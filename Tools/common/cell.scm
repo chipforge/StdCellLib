@@ -62,6 +62,7 @@
           %ground-plane-object
           sort-nodes-descending
           remove-doubled-nodes
+          method-pretty-print-nodes
           ; location representations
           location location?
           stacked set-stacked!
@@ -313,6 +314,14 @@
 
 ;   Checks:
     (check (remove-doubled-nodes '("A1" "A1" "B")) => '("A1" "B")) ; !!
+
+;;  ------------    pretty print nodes  -------------------------------
+
+    (define (method-pretty-print-nodes nodes)
+        "Pretty-Print a list of nodes.  Returns a list."
+        (if (null? nodes)
+            ""
+            (list (car nodes) " " (method-pretty-print-nodes (cdr nodes)))))
 
 ;;  -------------------------------------------------------------------
 ;;                  LOCATION RECORD STRUCTURE
@@ -616,9 +625,9 @@
         (list
             (id record)
             (description record)
-            (inputs record)
-            (outputs record)
-            (clocks record)
+            (method-pretty-print (inputs record))
+            (method-pretty-print (outputs record))
+            (method-pretty-print (clocks record))
             (pretty-print-netlist (netlist record))
 ;           (ascii-art record)
             ))

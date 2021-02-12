@@ -68,11 +68,11 @@
                 (description record))
             ; mandatory lines
             "\n.cell " (id record)
-            "\n.inputs " (inputs record)
-            "\n.outputs " (outputs record)
+            "\n.inputs " (method-pretty-print-nodes (inputs record))
+            "\n.outputs " (method-pretty-print-nodes (outputs record))
             (if (null? (clocks record))
                 ""
-                "\n.clocks ") (clocks record)
+                "\n.clocks ") (method-pretty-print-nodes (clocks record))
             (method-pretty-print-netlist (netlist record))
             "\n.end"))
 
