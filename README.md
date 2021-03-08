@@ -48,7 +48,7 @@ some more "conservative" distributions with Long-Time-Support (LTS) are probably
 The GPL'd suite and toolkit of Electronic Design Automation tools is re-used for the Standard Cell Library also; especially gschem for Schematic Entry special cells. While not using the PCB tools, a partial installation with
 
 ```
-apt-get install geda-gschem geda-gnetlist geda-doc geda-gattrib geda-gsymchek
+apt-get install geda-gschem geda-gnetlist geda-doc geda-gattrib geda-gsymcheck
 ```
 
 is sufficient. For simulation Icarus Verilog is used; also sailing under the gEDA flag.
