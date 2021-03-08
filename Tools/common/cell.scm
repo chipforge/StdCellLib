@@ -361,7 +361,7 @@
 
     (define (method-generate-location)
         "Generate empty <location> structure.  Returns <location>."
-        (location 0 0 0))
+        (location 1 1 0))
 
 ;;  ------------    pretty print <location>     -----------------------
 
@@ -682,10 +682,10 @@
         (list
             (id record)
             (description record)
-            (method-pretty-print (inputs record))
-            (method-pretty-print (outputs record))
-            (method-pretty-print (clocks record))
-            (pretty-print-netlist (netlist record))
+            (method-pretty-print-nodes (inputs record))
+            (method-pretty-print-nodes (outputs record))
+            (method-pretty-print-nodes (clocks record))
+            (method-pretty-print-netlist (netlist record))
 ;           (ascii-art record)
             ))
 
