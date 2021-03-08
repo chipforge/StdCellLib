@@ -62,7 +62,7 @@
            AAOI22-cell
            ; auxilary stuff
            copyleft-year
-  (begin
+) (begin
 
 ;;  ------------    srfi-78 test suite  -------------------------------
 
