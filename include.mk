@@ -67,7 +67,7 @@ DATE :=         $(shell date +%Y%m%d)
 
 #   collect available cells
 
-IGNORE := $(wildcard *.mk GNUmakefile)
+IGNORE := $(wildcard $(CATALOGDIR)/*.mk $(CATALOGDIR)/GNUmakefile)
 CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
 
 #   supportive tools
@@ -75,4 +75,5 @@ CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
 COBBLESTONE = $(TOOLSDIR)/cobblestone/cobblestone
 DATASHEET = $(TOOLSDIR)/datasheet/datasheet
 POPCORN = $(TOOLSDIR)/popcorn/popcorn
+SCHEMATIC = $(TOOLSDIR)/schematic/schematic
 
