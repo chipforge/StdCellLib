@@ -114,7 +114,7 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
 "Usage: ~a [options] cell-file
    -e format           specify exporter format - lef, magic or svg
    -h | --help         print help screen and exit
-   -H number           set cell highth in metal tracks
+   -H number           set cell height in metal tracks
    -s rule-set         MOSIS rule set - scmos, subm, deep or user
    -T file             TOML configuration file
 
@@ -165,10 +165,10 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
 
             ; -e format
             [(equal? (car arguments) "-e")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! exporter-format (string->symbol value))
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; -h
             [(equal? (car arguments) "-h")
@@ -187,28 +187,28 @@ Copyright (c) 2019 - 2021 by chipforge <cobblestone@nospam.chipforge.org>"
 
             ; -H number
             [(equal? (car arguments) "-H")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! track-high (string->number value))  ; !! value check missing)]
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; -s rule-set
             [(equal? (car arguments) "-s")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! rule-set (string->symbol value))
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; -T file
             [(equal? (car arguments) "-T")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! toml-file value)  ; !! value check missing)]
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; -v
             [(equal? (car arguments) "-v")
-                (let ([tail (cdr arguments)])
+                (let* ([tail (cdr arguments)])
                     (set! verbose-mode #t)
                     (set-parameters-with-args! tail))]
 
