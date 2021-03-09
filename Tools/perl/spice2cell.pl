@@ -80,7 +80,7 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
       my ($g,$d,$s,$m)=($2,$1,$3,$5);
       if($d=~m/^(vdd|gnd)$/i)
       {
-        print "EXCHANGING SOURCE AND DRAIN: $_\n";	      
+        print "EXCHANGING SOURCE AND DRAIN: $_";
         ($s,$d)=($d,$s);
       }	
       $g=internal($g);
