@@ -2,7 +2,7 @@
 
 print "Handling $ARGV[0]\n";
 open IN,"<".$ARGV[0];
-my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/;
+my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/; $mag=~s/\.mag\.mag/\.mag/;
 my $mode=0;
 
 sub form($)
