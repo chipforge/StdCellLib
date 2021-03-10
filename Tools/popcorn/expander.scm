@@ -184,7 +184,7 @@
         "Clone a given mosfet transistor and change the gate and drain nodes.
         Returns a <mosfet> structure."
         (let* ([new-gate (car nodes)]
-               [new-drain (cdr nodes)]
+               [new-drain (cadr nodes)]
                [direction (if (nmos? transistor) 'y-- 'y++)])
             (set-gate! transistor new-gate)
             (set-source! transistor new-drain)
@@ -197,11 +197,13 @@
         "Given a mosfet transistor generate a entire pmos as pullup.
         Returns a <mosfet> structure."
         (let* ([new-gate (car nodes)]
-               [new-drain (cdr nodes)])
+               [new-drain (cadr nodes)])
             (set-type! transistor "pmos")
             (set-gate! transistor new-gate)
             (set-source! transistor "vdd")
             (set-drain! transistor new-drain)
+            (set-bulk! transistor "vdd")
+            (set-size! transistor "g")
             (set-place! transistor (%circuit-location-object 'pmos (%circuit-location-object 'x++ (place transistor))))
             transistor))
 
@@ -211,11 +213,13 @@
         "Given a mosfet transistor generate a entire nmos as pulldown.
         Returns a <mosfet> structure."
         (let* ([new-gate (car nodes)]
-               [new-drain (cdr nodes)])
+               [new-drain (cadr nodes)])
             (set-type! transistor "nmos")
             (set-gate! transistor new-gate)
             (set-source! transistor "gnd")
             (set-drain! transistor new-drain)
+            (set-bulk! transistor "gnd")
+            (set-size! transistor "1")
             (set-place! transistor (%circuit-location-object 'nmos (%circuit-location-object 'x++ (place transistor))))
             transistor))
 
@@ -306,7 +310,7 @@
             '()
             (let* ([transistor (car netlist)]
                    [old-node (car nodes)]
-                   [new-node (cdr nodes)])
+                   [new-node (cadr nodes)])
                 (if (equal? (gate transistor) old-node) (set-gate! transistor new-node))
                 (if (equal? (source transistor) old-node) (set-source! transistor new-node))
                 (if (equal? (drain transistor) old-node) (set-drain! transistor new-node))

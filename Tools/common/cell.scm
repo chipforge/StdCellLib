@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2019 - 2021 by
+;;  Copyright (c) 2019 - 2021 by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -132,7 +132,7 @@
         (cond
             [(null? node) (string (car name-space))]
             [else
-                (string (car (cdr (memq (string-ref node 0) name-space))))]))
+                (string (cadr (memq (string-ref node 0) name-space)))]))
 
 ;;  ------------    method-next-number-node ---------------------------
 
@@ -717,9 +717,7 @@
             (set-bulk! pmos (list-ref arguments 3))
             (set-size! pmos (list-ref arguments 4))
             (set-place! pmos (read-location arguments))
-            pmos
-;            (display (pretty-print-mosfet pmos)) (newline)
-            ))
+            pmos))
 
 ;;  ------------    read one nmos line  -------------------------------
 
@@ -734,9 +732,7 @@
             (set-bulk! nmos (list-ref arguments 3))
             (set-size! nmos (list-ref arguments 4))
             (set-place! nmos (read-location arguments))
-            nmos
-;            (display (pretty-print-mosfet nmos)) (newline)
-            ))
+            nmos))
 
 ;;  ------------    read one tagged line    ---------------------------
 
