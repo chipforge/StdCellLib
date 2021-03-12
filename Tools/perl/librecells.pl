@@ -64,7 +64,7 @@ while(<IN>)
     foreach my $deb(0,1)
     {
       next if($deb && !$debug);
-      my $cmd="lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
+      my $cmd="lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
       print "$cmd\n";
       system $cmd;
     }

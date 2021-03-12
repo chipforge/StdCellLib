@@ -68,14 +68,14 @@ while(!$ende)
 
   unlink "$cell.gds";
   my $found="";
-  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v --debug-routing-graph 2>$fn.gerr";
+  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v --placement-file $cell.place --debug-routing-graph 2>$fn.gerr";
   if(-f "$cell.gds")
   {
     rename "$cell.gds","$fn.graph.gds";
     $found.="$fn.graph.gds";
   }
   
-  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v 2>$fn.err";
+  system "lclayout --output-dir . --tech $fn.py --netlist ../libresilicon.sp --cell $cell -v --placement-file $cell.place 2>$fn.err";
   if(-f "$cell.gds")
   {
     rename "$cell.gds","$fn.final.gds";
