@@ -51,7 +51,7 @@ CELLS =
 #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # global; max number of stacked mosfets
-LIMIT ?=            4
+LIMIT ?=            5
 # buffering recommended, but free to reduce
 BUFFER ?=           $(LIMIT)
 # hack limit for fencing expand algorithmen
@@ -69,7 +69,10 @@ TRACE.DOT ?=        trace.dot
 TRACE.PS ?=         trace.ps
 DOT ?=              dot -Tps $(TRACE.DOT) -o $(TRACE.PS)
 
-TRACING ?=          -@echo "    $< -> $@" >> $(TRACE.DOT)
+GREEN ?=            -@echo "    $< -> $@ [color=green]" >> $(TRACE.DOT)
+BLUE ?=             -@echo "    $< -> $@ [color=blue]" >> $(TRACE.DOT)
+RED ?=              -@echo "    $< -> $@ [color=red]" >> $(TRACE.DOT)
+PINK ?=             -@echo "    $< -> $@ [color=pink]" >> $(TRACE.DOT)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -125,12 +128,16 @@ ifeq ($(LIMIT),3)
 else
 ifeq ($(LIMIT),4)
     include stacked4_cells.mk
+else
+ifeq ($(LIMIT),5)
+    include stacked5_cells.mk
+endif
 endif
 endif
 endif
 
 .PHONY: catalog
-catalog:    header $(CELLS) footer
+catalog:    header $(CELLS)
 
 .PHONY: cell
 cell:       $(CELL)

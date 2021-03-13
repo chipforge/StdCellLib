@@ -17,7 +17,7 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2018, 2019 by
+#   Copyright (c)   2018, 2019 - 2021 by
 #                   chipforge - <popcorn@nospam.chipforge.org>
 #   All rights reserved.
 #
@@ -56,36 +56,34 @@ CELLS +=        AAO22 \
                 OR2
 
 AAO22:          DESCR = "2-2-input AND-AND-OR gate"
-AAO22:          LEVEL = 2
 AAO22:          AO21
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 AND2:           DESCR = "2-input AND gate"
 AND2:           INV
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 AO21:           DESCR = "2-1-input AND-OR gate"
-AO21:           OR2
-	$(POPCORN) -m aoi -c $@ $< > $@
-	$(TRACING)
+AO21:           AND2
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(GREEN)
 
 OA21:           DESCR = "2-1-input OR-AND gate"
-OA21:           AND2
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(TRACING)
+OA21:           OR2
+	$(POPCORN) -m pu -c $@ $< > $@
+	$(GREEN)
 
 OOA22:          DESCR = "2-2-input OR-OR-AND gate"
-OOA22:          LEVEL = 2
 OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 OR2:            DESCR = "2-input OR gate"
 OR2:            INV
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 BUFFERED = true
 
@@ -101,36 +99,33 @@ CELLS +=        AAOI22 \
                 OOAI22
 
 AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
-AAOI22:         LEVEL = 2
 AAOI22:         AOI21
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
-AOI21:          NOR2
-	$(POPCORN) -m aoi -c $@ $< > $@
-	$(TRACING)
+AOI21:          NAND2
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(GREEN)
 
 NAND2:          DESCR = "2-input Not-AND (or NAND) gate"
 NAND2:          INV
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 NOR2:           DESCR = "2-input Not-OR (or NOR) gate"
-NOR2:           LEVEL = 2
 NOR2:           INV
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 OAI21:          DESCR = "2-1-input OR-AND-Invert gate"
-OAI21:          NAND2
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(TRACING)
+OAI21:          NOR2
+	$(POPCORN) -m pu -c $@ $< > $@
+	$(GREEN)
 
 OOAI22:         DESCR = "2-2-input OR-OR-AND-Invert gate"
-OOAI22:         LEVEL = 2
 OOAI22:         OAI21
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(TRACING)
+	$(GREEN)
 
 endif

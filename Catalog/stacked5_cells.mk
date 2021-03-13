@@ -17,7 +17,7 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2018, 2019 by
+#   Copyright (c)   2018, 2019 - 2021 by
 #                   chipforge - <popcorn@nospam.chipforge.org>
 #   All rights reserved.
 #
@@ -46,18 +46,22 @@ include stacked4_cells.mk
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
-#   --------    already buffered    --------------------------------
-
 ifdef BUFFERED
+
+#   --------    already buffered    --------------------------------
 
 CELLS +=        AND5 \
                 OR5
 
+AND5:           DESCR = "5-input AND gate"
 AND5:           AND4
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(PINK)
 
+OR5:            DESCR = "5-input OR gate"
 OR5:            OR4
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(PINK)
 
 #   --------    now buffered    ------------------------------------
 
@@ -67,11 +71,15 @@ ifeq ($(BUFFER),5)
 CELLS +=        AND5 \
                 OR5
 
+AND5:           DESCR = "5-input AND gate"
 AND5:           NAND4
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(PINK)
 
+OR5:            DESCR = "5-input OR gate"
 OR5:            NOR4
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(PINK)
 
 BUFFERED = true
 
@@ -82,11 +90,15 @@ else
 CELLS +=        NAND5 \
                 NOR5
 
+NAND5:          DESCR = "5-input Not-AND (or NAND) gate"
 NAND5:          NAND4
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(PINK)
 
+NOR5:           DESCR = "5-input Not-OR (or NOR) gate"
 NOR5:           NOR4
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(PINK)
 
 endif
 endif
