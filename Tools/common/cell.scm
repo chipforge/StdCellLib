@@ -68,7 +68,8 @@
           stacked set-stacked!
           x-axis set-x-axis!
           y-axis set-y-axis!
-          method-generate-location
+          method-generate-location+
+          method-generate-location-
           method-pretty-print-location
           ; mosfet representations
           mosfet mosfet?
@@ -80,7 +81,8 @@
           size set-size!
           place set-place!
           nmos? pmos?
-          method-generate-mosfet
+          method-generate-nmos
+          method-generate-pmos
           method-pretty-print-mosfet
           ; netlist operations
           method-netlist-buffered?
@@ -117,6 +119,7 @@
 ;   change this switch during development only
 ;   mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
+    ;(check-set-mode! 'report)
 
 ;;  -------------------------------------------------------------------
 ;;                  NODE OBJECT SPACES
@@ -357,11 +360,17 @@
 ;   handle <location> as 'object' and encapsulate their functionality, so
 ;   provide a couple of methods for dealing with <location>
 
-;;  ------------    method generate <location>  -----------------------
+;;  ------------    method generate positive <location>     -----------
 
-    (define (method-generate-location)
-        "Generate empty <location> structure.  Returns <location>."
-        (location 1 1 0))
+    (define (method-generate-location+)
+        "Generate empty positive <location> structure.  Returns <location>."
+        (location 1 1 1))
+
+;;  ------------    method generate negative <location>     -----------
+
+    (define (method-generate-location-)
+        "Generate empty negative <location> structure.  Returns <location>."
+        (location 1 1 1))
 
 ;;  ------------    pretty print <location>     -----------------------
 
@@ -412,11 +421,17 @@
 ;   handle <mosfet> as 'object' and encapsulate their functionality, so
 ;   provide a couple of methods for dealing with <mosfet>
 
-;;  ------------    generate empty <mosfet>     -----------------------
+;;  ------------    generate empty nmos <mosfet>    -------------------
 
-    (define (method-generate-mosfet)
-        "Generate empty <mosfet> record structure.  Returns <mosfet>."
-        (mosfet "" "" "" "" "" "" (method-generate-location)))
+    (define (method-generate-nmos)
+        "Generate empty nmos <mosfet> record structure.  Returns <mosfet>."
+        (mosfet "nmos" "" "" "" "" "" (method-generate-location-)))
+
+;;  ------------    generate empty pmos <mosfet>    -------------------
+
+    (define (method-generate-pmos)
+        "Generate empty pmos <mosfet> record structure.  Returns <mosfet>."
+        (mosfet "pmos" "" "" "" "" "" (method-generate-location+)))
 
 ;;  ------------    pmos? predicate     -------------------------------
 
@@ -426,9 +441,8 @@
              (equal? (type record) "pmos")))
 
 ;   Checks:
-    (check (pmos? (mosfet "pmos" "" "" "" "" "" (method-generate-location))) => #t) ; !!
-    (check (pmos? (mosfet "nmos" "" "" "" "" "" (method-generate-location))) => #f)
-    (check (pmos? (method-generate-mosfet)) => #f)
+    (check (pmos? (method-generate-pmos)) => #t) ; !!
+    (check (pmos? (method-generate-nmos)) => #f)
 
 ;;  ------------    nmos? predicate     -------------------------------
 
@@ -438,9 +452,8 @@
              (equal? (type record) "nmos")))
 
 ;   Checks:
-    (check (nmos? (mosfet "nmos" "" "" "" "" "" (method-generate-location))) => #t) ; !!
-    (check (nmos? (mosfet "pmos" "" "" "" "" "" (method-generate-location))) => #f)
-    (check (nmos? (method-generate-mosfet)) => #f)
+    (check (nmos? (method-generate-pmos)) => #f)
+    (check (nmos? (method-generate-nmos)) => #t) ; !!
 
 ;;  ------------    pretty print <mosfet>   ---------------------------
 
@@ -698,7 +711,7 @@
     (define (read-location arguments)
         "Read arguments for circuits and feed the corresponding fields
         inside <location> structures.  Returns <location> structure."
-        (let* ([place  (method-generate-location)])
+        (let* ([place  (method-generate-location+)])
             (set-stacked! place (string->number (list-ref arguments 5)))
             (set-x-axis! place (string->number (list-ref arguments 6)))
             (set-y-axis! place (string->number (list-ref arguments 7)))
@@ -709,8 +722,7 @@
     (define (read-pmos-line! arguments)
         "Read arguments for pmos circuits and feed the corresponding
         field inside the <mosfet> structure.  Returns <mosfet> structure."
-        (let* ([pmos (method-generate-mosfet)])
-            (set-type! pmos "pmos")
+        (let* ([pmos (method-generate-pmos)])
             (set-gate! pmos (list-ref arguments 0))
             (set-drain! pmos (list-ref arguments 1))
             (set-source! pmos (list-ref arguments 2))
@@ -724,8 +736,7 @@
     (define (read-nmos-line! arguments)
         "Read arguments for nmos circuits and feed the corresponding
         field inside the <mosfet> structure.  Returns <mosfet> structure."
-        (let* ([nmos (method-generate-mosfet)])
-            (set-type! nmos "nmos")
+        (let* ([nmos (method-generate-nmos)])
             (set-gate! nmos (list-ref arguments 0))
             (set-drain! nmos (list-ref arguments 1))
             (set-source! nmos (list-ref arguments 2))
