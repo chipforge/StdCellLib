@@ -57,6 +57,7 @@
     ; change this switch during development only
     ; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
+    ;(check-set-mode! 'report)
 
 ;;  -------------------------------------------------------------------
 ;;                  LOCATION RECORD STRUCTURE
@@ -69,50 +70,68 @@
 ;;  ------------    method rise <location> stacked-number   -----------
 
     (define (method-rise-location-stacked record)
-        "Rise the coodinatates for a <location> on stacked-number.  Returns <location>."
-        (begin
-            (set-stacked! record (+ (stacked record) 1))
-            record))
+        "Rise the coodinatates for a <location> on stacked-number.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (+ (stacked record) 1))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record (y-axis record))
+            new-record))
 
 ;;  ------------    method rise <location> on x-axis    ---------------
 
     (define (method-rise-location-x record)
-        "Rise the coodinatates for a <location> on x-axis.  Returns <location>."
-        (begin
-            (set-x-axis! record (+ (x-axis record) 1))
-            record))
+        "Rise the coodinatates for a <location> on x-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (+ (x-axis record) 1))
+            (set-y-axis!  new-record (y-axis record))
+            new-record))
 
 ;;  ------------    method rise <location> on y-axis    ---------------
 
     (define (method-rise-location-y record)
-        "Rise the coodinatates for a <location> on y-axis.  Returns <location>."
-        (begin
-            (set-y-axis! record (+ (y-axis record) 1))
-            record))
+        "Rise the coodinatates for a <location> on y-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record (+ (y-axis record) 1))
+            new-record))
 
 ;;  ------------    method reduce <location> on y-axis  ---------------
 
     (define (method-reduce-location-y record)
-        "Fall the coodinatates for a <location> on y-axis.  Returns <location>."
-        (begin
-            (set-y-axis! record (- (y-axis record) 1))
-            record))
+        "Fall the coodinatates for a <location> on y-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record (- (y-axis record) 1))
+            new-record))
 
 ;;  ------------    method nmos <location> on y-axis    ---------------
 
     (define (method-nmos-location-y record)
-        "Rebase the coodinatates for a nmos <location> on y-axis.  Returns <location>."
-        (begin
-            (set-y-axis! record -1)
-            record))
+        "Rebase the coodinatates for a nmos <location> on y-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record -1)
+            new-record))
 
 ;;  ------------    method pmos <location> on y-axis    ---------------
 
     (define (method-pmos-location-y record)
-        "Rebase the coodinatates for a pmos <location> on y-axis.  Returns <location>."
-        (begin
-            (set-y-axis! record +1)
-            record))
+        "Rebase the coodinatates for a pmos <location> on y-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record 1)
+            new-record))
 
 ;;  ------------    %circuit-location-object    -----------------------
 
@@ -120,27 +139,24 @@
         "Provide object with a couple of methods for dealing with
         <location> structures.  Returns dedicated values."
         (case method
-            [(new) (method-generate-location)]
             [(stacked++) (method-rise-location-stacked record)]
-            [(x++) (method-rise-location-x record)]
-            [(y++) (method-rise-location-y record)]
-            [(y--) (method-reduce-location-y record)]
-            [(nmos) (method-nmos-location-y record)]
-            [(pmos) (method-pmos-location-y record)]
+            [(x++)       (method-rise-location-x record)]
+            [(y++)       (method-rise-location-y record)]
+            [(y--)       (method-reduce-location-y record)]
+            [(nmos)      (method-nmos-location-y record)]
+            [(pmos)      (method-pmos-location-y record)]
             [(pretty-print) (method-pretty-print-location record)]
-            [else => (location? record)]))
+            [else =>     (location? record)]))
 
 ;   Checks:
-;   (check (%circuit-location-object 'new '()) => (location 0 0 0)) ; !!
-;   (check (%circuit-location-object 'valid? (%circuit-location-object 'new '())) => #t) ; !!
 ;   (check (%circuit-location-object 'valid? (location 1 1 1)) => #t) ; !!
 ;   (check (%circuit-location-object 'valid? '(1 1 1)) => #f)
-;   (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
-;   (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
-;   (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
-;   (check (%circuit-location-object 'y-- (location 0 0 0)) => (location 0 0 -1))
-;   (check (%circuit-location-object 'nmos (location 0 0 0)) => (location 0 0 -1))
-;   (check (%circuit-location-object 'pmos (location 0 0 0)) => (location 0 0 +1))
+    (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
+    (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
+    (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
+    (check (%circuit-location-object 'y-- (location 0 0 0)) => (location 0 0 -1))
+    (check (%circuit-location-object 'nmos (location 0 0 0)) => (location 0 0 -1))
+    (check (%circuit-location-object 'pmos (location 0 0 0)) => (location 0 0 +1))
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -156,87 +172,83 @@
         "Provide object with a couple of methods for dealing with
         <mosfet> structures.  Returns dedicated values."
         (case method
-            [(new) (method-generate-mosfet)]
+            [(nmos!) (method-generate-nmos)]
+            [(pmos!) (method-generate-pmos)]
             [(nmos?) (nmos? record)]
             [(pmos?) (pmos? record)]
             [(pretty-print) (method-pretty-print-mosfet record)]
             [else => (mosfet? record)]))
 
 ;   Checks:
-;   (check (%mosfet-object 'new '()) => (mosfet "" "" "" "" "" "" (location 0 0 0))) ; !!
-;   (check (%mosfet-object 'nmos? (method-generate-mosfet)) => #f)
-;   (check (%mosfet-object 'pmos? (method-generate-mosfet)) => #f)
-;   (check (%mosfet-object 'valid? (method-generate-mosfet)) => #t) ; !!
+    (check (%mosfet-object 'nmos! '()) => (method-generate-nmos)) ; !!
+    (check (%mosfet-object 'pmos! '()) => (method-generate-pmos)) ; !!
+    (check (%mosfet-object 'nmos? (method-generate-pmos)) => #f)
+    (check (%mosfet-object 'pmos? (method-generate-nmos)) => #f)
+;   (check (%mosfet-object 'valid? (method-generate-nmos)) => #t) ; !!
 
 ;;  ------------    method-expand-mosfet-parallel   -------------------
 
-    (define (method-expand-mosfet-parallel transistor nodes)
+    (define (method-expand-mosfet-parallel anchor nodes)
         "Clone a given mosfet transistor and change the gate node.
         Returns a <mosfet> structure."
-        (let* ([new-gate (car nodes)])
-            (set-gate! transistor new-gate)
-            (set-place! transistor (%circuit-location-object 'x++ (place transistor)))
+        (let* ([new-gate   (car nodes)]
+               [transistor (method-clone-mosfet anchor)])
+            (set-gate!   transistor new-gate)
+            (set-place!  transistor (%circuit-location-object 'x++ (place anchor)))
             transistor))
 
 ;;  ------------    method-expand-mosfet-serial     -------------------
 
-    (define (method-expand-mosfet-serial transistor nodes)
+    (define (method-expand-mosfet-serial anchor nodes)
         "Clone a given mosfet transistor and change the gate and drain nodes.
+        Returns a <mosfet> structure."
+        (let* ([new-gate   (car nodes)]
+               [new-node   (cadr nodes)]
+               [direction  (if (nmos? anchor) 'y-- 'y++)]
+               [transistor (method-clone-mosfet anchor)])
+            (set-gate!   transistor new-gate)
+            (set-source! anchor     new-node)
+            (set-drain!  transistor new-node)
+            (set-place!  transistor (%circuit-location-object direction (place anchor)))
+            transistor))
+
+;;  ------------    method-expand-mosfet-1pu    -----------------------
+
+    (define (method-expand-mosfet-1pu anchor nodes)
+        "Given a mosfet transistor generate a single pmos as pullup.
         Returns a <mosfet> structure."
         (let* ([new-gate (car nodes)]
                [new-drain (cadr nodes)]
-               [direction (if (nmos? transistor) 'y-- 'y++)])
-            (set-gate! transistor new-gate)
-            (set-source! transistor new-drain)
-            (set-place! transistor (%circuit-location-object direction (place transistor)))
-            transistor))
+               [pmos (method-generate-pmos)])
+            (set-type!   pmos "pmos")
+            (set-gate!   pmos new-gate)
+            (set-source! pmos "vdd")
+            (set-drain!  pmos new-drain)
+            (set-bulk!   pmos "vdd")
+            (set-size!   pmos "g")
+            (set-place!  pmos (method-rise-location-x (method-pmos-location-y (place anchor))))
+            pmos))
 
-;;  ------------    method-expand-mosfet-pullup     -------------------
+    (check (method-expand-mosfet-1pu (method-generate-pmos) '(A Y)) => (method-generate-pmos))
 
-    (define (method-expand-mosfet-pullup transistor nodes)
-        "Given a mosfet transistor generate a entire pmos as pullup.
+;;  ------------    method-expand-mosfet-1pd    -----------------------
+
+    (define (method-expand-mosfet-1pd anchor nodes)
+        "Given a mosfet transistor generate a single nmos as pulldown.
         Returns a <mosfet> structure."
-        (let* ([new-gate (car nodes)]
-               [new-drain (cadr nodes)])
-            (set-type! transistor "pmos")
-            (set-gate! transistor new-gate)
-            (set-source! transistor "vdd")
-            (set-drain! transistor new-drain)
-            (set-bulk! transistor "vdd")
-            (set-size! transistor "g")
-            (set-place! transistor (%circuit-location-object 'pmos (%circuit-location-object 'x++ (place transistor))))
-            transistor))
+        (let* ([new-gate  (car nodes)]
+               [new-drain (cadr nodes)]
+               [nmos      (method-generate-nmos)])
+            (set-type!   nmos "nmos")
+            (set-gate!   nmos new-gate)
+            (set-source! nmos "gnd")
+            (set-drain!  nmos new-drain)
+            (set-bulk!   nmos "gnd")
+            (set-size!   nmos "1")
+            (set-place!  nmos (method-rise-location-x (method-nmos-location-y (place anchor))))
+            nmos))
 
-;;  ------------    method-expand-mosfet-pulldown   -------------------
-
-    (define (method-expand-mosfet-pulldown transistor nodes)
-        "Given a mosfet transistor generate a entire nmos as pulldown.
-        Returns a <mosfet> structure."
-        (let* ([new-gate (car nodes)]
-               [new-drain (cadr nodes)])
-            (set-type! transistor "nmos")
-            (set-gate! transistor new-gate)
-            (set-source! transistor "gnd")
-            (set-drain! transistor new-drain)
-            (set-bulk! transistor "gnd")
-            (set-size! transistor "1")
-            (set-place! transistor (%circuit-location-object 'nmos (%circuit-location-object 'x++ (place transistor))))
-            transistor))
-
-;;  ------------    %mosfet-expand  -----------------------------------
-
-    (define (%mosfet-expand record nodes)
-        "Provide object with a couple of <mosfet> structure expansion.
-        Returns a <mosfet> structure."
-        (case method
-            [(parallel) (method-expand-mosfet-parallel record nodes)]
-            [(serial) (method-expand-mosfet-serial record nodes)]
-            [(pullup) (method-expand-mosfet-pullup record nodes)]
-            [(pulldown) (method-expand-mosfet-pulldown record nodes)]
-            [else => (mosfet? record)]))
-
-;   Checks:
-    ; !!
+    (check (method-expand-mosfet-1pd (method-generate-nmos) '(A Y)) => (method-generate-nmos))
 
 ;;  -------------------------------------------------------------------
 ;;                  NETLIST OPERATIONS
@@ -247,9 +259,9 @@
 
 ;;  ------------    method-add-mosfet-to-netlist    -------------------
 
-    (define (method-add-mosfet-to-netlist transistor netlist)
+    (define (method-add-mosfets-to-netlist transistors netlist)
         "Just add a mosfet to the netlist.  Returns a netlist."
-        (cons transistor netlist))
+        (append transistors netlist))
 
 ;;  ------------    method-delete-mosfet-from-netlist   ---------------
 
@@ -266,14 +278,14 @@
 
 ;;  ------------    %netlist-object     -------------------------------
 
-    (define (%netlist-object method transistor netlist)
+    (define (%netlist-object method transistors netlist)
         "Provide object with a couple of methods for dealing with
         list-of-mosfets, aka netlist.  Returns netlists."
         (case method
             [(empty?) (null? netlist)]
-            [(add) (method-add-mosfet-to-netlist transistor netlist)]
-            [(delete) (method-delete-mosfet-from netlist transistor netlist)]
-            [else => (list? netlist)]))
+            [(add)    (method-add-mosfets-to-netlist transistors netlist)]
+            [(delete) (method-delete-mosfet-from netlist transistors netlist)]
+            [else =>  (list? netlist)]))
 
 ;   Checks:
 ;   (check (%netlist-object 'empty? '()) => #t) ; !!
@@ -287,19 +299,40 @@
 
     (define (grep-highest-pmos-anchor netlist)
         "Just grep the pmos with the hightest gate name.  Returns a <mosfet> structure."
-        (car (sort-netlist-descending)))
+        (car (sort-netlist-descending netlist)))
 
 ;;  ------------    grep highest nmos anchor    -----------------------
 
-    (define (grep-highest-pmos-anchor netlist)
+    (define (grep-highest-nmos-anchor netlist)
         "Just grep the nmos with the hightest gate name.  Returns a <mosfet> structure."
-        (car (reverse (sort-netlist-descending))))
+        (car (reverse (sort-netlist-descending netlist))))
 
-;;  ------------    grep highest nmos anchor    -----------------------
+;;  ------------    grep most right anchor  ---------------------------
 
-    (define (grep-highest-pmos-anchor netlist)
-        "Just grep the nmos with the hightest gate name.  Returns a <mosfet> structure."
-        (car (reverse (sort-netlist-descending))))
+    (define (grep-most-right-anchor netlist)
+        "Just grep the transistor with the hightest x-position.
+        Returns a <mosfet> structure."
+        (if (null? netlist)
+            (method-generate-nmos)
+            (let* ([current (car netlist)]
+                   [others (grep-most-right-anchor (cdr netlist))])
+                (if (> (x-axis (place current)) (x-axis (place others)))
+                    current
+                    others))))
+
+;;  ------------    mosfet-rename-drain     ---------------------------
+
+    (define (mosfet-rename-drain netlist mosfet nodes)
+        "Grep through netlist and rename just one given mosfet drain node by another.
+        Return a netlist."
+;        (if (null? netlist)
+netlist;            '()
+;            (let* ([candidate (car netlist)]
+;            )       [new-node  (car nodes)])
+;                (if (equal? mosfet candidate)
+;                    (set-drain! candidate new-node))
+;                (cons candidate (mosfet-rename-drain netlist mosfet nodes)))))
+    )
 
 ;;  ------------    netlist-rename-node     ---------------------------
 
@@ -309,13 +342,13 @@
         (if (null? netlist)
             '()
             (let* ([transistor (car netlist)]
-                   [old-node (car nodes)]
-                   [new-node (cadr nodes)])
-                (if (equal? (gate transistor) old-node) (set-gate! transistor new-node))
+                   [old-node   (car nodes)]
+                   [new-node   (cadr nodes)])
+                (if (equal? (gate transistor)   old-node) (set-gate!   transistor new-node))
                 (if (equal? (source transistor) old-node) (set-source! transistor new-node))
-                (if (equal? (drain transistor) old-node) (set-drain! transistor new-node))
-                (if (equal? (bulk transistor) old-node) (set-bulk! transistor new-node))
-                (cons transistor (netlist-rename-node (cdr netlist) nodes)))))
+                (if (equal? (drain transistor)  old-node) (set-drain!  transistor new-node))
+                ;(if (equal? (bulk transistor)   old-node) (set-bulk!   transistor new-node))
+                (method-add-mosfets-to-netlist (list transistor) (netlist-rename-node (cdr netlist) nodes)))))
 
 ;;  ------------    expand-netlist-w-buffer     -----------------------
 
@@ -328,49 +361,111 @@
                 ; buffer-limit still not reached, do not touch netlist
                 netlist
                 ; buffer-limit already reached, has to be buffered
-                (let* ([new-pmos (method-expand-mosfet-pullup (method-generate-mosfet) '("O" "Z"))]
-                       [new-nmos (method-expand-mosfet-pulldown (method-generate-mosfet) '("O" "Z"))])
-                    (cons new-pmos (cons new-nmos (netlist-rename-node netlist '("Y" "O"))))))))
+                (let* ([anchor   (grep-most-right-anchor netlist)]
+                       [new-nmos (method-expand-mosfet-1pd anchor (list "O" "Z"))]
+                       [new-pmos (method-expand-mosfet-1pu anchor (list "O" "Z"))])
+                    (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "Y" "O")))))))
 
-;;  ------------    expand-netlist  -----------------------------------
+;;  ------------    expand-netlist-nand     ---------------------------
 
-    (define (expand-netlist netlist method stacked-limit buffer-limit)
-        "Expand netlist description according parameters into new cell netlist.
-        Use named method. Returns a netlist.."
-        ;(method-netlist-pulldown? netlist)
-        ;(method-netlist-pullup? netlist)
-        ;(method-netlist-buffered? netlist)
-;        (case method
-;            [(aoi oai pu pd) (let* ([]))]
-;            [(nand nor) (let* ([]))]
-;        ))
-        (expand-netlist-w-buffer netlist buffer-limit)
-    )
+    (define (expand-netlist-nand netlist)
+        "Expand netlist with two transistores, one pmos parallel and one nmos serial to the
+        highest named transistor.  Returns a netlist"
+        (let* (; check which mosfets are the highest
+               [highest-pmos (grep-highest-pmos-anchor netlist)]
+               [highest-nmos (grep-highest-nmos-anchor netlist)]
+               ; get highest node name and calculate new one
+               [highest-node (grep-highest-internal-node netlist)]
+               [new-node     (%internal-node-object 'next-number highest-node)]
+               ; same with gate name
+               [new-gate     (%input-node-object 'next-number (gate highest-nmos))]
+               ; generate new mosfet additions
+               [new-pmos     (method-expand-mosfet-parallel highest-pmos (list new-gate new-node))]
+               [new-nmos     (method-expand-mosfet-serial   highest-nmos (list new-gate new-node))])
+            ; enlarge netlist
+            (method-add-mosfets-to-netlist (list new-pmos new-nmos) netlist)))
+
+;;  ------------    expand-netlist-nor      ---------------------------
+
+    (define (expand-netlist-nor netlist)
+        "Expand netlist with two transistores, one pmos serial and one nmos parallel to the
+        highest named transistor.  Returns a netlist"
+        (let* (; check which mosfets are the highest
+               [highest-pmos (grep-highest-pmos-anchor netlist)]
+               [highest-nmos (grep-highest-nmos-anchor netlist)]
+               ; get highest node name and calculate new one
+               [highest-node (grep-highest-internal-node netlist)]
+               [new-node     (%internal-node-object 'next-number highest-node)]
+               ; same with gate name
+               [new-gate     (%input-node-object 'next-number (gate highest-nmos))]
+               ; generate new mosfet additions
+               [new-nmos     (method-expand-mosfet-parallel highest-nmos (list new-gate new-node))]
+               [new-pmos     (method-expand-mosfet-serial   highest-pmos (list new-gate new-node))])
+            ; enlarge netlist
+            (method-add-mosfets-to-netlist (list new-pmos new-nmos) netlist)))
+
+;;  ------------    expand-netlist-pu       ---------------------------
+
+    (define (expand-netlist-pu netlist)
+        "Expand netlist with two transistores, one pmos parallel and one pmos serial to all
+        other transistoros.  Returns a netlist"
+        (let* (; check which mosfets are the highest
+               [highest-pmos (grep-highest-pmos-anchor netlist)]
+               [highest-nmos (grep-highest-nmos-anchor netlist)]
+               ; get highest node name and calculate new one
+               [highest-node (grep-highest-internal-node netlist)]
+               [new-node     (%internal-node-object 'next-number highest-node)]
+               ; same with gate name
+               [new-gate     (%input-node-object 'next-char (gate highest-nmos))]
+               ; generate new mosfet additions
+               [new-nmos     (method-expand-mosfet-serial highest-nmos (list new-gate new-node))]
+               [new-pmos     (method-expand-mosfet-1pu highest-pmos (list new-gate new-node))])
+            (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "gnd" new-node)))))
+
+;;  ------------    expand-netlist-pd       ---------------------------
+
+    (define (expand-netlist-pd netlist)
+        "Expand netlist with two transistores, one pmos serial and one pmos parallel to all
+        other transistoros.  Returns a netlist"
+        (let* (; check which mosfets are the highest
+               [highest-pmos (grep-highest-pmos-anchor netlist)]
+               [highest-nmos (grep-highest-nmos-anchor netlist)]
+               ; get highest node name and calculate new one
+               [highest-node (grep-highest-internal-node netlist)]
+               [new-node     (%internal-node-object 'next-number highest-node)]
+               ; same with gate name
+               [new-gate     (%input-node-object 'next-char (gate highest-nmos))]
+               ; generate new mosfet additions
+               [new-nmos     (method-expand-mosfet-1pd highest-nmos (list new-gate new-node))]
+               [new-pmos     (method-expand-mosfet-serial highest-pmos (list new-gate new-node))])
+            (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "vdd" new-node)))))
 
 ;;  ------------    expand-cell     -----------------------------------
 
-    (define (expand-cell cell method stacked-limit buffer-limit cell-name cell-descr)
+    (define (expand-cell cell method buffer-limit cell-name cell-descr)
         "Expand cell description according parameters to new cell description.
         Use named method and update current cell informations.  Returns <cell>
         structure."
         (let* ([new-cell (method-generate-cell)]
                [current-netlist (netlist cell)]
-               [new-netlist (expand-netlist current-netlist method stacked-limit buffer-limit)])
+               [new-netlist (case method [(nand) (expand-netlist-nand current-netlist)]
+                                         [(nor)  (expand-netlist-nor  current-netlist)]
+                                         [(pu)   (expand-netlist-pu   current-netlist)]
+                                         [(pd)   (expand-netlist-pd   current-netlist)])])
             (begin
                 ; set name + description
                 (set-id! new-cell cell-name)
                 (set-description! new-cell cell-descr)
 
                 ; write back netlist into <cell> structure
-                (set-netlist! new-cell (sort-netlist-normalized new-netlist))
+                (set-netlist! new-cell (sort-netlist-normalized (expand-netlist-w-buffer new-netlist buffer-limit)))
 
                 ; netlist dependencies
-                (set-inputs! new-cell (sort-nodes-descending (remove-doubled-nodes (grep-input-nodes new-netlist))))
-                (set-outputs! new-cell (sort-nodes-descending (remove-doubled-nodes (grep-output-nodes new-netlist))))
-                (let ([clock-gates (sort-nodes-descending (remove-doubled-nodes (grep-clock-nodes new-netlist)))])
+                (set-inputs!  new-cell (remove-doubled-nodes (sort-nodes-descending (grep-input-nodes new-netlist))))
+                (set-outputs! new-cell (remove-doubled-nodes (sort-nodes-descending (grep-output-nodes new-netlist))))
+                (let ([clock-gates (remove-doubled-nodes (sort-nodes-descending (grep-clock-nodes new-netlist)))])
                     (set-clocks! new-cell (if (null? clock-gates) '() clock-gates)))
-                (set-ascii-art! new-cell (ascii-art cell)) ; !! fixme
-            )
+                (set-ascii-art! new-cell (ascii-art cell))) ; !! fixme
             new-cell))
 
 ;;  ===================================================================

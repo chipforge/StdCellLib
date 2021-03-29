@@ -116,8 +116,7 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
    -c cellname         cell name for generated output
    -h | --help         print help screen and exit
    -H number           set cell highth in metal tracks
-   -l number           set maximum number of stacked transistors
-   -m method           enlarge cell - nand nor aoi oia
+   -m method           enlarge cell - aoi nand none nor oai pd pu
    -T file             TOML configuration file
    -v                  print verbose messages
    --version           print version and exit"
@@ -138,9 +137,6 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 
 ;   -H number
     (define track-high 9)
-
-;   -l number
-    (define stacked-limit 4)
 
 ;   -m method
     (define expansion-method 'none)
@@ -216,13 +212,6 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
                     (set! track-high (string->number value))  ; !! value check missing)]
                     (set-parameters-with-args! tail))]
 
-            ; -l number
-            [(equal? (car arguments) "-l")
-                (let* ([value (cadr arguments)]
-                       [tail (cddr arguments)])
-                    (set! stacked-limit (string->number value))  ; !! value check missing)]
-                    (set-parameters-with-args! tail))]
-
             ; -m method
             [(equal? (car arguments) "-m")
                 (let* ([value (cadr arguments)]
@@ -287,12 +276,6 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
              track-high)
             (newline (@port))
 
-            ; -l number
-            (format (@port)
-"Stacked Transistor Limit: ~a"
-             stacked-limit)
-            (newline (@port))
-
             ; -m method
             (format (@port)
 "Expansion Method: ~a"
@@ -332,8 +315,8 @@ Copyright (c) 2019 - 2021 by chipforge <popcorn@nospam.chipforge.org>"
 
         ; select work load
         (case expansion-method
-            ((nand nor aoi oai pu pd)
-                 (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method stacked-limit buffer-limit cell-name cell-descr)])
+            ((none nand nor aoi oai pu pd)
+                 (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method buffer-limit cell-name cell-descr)])
                     ; beautify annotation with schematic here !!
                     (rdisplay (exporter:dataset-cell cell))
                     0))   ; exit value
