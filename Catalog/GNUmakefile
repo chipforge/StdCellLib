@@ -54,20 +54,17 @@ CELLS =
 LIMIT ?=            5
 # buffering recommended, but free to reduce
 BUFFER ?=           $(LIMIT)
-# hack limit for fencing expand algorithmen
-LEVEL ?=            $(LIMIT)
 # textual description for cell functionality
 DESCR ?=            '?'
 
-POPCORN +=          -l $(LEVEL) \
-                    -b $(BUFFER) \
+POPCORN +=          -b $(BUFFER) \
                     -D $(DESCR)
 
 #   tool variables
 
 TRACE.DOT ?=        trace.dot
-TRACE.PS ?=         trace.ps
-DOT ?=              dot -Tps $(TRACE.DOT) -o $(TRACE.PS)
+TRACE.PDF ?=        trace.pdf
+DOT ?=              dot -Tpdf $(TRACE.DOT) -o $(TRACE.PDF)
 
 GREEN ?=            -@echo "    $< -> $@ [color=green]" >> $(TRACE.DOT)
 BLUE ?=             -@echo "    $< -> $@ [color=blue]" >> $(TRACE.DOT)
@@ -102,7 +99,7 @@ help:
 .PHONY: clean
 clean:
 	-$(RM) $(CELLS)
-	-$(RM) $(TRACE.DOT) $(TRACE.PS)
+	-$(RM) $(TRACE.DOT) $(TRACE.PDF)
 
 .PHONY: header
 header:
@@ -140,7 +137,7 @@ endif
 catalog:    header $(CELLS)
 
 .PHONY: cell
-cell:       $(CELL)
+cell:   $(CELL)
 
 #   ----------------------------------------------------------------
 #               POST PROCESSING

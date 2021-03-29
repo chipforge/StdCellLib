@@ -50,20 +50,44 @@ ifdef BUFFERED
 
 #   --------    already buffered    --------------------------------
 
-CELLS +=        AND4 \
+CELLS +=        AAAO2221 \
+                AAO42 \
+                AAO43 \
+                AAO44 \
+                AND4 \
                 AO23 \
                 AO33 \
+                AO41 \
+                AO42 \
+                AO43 \
+                AOAO2112 \
                 OA23 \
                 OA33 \
+                OA41 \
+                OA42 \
+                OA43 \
+                OOA42 \
+                OOA43 \
+                OOA44 \
                 OR4
 
-AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
-AAOA321:        AAOA221
+AAAO2221:       DESCR = "2-2-2-1-input AND-AND-AND-OR gate"
+AAAO2221:       AAAO222
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(RED)
+
+AAO42:          DESCR = "4-2-input AND-OR gate"
+AAO42:          AO41
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
-AAOA331:        AAOA321
+AAO43:          DESCR = "4-3-input AND-OR gate"
+AAO43:          AAO42
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(RED)
+
+AAO44:          DESCR = "4-4-input AND-OR gate"
+AAO44:          AAO43
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
@@ -83,23 +107,23 @@ AO33:           AO32
 	$(RED)
 
 AO41:           DESCR = "4-1-input AND-OR gate"
-AO41:           AO31
-	$(POPCORN) -m nand -c $@ $< > $@
+AO41:           AND4
+	$(POPCORN) -m pd -c $@ $< > $@
 	$(RED)
 
-AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
-AOA212:         OA22
-	$(POPCORN) -m nand -c $@ $< > $@
+AO42:           DESCR = "4-2-input AND-OR gate"
+AO42:           AO41
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-AOA311:         DESCR = "3-1-1-input AND-OR-AND gate"
-AOA311:         AOA211
-	$(POPCORN) -m aoi -c $@ $< > $@
+AO43:           DESCR = "4-2-input AND-OR gate"
+AO43:           AO42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OA22:           DESCR = "2-2-input OR-AND gate"
-OA22:           AND3
-	$(POPCORN) -m oai -c $@ $< > $@
+AOAO2112:       DESCR = "2-1-1-2-input AND-OR-AND-OR gate"
+AOAO2112:       AOAO2111
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 OA23:           DESCR = "2-3-input OR-AND gate"
@@ -113,33 +137,33 @@ OA33:           OA32
 	$(RED)
 
 OA41:           DESCR = "4-1-input OR-AND gate"
-OA41:           OA31
-	$(POPCORN) -m oai -c $@ $< > $@
+OA41:           OR4
+	$(POPCORN) -m pu -c $@ $< > $@
+	$(RED)
+
+OA42:           DESCR = "4-2-input OR-AND gate"
+OA42:           OA41
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
 OA43:           DESCR = "4-3-input OR-AND gate"
-OA43:           OA33
-	$(POPCORN) -m oai -c $@ $< > $@
+OA43:           OA42
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-OAO311:         DESCR = "3-1-1-input OR-AND-OR gate"
-OAO311:         OAO211
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(RED)
-
-OAOA2211:       DESCR = "2-2-1-1-input OR-AND-OR-AND gate"
-OAOA2211:       AOA311
+OOA42:          DESCR = "4-2-input OR-OR-AND gate"
+OOA42:          OA41
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
-OAOA3211:       OAOA2211
-	$(POPCORN) -m oai -c $@ $< > $@
+OOA43:          DESCR = "4-3-input OR-OR-AND gate"
+OOA43:          OOA42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
-OOAO321:        OOAO221
-	$(POPCORN) -m oai -c $@ $< > $@
+OOA44:          DESCR = "4-4-input OR-OR-AND gate"
+OOA44:          OOA43
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 OR4:            DESCR = "4-input OR gate"
@@ -152,20 +176,44 @@ OR4:            OR3
 else
 ifeq ($(BUFFER),4)
 
-CELLS +=        AND4 \
+CELLS +=        AAAO2221 \
+                AAO42 \
+                AAO43 \
+                AAO44 \
+                AND4 \
                 AO23 \
                 AO33 \
+                AO41 \
+                AO42 \
+                AO43 \
+                AOAO2112 \
                 OA23 \
                 OA33 \
+                OA41 \
+                OA42 \
+                OA43 \
+                OOA42 \
+                OOA43 \
+                OOA44 \
                 OR4
 
-AAOA321:        DESCR = "3-2-1-input AND-AND-OR-AND gate"
-AAOA321:        AAOAI221
+AAAO2221:       DESCR = "2-2-2-1-input AND-AND-AND-OR gate"
+AAAO2221:       AAAOI222
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(RED)
+
+AAO42:          DESCR = "4-2-input AND-OR gate"
+AAO42:          AO41
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-AAOA331:        DESCR = "3-3-1-input AND-AND-OR-AND gate"
-AAOA331:        AAOA321
+AAO43:          DESCR = "4-3-input AND-OR gate"
+AAO43:          AAO42
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(RED)
+
+AAO44:          DESCR = "4-4-input AND-OR gate"
+AAO44:          AAO43
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
@@ -185,23 +233,23 @@ AO33:           AOI32
 	$(RED)
 
 AO41:           DESCR = "4-1-input AND-OR gate"
-AO41:           AOI31
-	$(POPCORN) -m nand -c $@ $< > $@
+AO41:           AND4
+	$(POPCORN) -m pd -c $@ $< > $@
 	$(RED)
 
-AOA212:         DESCR = "2-1-2-input AND-OR-AND gate"
-AOA212:         OAI22
-	$(POPCORN) -m nand -c $@ $< > $@
+AO42:           DESCR = "4-2-input AND-OR gate"
+AO42:           AO41
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-AOA311:         DESCR = "3-1-1-input AND-OR-AND gate"
-AOA311:         AOAI211
-	$(POPCORN) -m aoi -c $@ $< > $@
+AO43:           DESCR = "4-2-input AND-OR gate"
+AO43:           AO42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OA22:           DESCR = "2-2-input OR-AND gate"
-OA22:           AND3
-	$(POPCORN) -m oai -c $@ $< > $@
+AOAO2112:       DESCR = "2-1-1-2-input AND-OR-AND-OR gate"
+AOAO2112:       AOAOI2111
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 OA23:           DESCR = "2-3-input OR-AND gate"
@@ -215,33 +263,33 @@ OA33:           OAI32
 	$(RED)
 
 OA41:           DESCR = "4-1-input OR-AND gate"
-OA41:           OAI31
-	$(POPCORN) -m oai -c $@ $< > $@
+OA41:           OR4
+	$(POPCORN) -m pu -c $@ $< > $@
+	$(RED)
+
+OA42:           DESCR = "4-2-input OR-AND gate"
+OA42:           OA41
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
 OA43:           DESCR = "4-3-input OR-AND gate"
-OA43:           OA33
-	$(POPCORN) -m oai -c $@ $< > $@
+OA43:           OA42
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-OAO311:         DESCR = "3-1-1-input OR-AND-OR gate"
-OAO311:         OAOI211
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(RED)
-
-OAOA2211:       DESCR = "2-2-1-1-input OR-AND-OR-AND gate"
-OAOA2211:       AOA311
+OOA42:          DESCR = "4-2-input OR-OR-AND gate"
+OOA42:          OA41
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OAOA3211:       DESCR = "3-2-1-1-input OR-AND-OR-AND gate"
-OAOA3211:       OAOA2211
-	$(POPCORN) -m oai -c $@ $< > $@
+OOA43:          DESCR = "4-3-input OR-OR-AND gate"
+OOA43:          OOA42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OOAO321:        DESCR = "3-2-1-input OR-OR-AND-OR gate"
-OOAO321:        OOAOI221
-	$(POPCORN) -m oai -c $@ $< > $@
+OOA44:          DESCR = "4-4-input OR-OR-AND gate"
+OOA44:          OOA43
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 OR4:            DESCR = "4-input OR gate"
@@ -255,31 +303,50 @@ BUFFERED = true
 
 else
 
-CELLS +=        AOI23 \
+CELLS +=        AAAOI2221 \
+                AAOI42 \
+                AAOI43 \
+                AAOI44 \
+                AOAOI2112 \
+                AOI23 \
                 AOI33 \
+                AOI41 \
+                AOI42 \
+                AOI43 \
                 NAND4 \
                 NOR4 \
                 OAI23 \
-                OAI33
+                OAI33 \
+                OAI41 \
+                OAI42 \
+                OAI43 \
+                OOAI42 \
+                OOAI43 \
+                OOAI44
 
-AAOAI321:       DESCR = "3-2-1-input AND-AND-OR-AND-Invert gate"
-AAOAI321:       AAOAI221
+AAAOI2221:      DESCR = "2-2-2-1-input AND-AND-AND-OR-Invert gate"
+AAAOI2221:      AAAOI222
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(RED)
+
+AAOI42:         DESCR = "4-2-input AND-OR-Invert gate"
+AAOI42:         AOI41
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-AAOAI331:       DESCR = "3-3-1-input AND-AND-OR-AND-Invert gate"
-AAOAI331:       AAOAI321
+AAOI43:         DESCR = "4-3-input AND-OR-Invert gate"
+AAOI43:         AAOI42
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-AOAI212:        DESCR = "2-1-2-input AND-OR-AND-Invert gate"
-AOAI212:        OAI22
-	$(POPCORN) -m nand -c $@ $< > $@
+AOAOI2112:      DESCR = "2-1-1-2-input AND-OR-AND-OR-Invert gate"
+AOAOI2112:      AOAOI2111
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-AOAI311:        DESCR = "3-1-1-input AND-OR-AND-Invert gate"
-AOAI311:        AOAI211
-	$(POPCORN) -m aoi -c $@ $< > $@
+AAOI44:         DESCR = "4-4-input AND-OR-Invert gate"
+AAOI44:         AAOI43
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
 AOI23:          DESCR = "2-3-input AND-OR-Invert gate"
@@ -293,8 +360,18 @@ AOI33:          AOI32
 	$(RED)
 
 AOI41:          DESCR = "4-1-input AND-OR-Invert gate"
-AOI41:          AOI31
-	$(POPCORN) -m nand -c $@ $< > $@
+AOI41:          NAND4
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(RED)
+
+AOI42:          DESCR = "4-2-input AND-OR-Invert gate"
+AOI42:          AOI41
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(RED)
+
+AOI43:          DESCR = "4-3-input AND-OR-Invert gate"
+AOI43:          AOI42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 NAND4:          DESCR = "4-input Not-AND (or NAND) gate"
@@ -312,39 +389,39 @@ OAI23:          OAI22
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-OAI41:          DESCR = "4-1-input OR-AND-Invert gate"
-OAI41:          OAI31
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(RED)
-
 OAI33:          DESCR = "3-3-input OR-AND-Invert gate"
 OAI33:          OAI32
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(RED)
 
-OAI43:          DESCR = "4-3-input OR-AND-Invert gate"
-OAI43:          OAI33
-	$(POPCORN) -m oai -c $@ $< > $@
+OAI41:          DESCR = "4-1-input OR-AND-Invert gate"
+OAI41:          NOR4
+	$(POPCORN) -m pu -c $@ $< > $@
 	$(RED)
 
-OAOAI2211:      DESCR = "2-2-1-1-input OR-AND-OR-AND-Invert gate"
-OAOAI2211:      AOAI311
+OAI42:          DESCR = "4-2-input OR-AND-Invert gate"
+OAI42:          OAI41
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(RED)
+
+OAI43:          DESCR = "4-3-input OR-AND-Invert gate"
+OAI43:          OAI42
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(RED)
+
+OOAI42:         DESCR = "4-2-input OR-OR-AND-Invert gate"
+OOAI42:         OAI41
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OAOAI3211:      DESCR = "3-2-1-1-input OR-AND-OR-AND-Invert gate"
-OAOAI3211:      OAOAI2211
-	$(POPCORN) -m oai -c $@ $< > $@
+OOAI43:         DESCR = "4-3-input OR-OR-AND-Invert gate"
+OOAI43:         OOAI42
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
-OAOI311:        DESCR = "3-1-1-input OR-AND-OR-Invert gate"
-OAOI311:        OAOI211
-	$(POPCORN) -m oai -c $@ $< > $@
-	$(RED)
-
-OOAOI321:       DESCR = "3-2-1-input OR-OR-AND-OR-Invert gate"
-OOAOI321:       OOAOI221
-	$(POPCORN) -m oai -c $@ $< > $@
+OOAI44:         DESCR = "4-4-input OR-OR-AND-Invert gate"
+OOAI44:         OOAI43
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(RED)
 
 endif
