@@ -42,7 +42,7 @@
 .\"
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
-.Dd January 2, 2021
+.Dd March 19, 2021
 .Dt POPCORN 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
@@ -52,7 +52,6 @@
 .Nm
 .Op Fl v
 .Op Fl b Ar number
-.Op Fl l Ar number
 .Op Fl m Ar method
 .Op Fl c Ar name
 .Op Fl D Ar string
@@ -72,12 +71,13 @@
 The
 .Nm
 utility expands a given combinatorial cell by different methods (
-.Em nand ,
-.Em nor ,
 .Em aoi ,
+.Em nand ,
+.Em none ,
+.Em nor ,
 .Em oai ,
-.Em pu ,
-.Em pd
+.Em pd ,
+.Em pu
 )  and writes out the new derived cell information on
 .Dv STDOUT .
 The new cell name and a cell description for the new cell can be specified.
@@ -130,46 +130,45 @@ Specify the new cell functionality in a quoted string, e.g. "Not (or Inverter)
 gate" which occurs in generated cell documentation.
 .Ss \-h, \-\-help
 Display help message and exit.
-.Ss \-l number
-Limit the longest path of stacked transistors between output and any supply line
-to
-.Em number .
 .Ss \-m method
 Expand cell with one of following methods:
 .Bl -ohang
-.It Em nand
-Add nMOS transistor in serial into highest free pull-down path.
-Use same character and next number for new mosfet gate name.
-.It Em nor
-Add pMOS transistor in serial into highest free pull-up path.  Use same
-character and next number for new mosfet gate name.
 .It Em aoi
 Add nMOS transistor in serial into highest free pull-down path.
 Use new character for last mosfet gate name, enumerate this character for new
 mosfet gate name.
+.It Em nand
+Add nMOS transistor in serial into highest free pull-down path and perform
+the complementary operation for the pull-up network.
+Use same character and next number for new mosfet gate name.
+.It Em none
+Do not expand cell. This is the default value.
+.It Em nor
+Add pMOS transistor in serial into highest free pull-up path and perform
+the complementary operation for the pull-down network.
+Use same character and next number for new mosfet gate name.
 .It Em oai
 Add pMOS transistor in serial into highest free pull-up path.
-Use new character for last mosfet gate name, enumerate this character for new
+Choose new character for last mosfet gate name, enumerate this character for new
 mosfet gate name.
-.It Em pu
-Add a chain of pMOS transistors in parallel to the exisiting pull-up network.
-Use new character for new mosfet gate names and enumerate all of them.
 .It Em pd
-Add a chain of nMOS transistors in parallel to the exisiting pull-down network.
-Use new character for new mosfet gate names and enumerate all of them.
+Add a nMOS transistors in parallel to the exisiting pull-down network and perform
+the complementary operation for the pull-up network.
+Choose new character for new mosfet gate names.
+.It Em pu
+Add a pMOS transistors in parallel to the exisiting pull-up network and perform
+the complementary operation for pull-down network.
+Choose new character for new mosfet gate names.
 .El
 .Pp
-An addition in one network implies an - complementary - addition in the other
+An addition in one network always implies an complementary addition for the other
 network also.
-In some cases, the expansion with one method is not feasible, because the
-limit of stacked transistors is already reached.
 .Ss \-T file
 Specify the configuration file (written in TOML) with all user-defined values.
 This file contains at least the path to the technology file, transistor sizes
 and cell hight.
 Values in the configuration file can be over-ruled by command-line options,
 when feasible, e.g.
-.Op Fl l Ar number
 .Op Fl b Ar number .
 .Ss \-v
 Print verbose messages at
