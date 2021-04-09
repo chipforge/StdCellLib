@@ -11,6 +11,14 @@ $ENV{'PySpiceLogLevel'}="DEBUG" if($debug);
 $ENV{'PySpiceLogLevel'}="ERROR" if(!$debug);
 #undef($ENV{'PySpiceLogLevel'}) unless($debug);
 
+my $lctimeparams="--output-loads 0.0005,0.05,0.1,0.2,1 --slew-times 0.01,0.05,0.1,0.2,1.5";
+if(open IN,"<../Tech/lctime.conf")
+{
+  $lctimeparams=<IN>; $lctimeparams=~tr/\r\n//;
+  close IN;
+}
+
+
 system "perl ../Tools/perl/cell2spice.pl";
 
 open IN,"<$sp" || die "Could not open file $sp: $!\n";
@@ -184,10 +192,10 @@ EOF
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
 
     step("NEXT STEP: Characterization");
-    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
-    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
+    $cmd="lctime ".($debug?"--debug":"")." --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
 
     step("NEXT STEP: Visualisation");
