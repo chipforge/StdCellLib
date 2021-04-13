@@ -9,7 +9,9 @@ our $format="text"; # html latex text liberty verilog
 # Parsing the commandline parameters:
 GetOptions ("debug" => \$debug,
 	    "v" => \$debug,
-            "format=s" => \$format); # text,html,latex,liberty,verilog
+            "format=s" => \$format); # text,html,latex,liberty,verilog,testcad
+
+our $testcadcounter=1;
 
 # Convert a value to the gray code value:
 sub bin2gray
@@ -265,6 +267,14 @@ EOF
     {
       print "<table border='1' class='truthtable'>\n<tr><th>".join("</th><th>",@ins)."</th><th><b>".join("</b></th><th><b>",@outs)."</b></th></tr>\n";
     }
+    elsif($format eq "testcad")
+    {
+      foreach (@ins)
+      {
+        print "$testcadcounter PI ".($testcadcounter+1)." ; # $_\n";
+	$testcadcounter+=2;
+      }
+    }
 
     my %values=();
     our %sum=();
@@ -280,7 +290,7 @@ EOF
       {
 	print "& " if($format eq "latex" && $_>0);
         print "<td>" if($format eq "html");
-        print "".($gray&(1<<$_))?"1 ":"0 " unless($format eq "liberty");
+        print "".($gray&(1<<$_))?"1 ":"0 " if($format eq "text" || $format eq "latex" || $format eq "html"); # not for liberty!
         print "</td>" if($format eq "html");
 	$values{$ins[$_]}=($gray&(1<<$_))?1:0;
       }
@@ -315,7 +325,7 @@ EOF
         print "<td><b>$res{$_}</b></td>" foreach(@outs);
       }
       print "</tr>" if($format eq "html");
-      print "\n" unless($format eq "liberty");
+      print "\n" if($format eq "text" || $format eq "html");
     }
     print "</table>\n" if($format eq "html");
 
@@ -324,7 +334,17 @@ EOF
         my $not=($sum{$out}{0}||0)>($sum{$out}{1}||0)?1:0;
         # If we have more 0 than 1 results, then the negated inverse is shorted: 
 	# TODO: When there are HIGH-Z outputs we should split the HIGH-Z outputs from the others and give a function for output-enable and HIGH-Z
-        print $format eq "liberty" ? "  pin($out) {\n    direction: output;\n    function:\"":"function: $out = ";
+	if($format eq "liberty")
+	{
+          print "  pin($out) {\n    direction: output;\n    function:\"";
+	}
+	elsif($format eq "testcad")
+	{
+	}
+	else
+	{
+	  print "function: $out = ";
+	}
 	my @list=defined($results{$out}{$not})?@{$results{$out}{$not}}:();
 	if(!scalar(@list))
 	{
