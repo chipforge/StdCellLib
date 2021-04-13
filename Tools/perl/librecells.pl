@@ -52,9 +52,9 @@ while(<IN>)
 
     step("NEXT CELL: $cellname");
 
-    system "../Tools/perl/truthtable.pl --format=text $cellname >$cellname.truthtable.txt";
-    system "../Tools/perl/truthtable.pl --format=html $cellname  >$cellname.truthtable.html";
-    system "../Tools/perl/truthtable.pl --format=verilog $cellname  >$cellname.truthtable.v";
+    system "../Tools/perl/truthtable.pl --format=text $cellname.cell >$cellname.truthtable.txt";
+    system "../Tools/perl/truthtable.pl --format=html $cellname.cell >$cellname.truthtable.html";
+    system "../Tools/perl/truthtable.pl --format=verilog $cellname.cell >$cellname.truthtable.v";
 
 
     my $placer=""; $placer="--placer=hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
