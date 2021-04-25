@@ -1,16 +1,25 @@
 #!/usr/bin/perl -w
 use strict;
 
-my $tech="w=1.0u l=1.0u";
+my $ntech="w=1.0u l=1.0u";
+my $ptech="w=1.0u l=1.0u";
 
-if(open IN,"<../Tech/transistor.sp")
+if(open IN,"<../Tech/nmos.sp")
 {
-  print "Loading tech specs from transistor.sp file\n";
-  $tech=<IN>; $tech=~s/[\n\r]//s;
+  print "Loading tech specs from nmos.sp file\n";
+  $ntech=<IN>; $ntech=~s/[\n\r]//s;
+  close IN;
+}
+if(open IN,"<../Tech/pmos.sp")
+{
+  print "Loading tech specs from pmos.sp file\n";
+  $ptech=<IN>; $ptech=~s/[\n\r]//s;
   close IN;
 }
 
-print "Tech specs: $tech\n";
+
+print "NMOS Tech specs: $ntech\n";
+print "PMOS Tech specs: $ptech\n";
 
 my @cells=<*.cell>;
 my $cell=undef;
@@ -45,7 +54,7 @@ foreach my $fn (@cells)
     {
       my($t,$g,$d,$s)=($1,$2,$3,$4);
       my $x=($t eq "pmos")?"vdd":"gnd";
-      $transistors.="M$M $d $g $s $x $t $tech\n";
+      $transistors.="M$M $d $g $s $x $t ".(($t eq "pmos") ? $ptech:$ntech)."\n";
             #M1  vdd    B a_2_6# vdd pmos w=0.5u l=0.05u
             #M2  Y a_2_6# vdd vdd pmos w=0.5u l=0.05u
             #M3  a_9_6# A a_2_6# gnd nmos w=0.5u l=0.05u
