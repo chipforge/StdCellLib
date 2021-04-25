@@ -167,14 +167,14 @@ transistor_offset_y = 240*nm # !!! This likely needs to be tuned later on
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
 # `unit_cell_width` also corresponds to the pitch of the gates because gates are spaced on a regular grid.
-unit_cell_width = 920*nm # 920 is 2*0.46um (unithd SITE),  8 * 130*nm
-unit_cell_height = 2720*nm #270*nm # 32 * 130*nm # minimum 16um due to pwell width + nwell-pwell spacing
+unit_cell_width = 1440*nm # 480*3 (unit SITE) # 1380*nm # 920 is 2*0.46um (unithd SITE),  8 * 130*nm
+unit_cell_height = 3330*nm # (unit SITE) # 2720*nm #270*nm # 32 * 130*nm # minimum 16um due to pwell width + nwell-pwell spacing
 #assert unit_cell_height >= 16*um, "minimum 16um due to pwell width + nwell-pwell spacing"
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
 
 # Routing pitch
-routing_grid_pitch_x = unit_cell_width // 4
-routing_grid_pitch_y = 180*nm # unit_cell_height // 8 // 2
+routing_grid_pitch_x = unit_cell_width // 6 # // 4
+routing_grid_pitch_y = 135*nm # unit_cell_height // 8 // 2
 
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
 grid_offset_x = routing_grid_pitch_x
@@ -276,14 +276,14 @@ weights_horizontal = {
     l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
     l_pdiffusion: 197000, # (mohms/square)
     l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
-    l_metal1: 12800, # SKY130_Li1 Local Interconnect! (mohms/square)
+    l_metal1: 1280, # SKY130_Li1 Local Interconnect! (mohms/square)
     l_metal2: 125, # SKY130_Metal1
 }
 weights_vertical = {
     l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
     l_pdiffusion: 197000, # (mohms/square)
     l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
-    l_metal1: 12800, # SKY130_Li1 Local Interconnect! (mohms/square)
+    l_metal1: 1280, # SKY130_Li1 Local Interconnect! (mohms/square)
     l_metal2: 125, # SKY130_Metal1
 }
 
@@ -300,5 +300,46 @@ multi_via = {
     (l_metal1, l_poly): 1,
     (l_metal1, l_metal2): 1,
 }
+
+if( min_spacing[(l_pdiff_contact, l_pdiff_contact)] < min_spacing[(l_pdiffusion,l_pdiffusion)]+2*minimum_enclosure[(l_pdiffusion, l_pdiff_contact)]):
+        newmin=min_spacing[(l_pdiffusion,l_pdiffusion)]+2*minimum_enclosure[(l_pdiffusion, l_pdiff_contact)]
+        print("Minimum Spacing "+str(min_spacing[(l_pdiff_contact, l_pdiff_contact)])+" for pdiff_contact too small because of pdiffusion, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_pdiffusion,l_pdiffusion)])+"+2*"+str(minimum_enclosure[(l_pdiffusion, l_pdiff_contact)])+") Fixing minimum_spacing")
+        min_spacing[(l_pdiff_contact, l_pdiff_contact)]=newmin
+
+if( min_spacing[(l_ndiff_contact, l_ndiff_contact)] < min_spacing[(l_ndiffusion,l_ndiffusion)]+2*minimum_enclosure[(l_ndiffusion, l_ndiff_contact)]):
+        newmin=min_spacing[(l_ndiffusion,l_ndiffusion)]+2*minimum_enclosure[(l_ndiffusion, l_ndiff_contact)]
+        print("Minimum Spacing "+str(min_spacing[(l_ndiff_contact, l_ndiff_contact)])+" for ndiff_contact too small because of ndiffusion, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_ndiffusion,l_ndiffusion)])+"+2*"+str(minimum_enclosure[(l_ndiffusion, l_ndiff_contact)])+") Fixing minimum_spacing")
+        min_spacing[(l_ndiff_contact, l_ndiff_contact)]=newmin
+
+if( min_spacing[(l_pdiff_contact, l_ndiff_contact)] < min_spacing[(l_pdiffusion,l_ndiffusion)]+minimum_enclosure[(l_ndiffusion, l_ndiff_contact)]+minimum_enclosure[(l_pdiffusion, l_pdiff_contact)]):
+        newmin=min_spacing[(l_pdiffusion,l_ndiffusion)]+minimum_enclosure[(l_ndiffusion, l_ndiff_contact)]+minimum_enclosure[(l_pdiffusion, l_pdiff_contact)]
+        print("Minimum Spacing "+str(min_spacing[(l_ndiff_contact, l_ndiff_contact)])+" for pdiff_contact - ndiff_contact too small because of ndiffusion, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_pdiffusion,l_ndiffusion)])+"+"+str(minimum_enclosure[(l_ndiffusion, l_ndiff_contact)])+"+"+str(minimum_enclosure[(l_pdiffusion, l_pdiff_contact)])+") Fixing minimum_spacing")
+        min_spacing[(l_pdiff_contact, l_ndiff_contact)]=newmin
+
+if((l_poly_contact, l_poly_contact) in min_spacing and  min_spacing[(l_poly_contact, l_poly_contact)] < min_spacing[(l_poly,l_poly)]+2*minimum_enclosure[(l_poly, l_poly_contact)]):
+        newmin=min_spacing[(l_poly,l_poly)]+2*minimum_enclosure[(l_poly, l_poly_contact)]
+        print("Minimum Spacing "+str(min_spacing[(l_poly_contact, l_poly_contact)])+" for poly_contact too small because of polysilicon, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_poly,l_poly)])+"+"+str(minimum_enclosure[(l_poly, l_poly_contact)])+"+"+str(minimum_enclosure[(l_poly, l_poly_contact)])+") Fixing minimum_spacing")
+        min_spacing[(l_poly_contact, l_poly_contact)]=newmin
+
+if((l_poly_contact, l_poly_contact) in min_spacing and  min_spacing[(l_poly_contact, l_poly_contact)] < min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_poly_contact)]):
+        newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_poly_contact)]
+        print("Minimum Spacing "+str(min_spacing[(l_poly_contact, l_poly_contact)])+" for poly_contact too small because of local interconnect, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+"+str(minimum_enclosure[(l_metal1, l_poly_contact)])+"+"+str(minimum_enclosure[(l_metal1, l_poly_contact)])+") Fixing minimum_spacing")
+        min_spacing[(l_poly_contact, l_poly_contact)]=newmin
+
+if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]):
+        newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]
+        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of local interconnect, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+2*"+str(minimum_enclosure[(l_metal1, l_via1)])+") Fixing minimum_spacing")
+        min_spacing[(l_via1, l_via1)]=newmin
+
+if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]):
+        newmin=min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]
+        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal1, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal2,l_metal2)])+"+2*"+str(minimum_enclosure[(l_metal2, l_via1)])+") Fixing minimum_spacing")
+        min_spacing[(l_via1, l_via1)]=newmin
+
+
+
+    #(l_poly_contact, l_pdiff_contact): 170*nm, # (licon.2)
+    #(l_poly_contact, l_ndiff_contact): 170*nm, # (licon.2)
+
 
 
