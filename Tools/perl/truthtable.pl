@@ -178,7 +178,7 @@ foreach my $file(@ARGV)
     foreach(@lines)
     {
       next if(m/^#/); # Ignore comment lines
-      $differential{$1}=$2 if(m/^\.differential (\w+) (\w+)/);
+      #$differential{$1}=$2 if(m/^\.differential (\w+) (\w+)/);
       $inputs{$1}=1 if(m/^[pn]mos\s*([A-W]+\d*)/);
       $intermediates{$1}=1 if(m/^[pn]mos.*([X-Y]\w*\d*)/);
       $outputs{$1}=1 if(m/^[pn]mos.*\w+ ([X-Z]\w*\d*)/);
@@ -193,6 +193,20 @@ foreach my $file(@ARGV)
     {
       @ins=split(" ",$1) if($line=~m/^\.inputs (\w.*)/i);
       @outs=split(" ",$1) if($line=~m/^\.outputs (\w.*)/i)
+    }
+    $inputs{$_}=1 foreach(@ins);
+
+    foreach my $a(@ins)
+    {
+      if($a=~m/_n$/)
+      {
+        my $b=$a; $b=~s/_n$/_p/;
+        if(defined($inputs{$b}))
+	{
+          $differential{$a}=$b;
+	  #print STDERR "Differential input detected: $a <-> $b\n";
+	}
+      }
     }
 
     my $ninputs=scalar(@ins);
