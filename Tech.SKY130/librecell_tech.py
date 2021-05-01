@@ -2,6 +2,7 @@ from lclayout.layout.layers import *
 from lclayout.writer.magic_writer import MagWriter
 from lclayout.writer.lef_writer import LefWriter
 from lclayout.writer.gds_writer import GdsWriter
+from lclayout.writer.oasis_writer import OasisWriter
 
 # Physical size of one data base unit in meters.
 # BUT GDS2 requires the database units to be in nanometers, and lclayout cannot convert to nanometers automatically yet
@@ -102,7 +103,13 @@ output_writers = [
     GdsWriter(
         db_unit=db_unit,
         output_map=output_map
+    ),
+
+    OasisWriter(
+        db_unit=db_unit,
+        output_map=output_map
     )
+
 ]
 
 # Define how layers can be used for routing.
@@ -293,6 +300,9 @@ via_weights = {
     (l_metal1, l_pdiffusion): 15000, # LICON
     (l_metal1, l_poly): 15000, # LICON
     (l_metal1, l_metal2): 152000, # MCON
+    (l_metal1, l_nplus): 1, # Contact to Well Taps, the value doesn't matter
+    (l_metal1, l_nplus): 1,
+
 }
 
 # Enable double vias between layers.
