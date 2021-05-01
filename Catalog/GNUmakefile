@@ -127,7 +127,7 @@ catalog:    $(CELLS)
 layout: libresilicon.sp libresilicon.lef libresilicon.lib demoboard.mag doc/StdCellLib.pdf
 
 
-libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/transistor.sp
+libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/nmos.sp
 	../Tools/perl/cell2spice.pl
 	../Tools/perl/librecells.pl
 	rm -f libresilicon.lib
