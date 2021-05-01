@@ -171,12 +171,14 @@ foreach my $file(@ARGV)
     my %inputs=();
     my %intermediates=();
     my %outputs=();
- 
+    my %differential=();
+
     # Here we are parsing all transistor lines for input-, output- and intermediate nets
     # But this is just a guess:
     foreach(@lines)
     {
       next if(m/^#/); # Ignore comment lines
+      $differential{$1}=$2 if(m/^\.differential (\w+) (\w+)/);
       $inputs{$1}=1 if(m/^[pn]mos\s*([A-W]+\d*)/);
       $intermediates{$1}=1 if(m/^[pn]mos.*([X-Y]\w*\d*)/);
       $outputs{$1}=1 if(m/^[pn]mos.*\w+ ([X-Z]\w*\d*)/);
@@ -283,17 +285,28 @@ EOF
     foreach my $i(0 .. 2**$ninputs-1)
     {
       # We count from 0 .. 2^n-1 and take the graycode, and then interpret that as a binary value for the input stimulus:
+      my $output="";
       my $gray=bin2gray($i); 
-      print "            " if($format eq "latex");
-      print "<tr>" if($format eq "html");
+      $output.="            " if($format eq "latex");
+      $output.="<tr>" if($format eq "html");
       foreach(0 .. $ninputs-1)
       {
-	print "& " if($format eq "latex" && $_>0);
-        print "<td>" if($format eq "html");
-        print "".($gray&(1<<$_))?"1 ":"0 " if($format eq "text" || $format eq "latex" || $format eq "html"); # not for liberty!
-        print "</td>" if($format eq "html");
+	$output.="& " if($format eq "latex" && $_>0);
+        $output.="<td>" if($format eq "html");
+        $output.="".($gray&(1<<$_))?"1 ":"0 " if($format eq "text" || $format eq "latex" || $format eq "html"); # not for liberty!
+        $output.="</td>" if($format eq "html");
 	$values{$ins[$_]}=($gray&(1<<$_))?1:0;
       }
+
+      my $ignoreinvalidinputs=0; # Look for differential inputs that have the same value, and are therefore invalid
+      foreach my $k1(keys %differential)
+      {
+        $ignoreinvalidinputs=1 if($values{$k1} eq $values{$differential{$k1}});
+      }
+      next if($ignoreinvalidinputs);
+
+      print $output;
+
       # Here we are using the truth function to calculate all network states for the given inputs:
       my %res=truth(\@lines,\%values);
       # The result is a hash with the intermediate/output netnames as keys and the resulting values as values
