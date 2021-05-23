@@ -22,6 +22,7 @@ drc listall catchup
 set oscale [cif scale out]
 set drcresult [drc listall why]
 set fout [open \"$outfile\" w]
+set countall 0
 foreach {errtype coordlist} \$drcresult {
 puts \$fout \$errtype
 puts \$fout "----------------------------------------"
@@ -32,10 +33,13 @@ foreach coord \$coordlist {
     set bury [expr {\$oscale * [lindex \$coord 3]}]
     set coords [format " %.3f %.3f %.3f %.3f" \$bllx \$blly \$burx \$bury]
     puts \$fout "\$coords"
+    incr countall
 }
 puts \$fout "----------------------------------------"
 }
 puts \$fout ""
+puts \$fout "Number of DRC errors: \$countall"
+
 close \$fout
 quit -noprompt
 EOF
