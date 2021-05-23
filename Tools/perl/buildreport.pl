@@ -91,7 +91,7 @@ foreach my $file (<*.cell>)
   my $errfile=$file; $errfile=~s/\.cell$/.err/;
   my $logfile=$file; $logfile=~s/\.cell$/.log/;
   my $magfile=$file; $magfile=~s/\.cell$/.mag/;
-  my $drcfile=$file; $drcfile=~s/\.cell$/.mag.drc/;
+  my $drcfile=$file; $drcfile=~s/\.cell$/.drc/;
   my $libfile=$file; $libfile=~s/\.cell$/.lib/;
   my $svgfile=$file; $svgfile=~s/\.cell$/.svg/;
   my $schfile="doc/".$file; $schfile=~s/\.cell$/_svg.png/;
@@ -110,9 +110,18 @@ foreach my $file (<*.cell>)
   my $nets="";
   my $errors="";
   my $routing="";
-  my %ports=();
+  my $ports=0;
   my $b1=(-f $runfile)?"<b>":"";
   my $b2=(-f $runfile)?"<b>":"";
+  my $drccount=0;
+
+  if(open DRC,"<$drcfile")
+  {
+    while(<DRC>)
+    {
+      $drccount=$1 if(m/Number of DRC errors: (\d+)/);
+    }
+  } 
 
   print OUT "<tr><td>$b1$file$b2</td>";
   print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
@@ -121,7 +130,7 @@ foreach my $file (<*.cell>)
   print OUT "<td>".(-f $schfile ? "<a href='$schfile' target='_blank'><font color='green'>&radic;</font><img src='$schfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $logfile ? "<a href='$logfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $errfile ? "<a href='$errfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $drcfile ? "<a href='$drcfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
+  print OUT "<td>".(-f $drcfile ? "<a href='$drcfile' target='_blank'><font color='green'>&radic;</font> $drccount</a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $libfile ? "<a href='$libfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $leffile ? "<a href='$leffile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
   print OUT "<td>".(-f $gdsfile ? "<a href='$gdsfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
@@ -145,19 +154,20 @@ foreach my $file (<*.cell>)
       $layouttime=$1 if(m/INFO:\s*Done\s*\(Total duration: ([\d:.]+)\s*\)/);
       $nets=$1 if(m/Nets output: (\d+)/);
       $routing=$1 if(m/Routing iteration (\d+)/);
-      $ports{$1}=1 if(m/Port: name = (\w+) exists/);
+      $ports=scalar(split(",",$1)) if(m/Subcircuit ports: (.*)/);
       $errors.=$1." " if(m/AssertionError: (.*)/);
       $errors.=$1." " if(m/Exception: (.*)/);
       $errors.=$1." " if(m/ERROR: (.*)/);
     }
     close LIB;
   }
+  $layouttime=~s/\.\d+$//;
   $lvs=~s/FAILED/<font color='red'>FAILED<\/font>/;
 
   $errors.=" <b>This cell is currently building...</b>" if(-f $runfile);
   $errors.=" This cell has been excluded from building " if(-f $dontlayoutfile);
 
-  print OUT "<td align='right'>$area</td><td>$lvs</td><td>$euler</td><td>$layouttime</td><td>$nets</td><td>".scalar(keys %ports)."</td><td>$routing</td><td><a href='$errfile' target='_blank'><font color='red'>$errors</font></a></td>";
+  print OUT "<td align='right'>$area</td><td>$lvs</td><td>$euler</td><td>$layouttime</td><td>$nets</td><td>$ports</td><td>$routing</td><td><a href='$errfile' target='_blank'><font color='red'>$errors</font></a></td>";
 
   print OUT "</tr>";
 
