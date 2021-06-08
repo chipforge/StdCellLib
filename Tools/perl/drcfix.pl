@@ -6,6 +6,10 @@ if(scalar(@ARGV)<1)
   exit;	
 }
 
+# Rules we have to deal with:
+
+#Local interconnect spacing < 0.17um (LI 3)
+#Metal1 spacing < 0.14um (Met1 2)
 
 print "Handling $ARGV[0]\n";
 open IN,"<".$ARGV[0];
@@ -19,11 +23,14 @@ sub form($)
 
 my $insert="";
 
+our $tech=$ARGV[1] || "../Tech/libresilicon.tech";
 
-sub tryfix($)
-{
-  print "Trying the fix on $mag:\n$_[0]\nRuning magic ...\n";
-print <<EOF
+#sub tryfix($)
+#{
+  print "Trying the fix on $mag:\nRuning magic ...\n";
+  open OUT,"|magic -dnull -noconsole -T $tech $mag";
+
+print OUT <<EOF
 proc redirect_variable {varname cmd} {
     rename puts ::tcl::orig::puts
     global __puts_redirect
@@ -50,35 +57,67 @@ proc fix_drc {} {
    drc check
    drc catchup
    redirect_variable drccount {puts [drc count total]}
-   set drcc [string map {"Total DRC errors found: " ""} \$drccount]
+   set nFixed 0
+   set drcc [string trim [string map {"Total DRC errors found: " ""} \$drccount] ]
+   set nRounds \$drcc
    puts \$drccount
-   puts \$drcc
-   if {\$drcc > 0} {
-     redirect_variable drcresult {puts [drc find]}
-     puts \$drcresult
-     if {[string first "Local interconnect spacing" \$drcresult] != -1} {
-        erase li
-	drc check
-	drc catchup
-        redirect_variable drccountnew {puts [drc count total]}
-        set drccn [string map {"Total DRC errors found: " ""} \$drccountnew]
-        if {\$drccn < \$drcc} {
-          puts "Hoory, we fixed a DRC issue"
-	} else {
-          puts "Trying to fix this DRC issue caused more issues so we undo and try something else"
-          undo
-	}
+   #puts \$drcc
+   for {set i 0} {\$i < \$nRounds} {incr i} {
+     puts "I inside first loop: \$i"
+     if {\$drcc > 0} {
+       redirect_variable drcresult {puts [drc find]}
+       puts \$drcresult
+       if {[string first "\\[erase" \$drcresult] != -1} {
+         regexp {\\[erase ([^\\]]+)\\]} \$drcresult full layernames
+         foreach drcparts [split \$layernames ","] {
+           foreach layername [split \$drcparts " "] {
+             puts "Erasing \$layername"
+             set res [erase \$layername]
+	     puts \$res
+	   }
+           drc check
+           drc catchup
+           redirect_variable drccountnew {puts [drc count total]}
+           set drccn [string trim [string map {"Total DRC errors found: " ""} \$drccountnew] ]
+           if {\$drccn < \$drcc} {
+             puts "Hoory, we fixed a DRC issue"
+             incr nFixed 
+             set drcc \$drccn
+	     #save corr_$mag
+	     #exit
+           } else {
+             puts "Trying to fix this DRC issue did not reduce the number of DRC issues (\$drccn vs. \$drcc) so we undo and try something else"
+             foreach layername [split \$drcparts " "] {
+               puts "Undoing \$layername"
+	       #erase \$layername
+               undo
+             }
+           }
+	 }
+       }
      }
-     
    }
+
+   if {\$nFixed >0} {
+      puts "We have fixed some issues, now we save the file"
+      save corr_$mag
+      puts "File saved."
+   }	   
 }   
-
-
-% puts \$mydrc
+puts "Trying to FIX some DRC issues"
+fix_drc
+puts "Done trying to FIX some DRC issues"
+quit -noprompt
 EOF
 ;
+close OUT;
 
-}
+#}
+
+#tryfix();
+
+if(0)
+{
 
 while(<IN>)
 {
@@ -162,7 +201,7 @@ close IN;
 
 open MAG,"<$mag";
 open CORR,">corr.$mag";
-print "Reading from $mag Writing to $mag\n";
+print "Reading from $mag Writing to corr.$mag\n";
 while(<MAG>)
 {
   if(m/<< end >>/)
@@ -174,3 +213,4 @@ while(<MAG>)
 close CORR;
 close MAG;
 
+}

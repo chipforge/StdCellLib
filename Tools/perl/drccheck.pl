@@ -20,7 +20,7 @@ drc check
 drc list count
 drc listall catchup
 set oscale [cif scale out]
-set drcresult [drc listall why]
+set drcresult [lsort -stride 2 -index 0 [drc listall why]]
 set fout [open \"$outfile\" w]
 set countall 0
 foreach {errtype coordlist} \$drcresult {
