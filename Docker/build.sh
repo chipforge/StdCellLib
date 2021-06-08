@@ -1,1 +1,1 @@
-docker build --tag stdcelllib .
+docker build --tag thesourcerer8/stdcelllib .
