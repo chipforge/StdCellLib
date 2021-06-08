@@ -118,7 +118,7 @@ EOF
 
     if(-f "$cellname.fixed")
     {
-      print "We found a manually fixed $cellname.fixed magic file for testing so we using that one instead.\n";
+      print "We found a manually fixed $cellname.fixed magic file for testing so we are using that one instead.\n";
       step("NEXT STEP: Fixing file $cellname.fixed -> $cellname.mag");
       system "cp $cellname.fixed $cellname.mag";
     }
