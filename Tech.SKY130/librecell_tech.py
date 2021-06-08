@@ -48,6 +48,9 @@ my_metal2_label = (69, 5)
 my_metal2_pin = (69, 16)
 my_abutment_box = (235, 4) # prBndry  ???
 
+#my_pplus = (65,44) # TAP.DRAWING
+#my_nplus = (65,44) # TAP.DRAWING
+
 # lclayout internally uses its own layer numbering scheme.
 # For the final output the layers can be remapped with a mapping
 # defined in this dictioinary.
@@ -67,7 +70,9 @@ output_map = {
     l_metal2: my_metal1, # Metal2 from lclayout gets met1 from SKY130
     l_metal2_label: my_metal1_label,
     l_metal2_pin: my_metal1_pin,
-    l_abutment_box: my_abutment_box
+    l_abutment_box: my_abutment_box,
+#    l_pplus: my_pplus,
+#    l_nplus: my_nplus
 }
 
 # Define a list of output writers.
@@ -90,7 +95,9 @@ output_writers = [
             l_pdiffusion: 'pdiffusion',
             l_poly_contact: 'polycont',
             l_pdiff_contact: 'pdiffc',
-            l_ndiff_contact: 'ndiffc'
+            l_ndiff_contact: 'ndiffc',
+#            l_nplus: 'allnactivetap',
+#            l_pplus: 'allpactivetap'
         }
     ),
 
@@ -149,7 +156,8 @@ min_spacing = {
     #(l_via1, l_pdiffusion): 2*l, # NO RULES FOR MCON-DIFF spacing found
     (l_poly_contact, l_pdiff_contact): 170*nm, # (licon.2)
     (l_poly_contact, l_ndiff_contact): 170*nm, # (licon.2)
-
+#    (l_ndiffusion, l_pplus): 75*nm,
+#    (l_pdiffusion, l_nplus): 75*nm,
 }
 
 # Layer for the pins.
@@ -245,14 +253,17 @@ minimum_enclosure = {
     (l_metal1, l_pdiff_contact): 80*nm, # (li.5)
     (l_metal1, l_ndiff_contact): 80*nm, # (li.5)
     (l_metal1, l_poly_contact): 80*nm, # (li.5)
-    (l_metal1, l_via1): 0,# (ct.4)
+    (l_metal1, l_via1): 0*nm, # this was 0,# (ct.4)
     (l_metal2, l_via1): 60*nm,# (m1.4)
 
     # l_*well must overlap l_*diffusion
-    (l_nwell, l_pdiffusion): 180*nm+130*nm, # (difftap.8)
+#    (l_nwell, l_pdiffusion): 180*nm+130*nm, # (difftap.8) # This causes notches, I am trying to get rid of them
     (l_pwell, l_ndiffusion): 180*nm, # (difftap.8)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
+#    (l_nplus, l_ndiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
+#    (l_pplus, l_pdiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
+
 }
 
 # Minimum notch rules.
@@ -300,8 +311,8 @@ via_weights = {
     (l_metal1, l_pdiffusion): 15000, # LICON
     (l_metal1, l_poly): 15000, # LICON
     (l_metal1, l_metal2): 152000, # MCON
-    (l_metal1, l_nplus): 1, # Contact to Well Taps, the value doesn't matter
-    (l_metal1, l_nplus): 1,
+#    (l_metal1, l_nplus): 1, # Contact to Well Taps, the value doesn't matter
+#    (l_metal1, l_pplus): 1,
 
 }
 
