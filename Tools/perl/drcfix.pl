@@ -14,6 +14,7 @@ if(scalar(@ARGV)<1)
 print "Handling $ARGV[0]\n";
 open IN,"<".$ARGV[0];
 my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/; $mag=~s/\.mag\.mag/\.mag/;
+my $output="corr_$mag";
 my $mode=0;
 
 sub form($)
@@ -52,46 +53,92 @@ proc redirect_variable {varname cmd} {
     rename ::tcl::orig::puts puts
 }
 
+proc getCheckpoint {} {
+   redirect_variable undostack {undo print 10}
+   #puts "Undostack: \$undostack"
+   #head=0xd620c840	tail=0xd5b648a0	cur=0xd5b648a0
+   regexp {cur=(0x\\w+)} \$undostack full cur
+   #puts "cur: \$cur"
+   return \$cur
+}
+
+proc undoToCheckpoint {checkpoint} {
+   redirect_variable undostack {undo print 10}
+   regexp {cur=(0x\\w+)} \$undostack full cur
+   regexp {head=(0x\\w+)} \$undostack full head
+
+   if {\$head ne 0x0} {
+     if {\$checkpoint == 0x0} {
+       set checkpoint \$head
+     }
+     set tries 0
+     while {\$cur ne \$checkpoint && \$tries < 200 } {
+       undo
+       redirect_variable undostack {undo print 10}
+       regexp {cur=(0x\\w+)} \$undostack full cur
+       incr tries
+     }
+     if {\$tries > 180} {
+       puts "WARNING: \$tries tries were tried, this is strange"
+       undo print 20
+     }
+   }
+}
+
+#getCheckpoint
+
 proc fix_drc {} {
    drc on
    drc check
    drc catchup
-   redirect_variable drccount {puts [drc count total]}
+   redirect_variable drccount {drc count total}
+   set checkpoint [getCheckpoint]
+   puts "Checkpoint: \$checkpoint"
    set nFixed 0
    set drcc [string trim [string map {"Total DRC errors found: " ""} \$drccount] ]
+   if {\$drcc == 0} return
    set nRounds \$drcc
    puts \$drccount
    #puts \$drcc
    for {set i 0} {\$i < \$nRounds} {incr i} {
      puts "I inside first loop: \$i"
      if {\$drcc > 0} {
-       redirect_variable drcresult {puts [drc find]}
+       redirect_variable drcresult {drc find}
        puts \$drcresult
-       if {[string first "\\[erase" \$drcresult] != -1} {
-         regexp {\\[erase ([^\\]]+)\\]} \$drcresult full layernames
+       if {[string first "\\[" \$drcresult] != -1} {
+         regexp {\\[(erase|paint) ([^\\]]+)\\]} \$drcresult full drccommand layernames
          foreach drcparts [split \$layernames ","] {
            foreach layername [split \$drcparts " "] {
-             puts "Erasing \$layername"
-             set res [erase \$layername]
-	     puts \$res
+             puts "\$drccommand \$layername"
+	     #erase \$layername
+	     \$drccommand \$layername
 	   }
            drc check
            drc catchup
-           redirect_variable drccountnew {puts [drc count total]}
+           redirect_variable drccountnew {drc count total}
            set drccn [string trim [string map {"Total DRC errors found: " ""} \$drccountnew] ]
+	   if {\$drccn == 0} {
+             puts "We have fixed all issues, no need to try more"
+             save $output
+             puts "File $output saved."
+             quit -noprompt
+	   }
            if {\$drccn < \$drcc} {
              puts "Hoory, we fixed a DRC issue"
              incr nFixed 
              set drcc \$drccn
-	     #save corr_$mag
+             set checkpoint [getCheckpoint]
+             puts "New Checkpoint: \$checkpoint"
+	     #save $output
 	     #exit
            } else {
              puts "Trying to fix this DRC issue did not reduce the number of DRC issues (\$drccn vs. \$drcc) so we undo and try something else"
-             foreach layername [split \$drcparts " "] {
-               puts "Undoing \$layername"
-	       #erase \$layername
-               undo
-             }
+	     undoToCheckpoint \$checkpoint
+	     #foreach layername [split \$drcparts " "] {
+	     #  puts "Undoing \$layername"
+	     #  #erase \$layername
+	     #  undo
+	     #}
            }
 	 }
        }
@@ -99,9 +146,9 @@ proc fix_drc {} {
    }
 
    if {\$nFixed >0} {
-      puts "We have fixed some issues, now we save the file"
-      save corr_$mag
-      puts "File saved."
+      puts "We have fixed some issues, \$drccn issues are remaining, we give up and save the file now."
+      save $output
+      puts "File $output saved."
    }	   
 }   
 puts "Trying to FIX some DRC issues"
