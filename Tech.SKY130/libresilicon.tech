@@ -2723,7 +2723,8 @@ drc
 # DNWELL
 #-----------------------------
 
- width dnwell 3000 "Deep N-well width < %d (Dnwell 2)"
+ # ORIGINAL RULE: width dnwell 3000 "Deep N-well width < %d (Dnwell 2)"
+  width dnwell 3000 "Deep N-well width < %d (Dnwell 2) [paint dnwell]"
   spacing dnwell dnwell 6300 touching_ok "Deep N-well spacing < %d (Dnwell 3) [erase dnwell]"
   spacing dnwell allnwell 4500 surround_ok "Deep N-well spacing to N-well < %d (Nwell 7) [erase dnwell,nwell obswell]"
  cifmaxwidth nwell_missing 0 bend_illegal \
@@ -2735,7 +2736,8 @@ drc
 # NWELL
 #-----------------------------
 
- width allnwell 840 "N-well width < %d (Nwell 1)"
+ # ORIGINAL RULE: width allnwell 840 "N-well width < %d (Nwell 1)"
+  width allnwell 840 "N-well width < %d (Nwell 1) [paint nwell,obswell]"
   spacing allnwell allnwell 1270 touching_ok "N-well spacing < %d (Nwell 2a) [erase nwell obswell]"
 
 #-----------------------------
@@ -2746,12 +2748,14 @@ drc
 	150 "Diffusion width < %d (Diff/tap 1)"
  width *mvndiff,mvnfet,mvnnfet,*mvndiode,*nndiode,mvndiffres,*mvpdiff,mvpfet,*mvpdiode 290 \
 	"MV Diffusion width < %d (Diff/tap 14)"
- width *mvnsd,*mvpsd 150 "MV Tap width < %d (Diff/tap 1)"
+ # ORIGINAL RULE: width *mvnsd,*mvpsd 150 "MV Tap width < %d (Diff/tap 1)"
+  width *mvnsd,*mvpsd 150 "MV Tap width < %d (Diff/tap 1) [paint mvnsubstratencontact,mvnsubstratendiff,mvpsubstratepcontact,mvpsubstratepdiff]"
  extend *mvpsd *mvndiff 700 "MV Butting tap length < %d (Diff/tap 16)"
  extend *mvnsd *mvpdiff 700 "MV Butting tap length < %d (Diff/tap 16)"
  extend *psd *ndiff 290 "Butting tap length < %d (Diff/tap 4)"
  extend *nsd *pdiff 290 "Butting tap length < %d (Diff/tap 4)"
- width mvpdiffres 150 "MV P-Diffusion resistor width < %d (Diff/tap 14a)"
+ # ORIGINAL RULE: width mvpdiffres 150 "MV P-Diffusion resistor width < %d (Diff/tap 14a)"
+  width mvpdiffres 150 "MV P-Diffusion resistor width < %d (Diff/tap 14a) [paint mvpdiffres]"
   spacing alldifflv,var,varhvt alldifflv,var,varhvt 270 touching_ok "Diffusion spacing < %d (Diff/tap 3) [erase ndcontact ndiffres ndiffusion ndiode ndiodec nfetlvt nsonos nsubstratencontact nsubstratendiff ntransistor pdcontact pdiffres pdiffusion pdiode pdiodec pfethvt pfetlvt psubstratepcontact psubstratepdiff ptransistor scntransistor scptransistor varactor varactorhvt]"
   spacing alldiffmvnontap,mvvar alldiffmvnontap,mvvar 300 touching_ok "MV Diffusion spacing < %d (Diff/tap 15a) [erase mvndcontact mvndiffres mvndiffusion mvndiode mvndiodec mvnntransistor mvntransistor mvpdcontact mvpdiffres mvpdiffusion mvpdiode mvpdiodec mvptransistor mvvaractor nndiode nndiodec]"
   spacing alldiffmv *mvnsd,*mvpsd 270 touching_ok "MV Diffusion to MV tap spacing < %d (Diff/tap 3) [erase mvndcontact mvndiffres mvndiffusion mvndiode mvndiodec mvnntransistor mvnsubstratencontact mvnsubstratendiff mvntransistor mvpdcontact mvpdiffres mvpdiffusion mvpdiode mvpdiodec mvpsubstratepcontact mvpsubstratepdiff mvptransistor nndiode nndiodec,mvnsubstratencontact mvnsubstratendiff mvpsubstratepcontact mvpsubstratepdiff]"
@@ -2803,7 +2807,8 @@ drc
 # POLY
 #-----------------------------
 
- width allpoly 150 "Poly width < %d (Poly 1a)"
+ # ORIGINAL RULE: width allpoly 150 "Poly width < %d (Poly 1a)"
+  width allpoly 150 "Poly width < %d (Poly 1a) [paint mvnntransistor,mvntransistor,mvptransistor,mvvaractor,nfetlvt,npolyres,nsonos,ntransistor,pcontact,pfethvt,pfetlvt,polysilicon,ppolyres,ptransistor,rmp,scntransistor,scptransistor,varactor,varactorhvt,xpolycontact,xpolyres]"
   spacing allpoly allpoly 210 touching_ok "Poly spacing < %d (Poly 2) [erase mvnntransistor mvntransistor mvptransistor mvvaractor nfetlvt npolyres nsonos ntransistor pcontact pfethvt pfetlvt polysilicon ppolyres ptransistor rmp scntransistor scptransistor varactor varactorhvt xpolycontact xpolyres]"
  spacing allpolynonfet alldifflvnonfet 75 corner_ok allfets \
 	"Poly spacing to Diffusion < %d (Poly 4a)"
@@ -2830,22 +2835,36 @@ drc
 # CONT (LICON, contact between poly/diff and LI)
 #--------------------------------------------------------------------
 
- width ndc/li 170 "N-diffusion contact width < %d (LIcon 1)"
- width nsc/li 170 "N-tap contact width     < %d (LIcon 1)"
- width pdc/li 170 "P-diffusion contact width < %d (LIcon 1)"
- width psc/li 170 "P-tap contact width     < %d (LIcon 1)"
- width ndic/li 170 "N-diode contact width < %d (LIcon 1)"
- width pdic/li 170 "P-diode contact width < %d (LIcon 1)"
- width pc/li  170 "Poly contact width        < %d (LIcon 1)"
+ # ORIGINAL RULE: width ndc/li 170 "N-diffusion contact width < %d (LIcon 1)"
+  width ndc/li 170 "N-diffusion contact width < %d (LIcon 1) [paint ndcontact/li]"
+ # ORIGINAL RULE: width nsc/li 170 "N-tap contact width     < %d (LIcon 1)"
+  width nsc/li 170 "N-tap contact width     < %d (LIcon 1) [paint nsubstratencontact/li]"
+ # ORIGINAL RULE: width pdc/li 170 "P-diffusion contact width < %d (LIcon 1)"
+  width pdc/li 170 "P-diffusion contact width < %d (LIcon 1) [paint pdcontact/li]"
+ # ORIGINAL RULE: width psc/li 170 "P-tap contact width     < %d (LIcon 1)"
+  width psc/li 170 "P-tap contact width     < %d (LIcon 1) [paint psubstratepcontact/li]"
+ # ORIGINAL RULE: width ndic/li 170 "N-diode contact width < %d (LIcon 1)"
+  width ndic/li 170 "N-diode contact width < %d (LIcon 1) [paint ndiodec/li]"
+ # ORIGINAL RULE: width pdic/li 170 "P-diode contact width < %d (LIcon 1)"
+  width pdic/li 170 "P-diode contact width < %d (LIcon 1) [paint pdiodec/li]"
+ # ORIGINAL RULE: width pc/li  170 "Poly contact width        < %d (LIcon 1)"
+  width pc/li 170 "Poly contact width        < %d (LIcon 1) [paint pcontact/li]"
 
- width xpc/li  350 "Poly resistor contact width < %d (LIcon 1b + 2 * LI 5)"
+ # ORIGINAL RULE: width xpc/li  350 "Poly resistor contact width < %d (LIcon 1b + 2 * LI 5)"
+  width xpc/li 350 "Poly resistor contact width < %d (LIcon 1b + 2 * LI 5) [paint xpolycontact/li]"
 
- width mvndc/li 170 "N-diffusion contact width < %d (LIcon 1)"
- width mvnsc/li 170 "N-tap contact width     < %d (LIcon 1)"
- width mvpdc/li 170 "P-diffusion contact width < %d (LIcon 1)"
- width mvpsc/li 170 "P-tap contact width     < %d (LIcon 1)"
- width mvndic/li 170 "N-diode contact width < %d (LIcon 1)"
- width mvpdic/li 170 "P-diode contact width < %d (LIcon 1)"
+ # ORIGINAL RULE: width mvndc/li 170 "N-diffusion contact width < %d (LIcon 1)"
+  width mvndc/li 170 "N-diffusion contact width < %d (LIcon 1) [paint mvndcontact/li]"
+ # ORIGINAL RULE: width mvnsc/li 170 "N-tap contact width     < %d (LIcon 1)"
+  width mvnsc/li 170 "N-tap contact width     < %d (LIcon 1) [paint mvnsubstratencontact/li]"
+ # ORIGINAL RULE: width mvpdc/li 170 "P-diffusion contact width < %d (LIcon 1)"
+  width mvpdc/li 170 "P-diffusion contact width < %d (LIcon 1) [paint mvpdcontact/li]"
+ # ORIGINAL RULE: width mvpsc/li 170 "P-tap contact width     < %d (LIcon 1)"
+  width mvpsc/li 170 "P-tap contact width     < %d (LIcon 1) [paint mvpsubstratepcontact/li]"
+ # ORIGINAL RULE: width mvndic/li 170 "N-diode contact width < %d (LIcon 1)"
+  width mvndic/li 170 "N-diode contact width < %d (LIcon 1) [paint mvndiodec/li]"
+ # ORIGINAL RULE: width mvpdic/li 170 "P-diode contact width < %d (LIcon 1)"
+  width mvpdic/li 170 "P-diode contact width < %d (LIcon 1) [paint mvpdiodec/li]"
 
   spacing allpdiffcont allndiffcont 170 touching_illegal "Diffusion contact spacing < %d (LIcon 2) [erase mvpdcontact mvpdiodec mvpsubstratepcontact pdcontact pdiodec pdiodehvtc pdiodelvtc psubstratepcontact,mvndcontact mvndiodec mvnsubstratencontact ndcontact ndiodec ndiodelvtc nndiodec nsubstratencontact]"
   spacing allndiffcont allndiffcont 170 touching_ok "Diffusion contact spacing < %d (LIcon 2) [erase mvndcontact mvndiodec mvnsubstratencontact ndcontact ndiodec ndiodelvtc nndiodec nsubstratencontact]"
@@ -2899,8 +2918,10 @@ drc
 # LI - Local interconnect layer
 #-------------------------------------------------------------
 
- width *li,rli 170 "Local interconnect width < %d (LI 1)"
- width coreli 140 "Core local interconnect width < %d (LI c1)"
+ # ORIGINAL RULE: width *li,rli 170 "Local interconnect width < %d (LI 1)"
+  width *li,rli 170 "Local interconnect width < %d (LI 1) [paint licon,locali,mvndcontact,mvndiodec,mvnsubstratencontact,mvpdcontact,mvpdiodec,mvpsubstratepcontact,ndcontact,ndiodec,ndiodelvtc,nndiodec,nsubstratencontact,pcontact,pdcontact,pdiodec,pdiodehvtc,pdiodelvtc,psubstratepcontact,rlocali,xpolycontact]"
+ # ORIGINAL RULE: width coreli 140 "Core local interconnect width < %d (LI c1)"
+  width coreli 140 "Core local interconnect width < %d (LI c1) [paint corelocali]"
   spacing allli allli,*obsli 170 touching_ok "Local interconnect spacing < %d (LI 3) [erase corelocali licon locali mvndcontact mvndiodec mvnsubstratencontact mvpdcontact mvpdiodec mvpsubstratepcontact ndcontact ndiodec ndiodelvtc nndiodec nsubstratencontact pcontact pdcontact pdiodec pdiodehvtc pdiodelvtc psubstratepcontact rlocali xpolycontact,corelocali licon locali mvndcontact mvndiodec mvnsubstratencontact mvpdcontact mvpdiodec mvpsubstratepcontact ndcontact ndiodec ndiodelvtc nndiodec nsubstratencontact obsli1 obslicon pcontact pdcontact pdiodec pdiodehvtc pdiodelvtc psubstratepcontact rlocali xpolycontact]"
   spacing coreli allli,*obsli 140 touching_ok "Core local interconnect spacing < %d (LI c2) [erase corelocali,corelocali licon locali mvndcontact mvndiodec mvnsubstratencontact mvpdcontact mvpdiodec mvpsubstratepcontact ndcontact ndiodec ndiodelvtc nndiodec nsubstratencontact obsli1 obslicon pcontact pdcontact pdiodec pdiodehvtc pdiodelvtc psubstratepcontact rlocali xpolycontact]"
 
@@ -2916,7 +2937,8 @@ drc
 # MCON - Contact between local interconnect and metal1
 #-------------------------------------------------------------
 
- width lic/m1 170 "Mcon width < %d (Mcon 1)"
+ # ORIGINAL RULE: width lic/m1 170 "Mcon width < %d (Mcon 1)"
+  width lic/m1 170 "Mcon width < %d (Mcon 1) [paint licon/m1]"
   spacing lic/m1 lic/m1,obslic/m1 170 touching_ok "Mcon spacing < %d (Mcon 2) [erase licon/m1,licon/m1 obslicon/m1]"
 
  exact_overlap lic/m1
@@ -2925,7 +2947,8 @@ drc
 # METAL1 -
 #-------------------------------------------------------------
 
- width *m1,rm1 140 "Metal1 width < %d (Met1 1)"
+ # ORIGINAL RULE: width *m1,rm1 140 "Metal1 width < %d (Met1 1)"
+  width *m1,rm1 140 "Metal1 width < %d (Met1 1) [paint licon,m2contact,metal1,padl,rmetal1]"
   spacing allm1 allm1,*obsm1 140 touching_ok "Metal1 spacing < %d (Met1 2) [erase licon m2contact metal1 padl rmetal1,licon m2contact metal1 obslicon obsm1 padl rmetal1]"
  area allm1,*obsm1 83000 140 "Metal1 minimum area < %a (Met1 6)"
 
@@ -2947,7 +2970,8 @@ variants *
 # VIA1
 #--------------------------------------------------
 
- width v1/m1 260 "Via1 width < %d (Via 1a + 2 * Via 4a)"
+ # ORIGINAL RULE: width v1/m1 260 "Via1 width < %d (Via 1a + 2 * Via 4a)"
+  width v1/m1 260 "Via1 width < %d (Via 1a + 2 * Via 4a) [paint m2contact/m1]"
   spacing v1 v1 60 touching_ok "Via1 spacing < %d (Via 2 - 2 * Via 4a) [erase m2contact]"
   surround v1/m1 *m1 30 directional "Metal1 overlap of Via1 < %d in one direction (Via 5a - Via 4a) [erase m2contact/m1,licon m2contact metal1 padl]"
   surround v1/m2 *m2 30 directional "Metal2 overlap of Via1 < %d in one direction (Met2 5 - Met2 4) [erase m2contact/m2,m2contact m3contact metal2 padl]"
@@ -2958,7 +2982,8 @@ variants *
 # METAL2 - 
 #--------------------------------------------------
 
- width allm2 140 "Metal2 width < %d (Met2 1)"
+ # ORIGINAL RULE: width allm2 140 "Metal2 width < %d (Met2 1)"
+  width allm2 140 "Metal2 width < %d (Met2 1) [paint m2contact,m3contact,metal2,padl,rmetal2]"
   spacing allm2 allm2,obsm2 140 touching_ok "Metal2 spacing < %d (Met2 2) [erase m2contact m3contact metal2 padl rmetal2,m2contact m3contact metal2 obsm2 padl rmetal2]"
  area allm2,obsm2 67600 140 "Metal2 minimum area < %a (Met2 6)"
 
@@ -2977,7 +3002,8 @@ variants *
 # VIA2
 #--------------------------------------------------
 
- width v2/m2 280 "Via2 width < %d (Via2 1a + 2 * Via2 4)"
+ # ORIGINAL RULE: width v2/m2 280 "Via2 width < %d (Via2 1a + 2 * Via2 4)"
+  width v2/m2 280 "Via2 width < %d (Via2 1a + 2 * Via2 4) [paint m3contact/m2]"
 
   spacing v2 v2 120 touching_ok "Via2 spacing < 0.24um (Via2 2 - 2 * Via2 4) [erase m3contact]"
 
@@ -2990,7 +3016,8 @@ variants *
 # METAL3 - 
 #--------------------------------------------------
 
- width allm3 300 "Metal3 width < %d (Met3 1)"
+ # ORIGINAL RULE: width allm3 300 "Metal3 width < %d (Met3 1)"
+  width allm3 300 "Metal3 width < %d (Met3 1) [paint m3contact,metal3,padl,rmetal3,via3]"
   spacing allm3 allm3,obsm3 300 touching_ok "Metal3 spacing < %d (Met3 2) [erase m3contact metal3 padl rmetal3 via3,m3contact metal3 obsm3 padl rmetal3 via3]"
  area allm3,obsm3 240000 300 "Metal3 minimum area < %a (Met3 6)"
 
@@ -3006,7 +3033,8 @@ variants *
 # VIA3 - Requires 1 Module
 #--------------------------------------------------
 
- width v3/m3 320 "Via3 width < %d (Via3 1 + 2 * Via3 4)"
+ # ORIGINAL RULE: width v3/m3 320 "Via3 width < %d (Via3 1 + 2 * Via3 4)"
+  width v3/m3 320 "Via3 width < %d (Via3 1 + 2 * Via3 4) [paint via3/m3]"
   spacing v3 v3 80 touching_ok "Via3 spacing < %d (Via3 2 - 2 * Via3 4) [erase via3]"
   surround v3/m3 *m3 30 directional "Metal3 overlap of Via3 in one direction < %d (Via3 5 - Via3 4) [erase via3/m3,m3contact metal3 padl via3]"
   surround v3/m4 *m4 5 absence_illegal "Metal4 overlap of Via3 < %d (Met4 3 - Via3 4) [erase via3/m4,metal4 mimcapcontact padl via3 via4]"
@@ -3019,7 +3047,8 @@ variants *
 
 variants *
 
- width allm4 300 "Metal4 width < %d (Met4 1)"
+ # ORIGINAL RULE: width allm4 300 "Metal4 width < %d (Met4 1)"
+  width allm4 300 "Metal4 width < %d (Met4 1) [paint metal4,mimcapcontact,padl,rmetal4,via3,via4]"
   spacing allm4 allm4,obsm4 300 touching_ok "Metal4 spacing < %d (Met4 2) [erase metal4 mimcapcontact padl rmetal4 via3 via4,metal4 mimcapcontact obsm4 padl rmetal4 via3 via4]"
  area allm4,obsm4 240000 300 "Metal4 minimum area < %a (Met4 4a)"
 
@@ -3034,7 +3063,8 @@ variants *
 # VIA4 - Requires 1 Module
 #--------------------------------------------------
 
- width v4/m4 1180 "Via4 width < %d (Via4 1 + 2 * Via4 4)"
+ # ORIGINAL RULE: width v4/m4 1180 "Via4 width < %d (Via4 1 + 2 * Via4 4)"
+  width v4/m4 1180 "Via4 width < %d (Via4 1 + 2 * Via4 4) [paint via4/m4]"
   spacing v4 v4 420 touching_ok "Via4 spacing < %d (Via4 2 - 2 * Via4 4) [erase via4]"
   surround v4/m5 *m5 120 absence_illegal "Metal5 overlap of Via4 < %d (Met5 3 - Via4 4) [erase via4/m5,metal5 mimcap2contact padl via4]"
 
@@ -3044,7 +3074,8 @@ variants *
 # 1 - 1 Module
 #-----------------------------
 
- width allm5 1600 "Metal5 width < %d (Met5 1)"
+ # ORIGINAL RULE: width allm5 1600 "Metal5 width < %d (Met5 1)"
+  width allm5 1600 "Metal5 width < %d (Met5 1) [paint metal5,mimcap2contact,padl,rmetal5,via4]"
   spacing allm5 allm5,obsm5 1600 touching_ok "Metal5 spacing < %d (Met5 2) [erase metal5 mimcap2contact padl rmetal5 via4,metal5 mimcap2contact obsm5 padl rmetal5 via4]"
  area allm5,obsm5 4000000 1600 "Metal5 minimum area < %a (Met5 4)"
 
@@ -3056,7 +3087,8 @@ variants *
 
  extend allfets *poly 420 "Transistor width < %d (Diff/tap 2)"
  # Except:  Note that standard cells allow transistor width minimum 0.36um
- width pfetlvt 350 "LVT PMOS gate length < %d (Poly 1b)"
+ # ORIGINAL RULE: width pfetlvt 350 "LVT PMOS gate length < %d (Poly 1b)"
+  width pfetlvt 350 "LVT PMOS gate length < %d (Poly 1b) [paint pfetlvt]"
 
   spacing *nsd,*mvnsd allpolynonfet 55 touching_illegal "N-tap spacing to field poly < %d (Poly 5) [erase mvnsubstratencontact mvnsubstratendiff nsubstratencontact nsubstratendiff,npolyres pcontact polysilicon ppolyres rmp xpolycontact xpolyres]"
   spacing *psd,*mvpsd allpolynonfet 55 touching_illegal "P-tap spacing to field poly < %d (Poly 5) [erase mvpsubstratepcontact mvpsubstratepdiff psubstratepcontact psubstratepdiff,npolyres pcontact polysilicon ppolyres rmp xpolycontact xpolyres]"
@@ -3097,20 +3129,23 @@ variants *
 # mrp1 (N+ poly resistor)
 #--------------------------------------------------
 
-  width mrp1 330 "mrp1 resistor width < %d (Poly 3)"
+ # ORIGINAL RULE:  width mrp1 330 "mrp1 resistor width < %d (Poly 3)"
+  width mrp1 330 "mrp1 resistor width < %d (Poly 3) [paint npolyres]"
 
 #--------------------------------------------------
 # xhrpoly (P+ poly resistor)
 #--------------------------------------------------
 
-  width xhrpoly 350 "xhrpoly resistor width < %d (P+ Poly 1a)"
+ # ORIGINAL RULE:  width xhrpoly 350 "xhrpoly resistor width < %d (P+ Poly 1a)"
+  width xhrpoly 350 "xhrpoly resistor width < %d (P+ Poly 1a) [paint ppolyres]"
   # NOTE: xhrpoly resistor requires choice of discrete widths 0.35, 0.69, ... up to 1.27.
 
 #--------------------------------------------------
 # uhrpoly (P+ poly resistor, 2kOhm/sq)
 #--------------------------------------------------
 
-  width uhrpoly 350 "uhrpoly resistor width < %d"
+ # ORIGINAL RULE:  width uhrpoly 350 "uhrpoly resistor width < %d"
+  width uhrpoly 350 "uhrpoly resistor width < %d [paint xpolyres]"
   spacing xhrpoly,uhrpoly,xpc alldiff 480 touching_illegal "xhrpoly/uhrpoly resistor spacing to diffusion < %d (Poly 9) [erase ppolyres xpolycontact xpolyres,mvndcontact mvndiffres mvndiffusion mvndiode mvndiodec mvnntransistor mvnsubstratencontact mvnsubstratendiff mvntransistor mvpdcontact mvpdiffres mvpdiffusion mvpdiode mvpdiodec mvpsubstratepcontact mvpsubstratepdiff mvptransistor ndcontact ndiffres ndiffusion ndiode ndiodec nfetlvt nndiode nndiodec nsonos nsubstratencontact nsubstratendiff ntransistor pdcontact pdiffres pdiffusion pdiode pdiodec pfethvt pfetlvt psubstratepcontact psubstratepdiff ptransistor scntransistor scptransistor]"
 
 #------------------------------------
@@ -3123,14 +3158,16 @@ variants *
  overhang *mvnsd mvvar 250 \
  "N-Tap overhang of Varactor < %d (Var 4)"
 
- width var,varhvt,mvvar 180 "Varactor length < %d (Var 1)"
+ # ORIGINAL RULE: width var,varhvt,mvvar 180 "Varactor length < %d (Var 1)"
+  width var,varhvt,mvvar 180 "Varactor length < %d (Var 1) [paint mvvaractor,varactor,varactorhvt]"
  extend var,varhvt,mvvar *poly 1000 "Varactor width < %d (Var 2)"
 
 #-----------------------------------------------------------
 # MiM CAP (CAPM) - 
 #-----------------------------------------------------------
 
- width *mimcap 2000 "MiM cap width < %d (Capm 1)"
+ # ORIGINAL RULE: width *mimcap 2000 "MiM cap width < %d (Capm 1)"
+  width *mimcap 2000 "MiM cap width < %d (Capm 1) [paint mimcap,mimcapcontact]"
   spacing *mimcap *mimcap 840 touching_ok "MiM cap spacing < %d (Capm 2a) [erase mimcap mimcapcontact]"
   spacing *mimcap via2/m3 1270 touching_illegal "MiM cap spacing to via2 < %d (Capm 5) [erase mimcap mimcapcontact,m3contact/m3]"
   surround *mimcc *mimcap 200 absence_illegal "MiM cap must surround MiM cap contact by %d (Capm 4) [erase mimcapcontact,mimcap mimcapcontact]"
@@ -3145,12 +3182,14 @@ variants *
 
  # MiM cap contact rules (VIA3)
 
- width mimcc/m3 320 "MiM cap contact width < %d (Via3 1 + 2 * Via3 4)"
+ # ORIGINAL RULE: width mimcc/m3 320 "MiM cap contact width < %d (Via3 1 + 2 * Via3 4)"
+  width mimcc/m3 320 "MiM cap contact width < %d (Via3 1 + 2 * Via3 4) [paint mimcapcontact/m3]"
   spacing mimcc mimcc 80 touching_ok "MiM cap contact spacing < %d (Via3 2 - 2 * Via3 4) [erase mimcapcontact]"
   surround mimcc/m4 *m4 5 directional "Metal4 overlap of MiM cap contact in one direction < %d (Met4 3 - Via3 4) [erase mimcapcontact/m4,metal4 mimcapcontact padl via3 via4]"
  exact_overlap mimcc/m3
 
- width *mimcap2 2000 "MiM cap width < %d (Cap2m 1)"
+ # ORIGINAL RULE: width *mimcap2 2000 "MiM cap width < %d (Cap2m 1)"
+  width *mimcap2 2000 "MiM cap width < %d (Cap2m 1) [paint mimcap2,mimcap2contact]"
   spacing *mimcap2 *mimcap2 840 touching_ok "MiM cap spacing < %d (Cap2m 2a) [erase mimcap2 mimcap2contact]"
   spacing *mimcap2 via3/m4 1270 touching_illegal "MiM cap spacing to via3 < %d (Cap2m 5) [erase mimcap2 mimcap2contact,via3/m4]"
   surround *mim2cc *mimcap2 200 absence_illegal "MiM cap must surround MiM cap contact by %d (Cap2m 4) [erase mimcap2contact,mimcap2 mimcap2contact]"
@@ -3165,7 +3204,8 @@ variants *
 
  # MiM cap contact rules (VIA4)
 
- width mim2cc/m4 1180 "MiM2 cap contact width < %d (Via4 1 + 2 * Via4 4)"
+ # ORIGINAL RULE: width mim2cc/m4 1180 "MiM2 cap contact width < %d (Via4 1 + 2 * Via4 4)"
+  width mim2cc/m4 1180 "MiM2 cap contact width < %d (Via4 1 + 2 * Via4 4) [paint mimcap2contact/m4]"
   spacing mim2cc mim2cc 420 touching_ok "MiM2 cap contact spacing < %d (Via4 2 - 2 * Via4 4) [erase mimcap2contact]"
   surround mim2cc/m5 *m5 120 absence_illegal "Metal5 overlap of MiM2 cap contact < %d (Met5 3 - Via4 4) [erase mimcap2contact/m5,metal5 mimcap2contact padl via4]"
  exact_overlap mim2cc/m4
