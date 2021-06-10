@@ -2,7 +2,7 @@
 
 if(scalar(@ARGV)<1)
 { 
-  print "Usage: drcfix.pl report.drc\n";
+  print "Usage: drcfix.pl problematic.mag [techfile.tech]\n";
   exit;	
 }
 
