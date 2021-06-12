@@ -77,6 +77,8 @@ foreach(@cells)
 magic
 tech $usedtech
 timestamp $now
+<< checkpaint >>
+rect -100 -100 10000 10000
 EOF
 ;
     $printedheader=1;
@@ -86,6 +88,7 @@ EOF
 
   my $height=$maxs[0]-$mins[0];
   my $width=$maxs[1]-$mins[1];
+  print STDERR "Cell-Width: $width Cell-Height: $height\n";
 
   my $dir=($row%2)?"-1":"1";
 
@@ -104,8 +107,8 @@ EOF
   print "box 0 0 $width $height\n";
   #print STDERR "$name $width $height\n";
 
-  my $lx=$x+$width/2;
-  my $ly=$y+$height/2;
+  my $lx=$x+int($width/2);
+  my $ly=$y+int($height/2);
 
   $labels.="flabel space $lx $ly $lx $ly 0 FreeSans 80 0 0 0 $name\n";
 
