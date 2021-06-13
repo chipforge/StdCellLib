@@ -54,26 +54,33 @@ proc redirect_variable {varname cmd} {
 }
 
 proc getCheckpoint {} {
+   #save checkpoint
+   #return
    redirect_variable undostack {undo print 10}
    #puts "Undostack: \$undostack"
    #head=0xd620c840	tail=0xd5b648a0	cur=0xd5b648a0
    regexp {cur=(0x\\w+)} \$undostack full cur
    #puts "cur: \$cur"
+   undo print 20
    return \$cur
 }
 
 proc undoToCheckpoint {checkpoint} {
+   #load checkpoint
+   #return
    redirect_variable undostack {undo print 10}
    regexp {cur=(0x\\w+)} \$undostack full cur
    regexp {head=(0x\\w+)} \$undostack full head
-
+   #undo print 20
    if {\$head ne 0x0} {
      if {\$checkpoint == 0x0} {
        set checkpoint \$head
      }
      set tries 0
-     while {\$cur ne \$checkpoint && \$tries < 200 } {
+     while {\$cur ne \$checkpoint && \$cur ne 0x0 && \$tries < 200 } {
+       puts "Undo ..."
        undo
+       undo print 20
        redirect_variable undostack {undo print 10}
        regexp {cur=(0x\\w+)} \$undostack full cur
        incr tries
@@ -91,6 +98,7 @@ proc fix_drc {} {
    drc on
    drc check
    drc catchup
+   drc listall catchup
    redirect_variable drccount {drc count total}
    set checkpoint [getCheckpoint]
    puts "Checkpoint: \$checkpoint"
@@ -100,7 +108,7 @@ proc fix_drc {} {
    set nRounds \$drcc
    puts \$drccount
    #puts \$drcc
-   for {set i 0} {\$i < \$nRounds} {incr i} {
+   for {set i 0} {\$i <= \$nRounds + 10 } {incr i} {
      puts "I inside first loop: \$i"
      if {\$drcc > 0} {
        redirect_variable drcresult {drc find}
