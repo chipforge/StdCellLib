@@ -129,6 +129,8 @@ EOF
     unlink "$cellname.al";
     unlink "$cellname.res.lump";
     unlink "$cellname.sim";
+    unlink "$cellname.drclog";
+
     print "First magic call:\n";
     step("NEXT STEP: magic2");
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
@@ -178,14 +180,31 @@ EOF
     system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
     step("NEXT STEP: DRC Fix");
-    system "../Tools/perl/drcfix.pl $cellname.mag.drc";
+    system "../Tools/perl/drcfix.pl $cellname.mag";
     if(-f "corr.$cellname.mag")
     {
       unlink "$cellname.mag";
       rename "corr.$cellname.mag","$cellname.mag";
-      print "DRC errors in $cellname corrected. Now running final DRC check:\n";
+
+      step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
+      system "../Tools/perl/drcfix.pl $cellname.mag";
+      unlink "$cellname.mag";
+      rename "corr.$cellname.mag","$cellname.mag";
+
       step("NEXT STEP: Final DRC check");
+      print "DRC errors in $cellname corrected. Now running final DRC check:\n";
       system "../Tools/perl/drccheck.pl $cellname.mag";
+
+      step("NEXT STEP: mag2gds");
+      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
+      print OUT <<EOF
+gds
+quit -noprompt
+EOF
+;
+      unlink "outputlib/$cellname.gds";
+      rename "$cellname.gds","outputlib/$cellname.gds";
+
     }
 
     step("NEXT STEP: Generating Liberty Template");
