@@ -31,7 +31,7 @@ my $counter=0;
 our $x=0;
 our $y=0;
 
-my $now=time();
+my $now=0; # time(); # 0 indicates that DRC needs to be run
 
 my $usedtech="scmos";
 
@@ -47,14 +47,14 @@ foreach(@cells)
   my @maxs=();
   my $mag=$_; $mag=~s/\.cell$/.mag/;
   my $name=$_; $name=~s/\.cell$//;
-  my $timestamp="1";
+  my $timestamp="0"; # Indicates that DRC needs to be run
 
   if(open(IN,"<$mag"))
   {
     while(<IN>)
     {
       $usedtech=$1 if(m/^tech (\w+)/);
-      $timestamp=$1 if(m/^timestamp (\d+)/);	      
+      #$timestamp=$1 if(m/^timestamp (\d+)/);	      
       if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
       { 
         #print STDERR "$name min:@mins max:@maxs $_";
@@ -100,7 +100,6 @@ EOF
     $bx=$x+$width;
     $by=$y+$height+$mins[0];
   }
-
   print "use $name  $name"."_0\n";
   print "timestamp $timestamp\n";
   print "transform $dir 0 $bx 0 $dir $by\n";
