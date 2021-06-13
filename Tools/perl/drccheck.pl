@@ -5,7 +5,7 @@ my $mag=$ARGV[0] || ""; $mag=~s/\.mag$//i;
 my $tech=$ARGV[1] || "../Tech/libresilicon.tech";
 
 print "drccheck.pl - Check DRC rules with magic\n";
-print "Usage: drccheck.pl input.mag\n";
+print "Usage: drccheck.pl input.mag\n" if(scalar(@ARGV)<1);
 
 my $style="drc(fast)"; # "drc(full)";
 
