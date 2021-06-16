@@ -51,10 +51,17 @@ foreach(@cells)
 
   if(open(IN,"<$mag"))
   {
+    my $layer="";
     while(<IN>)
     {
       $usedtech=$1 if(m/^tech (\w+)/);
       #$timestamp=$1 if(m/^timestamp (\d+)/);	      
+      #
+      if(m/^<< (\w+) >>/)
+      {
+        $layer=$1;
+      }
+      next if($layer eq "checkpaint"); 
       if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
       { 
         #print STDERR "$name min:@mins max:@maxs $_";
@@ -69,6 +76,9 @@ foreach(@cells)
     close IN;
   }
   next unless(defined($maxs[0]));
+
+  print STDERR "$name maxs: ".join("/",@maxs)." ";
+  print STDERR "mins: ".join("/",@mins)." ";
 
 
   if(!$printedheader)
@@ -86,19 +96,19 @@ EOF
 
 
 
-  my $height=$maxs[0]-$mins[0];
+  my $height=$maxs[0]+$mins[0];
   my $width=$maxs[1]-$mins[1];
   print STDERR "Cell-Width: $width Cell-Height: $height\n";
 
   my $dir=($row%2)?"-1":"1";
 
   my $bx=$x;
-  my $by=$y-$mins[0];
+  my $by=$y; # -$mins[0];
 
   if($row%2)
   {
     $bx=$x+$width;
-    $by=$y+$height+$mins[0];
+    $by=$y+$height; # +$mins[0];
   }
   print "use $name  $name"."_0\n";
   print "timestamp $timestamp\n";
