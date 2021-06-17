@@ -47,9 +47,10 @@ my_metal2 = (69, 20)
 my_metal2_label = (69, 5)
 my_metal2_pin = (69, 16)
 my_abutment_box = (235, 4) # prBndry  ???
+#my_outline = (235, 5) # 
 
-#my_pplus = (65,44) # TAP.DRAWING
-#my_nplus = (65,44) # TAP.DRAWING
+my_pplus = (65,44) # TAP.DRAWING
+my_nplus = (65,44) # TAP.DRAWING
 
 # lclayout internally uses its own layer numbering scheme.
 # For the final output the layers can be remapped with a mapping
@@ -71,8 +72,9 @@ output_map = {
     l_metal2_label: my_metal1_label,
     l_metal2_pin: my_metal1_pin,
     l_abutment_box: my_abutment_box,
-#    l_pplus: my_pplus,
-#    l_nplus: my_nplus
+    #l_outline: my_outline,
+    l_pplus: my_pplus,
+    l_nplus: my_nplus
 }
 
 # Define a list of output writers.
@@ -96,15 +98,16 @@ output_writers = [
             l_poly_contact: 'polycont',
             l_pdiff_contact: 'pdiffc',
             l_ndiff_contact: 'ndiffc',
-#            l_nplus: 'allnactivetap',
-#            l_pplus: 'allpactivetap'
+            l_nplus: 'allnactivetap',
+            l_pplus: 'allpactivetap'
         }
     ),
 
     LefWriter(
         db_unit=1e-6, # LEF Fileformat always needs Microns
-        output_map=output_map,
-        use_rectangles_only=True
+        obstruction_output_map=output_map,
+        use_rectangles_only=True,
+        site="unit"
     ),
 
     GdsWriter(
@@ -133,7 +136,9 @@ routing_layers = {
 # Minimum spacing rules for layer pairs.
 min_spacing = {
     (l_ndiffusion, l_ndiffusion): 270*nm, # (difftap.3)
+    #(l_ndiffusion, l_outline): 270/2*nm, # (difftap.3)
     (l_pdiffusion, l_ndiffusion): 270*nm, # (difftap.3)
+    #(l_pdiffusion, l_outline): 270/2*nm, # (difftap.3)
     (l_pdiffusion, l_pdiffusion): 270*nm, # (difftap.3)
     (l_ndiffusion, l_poly_contact): 190*nm, # (licon.14)
     (l_pdiffusion, l_poly_contact): 190*nm, # (licon.14)
@@ -143,21 +148,28 @@ min_spacing = {
     (l_poly, l_ndiffusion): 75*nm, # (poly.4)
     (l_poly, l_pdiffusion): 75*nm, # (poly.4)
     (l_poly, l_poly): 210*nm, # (poly.2)
+    #(l_poly, l_outline): 210/2*nm, # (poly.2) 
     (l_poly, l_pdiff_contact): 155*nm, # 55*nm # (licon.11)
     (l_poly, l_ndiff_contact): 155*nm, # 55*nm # (licon.11)
     (l_pdiff_contact, l_pdiff_contact): 270*nm, # (difftap.3)
+    #(l_pdiff_contact, l_outline): 270/2*nm, # (difftap.3)
     (l_ndiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
+    #(l_ndiff_contact, l_outline): 270/2*nm, # (difftap.3)
     (l_pdiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
     (l_metal1, l_metal1): 170*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
+    #(l_metal1, l_outline): 170/2*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
     (l_metal2, l_metal2): 140*nm, # (m1.2) # huge_met2
+    # We need metal2 at the border for the power lanes, so we dont put border rules
     (l_via1, l_via1): 190*nm, # (ct.2)
-    # (l_via1, l_diff_contact): 2*l, # NO RULES FOR LICON-MCON spacing found
+    #(l_via1, l_outline): 190/2*nm, # (ct.2)
+    #(l_via1, l_diff_contact): 2*l, # NO RULES FOR LICON-MCON spacing found
     #(l_via1, l_ndiffusion): 2*l, # NO RULES FOR MCON-DIFF spacing found
     #(l_via1, l_pdiffusion): 2*l, # NO RULES FOR MCON-DIFF spacing found
     (l_poly_contact, l_pdiff_contact): 170*nm, # (licon.2)
+    #(l_poly_contact, l_outline): 170/2*nm, # (licon.2)
     (l_poly_contact, l_ndiff_contact): 170*nm, # (licon.2)
-#    (l_ndiffusion, l_pplus): 75*nm,
-#    (l_pdiffusion, l_nplus): 75*nm,
+    (l_ndiffusion, l_pplus): 75*nm,
+    (l_pdiffusion, l_nplus): 75*nm,
 }
 
 # Layer for the pins.
@@ -177,7 +189,7 @@ gate_length = 150*nm # (poly.1a)
 gate_extension = 130*nm # (poly.8)
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 240*nm # !!! This likely needs to be tuned later on
+transistor_offset_y = 240*nm + 150/2*nm # !!! This likely needs to be tuned later on # The 150/2*nm might have to be removed
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -261,8 +273,8 @@ minimum_enclosure = {
     (l_pwell, l_ndiffusion): 180*nm, # (difftap.8)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
-#    (l_nplus, l_ndiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
-#    (l_pplus, l_pdiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
+    (l_nplus, l_ndiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
+    (l_pplus, l_pdiff_contact): 80*nm,  # Implicitly encodes the size of well taps.
 
 }
 
