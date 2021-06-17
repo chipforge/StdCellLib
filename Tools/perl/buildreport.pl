@@ -149,7 +149,7 @@ foreach my $file (<*.cell>)
   {
     while(<LIB>)
     {
-      $lvs=$1 if m/LVS result: (\w+)/;
+      $lvs=$1 if(m/LVS result: (\w+)/ && $lvs eq "");
       $euler=$1 if m/Number of deduplicated eulertours: (\d+)/;
       $layouttime=$1 if(m/INFO:\s*Done\s*\(Total duration: ([\d:.]+)\s*\)/);
       $nets=$1 if(m/Nets output: (\d+)/);
@@ -158,6 +158,8 @@ foreach my $file (<*.cell>)
       $errors.=$1." " if(m/AssertionError: (.*)/);
       $errors.=$1." " if(m/Exception: (.*)/);
       $errors.=$1." " if(m/ERROR: (.*)/);
+      $errors.=$1." " if(m/(Segmentation fault \(core dumped\))/);
+      $errors=~s/LVS check failed!//;
     }
     close LIB;
   }
