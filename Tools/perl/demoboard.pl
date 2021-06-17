@@ -1,12 +1,14 @@
 #!/usr/bin/perl -w
 
+my $times=$ARGV[0] || 1;
+
 my @cells=();
 
 foreach my $cell (<*.cell>)
 {
   my $name=$cell; $name=~s/\.cell$//;
   next unless (-f "$name.mag");
-  push @cells,$cell;
+  push @cells,$cell foreach(1 .. $times);
 }
 
 my $squared=sqrt(scalar(@cells)||1);
