@@ -9,12 +9,18 @@ close IN;
 
 foreach(@ARGV)
 {
-  open IN,"<$_";
-  while(<IN>)
+  if(open IN,"<$_")
   {
-    print $_;
+    while(<IN>)
+    {
+      print $_;
+    }
+    close IN;
   }
-  close IN;
+  else
+  {
+    print STDERR "Error: Could not open file $_ for reading: $!\n";
+  }
   print "\n";
 }
 
