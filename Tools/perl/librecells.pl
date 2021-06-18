@@ -19,7 +19,7 @@ if(open IN,"<../Tech/lctime.conf")
 }
 
 
-system "perl ../Tools/perl/cell2spice.pl";
+system "../Tools/perl/cell2spice.pl";
 
 open IN,"<$sp" || die "Could not open file $sp: $!\n";
 while(<IN>)
@@ -78,6 +78,7 @@ while(<IN>)
     }
 
     my $magfile="outputlib/$cellname.mag";
+    my $magfile="outputlib/$cellname.gds";
     if(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
     {
       # Then we dont have to convert it
@@ -92,7 +93,7 @@ while(<IN>)
       close MAGIN;
       close MAGOUT;
     }
-    else
+    elsif(-f $gdsfile)
     {
       print STDERR "lclayout has not exported magic, so we try to convert GDS2:\n";
       # For this processing step, the refrenced libresilicon.tech file needs to contain the cifinput section to import from GDS and the extract section to do the parasitic extraction:
@@ -115,6 +116,10 @@ EOF
       close OUT;
       #exit;
     }
+    else
+    {
+      # Perhaps we have a fixed file, so let's continue
+    }
 
     if(-f "$cellname.fixed")
     {
@@ -122,6 +127,12 @@ EOF
       step("NEXT STEP: Fixing file $cellname.fixed -> $cellname.mag");
       system "cp $cellname.fixed $cellname.mag";
     }
+    elsif(! -f $gdsfile)
+    {
+      print STDERR "Error: lclayout has not generated Magic or GDS2.\n";
+      next;
+    }
+
     unlink "$cellname.nodes";
     unlink "$cellname.res.ext";
     unlink "$cellname.spice";
@@ -130,6 +141,38 @@ EOF
     unlink "$cellname.res.lump";
     unlink "$cellname.sim";
     unlink "$cellname.drclog";
+
+    step("NEXT STEP: DRC Check with Magic");
+    system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
+
+    step("NEXT STEP: DRC Fix");
+    system "../Tools/perl/drcfix.pl $cellname.mag";
+    if(-f "corr.$cellname.mag")
+    {
+      unlink "$cellname.mag";
+      rename "corr.$cellname.mag","$cellname.mag";
+
+      step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
+      system "../Tools/perl/drcfix.pl $cellname.mag";
+      unlink "$cellname.mag";
+      rename "corr.$cellname.mag","$cellname.mag";
+
+      step("NEXT STEP: Final DRC check");
+      print "DRC errors in $cellname corrected. Now running final DRC check:\n";
+      system "../Tools/perl/drccheck.pl $cellname.mag";
+
+      step("NEXT STEP: mag2gds");
+      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
+      print OUT <<EOF
+gds
+quit -noprompt
+EOF
+;
+      unlink "outputlib/$cellname.gds";
+      rename "$cellname.gds","outputlib/$cellname.gds";
+    }
+    step("DRC Fixing done.");
+
 
     print "First magic call:\n";
     step("NEXT STEP: magic2");
@@ -176,36 +219,7 @@ EOF
 ;
     close OUT;
 
-    step("NEXT STEP: DRC Check with Magic");
-    system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
-    step("NEXT STEP: DRC Fix");
-    system "../Tools/perl/drcfix.pl $cellname.mag";
-    if(-f "corr.$cellname.mag")
-    {
-      unlink "$cellname.mag";
-      rename "corr.$cellname.mag","$cellname.mag";
-
-      step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
-      system "../Tools/perl/drcfix.pl $cellname.mag";
-      unlink "$cellname.mag";
-      rename "corr.$cellname.mag","$cellname.mag";
-
-      step("NEXT STEP: Final DRC check");
-      print "DRC errors in $cellname corrected. Now running final DRC check:\n";
-      system "../Tools/perl/drccheck.pl $cellname.mag";
-
-      step("NEXT STEP: mag2gds");
-      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
-      print OUT <<EOF
-gds
-quit -noprompt
-EOF
-;
-      unlink "outputlib/$cellname.gds";
-      rename "$cellname.gds","outputlib/$cellname.gds";
-
-    }
 
     step("NEXT STEP: Generating Liberty Template");
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
