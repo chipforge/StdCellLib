@@ -78,7 +78,7 @@ while(<IN>)
     }
 
     my $magfile="outputlib/$cellname.mag";
-    my $magfile="outputlib/$cellname.gds";
+    my $gdsfile="outputlib/$cellname.gds";
     if(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
     {
       # Then we dont have to convert it
