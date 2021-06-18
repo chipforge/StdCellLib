@@ -77,6 +77,16 @@ output_map = {
     l_nplus: my_nplus
 }
 
+# These are only the obstruction layers, only these layers will be generated into the OBS section of the LEF files
+obstruction_output_map = {
+    l_poly_contact: my_licon1,
+    l_pdiff_contact: my_licon1,
+    l_ndiff_contact: my_licon1,
+    l_metal1: my_li1, # Metal1 from lclayout gets li1 from SKY130
+    l_via1: my_mcon,
+    l_metal2: my_metal1, # Metal2 from lclayout gets met1 from SKY130
+}
+
 # Define a list of output writers.
 output_writers = [
     MagWriter(
@@ -106,6 +116,7 @@ output_writers = [
     LefWriter(
         db_unit=1e-6, # LEF Fileformat always needs Microns
         obstruction_output_map=output_map,
+        #output_map=output_map,  # Not supported yet but will be soon
         use_rectangles_only=True,
         site="unit"
     ),
@@ -189,7 +200,7 @@ gate_length = 150*nm # (poly.1a)
 gate_extension = 130*nm # (poly.8)
 
 # Minimum distance of active area to upper or lower boundary of the cell. Basically determines the y-offset of the transistors.
-transistor_offset_y = 240*nm + 150/2*nm # !!! This likely needs to be tuned later on # The 150/2*nm might have to be removed
+transistor_offset_y = 240*nm # !!! This likely needs to be tuned later on # The 150/2*nm might have to be removed
 
 # Standard cell dimensions.
 # A 'unit cell' corresponds to the dimensions of the smallest possible cell. Usually an inverter.
@@ -317,12 +328,14 @@ weights_vertical = {
     l_metal2: 125, # SKY130_Metal1
 }
 
+viafactor = 0.5 # The via weights seem to have been to strong, so we try to reduce them
+
 # Via weights.
 via_weights = {
-    (l_metal1, l_ndiffusion): 15000, # LICON
-    (l_metal1, l_pdiffusion): 15000, # LICON
-    (l_metal1, l_poly): 15000, # LICON
-    (l_metal1, l_metal2): 152000, # MCON
+    (l_metal1, l_ndiffusion): 15000*viafactor, # LICON
+    (l_metal1, l_pdiffusion): 15000*viafactor, # LICON
+    (l_metal1, l_poly): 15000*viafactor, # LICON
+    (l_metal1, l_metal2): 152000*viafactor, # MCON
 #    (l_metal1, l_nplus): 1, # Contact to Well Taps, the value doesn't matter
 #    (l_metal1, l_pplus): 1,
 
