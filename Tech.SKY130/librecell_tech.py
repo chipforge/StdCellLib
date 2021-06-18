@@ -74,25 +74,22 @@ output_map = {
     l_abutment_box: my_abutment_box,
     #l_outline: my_outline,
     l_pplus: my_pplus,
-    l_nplus: my_nplus
+    l_nplus: my_nplus,
+    l_border_vertical: (142, 1),
+    l_border_horizontal: (142, 2),
 }
 
 # These are only the obstruction layers, only these layers will be generated into the OBS section of the LEF files
-obstruction_output_map = {
-    l_poly_contact: my_licon1,
-    l_pdiff_contact: my_licon1,
-    l_ndiff_contact: my_licon1,
-    l_metal1: my_li1, # Metal1 from lclayout gets li1 from SKY130
-    l_via1: my_mcon,
-    l_metal2: my_metal1, # Metal2 from lclayout gets met1 from SKY130
-}
+obstruction_layers = [
+    l_poly_contact,
+    l_pdiff_contact,
+    l_ndiff_contact,
+    l_metal1, # Metal1 from lclayout gets li1 from SKY130
+    l_via1,
+    l_metal2, # Metal2 from lclayout gets met1 from SKY130
+]
 
-# Define a list of output writers.
-output_writers = [
-    MagWriter(
-        tech_name='sky130A',
-        scale_factor=0.1, # Scale all coordinates by this factor (rounded down to next integer).
-        output_map={
+output_map_magic = {
             l_nwell: 'nwell',
             l_via1: 'viali',
             l_poly: 'poly',
@@ -110,13 +107,21 @@ output_writers = [
             l_ndiff_contact: 'ndiffc',
             l_nplus: 'allnactivetap',
             l_pplus: 'allpactivetap'
-        }
+}
+
+
+# Define a list of output writers.
+output_writers = [
+    MagWriter(
+        tech_name='sky130A',
+        scale_factor=0.1, # Scale all coordinates by this factor (rounded down to next integer).
+        output_map=output_map_magic
     ),
 
     LefWriter(
         db_unit=1e-6, # LEF Fileformat always needs Microns
-        obstruction_output_map=output_map,
-        #output_map=output_map,  # Not supported yet but will be soon
+        obstruction_layers=obstruction_layers,
+        output_map=output_map_magic,  # Not supported yet but will be soon
         use_rectangles_only=True,
         site="unit"
     ),
@@ -169,6 +174,9 @@ min_spacing = {
     (l_pdiff_contact, l_ndiff_contact): 270*nm, # (difftap.3)
     (l_metal1, l_metal1): 170*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
     #(l_metal1, l_outline): 170/2*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
+#    (l_metal1, l_border_vertical): 190*nm, # To move the VIAs at the right place
+#    (l_metal2, l_border_vertical): 190*nm, # To move the VIAs at the right place
+
     (l_metal2, l_metal2): 140*nm, # (m1.2) # huge_met2
     # We need metal2 at the border for the power lanes, so we dont put border rules
     (l_via1, l_via1): 190*nm, # (ct.2)
@@ -328,7 +336,7 @@ weights_vertical = {
     l_metal2: 125, # SKY130_Metal1
 }
 
-viafactor = 0.5 # The via weights seem to have been to strong, so we try to reduce them
+viafactor = 0.1 # The via weights seem to have been too strong, so we try to reduce them
 
 # Via weights.
 via_weights = {
