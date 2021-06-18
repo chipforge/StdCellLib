@@ -146,7 +146,7 @@ EOF
     system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
     step("NEXT STEP: DRC Fix");
-    system "../Tools/perl/drcfix.pl $cellname.mag";
+    system "../Tools/perl/drcfix.pl $cellname.mag >>$cellname.log 2>>$cellname.err";
     if(-f "corr_$cellname.mag")
     {
       unlink "$cellname.mag.predrc";
@@ -154,9 +154,12 @@ EOF
       rename "corr_$cellname.mag","$cellname.mag";
 
       step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
-      system "../Tools/perl/drcfix.pl $cellname.mag";
-      unlink "$cellname.mag";
-      rename "corr_$cellname.mag","$cellname.mag";
+      system "../Tools/perl/drcfix.pl $cellname.mag >>$cellname.log 2>>$cellname.err";
+      if(-f "corr_$cellname.mag")
+      {
+        unlink "$cellname.mag" ;
+        rename "corr_$cellname.mag","$cellname.mag";
+      }
 
       step("NEXT STEP: Final DRC check");
       print "DRC errors in $cellname corrected. Now running final DRC check:\n";
