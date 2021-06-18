@@ -149,7 +149,8 @@ EOF
     system "../Tools/perl/drcfix.pl $cellname.mag";
     if(-f "corr_$cellname.mag")
     {
-      unlink "$cellname.mag";
+      unlink "$cellname.mag.predrc";
+      rename "$cellname.mag","$cellname.mag.predrc";
       rename "corr_$cellname.mag","$cellname.mag";
 
       step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
