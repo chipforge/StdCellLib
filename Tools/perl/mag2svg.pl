@@ -6,6 +6,8 @@ my $svgvar=$mag; $svgvar.=".svg";
 my $svg=$ARGV[1] || $svgvar;
 my $tech=$ARGV[2] || "../Tech/libresilicon.tech";
 
+my %ignorelayers=("checkpaint"=>1);
+
 print "mag2svg - Convert magic files to SVG\n";
 print "Usage: mag2svg input.mag output.svg\n" if(scalar(@ARGV)<1);
 
@@ -123,6 +125,7 @@ if(-f "$mag.mag")
     elsif(m/^rect (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*) (\-?\d+\.?\d*)/)
     {
       #print "Rect\n";	    
+      next if(defined($ignorelayers{$layer}));
       my $width=$3-$1;
       my $height=$4-$2;
       $limits[1]=mymin($limits[1],$1);
@@ -172,7 +175,7 @@ rect { fill-opacity: 0.9; stroke-width:0.3px; stroke-opacity:0.5 }
 .pdcontact { fill:#8592c8; }
 .mcon { fill:#8592c8; }
 .polycontact { fill:#8e2aaa; }
-.nwell { fill:#bdbdbd; }
+.nwell { fill:#bdbdbd; fill-opacity: 0.5;}
 .pwell { fill:#ccccbd; }
 .fence { stroke:#c8c8c8; fill:none }
 .bound { stroke:#c8c8c8; fill:none }
