@@ -124,7 +124,7 @@ endif
 catalog:    $(CELLS) 
 	
 .PHONY: layout
-layout: libresilicon.sp libresilicon.lef libresilicon.lib demoboard.mag doc/StdCellLib.pdf
+layout: libresilicon.sp libresilicon.lef libresilicon.lib demoboard.mag doc/StdCellLib.pdf demoboard.svg
 
 
 libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/nmos.sp
