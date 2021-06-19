@@ -394,6 +394,27 @@ if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal2,l_metal2)]+2*minimum_e
 
     #(l_poly_contact, l_pdiff_contact): 170*nm, # (licon.2)
     #(l_poly_contact, l_ndiff_contact): 170*nm, # (licon.2)
+#unit_cell_height=10
+#routing_grid_pitch_y=4
 
+#print("unit_cell_height: "+str(unit_cell_height))
+#print("routing_grid_pitch_y: "+str(routing_grid_pitch_y))
+middle=unit_cell_height//2
+#print("Middle: "+str(middle))
+gridpoints=1+unit_cell_height//routing_grid_pitch_y
+#print("gridpoints: "+str(gridpoints))
+odd=gridpoints &1
+#print("odd: "+str(odd))
 
+if odd==1:
+    grid_offset_y=middle-((gridpoints-1)//2)*routing_grid_pitch_y
+else:
+    grid_offset_y=middle+routing_grid_pitch_y//2-(gridpoints//2)*routing_grid_pitch_y
 
+#print("grid_offset_y: "+str(grid_offset_y))
+grid_ys = list(range(grid_offset_y, grid_offset_y + unit_cell_height +1, routing_grid_pitch_y))
+print("grid_before: "+str(grid_ys))
+grid_ys[2] += 90*nm
+grid_ys[-3] -= 90*nm
+grid_ys[14] -= 10*nm
+print("grid_after: "+str(grid_ys))
