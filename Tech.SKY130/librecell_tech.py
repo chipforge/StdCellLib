@@ -192,10 +192,10 @@ min_spacing = {
 }
 
 # Layer for the pins.
-pin_layer = l_metal2 # metal2 = metal1 on SKY130
+pin_layer = l_metal2 # lclayout.metal2 = sky130.metal1
 
 # Power stripe layer
-power_layer = l_metal2 # metal2 = metal1 on SKY130
+power_layer = [l_metal1, l_metal2] # lclayout.metal2 = sky130.metal1
 
 # Layers that can be connected/merged without changing the schematic.
 # This can be used to resolve spacing/notch violations by just filling the space.
@@ -414,7 +414,18 @@ else:
 #print("grid_offset_y: "+str(grid_offset_y))
 grid_ys = list(range(grid_offset_y, grid_offset_y + unit_cell_height +1, routing_grid_pitch_y))
 print("grid_before: "+str(grid_ys))
-grid_ys[2] += 90*nm
-grid_ys[-3] -= 90*nm
+grid_ys[2] += 110*nm
+grid_ys[-3] -= 110*nm
 grid_ys[14] -= 10*nm
+grid_ys[1] = 0
+grid_ys[-2] = unit_cell_height
+grid_ys.pop(-1)
+grid_ys.pop(0)
 print("grid_after: "+str(grid_ys))
+
+
+
+def powervias(unit_cell_width): 
+    return list(range(0,unit_cell_width,110*nm))
+
+power_vias=powervias
