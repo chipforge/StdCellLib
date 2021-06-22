@@ -426,6 +426,6 @@ print("grid_after: "+str(grid_ys))
 
 
 def powervias(unit_cell_width): 
-    return list(range(0,unit_cell_width,110*nm))
+    return list(range(240*nm,unit_cell_width,480*nm))
 
 power_vias=powervias
