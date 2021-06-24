@@ -78,16 +78,16 @@ proc undoToCheckpoint {checkpoint} {
      }
      set tries 0
      while {\$cur ne \$checkpoint && \$cur ne 0x0 && \$tries < 200 } {
-       puts "Undo ..."
+       #puts "Undo ..."
        undo
-       undo print 20
+       #undo print 20
        redirect_variable undostack {undo print 10}
        regexp {cur=(0x\\w+)} \$undostack full cur
        incr tries
      }
      if {\$tries > 180} {
        puts "WARNING: \$tries tries were tried, this is strange"
-       undo print 20
+       #undo print 20
      }
    }
 }
@@ -105,6 +105,10 @@ proc fix_drc {} {
    set nFixed 0
    set drcc [string trim [string map {"Total DRC errors found: " ""} \$drccount] ]
    if {\$drcc == 0} return
+   set yReposition {0 2 -2}
+
+   foreach yRepo \$yReposition {
+   puts "Trying Reposition \$yRepo"
    set nRounds \$drcc
    puts \$drccount
    #puts \$drcc
@@ -112,13 +116,29 @@ proc fix_drc {} {
      puts "I inside first loop: \$i"
      if {\$drcc > 0} {
        redirect_variable drcresult {drc find}
+       puts "move up \$yRepo"
+       move up \$yRepo
        puts \$drcresult
        if {[string first "\\[" \$drcresult] != -1} {
          regexp {\\[(erase|paint) ([^\\]]+)\\]} \$drcresult full drccommand layernames
+         if {\$yRepo != 0 } { 
+           puts "This is an addition for Sky130: We have some 20nm wide inter-net spacings that we need to paint on locali, so we reposition the box and try to paint on locali"
+           set drccommand "paint" 
+	   set layernames "locali"
+         }
+	 if {\$drccommand == "erase" } {
+	   redirect_variable bbox {box}
+	   #lambda:       44 x 10      (     0,  309  ), (    44,  319  )  440 
+	   regexp {lambda:\\s*\\d+ x \\d+\\s+\\([^\\)]*\\), \\(\\s*(\\d+),\\s*(\\d+)} \$bbox full boxX boxY
+           puts "Bounding box for erase: \$boxX \$boxY"
+           if {\$boxY >= 309 } { 
+             puts "This is an addition for Sky130: We do not want to erase the power rails, so we skip ignore rules outside the core of the cell"
+	     set layernames "" 
+	   }
+	 }
          foreach drcparts [split \$layernames ","] {
            foreach layername [split \$drcparts " "] {
              puts "\$drccommand \$layername"
-	     #erase \$layername
 	     \$drccommand \$layername
 	   }
            drc check
@@ -150,6 +170,7 @@ proc fix_drc {} {
            }
 	 }
        }
+      }
      }
    }
 
