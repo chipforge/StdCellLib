@@ -10,6 +10,7 @@ my $tech=$ARGV[0] || "../Tech/libresilicon.tech";
 foreach my $magfile (<*.mag>)
 {
   next if($magfile=~m/^corr_/); # Ignore correction files
+  next if($magfile eq "demoboard.mag");
   my $cellname=$magfile; $cellname=~s/\.mag$//;	
 
   step("NEXT STEP: DRC Check with Magic");
