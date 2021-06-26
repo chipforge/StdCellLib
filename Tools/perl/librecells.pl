@@ -69,7 +69,7 @@ while(<IN>)
     system "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
     step("NEXT STEP: Running lclayout");
 
-    foreach my $deb(0,1)
+    foreach my $deb(1,0) # We dont want to overwrite the good output files with debug output files
     {
       next if($deb && !$debug);
       my $cmd="lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
@@ -88,6 +88,7 @@ while(<IN>)
       undef $/;
       my $magcontent=<MAGIN>;
       $/=$old;
+      $magcontent=~s/tech sky130A/tech sky130A\nmagscale 1 2/s;
       $magcontent=~s/<< abutment >>\nrect /<< properties >>\nstring FIXED_BBOX /s;
       print MAGOUT $magcontent;
       close MAGIN;
@@ -165,20 +166,21 @@ EOF
       print "DRC errors in $cellname corrected. Now running final DRC check:\n";
       system "../Tools/perl/drccheck.pl $cellname.mag";
 
-      step("NEXT STEP: mag2gds");
-      open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
-      print OUT <<EOF
+    }
+    step("DRC Fixing done.");
+
+    step("NEXT STEP: mag2gds");
+    unlink "outputlib/$cellname.gds";
+    unlink "$cellname.gds";
+    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
+    print OUT <<EOF
 gds
 quit -noprompt
 EOF
 ;
-      unlink "outputlib/$cellname.gds";
-      rename "$cellname.gds","outputlib/$cellname.gds";
-    }
-    step("DRC Fixing done.");
+    close OUT;
+    rename "$cellname.gds","outputlib/$cellname.gds";
 
-
-    print "First magic call:\n";
     step("NEXT STEP: magic2");
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
@@ -191,9 +193,9 @@ ext2sim labels on
 ext2sim
 extresist tolerance 10
 extresist simplify off
-extresist extout on
+#extresist extout on
 extresist lumped on
-extresist geometry
+#extresist geometry
 extresist all
 quit -noprompt
 EOF
