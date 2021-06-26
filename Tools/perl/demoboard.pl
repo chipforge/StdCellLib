@@ -43,6 +43,9 @@ our $row=0;
 
 our $printedheader=0;
 
+our $magscale=undef;
+
+
 foreach(@cells)
 {
   my @mins=();
@@ -56,6 +59,7 @@ foreach(@cells)
     my $layer="";
     while(<IN>)
     {
+      $magscale=$1 if(m/^magscale (\d+ \d+)/);	    
       $usedtech=$1 if(m/^tech (\w+)/);
       #$timestamp=$1 if(m/^timestamp (\d+)/);	      
       #
@@ -88,6 +92,10 @@ foreach(@cells)
     print <<EOF
 magic
 tech $usedtech
+EOF
+;
+    print "magscale $magscale\n" if(defined($magscale));
+    print <<EOF
 timestamp $now
 << checkpaint >>
 rect -100 -100 10000 10000
