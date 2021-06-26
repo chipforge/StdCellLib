@@ -9,7 +9,7 @@ from lclayout.writer.oasis_writer import OasisWriter
 db_unit = 1e-9
 
 # Lambda - how many db_units is 1 lambda?
-l = 55 
+l = 55  # unused
 grid = 5 # grid basis
 um = 1000
 nm = 1
@@ -114,7 +114,7 @@ output_map_magic = {
 output_writers = [
     MagWriter(
         tech_name='sky130A',
-        scale_factor=0.1, # Scale all coordinates by this factor (rounded down to next integer).
+        scale_factor=0.2, # Scale all coordinates by this factor (rounded down to next integer).
         output_map=output_map_magic
     ),
 
@@ -336,7 +336,7 @@ weights_vertical = {
     l_metal2: 125, # SKY130_Metal1
 }
 
-viafactor = 0.1 # The via weights seem to have been too strong, so we try to reduce them
+viafactor = 1
 
 # Via weights.
 via_weights = {
