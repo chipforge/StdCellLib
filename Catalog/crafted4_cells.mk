@@ -9,16 +9,16 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Catalog/stacked5_cells.mk
+#   File:           StdCellLib/Catalog/crafted4_cells.mk
 #
-#   Purpose:        Makefile for Cell Generation with popcorn
+#   Purpose:        Makefile for Cell Generation
 #
 #   ************    GNU Make 3.80 Source Code       ****************
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2018, 2019 - 2021 by
-#                   chipforge - <popcorn@nospam.chipforge.org>
+#   Copyright (c)   2021 by
+#                   chipforge - <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -38,68 +38,34 @@
 #               DESCRIPTION
 #   ----------------------------------------------------------------
 
-#   list all dependencies for cells with 5 stacked transistors
-#
-include stacked4_cells.mk
-include crafted5_cells.mk
+#   dependencies for (hand-)crafted cells with 4 stacked transistors
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
-ifdef BUFFERED
+#   --------    (skewed) buffers    --------------------------------
 
-#   --------    already buffered    --------------------------------
+#   --------    clock gates     ------------------------------------
 
-CELLS +=        AND5 \
-                OR5
+#   --------    D-flip-flops    ------------------------------------
 
-AND5:           DESCR = "5-input AND gate"
-AND5:           AND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
+#   --------    D-latches   ----------------------------------------
 
-OR5:            DESCR = "5-input OR gate"
-OR5:            OR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
+#   --------    neat cells  ----------------------------------------
 
-#   --------    now buffered    ------------------------------------
+#   --------    multiplexer ----------------------------------------
 
-else
-ifeq ($(BUFFER),5)
+CELLS +=        MUXI81 \
+                MUXIE81 \
+                MUXIEN81
 
-CELLS +=        AND5 \
-                OR5
+MUXI81:
+	$(NETLIST) -c $@ > $@
 
-AND5:           DESCR = "5-input AND gate"
-AND5:           NAND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
+MUXIE81:
+	$(NETLIST) -c $@ > $@
 
-OR5:            DESCR = "5-input OR gate"
-OR5:            NOR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
+MUXIEN81:
+	$(NETLIST) -c $@ > $@
 
-BUFFERED = true
-
-#   --------    not buffered    ------------------------------------
-
-else
-
-CELLS +=        NAND5 \
-                NOR5
-
-NAND5:          DESCR = "5-input Not-AND (or NAND) gate"
-NAND5:          NAND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
-
-NOR5:           DESCR = "5-input Not-OR (or NOR) gate"
-NOR5:           NOR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
-
-endif
-endif

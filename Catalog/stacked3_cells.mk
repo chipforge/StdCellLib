@@ -41,6 +41,7 @@
 #   list all dependencies for cells with 3 stacked transistors
 #
 include stacked2_cells.mk
+include crafted3_cells.mk
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS

@@ -41,6 +41,12 @@ PRD =               ..
 
 include $(PRD)/include.mk
 
+#   virtuell search pathes
+
+vpath   %.sym   $(SOURCESDIR)/geda
+vpath   %.sch   $(SOURCESDIR)/geda
+vpath   $(CATALOGDIR)
+
 #   project settings
 
 CELLS =
@@ -59,6 +65,7 @@ DESCR ?=            '?'
 
 POPCORN +=          -b $(BUFFER) \
                     -D $(DESCR)
+NETLIST ?=          gnetlist -g geda # FIXME!! backend target still does not exist
 
 #   tool variables
 
@@ -132,6 +139,13 @@ endif
 endif
 endif
 endif
+
+#   generate cell file from gEDA schematic, while no popcorn-based target exist
+
+%:  %.sym %.sch
+	$(NETLIST) $^ -o $@ > /dev/null
+
+#   common generating targets
 
 .PHONY: catalog
 catalog:    header $(CELLS)

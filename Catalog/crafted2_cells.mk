@@ -9,16 +9,16 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Catalog/stacked5_cells.mk
+#   File:           StdCellLib/Catalog/crafted2_cells.mk
 #
-#   Purpose:        Makefile for Cell Generation with popcorn
+#   Purpose:        Makefile for Cell Generation
 #
 #   ************    GNU Make 3.80 Source Code       ****************
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2018, 2019 - 2021 by
-#                   chipforge - <popcorn@nospam.chipforge.org>
+#   Copyright (c)   2021 by
+#                   chipforge - <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -38,68 +38,51 @@
 #               DESCRIPTION
 #   ----------------------------------------------------------------
 
-#   list all dependencies for cells with 5 stacked transistors
-#
-include stacked4_cells.mk
-include crafted5_cells.mk
+#   dependencies for (hand-)crafted cells with 2 stacked transistors
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
-ifdef BUFFERED
+#   --------    (skewed) buffers    --------------------------------
 
-#   --------    already buffered    --------------------------------
+CELLS +=        BUFN2 \
+                BUFP2
+                # probably also: BUFx3, BUFx5, BUFx7
 
-CELLS +=        AND5 \
-                OR5
+#   --------    clock gates     ------------------------------------
 
-AND5:           DESCR = "5-input AND gate"
-AND5:           AND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
+CELLS +=        CGN2 \
+                CGP2
+                # eventually also: CGx3, CGx5, CGx7
 
-OR5:            DESCR = "5-input OR gate"
-OR5:            OR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
+#   --------    D-flip-flops    ------------------------------------
 
-#   --------    now buffered    ------------------------------------
+CELLS +=        DFFN \
+                DFFP
 
-else
-ifeq ($(BUFFER),5)
+#   --------    D-latches   ----------------------------------------
 
-CELLS +=        AND5 \
-                OR5
+CELLS +=        LATN \
+                LATP \
+                LATRN \
+                LATRP \
+                LATSN \
+                LATSP \
+                LATEN \
+                LATEP \
+                LATERN \
+                LATERP \
+                LATESN \
+                LATESP
 
-AND5:           DESCR = "5-input AND gate"
-AND5:           NAND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
+#   --------    neat cells  ----------------------------------------
 
-OR5:            DESCR = "5-input OR gate"
-OR5:            NOR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
+CELLS +=        MIN13
 
-BUFFERED = true
+#   --------    multiplexer ----------------------------------------
 
-#   --------    not buffered    ------------------------------------
+CELLS +=        MUXI21 \
+                MUXIE21 \
+                MUXIEN21
 
-else
-
-CELLS +=        NAND5 \
-                NOR5
-
-NAND5:          DESCR = "5-input Not-AND (or NAND) gate"
-NAND5:          NAND4
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(PINK)
-
-NOR5:           DESCR = "5-input Not-OR (or NOR) gate"
-NOR5:           NOR4
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(PINK)
-
-endif
-endif
