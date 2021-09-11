@@ -115,6 +115,6 @@ refdes=X?
 T 1892 1392 8 10 0 0 0 0 1
 footprint=none
 T -8 -8 8 10 0 1 0 0 1
-source=MUXI41.sch
+source=MUXIE41.sch
 T 600 100 9 10 0 0 0 0 1
 numslots=0
