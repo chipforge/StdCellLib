@@ -56,16 +56,7 @@
 
 #   --------    multiplexer ----------------------------------------
 
-CELLS +=        MUXI81 \
+CELLS +=      # MUXI81 \
                 MUXIE81 \
                 MUXIEN81
-
-MUXI81:
-	$(NETLIST) -c $@ > $@
-
-MUXIE81:
-	$(NETLIST) -c $@ > $@
-
-MUXIEN81:
-	$(NETLIST) -c $@ > $@
 

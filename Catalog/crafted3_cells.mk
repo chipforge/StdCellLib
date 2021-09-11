@@ -56,21 +56,9 @@
 
 CELLS +=        # MAJ23
 
-MAJR23:
-	$(NETLIST) -c $@ > $@
-
 #   --------    multiplexer ----------------------------------------
 
 CELLS +=        MUXI41 \
                 MUXIE41 \
                 MUXIEN41
-
-MUXI41:
-	$(NETLIST) -c $@ > $@
-
-MUXIE41:
-	$(NETLIST) -c $@ > $@
-
-MUXIEN41:
-	$(NETLIST) -c $@ > $@
 
