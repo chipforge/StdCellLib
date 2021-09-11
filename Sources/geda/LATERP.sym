@@ -26,7 +26,7 @@ P 700 0 700 300 1 0 0
 {
 T 750 300 5 10 0 0 270 6 1
 pintype=in
-T 700 355 9 10 1 1 90 0 1
+T 745 500 9 10 1 1 180 0 1
 pinlabel=R
 T 650 205 5 10 0 1 90 6 1
 pinnumber=3
@@ -59,7 +59,7 @@ T 295 1195 8 10 0 0 0 0 1
 net=VDD:6
 T 295 995 8 10 0 0 0 0 1
 net=GND:7
-T 392 1092 5 16 1 1 0 0 1
+T 792 1808 5 16 1 1 270 0 1
 device=LATERP
 T 1292 2292 8 10 0 1 0 0 1
 description=High-active D-Latch w/ clock-enable + low-active Set

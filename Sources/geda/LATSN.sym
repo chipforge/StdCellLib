@@ -28,7 +28,7 @@ P 700 1700 700 1500 1 0 0
 {
 T 650 1400 5 10 0 0 90 6 1
 pintype=in
-T 700 1345 9 10 1 1 90 6 1
+T 555 1300 9 10 1 1 180 6 1
 pinlabel=SN
 T 650 1495 5 10 0 1 90 0 1
 pinnumber=3
@@ -50,7 +50,7 @@ T 295 895 8 10 0 0 0 0 1
 net=VDD:5
 T 295 695 8 10 0 0 0 0 1
 net=GND:6
-T 492 592 5 16 1 1 0 0 1
+T 792 1108 5 16 1 1 270 0 1
 device=LATSN
 T 1292 1992 8 10 0 1 0 0 1
 description=Low-active D-Latch w/ low-active Set

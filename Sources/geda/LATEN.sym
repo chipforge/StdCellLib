@@ -49,7 +49,7 @@ T 295 895 8 10 0 0 0 0 1
 net=VDD:5
 T 295 695 8 10 0 0 0 0 1
 net=GND:6
-T 492 792 5 16 1 1 0 0 1
+T 792 1408 5 16 1 1 270 0 1
 device=LATEN
 T 1292 1992 8 10 0 1 0 0 1
 description=High-active D-Latch
