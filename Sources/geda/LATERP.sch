@@ -44,7 +44,7 @@ auth=<stdcelllib@nospam.chipforge.org>
 T 51600 40700 5 10 1 1 0 0 1
 fname=LATERP.sch
 T 55000 41100 5 14 1 1 0 4 1
-title=LATERP - High-active D-Latch w/ clock-enable + async. Reset
+title=LATERP - High-active D-Latch w/ enable + async. Reset
 }
 C 44000 49200 1 0 0 spice-model-1.sym
 {
