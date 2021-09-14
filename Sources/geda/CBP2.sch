@@ -25,7 +25,7 @@ refdes=M4
 T 54800 43600 5 8 1 1 0 0 1
 model-name=nmos4
 T 54800 43300 5 8 1 0 0 0 1
-w='drive*Wmin'
+w='(drive/skew)*Wmin'
 T 54800 43100 5 8 1 0 0 0 1
 l=1u
 }
@@ -51,7 +51,7 @@ refdes=M3
 T 54800 45100 5 8 1 1 0 0 1
 model-name=pmos4
 T 54800 44800 5 8 1 0 0 0 1
-w='(drive*skew)*g*Wmin'
+w='drive*g*Wmin'
 T 54800 44600 5 8 1 0 0 0 1
 l=1u
 }
@@ -64,9 +64,9 @@ rev=$Revision$
 T 54000 40100 5 10 1 1 0 0 1
 auth=<stdcelllib@nospam.chipforge.org>
 T 50100 40700 5 10 1 1 0 0 1
-fname=BUFN2.sch
+fname=CBP2.sch
 T 53600 41100 5 14 1 1 0 4 1
-title=BUFN2 - non-inverting Buffer, 2x driver strength (LOW-skewed)
+title=CBP2 - non-inverting Clock Buffer (High-skewed), drive 2x
 }
 C 48000 46500 1 0 0 spice-model-1.sym
 {
@@ -133,7 +133,7 @@ T 51900 41900 9 10 1 0 0 0 2
 T 53800 41700 9 10 1 0 0 0 3
 2. Stage:
 - inverter with higher (2x) driving strength
-- down-sized pMOS (skewed)
+- down-sized nMOS (skewed)
 N 54800 45000 54800 46000 4
 N 54700 45000 54800 45000 4
 N 54800 42400 54800 43500 4
@@ -168,7 +168,7 @@ C 54600 46700 1 0 0 spice-subcircuit-LL-1.sym
 T 54700 47100 5 10 1 1 0 0 1
 refdes=A3
 T 54700 46800 5 10 1 1 0 0 1
-model-name=BUFN2
+model-name=CBP2
 }
 C 50800 46300 1 180 0 spice-subcircuit-IO-1.sym
 {
@@ -196,5 +196,5 @@ device=directive
 T 48100 43200 5 10 1 1 0 0 1
 refdes=A7
 T 48100 42900 5 10 1 1 0 0 1
-value=.PARAM skew=.5
+value=.PARAM skew=2
 }
