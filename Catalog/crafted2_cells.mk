@@ -46,15 +46,11 @@
 
 #   --------    (skewed) buffers    --------------------------------
 
-CELLS +=        BUFN2 \
-                BUFP2
-                # probably also: BUFx3, BUFx5, BUFx7
-
-#   --------    clock gates     ------------------------------------
-
-CELLS +=        CGN2 \
-                CGP2
-                # eventually also: CGx3, CGx5, CGx7
+CELLS +=        CBN2 \
+                CBP2 \
+                CIN2 \
+                CIP2
+                # probably also: CBx3, CIx3, CBx5, CIx5, CBx7, CIx7
 
 #   --------    D-flip-flops    ------------------------------------
 
@@ -69,12 +65,12 @@ CELLS +=        LATN \
                 LATRP \
                 LATSN \
                 LATSP \
-                LATEN \
-                LATEP \
-                LATERN \
-                LATERP \
-                LATESN \
-                LATESP
+                LATEN LATE2N \
+                LATEP LATE2P \
+                LATERN LATE2RN \
+                LATERP LATE2RP \
+                LATESN LATE2SN \
+                LATESP LATE2SP
 
 #   --------    neat cells  ----------------------------------------
 
