@@ -43,9 +43,7 @@ include $(PRD)/include.mk
 
 #   virtuell search pathes
 
-vpath   %.sym   $(SOURCESDIR)/geda
-vpath   %.sch   $(SOURCESDIR)/geda
-vpath   $(CATALOGDIR)
+VPATH = $(SOURCESDIR)/geda:$(CATALOGDIR)
 
 #   project settings
 
