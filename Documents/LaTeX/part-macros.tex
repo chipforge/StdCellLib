@@ -9,15 +9,16 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/LaTeX/part-informal.tex
+%%  File:           StdCellLib/Documents/LaTeX/part-macros.tex
 %%
-%%  Purpose:        Part Level File for Standard Cell Library Documentation
+%%  Purpose:        Part Level File for Macro Examples
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018, 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  Copyright (c) 2021 by
+%%                chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,21 +33,33 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\part{Informal}
+\part{Macro Examples}
 \pagestyle{headings}
 
 %%  -------------------------------------------------------------------
 %%                  CHAPTER 1
 %%  -------------------------------------------------------------------
 
-\input{chapter-cmos_in_a_nutshell}
+\chapter{Combinatorial Macros}
+\clearpage
+
+\input{section-XOR_gates}
 
 %%  -------------------------------------------------------------------
 %%                  CHAPTER 2
 %%  -------------------------------------------------------------------
 
-\input{chapter-design_considerations}
+\chapter{Storage Macros}
+\clearpage
 
-% !! add much, much more
+\input{section-scan_flipflops}
 
+%%  -------------------------------------------------------------------
+%%                  CHAPTER 3
+%%  -------------------------------------------------------------------
+
+\chapter{Clock Distribution Macros}
+\clearpage
+
+\input{section-clock_macros}
 
