@@ -34,13 +34,20 @@
 #
 #   ////////////////////////////////////////////////////////////////////
 
+#   project root directory, relative, used inside include.mk file
+PRD =               ../..
+
 #   common definitions
 
-include ../../include.mk
+include $(PRD)/include.mk
+
+#   virtuell search pathes
+
+VPATH = $(CATALOGDIR)
 
 #   directory pathes
 
-OUTPUTDIR =     ../../$(RELEASEDIR)
+OUTPUTDIR =     $(RELEASEDIR)
 
 #   project tools
 
@@ -68,6 +75,7 @@ help:
 .PHONY: clean
 clean:
 	-$(RM) *.aux *.idx *.log *.toc *.out
+	#-$(RM) *_schematic.tex
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
@@ -79,11 +87,11 @@ doc:    pdf clean
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
 .PHONY: pdf
-pdf:    $(PROJECT).tex
-	$(LATEX) $<
-	$(LATEX) $<
+pdf:    INV_schematic.tex NAND2_schematic.tex $(PROJECT).tex
+	$(LATEX) $(PROJECT).tex
+	$(LATEX) $(PROJECT).tex
 	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
 
-%:
-	# generate datasheet / manual page
+%_schematic.tex: %
+	$(SCHEMATIC) -e circdia $< > $@
 
