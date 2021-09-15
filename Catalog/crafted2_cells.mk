@@ -82,3 +82,8 @@ CELLS +=        MUXI21 \
                 MUXIE21 \
                 MUXIEN21
 
+#   --------    others      ----------------------------------------
+
+CELLS +=        TIE0 \
+                TIE1
+
