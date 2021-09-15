@@ -1,0 +1,30 @@
+v 20130925 2
+L 0 0 200 0 3 10 0 0 -1 -1
+L 100 0 100 200 3 10 0 0 -1 -1
+P 400 200 100 200 1 0 0
+{
+T 100 250 5 10 0 0 0 6 1
+pintype=out
+T 100 250 5 10 0 0 0 6 1
+pinseq=1
+T 45 195 9 10 0 1 0 6 1
+pinlabel=Y
+T 195 245 5 10 0 1 0 0 1
+pinnumber=1
+}
+T -5 695 8 10 0 0 0 0 1
+net=VDD:2
+T -5 495 8 10 0 0 0 0 1
+net=GND:3
+T 292 408 5 16 0 1 270 0 1
+device=TIE0
+T 992 1592 8 10 0 1 0 0 1
+description=TIE0 - pull-down (tie low) cell
+T -8 289 5 10 1 1 0 0 1
+refdes=X?
+T 1592 692 8 10 0 0 0 0 1
+footprint=none
+T -308 -708 8 10 0 1 0 0 1
+source=TIE0.sch
+T 300 -600 9 10 0 0 0 0 1
+numslots=0
