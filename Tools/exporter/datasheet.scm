@@ -59,63 +59,71 @@
     ; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'report) ;(check-set-mode! 'off)
 
-;;  ------------    SYNOPSYS    ---------------------------------------
+;;  ------------    synopsys    ---------------------------------------
 
-    (define (SYNOPSYS cell)
-        "Generates SYNOPSY paragraph.
+    (define (synopsys cell)
+        "Generates synopsys information.
         Returns list for (map display (list ..))"
         (list
-            "\n\\paragraph{Synopsys}"
             "\n\\begin{quote}"
-            "\n " (id cell) " (" (outputs cell) (inputs cell) (clocks cell)")"
-            "\n\\end{quote}"))
+            "\n    " (id cell) " (" (outputs cell) " " (inputs cell) (clocks cell)")"
+            "\n\\end{quote}"
+            "\n"))
 
-;;  ------------    CIRCUITRY   ---------------------------------------
+;;  ------------    circuit diagram -----------------------------------
 
-    (define (CIRCUITRY cell)
-        "Generates CIRCUITRY paragraph.
+    (define (circuit cell)
+        "Include circuit diagram.
         Returns list for (map display (list ..))"
         (list
-            "\n\\paragraph{Circuitry}"
-            "\n\\input{" (id cell) "_circuit.tex}"))
+            "\n\\begin{figure}[h]"
+            "\n    \\centering"
+            "\n    \\input{" (id cell) "_circuit.tex}"
+            "\n\\end{figure}"
+            "\n"))
 
-;;  ------------    TRUTHTABLE  ---------------------------------------
+;;  ------------    truth table ---------------------------------------
 
-    (define (TRUTHTABLE cell)
-        "Generates TRUTH TABLE paragraph.
+    (define (truthtable cell)
+        "Include truth table.
         Returns list for (map display (list ..))"
         (list
-            "\n\\paragraph{Truth Table}"
+            ;"\n"   ; ?? frame-ing
             "\n\\input{" (id cell) "_truthtable.tex}")) ; !! generate here from table file !!
 
-;;  ------------    SCHEMATIC   ---------------------------------------
+;;  ------------    file list   ---------------------------------------
 
-    (define (SCHEMATIC cell)
-        "Generates SCHEMATIC paragraph.
+    (define (files cell filelist)
+        "Generates file list.
         Returns list for (map display (list ..))"
         (list
-            "\n\\paragraph{Schematic}"
-            "\n\\input{" (id cell) "_schematic.tex}"    ; !! take PS file if available
-        ))
-
-;;  ------------    LAYOUT  -------------------------------------------
-
-    (define (LAYOUT cell)
-        "Generates LAYOUT paragraph.
-        Returns list for (map display (list ..))"
-        (list
-            "\n\\paragraph{Layout}"
-            "\n\\input{" (id cell) "_layout.tex}" ; !!
-        ))
-
-;;  ------------    FILES   -------------------------------------------
-
-    (define (FILES cell filelist)
-        "Generates FILES paragraph.
-        Returns list for (map display (list ..))"
-        (list
-            "\n\\paragraph{Files}"
             ; generate topics !!
+        ))
+
+;;  ------------    schematic   ---------------------------------------
+
+    (define (schematic cell)
+        "Include schematic diagram.
+        Returns list for (map display (list ..))"
+        (list
+            "\n\\begin{landscape}"
+            "\n    \\fbox{INV - Not (or Inverter) gate}"
+            "\n    \\begin{figure}[h]"
+            "\n        \\centering"
+
+            "\n        \\input{" (id cell) "_schematic.tex}"    ; !! take PS file if available
+            "\n    \\end{figure}"
+            "\n\\end{landscape}"
+            "\n"))
+
+;;  ------------    layout  -------------------------------------------
+
+    (define (layout cell)
+        "Include layout picture.
+        Returns list for (map display (list ..))"
+        (list
+            ;"\n"   ; ?? frame-ing
+            "\n\\input{" (id cell) "_layout.tex}" ; !!
         ))
 
 ;;  ------------    page frame  ---------------------------------------
@@ -125,16 +133,17 @@
         Returns list for (map display (list ..))"
         (list
             ; start with subsection header
-            "\n\\subsection{" (id cell) " - " (description cell) "} \\label{" (id cell) "}"
-            (SYNOPSYS cell)
-            ; 2-column section for circuit and truthtabel
-            "\n\\twocolumn" (CIRCUITRY cell) (TRUTHTABLE cell) "\n\\onecolumn"
-            ; 1-column section for large schematic and layout files
-            (SCHEMATIC cell)
-            (LAYOUT cell)
-            ; 2-column section for file lists
-            "\n\\twocolumn" (FILES cell filelist) "\n\\onecolumn"
-            ; clear page for next one
+            "\n\\subsection{" (id cell) " - " (description cell) "} \\label{cell:" (id cell) "}"
+            "\n"
+            "\n\\paragraph{Description:}"
+            "\n"
+            (synopsys cell)
+            (circuit cell)
+;            (truthtable cell)
+;            (files cell filelist)
+            (schematic cell)
+;            (layout cell)
+            ; clear page for next subsection 
             "\n\\clearpage"))
 
 ;;  ------------    exporter datasheet in latex -----------------------
@@ -144,11 +153,11 @@
         Returns list for (map display (list ..))"
         (map rdisplay
             (list
-                (generic-fileheader ";;" "Documents/LaTeX/" "Data Sheet")
-                (generic-copyleft ";;")
-                (generic-license ";;")
+                (generic-fileheader "%%" "Documents/LaTeX/" (id cell) "Data Sheet")
+                (generic-copyleft "%%")
+                (generic-license "%%")
                 (outer-page-frame cell filelist)
-                (generic-filefooter ";;" "Documents/LaTeX/"))))
+                (generic-filefooter "%%" "Documents/LaTeX/"))))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY

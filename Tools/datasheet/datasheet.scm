@@ -162,14 +162,14 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
 
             ; -H number
             [(equal? (car arguments) "-H")
-                (let ([value (car (cdr arguments))]
-                      [tail (cddr arguments)])
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
                     (set! track-high (string->number value))  ; !! value check missing)]
-                    (set-parameters-with-args! eigen-name tail))]
+                    (set-parameters-with-args! tail))]
 
             ; -v
             [(equal? (car arguments) "-v")
-                (let ([tail (cdr arguments)])
+                (let* ([tail (cdr arguments)])
                     (set! verbose-mode #t)
                     (set-parameters-with-args! tail))]
 
