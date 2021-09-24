@@ -70,6 +70,7 @@
           y-axis set-y-axis!
           method-generate-location+
           method-generate-location-
+          method-clone-location
           method-pretty-print-location
           ; mosfet representations
           mosfet mosfet?
@@ -81,8 +82,10 @@
           size set-size!
           place set-place!
           nmos? pmos?
+          grounded? powered?
           method-generate-nmos
           method-generate-pmos
+          method-clone-mosfet
           method-pretty-print-mosfet
           ; netlist operations
           method-netlist-buffered?
@@ -98,6 +101,7 @@
           grep-internal-nodes
           grep-supply-nodes
           grep-ground-planes
+          grep-highest-internal-node
           grep-highest-stacked-transistor
           ; cell representations
           cell cell?
@@ -132,8 +136,8 @@
 
     (define (method-next-char-node node name-space)
         "Increments the next node character. Returns a string."
-        (cond
-            [(null? node) (string (car name-space))]
+        (case (string-length node)
+            [(0) (string (car name-space))]
             [else
                 (string (cadr (memq (string-ref node 0) name-space)))]))
 
@@ -141,9 +145,9 @@
 
     (define (method-next-number-node node name-space)
         "Increments the next node number. Returns a string."
-        (cond
-            [(null? node) (string (car name-space))]
-            [(= (string-length node) 1)
+        (case (string-length node)
+            [(0) (string (car name-space))]
+            [(1)
                 (string (string-ref node 0) #\1)]
             [else
                 (string-append
@@ -169,8 +173,8 @@
 
     (define (%input-node-object method node)
         "Deals with input nodes. Returns next or validity"
-        (let* ((name-space '(#\A #\B #\C #\D #\E #\F #\H #\I #\K
-                             #\L #\M #\P #\R #\S #\T #\U #\W)))
+        (let* ((name-space (list #\A #\B #\C #\D #\E #\F #\H #\I #\K
+                                 #\L #\M #\P #\R #\S #\T #\U #\W)))
             (case method
                 [(next-char) (method-next-char-node node name-space)]
                 [(next-number) (method-next-number-node node name-space)]
@@ -195,7 +199,7 @@
 
     (define (%clock-node-object method node)
         "Deals with clock nodes. Returns next node or validity"
-        (let* ((name-space '(#\X)))
+        (let* ((name-space (list #\X)))
             (case method
                 [(next-number) (method-next-number-node node name-space)]
                 [else  (method-node-valid? node name-space)])))
@@ -216,7 +220,7 @@
 
     (define (%output-node-object method node)
         "Deals with output nodes. Returns next node or validity"
-        (let* ((name-space '(#\Y #\Z #\Q)))
+        (let* ((name-space (list #\Y #\Z #\Q)))
             (case method
                 [(next-char) (method-next-char-node node name-space)]
                 [else (method-node-valid? node name-space)])))
@@ -239,7 +243,7 @@
 
     (define (%internal-node-object method node)
         "Deals with internal nodes. Returns next node or validity"
-        (let* ((name-space '(#\N #\O)))
+        (let* ((name-space (list #\N #\O)))
             (case method 
                 [(next-char) (method-next-char-node node name-space)]
                 [(next-number) (method-next-number-node node name-space)]
@@ -265,7 +269,7 @@
 
     (define (%supply-node-object method node)
         "Deals with supply nodes. Returns still validity"
-        (let* ((name-space '("VDD" "VCC")))
+        (let* ((name-space (list "VDD" "VCC")))
             (method-node-listed? node name-space)))
 
 ;   Checks:
@@ -286,7 +290,7 @@
 
     (define (%ground-plane-object method node)
         "Deals with ground planes. Returns still validity"
-        (let* ((name-space '("GND" "VSS")))
+        (let* ((name-space (list "GND" "VSS")))
             (method-node-listed? node name-space)))
 
 ;   Checks:
@@ -308,7 +312,7 @@
         (list-sort string>? nodes))
 
 ;   Checks:
-    (check (sort-nodes-descending '("A" "A1" "B")) => '("B" "A1" "A")) ; !!
+    (check (sort-nodes-descending (list "A" "A1" "B")) => (list "B" "A1" "A")) ; !!
 
 ;;  ------------    remove doubled nodes    ---------------------------
 
@@ -323,7 +327,7 @@
                     (cons node tail)))))
 
 ;   Checks:
-    (check (remove-doubled-nodes '("A1" "A1" "B")) => '("A1" "B")) ; !!
+    (check (remove-doubled-nodes (list "A1" "A1" "B")) => (list "A1" "B")) ; !!
 
 ;;  ------------    pretty print nodes  -------------------------------
 
@@ -371,6 +375,16 @@
     (define (method-generate-location-)
         "Generate empty negative <location> structure.  Returns <location>."
         (location 1 1 1))
+
+;;  ------------    clone an <location> complete    -------------------
+
+    (define (method-clone-location original)
+        "Clone a <location> record structure.  Returns <location>."
+        (let* ([clone (method-generate-location-)])
+            (set-stacked! clone (stacked original))
+            (set-x-axis!  clone (x-axis  original))
+            (set-y-axis!  clone (y-axis  original))
+            clone))
 
 ;;  ------------    pretty print <location>     -----------------------
 
@@ -433,6 +447,20 @@
         "Generate empty pmos <mosfet> record structure.  Returns <mosfet>."
         (mosfet "pmos" "" "" "" "" "" (method-generate-location+)))
 
+;;  ------------    clone <mosfet> complete     -----------------------
+
+    (define (method-clone-mosfet original)
+        "Clone a <mosfet> record structure.  Returns <mosfet>."
+        (let* ([clone (method-generate-pmos)])
+            (set-type!   clone (type original))
+            (set-gate!   clone (gate original))
+            (set-drain!  clone (drain original))
+            (set-source! clone (source original))
+            (set-bulk!   clone (bulk original))
+            (set-size!   clone (size original))
+            (set-place!  clone (method-clone-location (place original)))
+            clone))
+
 ;;  ------------    pmos? predicate     -------------------------------
 
     (define (pmos? record)
@@ -454,6 +482,28 @@
 ;   Checks:
     (check (nmos? (method-generate-pmos)) => #f)
     (check (nmos? (method-generate-nmos)) => #t) ; !!
+
+;;  ------------    grounded? predicate     ---------------------------
+
+    (define (grounded? record)
+        "Check record for grounded transistor.  As every predicate returns boolean."
+        (and (mosfet? record)
+             (%ground-plane-object 'valid? (source record))))
+
+;   Checks:
+    (check (grounded? (method-generate-pmos)) => #f)
+    (check (grounded? (method-generate-nmos)) => #f)
+
+;;  ------------    powered? predicate  -------------------------------
+
+    (define (powered? record)
+        "Check record for powered transistor.  As every predicate returns boolean."
+        (and (mosfet? record)
+             (%supply-node-object 'valid? (source record))))
+
+;   Checks:
+    (check (powered? (method-generate-pmos)) => #f)
+    (check (powered? (method-generate-nmos)) => #f)
 
 ;;  ------------    pretty print <mosfet>   ---------------------------
 
@@ -637,6 +687,17 @@
                 (if (%ground-plane-object 'valid? source-node)
                     (cons source-node (grep-ground-planes (cdr netlist)))
                     (grep-ground-planes (cdr netlist))))))
+
+;;  ------------    grep highest internal node  -----------------------
+
+    (define (grep-highest-internal-node netlist)
+        "Just grep the netlist for the hightest internal node.  Returns a string."
+        (if (null? netlist)
+            0
+            (let* ([candidates (sort-nodes-descending (grep-internal-nodes netlist))])
+                (if (null? candidates)
+                    ""
+                    (car candidates)))))
 
 ;;  ------------    grep highest stacked transistor -------------------
 
