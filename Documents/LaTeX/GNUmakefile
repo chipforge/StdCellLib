@@ -45,6 +45,13 @@ include $(PRD)/include.mk
 
 VPATH = $(CATALOGDIR)
 
+#   auxiliary stuff for targets
+
+CIRCUITS    := $(foreach i,$(CELLS),$(i)_circuit.tex)
+DATASHEETS  := $(foreach i,$(CELLS),$(i)_datasheet.tex)
+SCHEMATICS  := $(foreach i,$(CELLS),$(i)_schematic.tex)
+TRUTHTABLES := $(foreach i,$(CELLS),$(i)_truthtable.tex)
+
 #   directory pathes
 
 OUTPUTDIR =     $(RELEASEDIR)
@@ -68,18 +75,28 @@ help:
 	#   help       - print this help screen
 	#   clean      - clean up all intermediate files
 	#
-	#   doc        - compile documentation"
+	#   schematics - generate schematics for every cell
+	#   datasheets - generate datasheets for every cell
+	#   doc        - compile whole documentation
 	#
 
 
 .PHONY: clean
 clean:
 	-$(RM) *.aux *.idx *.log *.toc *.out
-	#-$(RM) *_schematic.tex
+	-$(RM) $(SCHEMATICS)
+	-$(RM) $(DATASHEETS)
+	#-$(RM) $(TRUTHTABLES)
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
+
+circuits:   $(CIRCUITS)
+
+schematics: $(SCHEMATICS)
+
+datasheets: $(DATASHEETS)
 
 .PHONY: doc
 doc:    pdf clean
@@ -87,11 +104,14 @@ doc:    pdf clean
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
 .PHONY: pdf
-pdf:    INV_schematic.tex NAND2_schematic.tex $(PROJECT).tex
+pdf:    circuits schematics datasheets $(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(MV) $(PROJECT).pdf $(OUTPUTDIR)
 
 %_schematic.tex: %
 	$(SCHEMATIC) -e circdia $< > $@
+
+%_datasheet.tex: %
+	$(DATASHEET) $< > $@
 
