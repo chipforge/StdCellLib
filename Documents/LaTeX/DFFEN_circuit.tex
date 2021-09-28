@@ -32,28 +32,23 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{31}{12}
-            \pin{1}{10}{L}{D}   % pin D
-            \wire{2}{10}{11}{10}
-            \usgate
-            \gate{nor}{5}{3}{R}{}{}
-            \flipflop[\clockin{n}]{d}{15}{8}{R}{}{}
-            \wire{20}{3}{20}{8}
-            \wire{20}{8}{21}{8}
-            \flipflop[\clockin{p}]{d}{25}{8}{R}{}{}
-            \wire{19}{10}{21}{10}
-            \pin{1}{5}{L}{EN}  % pin EN
-            \pin{1}{1}{L}{XN}  % pin XN
-            \wire{9}{3}{20}{3}
-            \junct{10}{3}
-            \wire{10}{3}{10}{8}
-            \wire{10}{8}{11}{8}
-            \pin{30}{10}{R}{Q}  % pin Q
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{31}{12}
+
+    \usgate
+    \pin{1}{10}{L}{D}   % pin D
+    \wire{2}{10}{11}{10}
+    \gate{nor}{5}{3}{R}{}{}
+    \flipflop[\clockin{n}]{d}{15}{8}{R}{}{}
+    \wire{20}{3}{20}{8}
+    \wire{20}{8}{21}{8}
+    \flipflop[\clockin{p}]{d}{25}{8}{R}{}{}
+    \wire{19}{10}{21}{10}
+    \pin{1}{5}{L}{EN}  % pin EN
+    \pin{1}{1}{L}{XN}  % pin XN
+    \wire{9}{3}{20}{3}
+    \junct{10}{3}
+    \wire{10}{3}{10}{8}
+    \wire{10}{8}{11}{8}
+    \pin{30}{10}{R}{Q}  % pin Q
+
+\end{circuitdiagram}

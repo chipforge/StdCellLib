@@ -32,25 +32,20 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{26}{9}
-            \usgate
-            \flipflop[\clockin{n}]{d}{7}{5}{R}{}{}
-            \pin{1}{1}{L}{XI}   % pin XI
-            \pin{1}{7}{L}{E}    % pin E
-            \wire{2}{7}{3}{7}
-            \wire{2}{5}{3}{5}
-            \wire{2}{1}{2}{5}
-            \junct{2}{1}        % clock line
-            \wire{2}{1}{11}{1}
-            \wire{11}{5}{11}{7}
-            \gate{nand}{14}{3}{R}{}{} % NAND
-            \gate{not}{21}{3}{Rc}{}{2x} % buffer
-            \pin{25}{3}{R}{XO}   % pin XO
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{26}{9}
+
+    \usgate
+    \flipflop[\clockin{n}]{d}{7}{5}{R}{}{}
+    \pin{1}{1}{L}{XI}   % pin XI
+    \pin{1}{7}{L}{E}    % pin E
+    \wire{2}{7}{3}{7}
+    \wire{2}{5}{3}{5}
+    \wire{2}{1}{2}{5}
+    \junct{2}{1}        % clock line
+    \wire{2}{1}{11}{1}
+    \wire{11}{5}{11}{7}
+    \gate{nand}{14}{3}{R}{}{} % NAND
+    \gate{not}{21}{3}{Rc}{}{2x} % buffer
+    \pin{25}{3}{R}{XO}   % pin XO
+
+\end{circuitdiagram}

@@ -32,29 +32,24 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{25}{14}
-            \usgate
-            \gate[\inputs{3}]{and}{5}{11}{R}{}{}  % AND
-            \gate[\inputs{2}]{or}{12}{9}{R}{}{}   % OR
-            \gate[\inputs{2}]{or}{12}{3}{R}{}{}   % OR
-            \gate[\inputs{2}]{nand}{19}{6}{R}{}{} % NAND
-            \pin{1}{1}{L}{A}     % pin A
-            \pin{1}{5}{L}{A1}    % pin A1
-            \pin{1}{7}{L}{B}     % pin B
-            \pin{1}{9}{L}{C}     % pin C
-            \pin{1}{11}{L}{C1}   % pin C1
-            \pin{1}{13}{L}{C2}   % pin C2
-            \wire{2}{1}{9}{1}    % wire pin A
-            \wire{2}{5}{9}{5}    % wire pin A1
-            \wire{2}{7}{9}{7}    % wire pin B
-            \wire{16}{3}{16}{4}  % wire between OR and NAND
-            \wire{16}{9}{16}{8}  % wire between OR and NAND
-            \pin{24}{6}{R}{Y}    % pin Y
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{25}{14}
+
+    \usgate
+    \gate[\inputs{3}]{and}{5}{11}{R}{}{}  % AND
+    \gate[\inputs{2}]{or}{12}{9}{R}{}{}   % OR
+    \gate[\inputs{2}]{or}{12}{3}{R}{}{}   % OR
+    \gate[\inputs{2}]{nand}{19}{6}{R}{}{} % NAND
+    \pin{1}{1}{L}{A}     % pin A
+    \pin{1}{5}{L}{A1}    % pin A1
+    \pin{1}{7}{L}{B}     % pin B
+    \pin{1}{9}{L}{C}     % pin C
+    \pin{1}{11}{L}{C1}   % pin C1
+    \pin{1}{13}{L}{C2}   % pin C2
+    \wire{2}{1}{9}{1}    % wire pin A
+    \wire{2}{5}{9}{5}    % wire pin A1
+    \wire{2}{7}{9}{7}    % wire pin B
+    \wire{16}{3}{16}{4}  % wire between OR and NAND
+    \wire{16}{9}{16}{8}  % wire between OR and NAND
+    \pin{24}{6}{R}{Y}    % pin Y
+
+\end{circuitdiagram}
