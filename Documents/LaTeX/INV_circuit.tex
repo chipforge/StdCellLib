@@ -17,7 +17,8 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+%%  Copyright (c) 2018 - 2021 by
+%%                chipforge <hsank@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,15 +33,11 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
-        \begin{center}
-            \begin{circuitdiagram}{11}{6}
-            \pin{1}{3}{L}{A}    % pin A
-            \gate{not}{5}{3}{R}{}{}    % NOT gate -> right
-            \pin{9}{3}{R}{Y}   % pin Y
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{11}{6}
+
+    \usgate
+    \pin{1}{3}{L}{A}    % pin A
+    \gate{not}{5}{3}{R}{}{}    % NOT gate -> right
+    \pin{9}{3}{R}{Y}   % pin Y
+
+\end{circuitdiagram}

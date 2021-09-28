@@ -17,7 +17,8 @@
 %%
 %%  ///////////////////////////////////////////////////////////////////
 %%
-%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  Copyright (c) 2019 - 2021 by
+%%                chipforge <stdcelllib@nospam.chipforge.org>
 %%  All rights reserved.
 %%
 %%      This Standard Cell Library is licensed under the Libre Silicon
@@ -32,17 +33,12 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{11}{6}
-            \usgate
-            \gate[\inputs{2}]{nand}{5}{3}{R}{}{} % NAND
-            \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{5}{L}{A1}   % pin A1
-            \pin{10}{3}{R}{Y}   % pin Y
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{11}{6}
+
+    \usgate
+    \gate[\inputs{2}]{nand}{5}{3}{R}{}{} % NAND
+    \pin{1}{5}{L}{A}    % pin A
+    \pin{1}{1}{L}{A1}   % pin A1
+    \pin{10}{3}{R}{Y}   % pin Y
+
+\end{circuitdiagram}
