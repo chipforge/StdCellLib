@@ -32,34 +32,29 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
-        \begin{center}
-            \begin{circuitdiagram}{25}{14}
-            \pin{15}{4}{L}{A0}
-            \pin{1}{10}{L}{S}
-            \wire{2}{10}{2}{7}
-            \junct{2}{10}
-            \wire{2}{7}{19}{7}
-            \junct{19}{7}
-            \pin{15}{10}{L}{A1}
-            \gate{not}{5}{10}{R}{}{}
-            \gate[\tristate{Dp}]{not}{19}{4}{R}{}{}
-            \gate[\tristate{Un}]{not}{19}{4}{R}{}{}
-            \gate[\tristate{Dp}]{not}{19}{10}{R}{}{}
-            \gate[\tristate{Un}]{not}{19}{10}{R}{}{}
-            \wire{22}{10}{23}{10}
-            \wire{22}{4}{23}{4}
-            \wire{9}{1}{9}{13}     % wire /S vertical
-            \wire{8}{10}{9}{10}     % wire /S horizontal 
-            \junct{9}{10}
-            \wire{9}{1}{19}{1}     % wire /S below
-            \wire{9}{13}{19}{13}     % wire /S above
-            \wire{23}{10}{23}{4}   % wire S before pin, vertical
-            \junct{23}{7}
-            \pin{24}{7}{R}{Z},
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{25}{14}
+
+    \pin{15}{4}{L}{A0}
+    \pin{1}{10}{L}{S}
+    \wire{2}{10}{2}{7}
+    \junct{2}{10}
+    \wire{2}{7}{19}{7}
+    \junct{19}{7}
+    \pin{15}{10}{L}{A1}
+    \gate{not}{5}{10}{R}{}{}
+    \gate[\tristate{Dp}]{not}{19}{4}{R}{}{}
+    \gate[\tristate{Un}]{not}{19}{4}{R}{}{}
+    \gate[\tristate{Dp}]{not}{19}{10}{R}{}{}
+    \gate[\tristate{Un}]{not}{19}{10}{R}{}{}
+    \wire{22}{10}{23}{10}
+    \wire{22}{4}{23}{4}
+    \wire{9}{1}{9}{13}     % wire /S vertical
+    \wire{8}{10}{9}{10}     % wire /S horizontal 
+    \junct{9}{10}
+    \wire{9}{1}{19}{1}     % wire /S below
+    \wire{9}{13}{19}{13}     % wire /S above
+    \wire{23}{10}{23}{4}   % wire S before pin, vertical
+    \junct{23}{7}
+    \pin{24}{7}{R}{Z}
+
+\end{circuitdiagram}

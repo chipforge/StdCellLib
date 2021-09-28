@@ -32,11 +32,8 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{17}{8}
+\begin{circuitdiagram}{17}{8}
+
             \usgate
             \gate[\inputs{4}]{nand}{5}{4}{R}{}{} % NAND
             \gate{not}{12}{4}{R}{}{}    % NOT
@@ -45,7 +42,5 @@
             \pin{1}{5}{L}{A2}   % pin A2
             \pin{1}{7}{L}{A3}   % pin A3
             \pin{16}{4}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+
+\end{circuitdiagram}

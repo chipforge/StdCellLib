@@ -32,24 +32,19 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{18}{12}
-            \usgate
-            \gate[\inputs{3}]{and}{5}{9}{R}{}{}   % AND
-            \gate[\inputs{2}]{and}{5}{3}{R}{}{}   % AND
-            \gate[\inputs{2}]{nor}{12}{6}{R}{}{}  % NOR
-            \pin{1}{1}{L}{A}     % pin A
-            \pin{1}{5}{L}{A1}    % pin A1
-            \pin{1}{7}{L}{B}     % pin B
-            \pin{1}{9}{L}{B1}    % pin B1
-            \pin{1}{11}{L}{B2}   % pin B2
-            \wire{9}{3}{9}{4}    % wire between AND and NOR
-            \wire{9}{9}{9}{8}    % wire between AND and NOR
-            \pin{17}{6}{R}{Y}   % pin Y
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{18}{12}
+
+    \usgate
+    \gate[\inputs{3}]{and}{5}{9}{R}{}{}   % AND
+    \gate[\inputs{2}]{and}{5}{3}{R}{}{}   % AND
+    \gate[\inputs{2}]{nor}{12}{6}{R}{}{}  % NOR
+    \pin{1}{1}{L}{A}     % pin A
+    \pin{1}{5}{L}{A1}    % pin A1
+    \pin{1}{7}{L}{B}     % pin B
+    \pin{1}{9}{L}{B1}    % pin B1
+    \pin{1}{11}{L}{B2}   % pin B2
+    \wire{9}{3}{9}{4}    % wire between AND and NOR
+    \wire{9}{9}{9}{8}    % wire between AND and NOR
+    \pin{17}{6}{R}{Y}   % pin Y
+
+\end{circuitdiagram}

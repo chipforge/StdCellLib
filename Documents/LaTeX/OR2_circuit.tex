@@ -32,18 +32,13 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h]
-        \begin{center}
-            \begin{circuitdiagram}{17}{6}
-            \usgate
-            \gate[\inputs{2}]{nor}{5}{3}{R}{}{}  % NOR
-            \gate{not}{12}{3}{R}{}{}    % NOT
-            \pin{1}{1}{L}{A}    % pin A
-            \pin{1}{5}{L}{A1}   % pin A1
-            \pin{16}{3}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{17}{6}
+
+    \usgate
+    \gate[\inputs{2}]{nor}{5}{3}{R}{}{}  % NOR
+    \gate{not}{12}{3}{R}{}{}    % NOT
+    \pin{1}{1}{L}{A}    % pin A
+    \pin{1}{5}{L}{A1}   % pin A1
+    \pin{16}{3}{R}{Z}   % pin Z
+
+\end{circuitdiagram}

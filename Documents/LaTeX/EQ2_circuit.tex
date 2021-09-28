@@ -32,28 +32,24 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{center}
-    Circuit
-    \begin{figure}[h] %\caption{Circuit}
-        \begin{center}
-            \begin{circuitdiagram}{21}{12}
-            \pin{1}{1}{L}{A}    % pin A
-            \wire{2}{1}{5}{1}
-            \wire{3}{5}{5}{7}
-            \wire{3}{5}{3}{1}
-            \junct{3}{1}
-            \pin{1}{11}{L}{B}    % pin B
-            \wire{2}{11}{5}{11}
-            \wire{3}{7}{5}{5}
-            \wire{3}{7}{3}{11}
-            \junct{3}{11}
-            \gate[\inputs{2}]{nand}{8}{3}{R}{}{} % NOR gate -> right
-            \gate[\inputs{2}]{or}{8}{9}{R}{}{}  % NOR gate -> right
-            \wire{12}{3}{12}{4}
-            \wire{12}{9}{12}{8}
-            \gate[\inputs{2}]{nand}{15}{6}{R}{}{}  % NOR gate -> right
-            \pin{20}{6}{R}{Z}   % pin Z
-            \end{circuitdiagram}
-        \end{center}
-    \end{figure}
-\end{center}
+\begin{circuitdiagram}{21}{12}
+
+    \usgate
+    \pin{1}{1}{L}{A}    % pin A
+    \wire{2}{1}{5}{1}
+    \wire{3}{5}{5}{7}
+    \wire{3}{5}{3}{1}
+    \junct{3}{1}
+    \pin{1}{11}{L}{B}    % pin B
+    \wire{2}{11}{5}{11}
+    \wire{3}{7}{5}{5}
+    \wire{3}{7}{3}{11}
+    \junct{3}{11}
+    \gate[\inputs{2}]{nand}{8}{3}{R}{}{} % NOR gate -> right
+    \gate[\inputs{2}]{or}{8}{9}{R}{}{}  % NOR gate -> right
+    \wire{12}{3}{12}{4}
+    \wire{12}{9}{12}{8}
+    \gate[\inputs{2}]{nand}{15}{6}{R}{}{}  % NOR gate -> right
+    \pin{20}{6}{R}{Z}   % pin Z
+
+\end{circuitdiagram}
