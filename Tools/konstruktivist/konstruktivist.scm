@@ -9,16 +9,16 @@
 ;;                          www.chipforge.org
 ;;                  there are projects from small cores up to PCBs, too.
 ;;
-;;  File:           StdCellLib/Tools/datasheet/datasheet.scm
+;;  File:           StdCellLib/Tools/schematic/schematic.scm
 ;;
-;;  Purpose:        Datasheet Main functionality
+;;  Purpose:        Schematic Main functionality
 ;;
 ;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
 ;;  Copyright (c) 2021 by
-;;                  chipforge <datasheet@nospam.chipforge.org>
+;;                  chipforge <schematic@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
 ;;  provided that this copyright statement is not removed from the
@@ -51,7 +51,7 @@
             (srfi 78)                   ; test suite
             ; r7rs modules for StdCellLib also
             (common cell)
-            (exporter datasheet)
+            (exporter circdia)
     )
 
 ;;  ------------    srfi-78 test suite  -------------------------------
@@ -67,7 +67,7 @@
 ;;  ------------    Program Name    -----------------------------------
 
     ; use this as default
-    (define eigen-name "datasheet")
+    (define eigen-name "konstruktivist")
 
 ;;  ------------    version "screen"    -------------------------------
 
@@ -86,7 +86,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
+Copyright (c) 2021 by chipforge <konstruktivist@nospam.chipforge.org>"
         eigen-name)
         (newline (@port))
     )
@@ -96,7 +96,7 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
     (define (+purpose+ @port)
         "Formats program purpose @port."
         (format (@port)
-"Generate complete Cell Data Sheet.
+"Generate beautiful Schematics.
 
 "   ))
 
@@ -109,7 +109,8 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
     (define (+usage+ @port)
         "Formats usage print-out @port."
         (format (@port)
-"Usage: ~a cell-file
+"Usage: ~a [options] cell-file
+   -e format           specify exporter format - CircDia (LaTeX), or gEDA (gschem)
    -h | --help         print help screen and exit
 
    -v                  print verbose messages
@@ -119,6 +120,9 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
         (exit 2))
 
 ;;  ------------    command line options    ---------------------------
+
+;   -e format
+    (define exporter-format 'circdia)
 
 ;   -v
     (define verbose-mode #f)
@@ -144,6 +148,13 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
                     (parsing-error)
                     (+usage+ current-error-port)
                     (exit 1))] ; done, do not parse further
+
+            ; -e format
+            [(equal? (car arguments) "-e")
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
+                    (set! exporter-format (string->symbol value))
+                    (set-parameters-with-args! tail))]
 
             ; -h
             [(equal? (car arguments) "-h")
@@ -219,6 +230,13 @@ Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
         (if verbose-mode (print-parameters current-error-port))
 
         ; select work load
-        (begin
-            (exporter:latex-datasheet (common:dataset-cell cell-file) '("../../Documents/LaTeX/INV_datasheet.tex"))
-            0 ))) ; exit value
+        (cond
+            ; generate CircDia LaTeX schematic
+            [(equal? exporter-format 'circdia)
+                (begin
+                    (exporter:schematic-circdia (common:dataset-cell cell-file))
+                    0)] ; exit value
+
+            ; generate gEDA schematic
+            [(equal? exporter-format 'geda)
+                0])))

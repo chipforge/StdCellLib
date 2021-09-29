@@ -76,7 +76,7 @@
     (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a - Version 2021-01-04
+"~a - Version 2021-X-31 'Halloween'
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

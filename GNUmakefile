@@ -65,15 +65,8 @@ help:
 	#   tools      - generate POPCORN tool
 	#   catalog    - (re-)generate combinatorial catalog (DON'T DO THAT!!)
 	#   layout     - generate physical layouts
+	#   datasheet  - generate cell data sheet
 	#   doc        - generate complete data book
-	#
-	#   datasheet [CELL=<cell>] - generate cell data sheet
-	#
-	#   ----------------------------------------------------------
-	#       available cells:
-	#   ----------------------------------------------------------
-	#
-	#   $(CELLS)
 	#
 
 #   'clean' directories
@@ -81,13 +74,10 @@ help:
 .PHONY: clean
 clean:
 	# ---- clean up all intermediate files ----
-	$(MAKE) -f layout.mk $@
-	$(MAKE) -f simulation.mk $@
-	$(MAKE) -f datasheet.mk $@
-	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+	$(MAKE) -C $(TOOLSDIR) $@
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX $@
 	# ---- clean generated catalog files ----
-	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
+	$(MAKE) -C $(CATALOGDIR) $@
 
 #   ----------------------------------------------------------------
 #               TOOLS
@@ -97,7 +87,7 @@ clean:
 
 .PHONY: tools
 tools:
-	$(MAKE) -C $(TOOLSDIR) -f GNUmakefile $@
+	$(MAKE) -C $(TOOLSDIR) $@
 
 #   ----------------------------------------------------------------
 #               CATATLOG TARGETS
@@ -109,31 +99,27 @@ tools:
 
 .PHONY: catalog
 catalog:
-	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
+	$(MAKE) -C $(CATALOGDIR) $@
 
 #   ----------------------------------------------------------------
 #               LAYOUT TARGETS
 #   ----------------------------------------------------------------
 
+#   generate layout for all known cells
+
 .PHONY: layout
 layout:
-	$(MAKE) -f layout.mk CELL=$(CELL) magic
+	$(MAKE) -f layout.mk magic
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
 
-#   generate data sheet for one dedicated cell
-
-.PHONY: datasheet
-datasheet:
-	$(MAKE) -f datasheet.mk CELL=$(CELL) datasheet
-
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
 .PHONY: doc
 doc:
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX -f GNUmakefile $@
+	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX $@
 
 #   ----------------------------------------------------------------
 #               DISTRIBUTION
@@ -142,7 +128,7 @@ doc:
 #   make archive by building a tarball with all important files
 
 .PHONY: dist
-dist: $(CELLS) clean doc
+dist: clean doc
 	# ---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
 

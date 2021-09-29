@@ -107,8 +107,8 @@
         Returns list for (map display (list ..))"
         (list
             "\n\\begin{landscape}"
-            "\n    \\fbox{INV - Not (or Inverter) gate}"
-            "\n    \\begin{figure}[h]"
+            "\n    \\fbox{" (description cell) "}"
+            "\n    \\begin{figure}[b]"
             "\n        \\centering"
 
             "\n        \\input{" (id cell) "_schematic.tex}"    ; !! take PS file if available

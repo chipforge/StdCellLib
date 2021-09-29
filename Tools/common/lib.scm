@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2019 - 2021 by
+;;  Copyright (c) 2019 - 2021 by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -51,17 +51,17 @@
           (scheme write)    ; display
           (scheme time)     ; current-second
           (srfi 78)         ; test suite
-) (export  ; example cells
-           INV-cell
-           BUF-cell
-           NAND2-cell
-           NOR2-cell
-           OAI21-cell
-           OOAI22-cell
-           AOI21-cell
-           AAOI22-cell
-           ; auxilary stuff
-           copyleft-year
+) (export ; example cells
+          INV-cell
+          BUF-cell
+          NAND2-cell
+          NOR2-cell
+          OAI21-cell
+          OOAI22-cell
+          AOI21-cell
+          AAOI22-cell
+          ; auxilary stuff
+          copyleft-year
 ) (begin
 
 ;;  ------------    srfi-78 test suite  -------------------------------

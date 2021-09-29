@@ -45,11 +45,6 @@
 
 (define-library (exporter table)
   (import (scheme base)
-          (scheme char)     ; digit-value
-          (scheme file)     ; file io
-          (scheme read)     ; read
-          (scheme write)    ; display
-          (srfi 13)         ; string-tokenize
           (srfi 78)         ; test suite
 ) (export ; exporter
           exporter:dataset-table
@@ -63,10 +58,18 @@
 
 ;;  ------------    exporter table file -------------------------------
 
-    (define (exporter:dataset-table @port)
-        "Write out table file. Returns boolean."
-(display "exporter:dataset-table is still empty") (newline)
-        #t
+    (define (exporter:dataset-table table)
+        "Generates table file content. Returns list for (map display (list ..))"
+        (list
+            "primitive " (udp-name table) (udp-outputs table) (udp-inputs table)
+            "\n  output " (udp-outputs table) ";"
+            "\n  input " (udp-inputs table) ";"
+            "\n  table "
+            "\n  // " (udp-inputs table) " : " (udp-outputs)
+            ;; line by line
+            "\n  endtable"
+            "\nendprimitive"
+        )
     )
 
 ;;  ===================================================================
