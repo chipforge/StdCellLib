@@ -9,16 +9,16 @@
 .\"                         www.chipforge.org
 .\"                 there are projects from small cores up to PCBs, too.
 .\"
-.\" File:           StdCellLib/Tools/cobblestone.1
+.\" File:           StdCellLib/Tools/konstruktivist.1
 .\"
-.\" Purpose:        man 1 cobblestone - classical Manual Page
+.\" Purpose:        man 1 konstruktivist - classical Manual Page
 .\"
 .\" ************    `groff -t -mdoc`    *******************************
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
 .\" Copyright (c)   2021 by
-.\"                 chipforge <cobblestone@nospam.chipforge.org>
+.\"                 chipforge <konstruktivist@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
 .\" provided that this copyright statement is not removed from the
@@ -43,17 +43,14 @@
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
 .Dd October 31, 2021
-.Dt COBBLESTONE 1 "Standard Cell Library"
+.Dt KONSTRUKTIVIST 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
-.Nm cobblestone
-.Nd generates physical VLSI layouts
+.Nm konstruktivist
+.Nd generate schematics
 .Sh SYNOPSIS
 .Nm
 .Op Fl v
-.Op Fl H Ar number
-.Op Fl T Ar file
-.Op Fl s Ar rule-set
 .Op Fl e Ar format
 .Ar cell-file
 .Nm
@@ -63,54 +60,27 @@
 .Sh DESCRIPTION
 The
 .Nm
-utility generates physical VLSI layout descriptions in different file formats (
-.Em lef ,
-.Em magic ,
-.Em svg
-)  and writes out the layout information on
-.Dv STDOUT .
+utility generates schematics in different file formats (
+.Em circdia ,
+.Em geda
+)  and writes out the schematics on
+.Dv STDOUT  .
 .Pp
-.RE
 .Nm
 functionality is to take one cell description and generate the corresponding
-layout information based on sufficient heuristics.
+schematic information based on sufficient heuristics.
 .Pp
 .Sh OPTIONS
 .Ss \-e format
 Specify the layout file format in which the VLSI layout should be generated.
 .Bl -ohang
-.It Em lef
-Library Exchange Format (proprietary)
-.It Em magic
-Magic VLSI layout tool format (preferred)
-.It Em svg
-Scalable Vector Graphics
+.It Em circdia
+LaTeX (CircDia Package) File
+.It Em geda
+gEDA (GPL Electronic Design Automation) File
 .El
 .Ss \-h, \-\-help
 Display help message and exit.
-.Ss \-H number
-Specify the Highth of a cell by number of metal tracks (e.g. 7 or higher).
-Fractional numbers could work inaccurate.
-The Width of cells varies with transistor sizes and numbers.
-.Ss \-s rule-set
-Specify the built-in MOSIS rule set which should be used.
-.Bl -ohang
-.It Em scmos
-Scalable CMOS
-.It Em subm
-Sub-Micron
-.It Em deep
-Deep sub-micron
-.It Em user
-User defined
-.El
-.Ss \-T file
-Specify the configuration file (written in TOML) with all user-defined values.
-This file contains at least the path to the technology file, transistor sizes
-and cell hight.
-Values in the configuration file can be over-ruled by command-line options,
-when feasible, e.g.
-.Op Fl H Ar number
 .Ss \-v
 Print verbose messages at
 .Dv STDERR .
@@ -125,7 +95,7 @@ For the exact file format, see
 .Sh FILES
 .Pa *.cell
 .Sh AUTHORS
-.An chipforge Aq cobblestone@nospam.chipforge.org
+.An chipforge Aq konstruktivist@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
 Please do not hesitate to report your findings.
