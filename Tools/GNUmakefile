@@ -83,40 +83,19 @@ clean:
 #               MANUAL PAGES
 #   ----------------------------------------------------------------
 
-#   man 5 cell
+MANPAGES    = cell.5.ps \
+              table.5.ps \
+              cobblestone.1.ps \
+              datasheet.1.ps \
+              konstruktivist.1.ps \
+              popcorn.1.ps
 
-.PHONY: cell.5.ps
-cell.5.ps: cell.5
+%.ps: %
 	$(TROFF) $< > $@
-
-#   man 5 table
-
-.PHONY: table.5.ps
-table.5.ps: table.5
-	$(TROFF) $< > $@
-
-#   man 1 cobblestone
-
-.PHONY: cobblestone.1.ps
-cobblestone.1.ps: cobblestone.1
-	$(TROFF) $< > $@
-
-#   man 1 datasheet
-
-.PHONY: datasheet.1.ps
-datasheet.1.ps: datasheet.1
-	$(TROFF) $< > $@
-
-#   man 1 popcorn
-
-.PHONY: popcorn.1.ps
-popcorn.1.ps: popcorn.1
-	$(TROFF) $< > $@
-
-manual: cell.5.ps table.5.ps cobblestone.1.ps datasheet.1.ps popcorn.1.ps
 
 #   ----------------------------------------------------------------
 #               TOOLING
 #   ----------------------------------------------------------------
 
-tools: manual
+.PHONY: tools
+tools: $(MANPAGES)
