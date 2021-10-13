@@ -10,7 +10,7 @@ Any feedback is welcome by [Email](mailto://stdcelllib@nospam.chipforge.org "std
 
 ## Requirements
 
-### LaTeX
+### Documentation
 
 The Standard Cell Library uses LaTeX for documentation. On Debian based systems, LaTeX can be installed (as root) with
 
@@ -25,11 +25,11 @@ apt-get install texlive-full
 ```
 
 which installs the complete (and usefull) LaTeX Environment.
-Additionally, we use the great CircDia LaTeX package for drawing circuit diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CircDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run `mktexlsr` in the directory. Many Thanks to Stefan for the excellent work!
+Additionally, we use the great CircDia LaTeX package for drawing diagrams by Dr. Stefan Krause (Saarbr&uuml;cken/Germany). Please download [CircDia](http://www.taylorgruppe.de/circdia "http://www.taylorgruppe.de/circdia"), unzip it, and run `mktexlsr` in the directory. Many Thanks to Stefan for the excellent work!
 
-### Scheme
+### Generators
 
-Popcorn (as the tool which does the voodoo stuff and generates the Standard Cells) is written in R^7RS Scheme. While this Standard is already a couple of years old, not so many tools are supporting them. Chibi-Scheme as a pre-built package that not available on most systems, so we are using Gauche Scheme (or `gosh`) in Version 0.9.6 or higher.
+Popcorn (as the tool which does the voodoo stuff and generates the Standard Cells) and other dedicated tools are written in R^7RS Scheme. While this Standard is already a couple of years old, not so many Scheme interpreter/compiler are supporting them. Chibi-Scheme as a pre-built package that is not available on most systems, so we are using Gauche Scheme (or `gosh`) in Version 0.9.6 or higher.
 
 ```
 apt-get install gauche
@@ -43,21 +43,23 @@ gosh -V
 
 some more "conservative" distributions with Long-Time-Support (LTS) are probably stuck at older versions.
 
-### gEDA
+### Schematics and Symbols
 
-The GPL'd suite and toolkit of Electronic Design Automation tools is re-used for the Standard Cell Library also; especially gschem for Schematic Entry special cells. While not using the PCB tools, a partial installation with
-
-```
-apt-get install geda-gschem geda-gnetlist geda-doc geda-gattrib geda-gsymcheck
-```
-
-is sufficient. For simulation Icarus Verilog is used; also sailing under the gEDA flag.
+For the graphical Schematics of the cells and their Symbols the Xschem by Stefan Schippers is used. His Tool Xschem replaces the former usage of the gEDA/gaf tool suite, which is not part of some Linux standard distribution (like Debian) anymore. BTW, Xschem is dedicated to VLSI design; instead of PCB design as gEDA/gaf or even their fork Lepton-EDA. Xschem allows to export the cells directly into Verilog HDL, VHDL or Spice. Install Xschem by
 
 ```
-apt-get install iverilog gtkwave
+apt-get install xschem
 ```
 
-### Magic
+### Simulation
+
+For simulation Icarus Verilog and NGspice are used; also sailing under the gEDA flag. Use
+
+```
+apt-get install iverilog gtkwave ngspice
+```
+
+### Layout
 
 Another software for the Popcorn tool, which should be installed before usage, is [Magic](http://opencircuitdesign.com/magic "http://opencircuitdesign.com/magic"). Magic is Open Source, but not part of all Linux distributions (it is missing on OpenSuse, Arch Linux etc). On Debian based systems,
 
