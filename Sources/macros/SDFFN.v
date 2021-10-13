@@ -9,9 +9,9 @@
 //                          www.chipforge.org
 //                  there are projects from small cores up to PCBs, too.
 //
-//  File:           StdCellLib/Sources/verilog/SDFFP.v
+//  File:           StdCellLib/Sources/macros/SDFFN.v
 //
-//  Purpose:        Scan version with DFFP
+//  Purpose:        Scan version with DFFN
 //
 //  ************    IEEE Std 1364-1995 (Verilog HDL)    ***************
 //
@@ -38,7 +38,7 @@
 //                          MACRO
 //  -------------------------------------------------------------------
 
-module SDFFP (Q, SI, D, SE, X);
+module SDFFN (Q, SI, D, SE, XN);
 
     output  Q;
     input   SI, D, SE, X;
@@ -51,7 +51,7 @@ module SDFFP (Q, SI, D, SE, X);
 
 //  ------------    flip flop   ---------------------------------------
 
-    DFFP (qn, data, X);
+    DFFN (qn, data, XN);
 
 //  ------------    output      ---------------------------------------
 

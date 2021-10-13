@@ -9,9 +9,9 @@
 //                          www.chipforge.org
 //                  there are projects from small cores up to PCBs, too.
 //
-//  File:           StdCellLib/Sources/verilog/CGN2.v
+//  File:           StdCellLib/Sources/macros/EQ2.v
 //
-//  Purpose:        Clock Gating for negative Clock (skewed), drives 2x
+//  Purpose:        EQ2 macro
 //
 //  ************    IEEE Std 1364-1995 (Verilog HDL)    ***************
 //
@@ -38,32 +38,19 @@
 //                          MACRO
 //  -------------------------------------------------------------------
 
-module CGN2 (XO, EN, XI);
+module EQ2 (Z, A1, A);
 
-    output  X0;
-    input   EN, XI;
+    output  Z;
+    input   A1, A;
 
-    wire latched, enabled;
+    wire y;
 
-//  ------------    latch   -------------------------------------------
+//  ------------    1st Stage   ---------------------------------------
 
-    // Please keep in mind, that this latch might need a Set or Reset.
-    // Check the functionality, while following flipflops might need a
-    // clock during the reset period (synchronous Set/Reset).
-    // Use LATSP or LATRP than.
+    NAND2 (y, A1, A);
 
-    LATP (latched, EN, XI);
+//  ------------    2nd Stage   ---------------------------------------
 
-//  ------------    combinatorial   -----------------------------------
-
-    // Both signals, latched and input clock, are low-active.
-
-    NOR2 (enabled, latched, XI);
-
-//  ------------    drive output    -----------------------------------
-
-    // Handle driver strength flexible.
-
-    CIN2 (XO, enabled);
+    OAI21 (Z, A1, A, y);
 
 endmodule

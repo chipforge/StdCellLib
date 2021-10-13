@@ -9,9 +9,9 @@
 //                          www.chipforge.org
 //                  there are projects from small cores up to PCBs, too.
 //
-//  File:           StdCellLib/Sources/verilog/CGP2.v
+//  File:           StdCellLib/Sources/macros/SDFFP.v
 //
-//  Purpose:        Clock Gating for positive Clock (skewed), drives 2x
+//  Purpose:        Scan version with DFFP
 //
 //  ************    IEEE Std 1364-1995 (Verilog HDL)    ***************
 //
@@ -38,32 +38,23 @@
 //                          MACRO
 //  -------------------------------------------------------------------
 
-module CGP2 (XO, E, XI);
+module SDFFP (Q, SI, D, SE, X);
 
-    output  X0;
-    input   E, XI;
+    output  Q;
+    input   SI, D, SE, X;
 
-    wire latched, enabled;
+    wire data, qn;
 
-//  ------------    latch   -------------------------------------------
+//  ------------    scan muxer  ---------------------------------------
 
-    // Please keep in mind, that this latch might need a Set or Reset.
-    // Check the functionality, while following flipflops might need a
-    // clock during the reset period (synchronous Set/Reset).
-    // Use LATSN or LATRN than.
+    MUXI21 (data, SI, D, SE);
 
-    LATN (latched, E, XI);
+//  ------------    flip flop   ---------------------------------------
 
-//  ------------    combinatorial   -----------------------------------
+    DFFP (qn, data, X);
 
-    // Both signals, latched and input clock, are high-active.
+//  ------------    output      ---------------------------------------
 
-    NAND2 (enabled, latched, XI);
-
-//  ------------    drive output    -----------------------------------
-
-    // Handle driver strength flexible.
-
-    CIP2 (XO, enabled);
+    INV (Q, qn);
 
 endmodule

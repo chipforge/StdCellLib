@@ -9,16 +9,15 @@
 //                          www.chipforge.org
 //                  there are projects from small cores up to PCBs, too.
 //
-//  File:           StdCellLib/Sources/verilog/XOR2.v
+//  File:           StdCellLib/Sources/macros/timescale.v
 //
-//  Purpose:        XOR2 macro
+//  Purpose:        Timescale statement centralized
 //
-//  ************    IEEE Std 1364-1995 (Verilog HDL)    ***************
+//  ************    IEEE Std 1364-2001 (Verilog HDL)    ***************
 //
 //  ///////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2021 by
-//                  chipforge <stdcelllib@nospam.chipforge.org>
+//  Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
 //  All rights reserved.
 //
 //      This Standard Cell Library is licensed under the Libre Silicon
@@ -34,23 +33,12 @@
 //
 //  ///////////////////////////////////////////////////////////////////
 
-//  -------------------------------------------------------------------
-//                          MACRO
-//  -------------------------------------------------------------------
+`ifdef __TIMESCALE__
+`else
 
-module XOR2 (Z, A1, A);
+`define __TIMESCALE__
+// synthesis translate_off
+`timescale 1 ns / 1 ps
+// synthesis translate_on
 
-    output  Z;
-    input   A1, A;
-
-    wire y;
-
-//  ------------    1st Stage   ---------------------------------------
-
-    NOR2 (y, A1, A);
-
-//  ------------    2nd Stage   ---------------------------------------
-
-    AOI21 (Z, A1, A, y);
-
-endmodule
+`endif //__TIMESCALE__
