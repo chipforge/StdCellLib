@@ -56,7 +56,7 @@ apt-get install xschem
 For simulation Icarus Verilog and NGspice are used; also sailing under the gEDA flag. Use
 
 ```
-apt-get install iverilog gtkwave ngspice
+apt-get install iverilog gtkwave ngspice gwave
 ```
 
 ### Layout
