@@ -65,12 +65,12 @@ CELLS +=        LATN \
                 LATRP \
                 LATSN \
                 LATSP \
-                LATEN LATE2N \
-                LATEP LATE2P \
-                LATERN LATE2RN \
-                LATERP LATE2RP \
-                LATESN LATE2SN \
-                LATESP LATE2SP
+                LATEN LATEEN \
+                LATEP LATEEP \
+                LATERN LATEERN \
+                LATERP LATEERP \
+                LATESN LATEESN \
+                LATESP LATEESP
 
 #   --------    neat cells  ----------------------------------------
 
