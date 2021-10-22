@@ -32,8 +32,8 @@ our $name="UNNAMED";
 our $pins="";
 
 # Defines whether pins are inputs or outputs since SPICE does not have that concept
-my %iomap=('A'=>'I','B'=>'I','C'=>'I','CLK'=>'I','D'=>'I','EN'=>'I','Q'=>'O','R'=>'I','S'=>'I','Y'=>'O','YC'=>'O','YS'=>'O','gnd'=>'','vdd'=>'','GND'=>'','VDD'=>'','Z'=>'O','DI'=>'I','DO'=>'O','OEN'=>'I','YPAD'=>'O','gnd2'=>'','vdd2'=>'','GND2'=>'','VDD2'=>'','vss'=>'','VSS'=>'');
-my %mosmap=('pfet'=>'pmos','nfet'=>'nmos','nmos'=>'nmos','pmos'=>'pmos','hnfet'=>'nmos','hpfet'=>'pmos');
+my %iomap=('A'=>'I','B'=>'I','C'=>'I','CN'=>'I','CLK'=>'I','D'=>'I','EN'=>'I','Q'=>'O','R'=>'I','S'=>'I','Y'=>'O','YC'=>'O','YS'=>'O','gnd'=>'','vdd'=>'','GND'=>'','VDD'=>'','Z'=>'O','DI'=>'I','DO'=>'O','OEN'=>'I','YPAD'=>'O','gnd2'=>'','vdd2'=>'','GND2'=>'','VDD2'=>'','vss'=>'','VSS'=>'');
+my %mosmap=('pfet'=>'pmos','nfet'=>'nmos','nmos'=>'nmos','pmos'=>'pmos','hnfet'=>'nmos','hpfet'=>'pmos','enbsim3'=>'nmos','epbsim3'=>'pmos','sky130_fd_pr__nfet_01v8'=>'nmos','sky130_fd_pr__pfet_01v8'=>'pmos');
 our %internalnets=();
 our $internalcounter=0;
 our $OUT;
@@ -60,7 +60,7 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
 {
   while(<IN>)
   {
-    if(m/^\.subckt (\w+) (.*)$/ || m/TOP LEVEL CELL: (\w+)\{sch\}()/)
+    if(m/^\.subckt (\w+) (.*)$/ || m/TOP LEVEL CELL: (\w+)\{sch\}()/ || m/^\*\*\.subckt (\w+) (.*)$/ )
     {
       $name=$1;
       $pins=$2;
@@ -75,7 +75,7 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
       print $OUT ".outputs ".join(" ",reverse sort keys %{$pins{'O'}})."\n";
       print $OUT ".ORDER \"MOSFET Gate Drain Source\"\n";
     }
-    elsif(m/^M\d+ (\w+#?) (\w+#?) (\w+#?) (\w+#?) (pfet|nfet|nmos|pmos|hnfet|hpfet)/)
+    elsif(m/^X?M\d+ (\w+#?) (\w+#?) (\w+#?) (\w+#?) (pfet|nfet|nmos|pmos|hnfet|hpfet|enbsim3|epbsim3|sky130_fd_pr__nfet_01v8|sky130_fd_pr__pfet_01v8)/i)
     {
       my ($g,$d,$s,$m)=($2,$1,$3,$5);
       if($d=~m/^(vdd|gnd)$/i)
@@ -87,6 +87,19 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
       $d=internal($d);
       $s=internal($s);
       print $OUT $mosmap{$m}." $g $d $s\n";
+    }
+    elsif(m/^X?[MX]\d+ (\w+#?) (\w+#?) (\w+#?) (pfet|nfet|nmos|pmos|hnfet|hpfet|enbsim3|epbsim3|sky130_fd_pr__nfet_01v8|sky130_fd_pr__pfet_01v8)/i)
+    {
+      my ($g,$d,$s,$m)=($2,$1,$3,$4);
+      if($d=~m/^(vdd|gnd)$/i)
+      {
+        print "EXCHANGING SOURCE AND DRAIN: $_";
+        ($s,$d)=($d,$s);
+      }	
+      $g=internal($g);
+      $d=internal($d);
+      $s=internal($s);
+      print $OUT "".$mosmap{$m}." $g $d $s\n";
     }
     elsif(m/^M(n|p)mos\@\d+ (\w+\@?\d*) (\w+\@?\d*) (\w+\@?\d*) (\w+\@?\d*)/)
     {
@@ -119,7 +132,10 @@ if($ARGV[0] && open IN,"<$ARGV[0]")
     elsif(m/^\s*$/)
     {
     }
-    elsif(m/^\.ends/)
+    elsif(m/^\.global (\w+)/i)
+    {
+    }
+    elsif(m/^\.ends?/)
     {
       $name="UNNAMED";
       $pins="";
