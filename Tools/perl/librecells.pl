@@ -147,11 +147,11 @@ EOF
     system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
     step("NEXT STEP: DRC Fix");
-    system "../Tools/perl/drcfix.pl $cellname.mag >>$cellname.log 2>>$cellname.err";
+    system "../Tools/perl/drcfix.pl $cellname.mag ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
     if(-f "corr_$cellname.mag")
     {
-      unlink "$cellname.mag.predrc";
-      rename "$cellname.mag","$cellname.mag.predrc";
+      unlink "$cellname.predrc.mag";
+      rename "$cellname.mag","$cellname.predrc.mag";
       rename "corr_$cellname.mag","$cellname.mag";
 
       #step("NEXT STEP: DRC Fix - 2nd try, just to make sure");
@@ -191,10 +191,10 @@ ext2sim cthresh 0
 ext2sim alias on
 ext2sim labels on
 ext2sim
-extresist tolerance 10
-extresist simplify off
+#extresist tolerance 10
+#extresist simplify off
 #extresist extout on
-extresist lumped on
+#extresist lumped on
 #extresist geometry
 extresist all
 quit -noprompt
