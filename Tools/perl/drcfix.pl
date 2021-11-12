@@ -16,6 +16,8 @@ open IN,"<".$ARGV[0];
 my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/; $mag=~s/\.mag\.mag/\.mag/;
 my $output="corr_$mag";
 my $mode=0;
+my $try=1;
+my $debug=0;
 
 sub form($)
 {
@@ -29,9 +31,8 @@ our $tech=$ARGV[1] || "../Tech/libresilicon.tech";
 #sub tryfix($)
 #{
   print "Trying the fix on $mag:\nRuning magic ...\n";
-  open OUT,"|magic -dnull -noconsole -T $tech $mag";
 
-print OUT <<EOF
+my $todo=<<EOF
 proc redirect_variable {varname cmd} {
     rename puts ::tcl::orig::puts
     global __puts_redirect
@@ -95,17 +96,22 @@ proc undoToCheckpoint {checkpoint} {
 #getCheckpoint
 
 proc fix_drc {} {
+   box values -100 -100 10000 10000
    drc on
    drc check
    drc catchup
    drc listall catchup
+   drc find
+   drc check
+   drc catchup
+   set ndebugfile 1
    redirect_variable drccount {drc count total}
    set checkpoint [getCheckpoint]
    puts "Checkpoint: \$checkpoint"
    set nFixed 0
    set drcc [string trim [string map {"Total DRC errors found: " ""} \$drccount] ]
    if {\$drcc == 0} return
-   set yReposition {0 2 -2}
+   set yReposition {0 2 -2 9 -9}
 
    foreach yRepo \$yReposition {
    puts "Trying Reposition \$yRepo"
@@ -113,7 +119,7 @@ proc fix_drc {} {
    puts \$drccount
    #puts \$drcc
    for {set i 0} {\$i <= \$nRounds + 10 } {incr i} {
-     puts "I inside first loop: \$i"
+     puts "I am inside the first loop: \$i"
      if {\$drcc > 0} {
        redirect_variable drcresult {drc find}
        puts "move up \$yRepo"
@@ -129,7 +135,9 @@ proc fix_drc {} {
 	 if {\$drccommand == "erase" } {
 	   redirect_variable bbox {box}
 	   #lambda:       44 x 10      (     0,  309  ), (    44,  319  )  440 
-	   regexp {lambda:\\s*\\d+ x \\d+\\s+\\([^\\)]*\\), \\(\\s*(\\d+),\\s*(\\d+)} \$bbox full boxX boxY
+	   #lambda:   2.00 x 8.50    ( 463.50,  217.50), ( 465.50,  226.00) 17.00
+	   puts "BOX: \$bbox"
+	   regexp {lambda:\\s*\\d+\\.?\\d* x \\d+\\.?\\d*\\s+\\([^\\)]*\\), \\(\\s*(\\d+\\.?\\d*),\\s*(\\d+\\.?\\d*)} \$bbox full boxX boxY
            puts "Bounding box for erase: \$boxX \$boxY"
            if {\$boxY >= 309 } { 
              puts "This is an addition for Sky130: We do not want to erase the power rails, so we skip ignore rules outside the core of the cell"
@@ -137,10 +145,14 @@ proc fix_drc {} {
 	   }
 	 }
          foreach drcparts [split \$layernames ","] {
+           puts "Trying layers \$drcparts"
            foreach layername [split \$drcparts " "] {
              puts "\$drccommand \$layername"
 	     \$drccommand \$layername
+	     puts "done with this layer."
 	   }
+	   # save "$output.try.\$ndebugfile"
+	   incr ndebugfile
            drc check
            drc catchup
            redirect_variable drccountnew {drc count total}
@@ -157,8 +169,8 @@ proc fix_drc {} {
              set drcc \$drccn
              set checkpoint [getCheckpoint]
              puts "New Checkpoint: \$checkpoint"
-	     #save $output
-	     #exit
+	     # save $output
+	     # exit
            } else {
              puts "Trying to fix this DRC issue did not reduce the number of DRC issues (\$drccn vs. \$drcc) so we undo and try something else"
 	     undoToCheckpoint \$checkpoint
@@ -178,17 +190,30 @@ proc fix_drc {} {
       puts "We have fixed some issues, \$drccn issues are remaining, we give up and save the file now."
       save $output
       puts "File $output saved."
-   }	   
+   } else {
+      puts "We could not fix any issues."
+   }
 }   
 puts "Trying to FIX some DRC issues"
+load $mag
 fix_drc
 puts "Done trying to FIX some DRC issues"
 quit -noprompt
 EOF
 ;
-close OUT;
-
-#}
+if($debug)
+{
+  open OUT,">magic-commands.tcl";
+  print OUT $todo;
+  close OUT;
+  system "magic -dnull -rcfile magic-commands.tcl -noconsole -T $tech";
+}
+else
+{
+  open OUT,"|magic -dnull -noconsole -T $tech";
+  print OUT $todo;
+  close OUT;
+}
 
 #tryfix();
 
