@@ -96,7 +96,7 @@ proc undoToCheckpoint {checkpoint} {
 #getCheckpoint
 
 proc fix_drc {} {
-   box values -100 -100 10000 10000
+   select top cell
    drc on
    drc check
    drc catchup

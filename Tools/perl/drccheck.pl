@@ -15,7 +15,7 @@ if(-f "$mag.mag")
     my $outfile="$mag.drc";
 
     print OUT <<EOF
-box values -100 -100 10000 10000
+select top cell
 drc style $style
 drc check
 drc list count
