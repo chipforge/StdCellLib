@@ -22,6 +22,21 @@ if(-f "$mag.mag")
     print "First magic call:\n";
     open OUT,"|magic -dnull -noconsole -T $tech $mag.mag";
     print OUT <<EOF
+extract all
+ext2sim labels on
+ext2sim
+extresist tolerance 10
+extresist
+ext2spice lvs
+ext2spice cthresh 0.01
+ext2spice extresist on
+ext2spice $mag.spice
+ext2spice
+quit -noprompt
+EOF
+    ;
+
+    print OUT <<EOF
 extract warn all
 extract all
 ext2sim rthresh 0
@@ -35,31 +50,35 @@ extresist extout on
 extresist lumped on
 extresist geometry
 extresist all
-quit -noprompt
-EOF
-;
-    close OUT;
-    #system "cat $cellname.res.ext >>$cellname.ext";
-    #system "cat $cellname.ext";
-    print "Second magic call:\n";
-    open OUT,"|magic -dnull -noconsole -T $tech $mag.mag";
-    print OUT <<EOF
-ext2sim rthresh 0
-ext2sim cthresh 0
-ext2sim alias on
-ext2sim labels on
-ext2sim
-ext2spice cthresh 0
+extresist
+ext2spice lvs
+ext2spice cthresh 0.01
 ext2spice rthresh 0
 ext2spice format ngspice
 ext2spice subcircuits on
-ext2spice extresist off
+ext2spice extresist on
 ext2spice hierarchy on
 ext2spice $mag.spice
 ext2spice
 quit -noprompt
 EOF
-;
+if(0);
+
+#quit -noprompt
+#EOF
+#;
+#    close OUT;
+#    #system "cat $cellname.res.ext >>$cellname.ext";
+#    #system "cat $cellname.ext";
+#    print "Second magic call:\n";
+#    open OUT,"|magic -dnull -noconsole -T $tech $mag.mag";
+#    print OUT <<EOF
+#ext2sim rthresh 0
+#ext2sim cthresh 0
+#ext2sim alias on
+#ext2sim labels on
+#ext2sim
+
     close OUT;
 }
 else
