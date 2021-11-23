@@ -17,7 +17,7 @@
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
-.\" Copyright (c)   2019 by
+.\" Copyright (c)   2018 - 2021 by
 .\"                 chipforge - <popcorn@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
@@ -63,50 +63,76 @@ Every line starts with comment, an identifier, or forms a table entry.
 Two slash signs mark the beginning of a comment line; subsequent characters up
 to the end of the line are not interpreted by the routines which search the
 file.
-.Ss table
-This identifier trigger all table entry lines which are following, until the
-.Em endtable
+.Ss .inputs
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the formal input signal names for the following table being
+declared.
+.Ss .outputs
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the formal output signals for the cell being
+delared.
+.Ss .clocks
+This dot-command follows a white-space-separated list of strings (terminated by
+the end of the line) giving the clock signal names for the following table being declared.
+This command is optional; e.g., for purely combinational circuits.
+.Ss .table
+This identifier following all table entry lines, until the
+.Em end
 identifier.
-.Ss endtable
+.Ss .end
 This identifier indicates the end of table entry line section.
 .Pp
-Every table line contains this arguments in the following order:
+Every table line contains rows of values in the following order:
 .Bl -ohang
-.It Em inputs
-A list of space-separeted input values.
+.It Em .outputs
+A list of space-separeted Output values.
 .It Em :
-The colon sign devided the Input Node side of table from the following Output
-Node side.
-.It Em outputs
-Behind the colon sign all output values are listed.
+The colon sign devided the Output Node side of table from the following Nodes.
+.It Em .clocks
+Optional clock signal values, when mentioned, are followed by another
+.It Em :
+Colon sign.
+.It Em .inputs
+Behind last colon sign all Input values are listed.
 .El
 .Pp
-Valid values for every Input or Output Node are:
-.Bl -column -offset indent ".Sy Value" ".Sy Description"
-.It Sy Value Ta Sy Description
-.It Li  0 Ta logical '0'
-.It Li  1 Ta logical '1'
-.It Li  ? Ta don't care
-.It Li  x Ta unknown
-.It Li (01) Ta rising edge
-.It Li (10) Ta falling edge
+Valid values for common Input, Clock or Output nodes are:
+.Bl -column -offset indent ".Sy Value" ".Sy alternative" ".Sy Description"
+.It Sy Value Ta Sy alternative Ta Sy Description
+.It Li 0 Ta L Ta logical '0', or low
+.It Li 1 Ta H Ta logical '1', or high
+.It Li ? Ta - Ta don't care, or ignored
+.It Li X Ta Ta unknown, or undefined
+.El
+.Pp
+In addition to valid common values, on Clock nodes are also valid:
+.Bl -column -offset indent ".Sy Value" ".Sy alternative" ".Sy Description"
+.It Sy Value Ta Sy alternative Ta Sy Description
+.It Li / Ta R, P, (01) Ta rising or positive edge
+.It Li \e Ta F, N, (10) Ta falling or negative edge
+.El
+.Pp
+In addition to valid common values, on Output nodes is also valid:
+.Bl -column -offset indent ".Sy Value" ".Sy alternative" ".Sy Description"
+.It Sy Value Ta Sy alternative Ta Sy Description
+.It Li Z Ta Ta tri-stated, also known as hi-Z, floating, or high impedance
 .El
 .Sh AUTHORS
-.An chipforge Aq popcorn@nospam.chipforge.org
+.An chipforge Aq scarbata@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
 Please do not hesitate to report your findings.
 .Sh COPYRIGHT
-Copyright (c) 2018-2019 Author and Contributors.
+Copyright (c) 2018-2021 Author and Contributors.
 .Pp
 GNU General Public License v3.0
 .UR
 http://www.gnu.org/licenses/gpl-3.0.html
 .UE
 .Sh SEE ALSO
-.Xr popcorn 1
+.Xr scarbata 1
 and
 .UR
 https://github.com/chipforge/StdCellLib
 .UE
-for current version and others auxilary tools around.
+for current version and others auxilary utilities around.
