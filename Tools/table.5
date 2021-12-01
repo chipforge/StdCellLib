@@ -47,12 +47,14 @@
 .Os LibreSilicon
 .Sh NAME
 .Nm table
-.Nd description file format for popcorn
+.Nd description file format for
+.Xr scarbata 1
 .Sh DESCRIPTION
-This is a secondary file format for the
-.Xr popcorn 1
-utility, inspired by tables from User-defined Primitives (UDP) in Verilog,
-defined as IEEE Std 1394-1995 and IEEE Std 1394-2001.
+This is a secondary file format for the Standard Cell Library, inspired by tables from
+User-defined Primitives (UDP) in Verilog, defined as IEEE Std 1394-1995 and IEEE Std 1394-2001,
+and influenced by the
+.Xr cell 5
+file format.
 .Pp
 The
 .Nm
@@ -101,7 +103,7 @@ Valid values for common Input, Clock or Output nodes are:
 .It Sy Value Ta Sy alternative Ta Sy Description
 .It Li 0 Ta L Ta logical '0', or low
 .It Li 1 Ta H Ta logical '1', or high
-.It Li ? Ta - Ta don't care, or ignored
+.It Li ? Ta -, * Ta don't care, or ignored
 .It Li X Ta Ta unknown, or undefined
 .El
 .Pp

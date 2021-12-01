@@ -53,16 +53,16 @@
 .Op Fl v
 .Op Fl b Ar number
 .Op Fl m Ar method
-.Op Fl c Ar name
+.Op Fl c Ar cell\-name
 .Op Fl D Ar string
-.Ar cell-file
+.Ar cell\-file
 .Nm
 .Op Fl v
 .Op Fl T Ar file
 .Op Fl m Ar method
-.Op Fl c Ar name
+.Op Fl c Ar cell\-name
 .Op Fl D Ar string
-.Ar cell-file
+.Ar cell\-file
 .Nm
 .Fl h | \-help
 .Nm
@@ -116,58 +116,57 @@ This implies that one new generated cell becomes the seed for at least one more
 generated cell.
 .Pp
 .Sh OPTIONS
-.Ss \-b number
+.Ss \-b Ar number
 Append inverting buffer to current cell description, when one path (in one of
 both networks) exist which has at least a
 .Em number
 of stacked transistors between output and any supply line.
-This will sharpen the maximum LOW and minimum HIGH output levels of the
-cell output.
-.Ss \-c cellname
-Specify the cell-name for the new generated cell.
-.Ss \-D string
+This will sharpen the maximum LOW\- and minimum HIGH\-level outputs of the cell.
+.Ss \-c Ar cell\-name
+Specify the cell name for the new generated cell.
+.Ss \-D Ar string
 Specify the new cell functionality in a quoted string, e.g. "Not (or Inverter)
 gate" which occurs in generated cell documentation.
 .Ss \-h, \-\-help
 Display help message and exit.
-.Ss \-m method
+.Ss \-m Ar method
 Expand cell with one of following methods:
 .Bl -ohang
 .It Em aoi
-Add nMOS transistor in serial into highest free pull-down path.
+Add nMOS transistor in serial into highest free pull\-down path.
 Use new character for last mosfet gate name, enumerate this character for new
 mosfet gate name.
 .It Em nand
-Add nMOS transistor in serial into highest free pull-down path and perform
-the complementary operation for the pull-up network.
+Add nMOS transistor in serial into highest free pull\-down path and perform
+the complementary operation for the pull\-up network.
 Use same character and next number for new mosfet gate name.
 .It Em none
 Do not expand cell. This is the default value.
 .It Em nor
 Add pMOS transistor in serial into highest free pull-up path and perform
-the complementary operation for the pull-down network.
+the complementary operation for the pull\-down network.
 Use same character and next number for new mosfet gate name.
 .It Em oai
-Add pMOS transistor in serial into highest free pull-up path.
+Add pMOS transistor in serial into highest free pull\-up path.
 Choose new character for last mosfet gate name, enumerate this character for new
 mosfet gate name.
 .It Em pd
-Add a nMOS transistors in parallel to the exisiting pull-down network and perform
-the complementary operation for the pull-up network.
+Add a nMOS transistors in parallel to the exisiting pull\-down network and perform
+the complementary operation for the pull\-up network.
 Choose new character for new mosfet gate names.
 .It Em pu
-Add a pMOS transistors in parallel to the exisiting pull-up network and perform
-the complementary operation for pull-down network.
+Add a pMOS transistors in parallel to the exisiting pull\-up network and perform
+the complementary operation for pull\-down network.
 Choose new character for new mosfet gate names.
 .El
 .Pp
 An addition in one network always implies an complementary addition for the other
 network also.
-.Ss \-T file
-Specify the configuration file (written in TOML) with all user-defined values.
+.Ss \-T Ar file
+Specify the configuration file (written in TOML) with all user\-defined values.
 This file contains at least the path to the technology file, transistor sizes
 and cell hight.
-Values in the configuration file can be over-ruled by command-line options,
+Values in the configuration file can be over\-ruled by command line options,
 when feasible, e.g.
 .Op Fl b Ar number .
 .Ss \-v
@@ -177,7 +176,7 @@ Print verbose messages at
 Print
 .Nm Ns 's
 version number and exit.
-.Ss cell-file
+.Ss Ar cell\-file
 describes the cell itself beside the netlist with some other informations.
 For the exact file format, see
 .Xr cell 5

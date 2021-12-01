@@ -53,9 +53,9 @@
 .Op Fl v
 .Op Fl H Ar number
 .Op Fl T Ar file
-.Op Fl s Ar rule-set
+.Op Fl s Ar rule\-set
 .Op Fl e Ar format
-.Ar cell-file
+.Ar cell\-file
 .Nm
 .Fl h | \-help
 .Nm
@@ -76,7 +76,7 @@ functionality is to take one cell description and generate the corresponding
 layout information based on sufficient heuristics.
 .Pp
 .Sh OPTIONS
-.Ss \-e format
+.Ss \-e Ar format
 Specify the layout file format in which the VLSI layout should be generated.
 .Bl -ohang
 .It Em lef
@@ -88,23 +88,23 @@ Scalable Vector Graphics
 .El
 .Ss \-h, \-\-help
 Display help message and exit.
-.Ss \-H number
+.Ss \-H Ar number
 Specify the Highth of a cell by number of metal tracks (e.g. 7 or higher).
 Fractional numbers could work inaccurate.
 The Width of cells varies with transistor sizes and numbers.
-.Ss \-s rule-set
-Specify the built-in MOSIS rule set which should be used.
+.Ss \-s Ar rule\-set
+Specify the built\-in MOSIS rule set which should be used.
 .Bl -ohang
 .It Em scmos
 Scalable CMOS
 .It Em subm
-Sub-Micron
+Sub\-Micron
 .It Em deep
-Deep sub-micron
+Deep sub\-micron
 .It Em user
 User defined
 .El
-.Ss \-T file
+.Ss \-T Ar file
 Specify the configuration file (written in TOML) with all user-defined values.
 This file contains at least the path to the technology file, transistor sizes
 and cell hight.
@@ -118,7 +118,7 @@ Print verbose messages at
 Print
 .Nm Ns 's
 version number and exit.
-.Ss cell-file
+.Ss Ar cell\-file
 describes the cell itself beside the netlist with some other informations.
 For the exact file format, see
 .Xr cell 5
