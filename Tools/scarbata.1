@@ -1,0 +1,154 @@
+.\" ************    LibreSilicon's StdCellLibrary   *******************
+.\"
+.\" Organisation:   Chipforge
+.\"                 Germany / European Union
+.\"
+.\" Profile:        Chipforge focus on fine System-on-Chip Cores in
+.\"                 Verilog HDL Code which are easy understandable and
+.\"                 adjustable. For further information see
+.\"                         www.chipforge.org
+.\"                 there are projects from small cores up to PCBs, too.
+.\"
+.\" File:           StdCellLib/Tools/scarbata.1
+.\"
+.\" Purpose:        man 1 scarbata - classical Manual Page
+.\"
+.\" ************    `groff -t -mdoc`    *******************************
+.\"
+.\" ///////////////////////////////////////////////////////////////////
+.\"
+.\" Copyright (c)   2019 - 2021 by
+.\"                 chipforge <scarbata@nospam.chipforge.org>
+.\"
+.\" This source file may be used and distributed without restriction
+.\" provided that this copyright statement is not removed from the
+.\" file and that any derivative work contains the original copyright
+.\" notice and the associated disclaimer.
+.\"
+.\" This source is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This source is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\"
+.\"  (__)  You should have received a copy of the GNU General Public
+.\"  oo )  License along with this program; if not, write to the
+.\"  /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+.\"        Boston, MA 02110-1301, USA
+.\"
+.\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+.\" ///////////////////////////////////////////////////////////////////
+.Dd October 31, 2021
+.Dt SCARBATA 1 "Standard Cell Library"
+.Os LibreSilicon
+.Sh NAME
+.Nm scarbata
+.Nd optimize Truth Tables and/or generate boolean Equations.
+.Sh SYNOPSIS
+.Nm
+.Op Fl v
+.Op Fl o
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl C Ar cmos
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl m  | \-cdnf
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl M  | \-ccnf
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl o m  | \-dnf
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl o M  | \-cnf
+.Ar table\-file
+.Nm
+.Op Fl v
+.Op Fl R | \-rsnf | \-anf
+.Ar table\-file
+.Nm
+.Fl h | \-help
+.Nm
+.Fl \-version
+.Sh DESCRIPTION
+The
+.Nm
+utility reads a given Truth Table and operates over this table.
+The result on
+.Dv STDOUT
+is wether another Truth Table or a boolean Equations representing the recognized
+function of the input table.
+.Nm
+uses a table sorting algorithm essentially similiar to Quine\-McCluskey for optimizing (or reducing) the Truth Table.
+.Sh OPTIONS
+.Ss \-C Ar cmos 
+Find a network Equation for a CMOS network, given a combinatorial functionality, which
+.Bl -ohang
+.It Em pu, Em pullup
+pulls up the output regarding the given functionality inside the Truth table. This means all LOW\-level inputs are collected in one boolean Equation which leads into a HIGH\-level output.
+.It Em pd, Em pulldown
+pulls down the output regarding the given functionality inside the Truth table. This means all HIGH\-level inputs are collected in one boolean Equation which leads into a LOW\-level output.
+.El
+.Pp
+Both options respect undriven tri\-stated outputs and invoke undefined output states.
+.Pp
+If the algorithm fails, the
+.Dv STDOUT
+remains empty.
+.Ss \-h, \-\-help
+Display help message and exit.
+.Ss \-m, \-\-cdnf
+Write out boolean Equation as collection of minterms, or Canonical Disjunctive Normal Form (CDNF).
+.Ss \-M, \-\-ccnf
+Write out boolean Equation as collection of maxterms, or Canonical Conjunctive Normal Form (CCNF).
+.Ss \-o
+Write out optimized (or reduced) Truth Table.
+.Ss \-o \-m, \-\-dnf
+Write out boolean Equation as optimized collection of minterms, or Disjunctive Normal Form (DNF).
+.Ss \-o \-M, \-\-cnf
+Write out boolean Equation as optimized collection of maxterms, or Conjunctive Normal Form (CNF).
+.Ss \-R, \-\-rsnf, \-\-anf
+Write out boolean Equation as Ring Sum Normal Form (RSNF), or Algebraic Normal Form (ANF).
+.Ss \-v
+Print verbose messages at
+.Dv STDERR .
+.Ss \-\-version
+Print
+.Nm Ns 's
+version number and exit.
+.Ss Ar table\-file
+describes the booleaon function as a Truth Table.
+For the exact file format, see
+.Xr table 5
+.Sh FILES
+.Pa *.table
+.Sh AUTHORS
+.An chipforge Aq scarbata@nospam.chipforge.org
+.Sh BUGS
+Not yet known.
+Please do not hesitate to report your findings.
+.Sh COPYRIGHT
+Copyright (c) 2018-2021 Author and Contributors.
+.Pp
+GNU General Public License v3.0
+.UR
+http://www.gnu.org/licenses/gpl-3.0.html
+.UE
+.Sh SEE ALSO
+.Xr table 5
+and
+.UR
+https://github.com/chipforge/StdCellLib
+.UE
+for current version and others auxilary tools around.

@@ -88,6 +88,7 @@ MANPAGES    = cell.5.ps \
               cobblestone.1.ps \
               datasheet.1.ps \
               konstruktivist.1.ps \
+              scarbata.1.ps \
               popcorn.1.ps
 
 %.ps: %
