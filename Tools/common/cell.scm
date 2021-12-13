@@ -124,6 +124,7 @@
 ;   mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
     ;(check-set-mode! 'report)
+    ;(check-set-mode! 'summary)
 
 ;;  -------------------------------------------------------------------
 ;;                  NODE OBJECT SPACES
@@ -188,10 +189,10 @@
     (check (%input-node-object 'valid? "X") => #f)
     (check (%input-node-object 'valid? "Z") => #f)
 
-    (check (%input-node-object 'next-char '()) => "A")
+    (check (%input-node-object 'next-char "") => "A")
     (check (%input-node-object 'next-char "A0") => "B")
 
-    (check (%input-node-object 'next-number '()) => "A")
+    (check (%input-node-object 'next-number "") => "A")
     (check (%input-node-object 'next-number "A") => "A1")
     (check (%input-node-object 'next-number "A1") => "A2")
 
@@ -212,7 +213,7 @@
     (check (%clock-node-object 'valid? "X") => #t) ; !!
     (check (%clock-node-object 'valid? "Z") => #f)
 
-    (check (%clock-node-object 'next-number '()) => "X")
+    (check (%clock-node-object 'next-number "") => "X")
     (check (%clock-node-object 'next-number "X") => "X1")
     (check (%clock-node-object 'next-number "X1") => "X2")
 
@@ -234,7 +235,7 @@
     (check (%output-node-object 'valid? "N1") => #f)
     (check (%output-node-object 'valid? "X") => #f)
 
-    (check (%output-node-object 'next-char '()) => "Y")
+    (check (%output-node-object 'next-char "") => "Y")
     (check (%output-node-object 'next-char "Y") => "Z")
 
 ;;  ------------    %internal-node-object   ----------------------------
@@ -313,6 +314,7 @@
 
 ;   Checks:
     (check (sort-nodes-descending (list "A" "A1" "B")) => (list "B" "A1" "A")) ; !!
+    (check (sort-nodes-descending (list "C" "A1" "B")) => (list "C" "B" "A1")) ; !!
 
 ;;  ------------    remove doubled nodes    ---------------------------
 
@@ -324,10 +326,11 @@
                    [tail (cdr nodes)])
                 (if (pair? (member node tail string-ci=?))
                     (remove-doubled-nodes tail)
-                    (cons node tail)))))
+                    (cons node (remove-doubled-nodes tail))))))
 
 ;   Checks:
     (check (remove-doubled-nodes (list "A1" "A1" "B")) => (list "A1" "B")) ; !!
+    (check (remove-doubled-nodes (list "A1" "A1" "B" "B")) => (list "A1" "B")) ; !!
 
 ;;  ------------    pretty print nodes  -------------------------------
 
@@ -573,12 +576,12 @@
         (if (string-ci=? (type first) (type second))
             ; both mosfet type are equal
             (string-ci<? (gate first) (gate second))
-            ; both mosfet types differs, nmos first, pmos second
-            (string-ci<? (type first) (type second))))
+            ; both mosfet types differs, pmos first, nmos second
+            (string-ci>? (type first) (type second))))
 
     (define (sort-netlist-ascending netlist)
         "Sort netlist transistors ascending.
-        nmos A, B, C; pmos A, B, C.  Returns boolean."
+        pmos A, B, C; nmos A, B, C.  Returns netlist."
         (list-sort mosfet<? netlist))
 
 ;;  ------------    sort netlist descending     -----------------------
@@ -593,13 +596,26 @@
             (string-ci>? (type first) (type second))))
 
     (define (sort-netlist-descending netlist)
-        "Sort netlist transistors descending.  Returns netlist."
+        "Sort netlist transistors descending.
+        pmos C, B, A; nmos C, B, A.  Returns netlist."
         (list-sort mosfet>? netlist))
 
 ;;  ------------    sort netlist normalized     -----------------------
 
     (define (mosfet><? first second)
-        "sort >< operatator for sorting mosfets by position.
+        "sort >< operator for sorting mosfets by normalized order.
+        pmos C, B, A, nmos A, B, C.  Returns boolean."
+        #t)
+
+    (define (sort-netlist-normalized netlist)
+        "Sort netlist transistors by normalized order.
+        pmos C, B, A, nmos A, B, C.  Returns netlist."
+        (list-sort mosfet><? netlist))
+
+;;  ------------    sort netlist position   ---------------------------
+
+    (define (mosfet<>? first second)
+        "sort <> operatator for sorting mosfets by position.
         From left -> right, from top -> buttom.  Returns boolean."
         (if (= (x-axis (place first)) (x-axis (place second)))
             ; same position on x
@@ -607,10 +623,10 @@
             ; different positions on x
             (> (x-axis (place first)) (x-axis (place second)))))
 
-    (define (sort-netlist-normalized netlist)
-        "Sort netlist transistors normalized (by position).
-        From left -> right, from top -> buttom.  Returns netlist."
-        (list-sort mosfet><? netlist))
+    (define (sort-netlist-position netlist)
+        "Sort netlist transistors by position.  From left -> right,
+        from top -> buttom.  Returns netlist."
+        (list-sort mosfet<>? netlist))
 
 ;;  ------------    pretty print netlist    ---------------------------
 

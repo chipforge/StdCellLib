@@ -95,20 +95,11 @@
         "Rise the coodinatates for a <location> on y-axis.
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
-            (set-stacked! new-record (stacked record))
-            (set-x-axis!  new-record (x-axis record))
-            (set-y-axis!  new-record (+ (y-axis record) 1))
-            new-record))
-
-;;  ------------    method reduce <location> on y-axis  ---------------
-
-    (define (method-reduce-location-y record)
-        "Fall the coodinatates for a <location> on y-axis.
-        Returns (cloned) <location>."
-        (let* ([new-record (method-generate-location+)])
-            (set-stacked! new-record (stacked record))
-            (set-x-axis!  new-record (x-axis record))
-            (set-y-axis!  new-record (- (y-axis record) 1))
+            (set-stacked! new-record (+ (stacked record) 1))
+            (set-x-axis!  new-record 1)
+            (set-y-axis!  new-record (if (< (y-axis record) 0)
+                                        (- (y-axis record) 1)
+                                        (+ (y-axis record) 1)))
             new-record))
 
 ;;  ------------    method nmos <location> on y-axis    ---------------
@@ -118,7 +109,7 @@
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
             (set-stacked! new-record (stacked record))
-            (set-x-axis!  new-record (x-axis record))
+            (set-x-axis!  new-record (+ (x-axis record) 1))
             (set-y-axis!  new-record -1)
             new-record))
 
@@ -129,7 +120,7 @@
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
             (set-stacked! new-record (stacked record))
-            (set-x-axis!  new-record (x-axis record))
+            (set-x-axis!  new-record (+ (x-axis record) 1))
             (set-y-axis!  new-record 1)
             new-record))
 
@@ -141,8 +132,7 @@
         (case method
             [(stacked++) (method-rise-location-stacked record)]
             [(x++)       (method-rise-location-x record)]
-            [(y++)       (method-rise-location-stacked (method-rise-location-y record))]
-            [(y--)       (method-rise-location-stacked (method-reduce-location-y record))]
+            [(y++)       (method-rise-location-y record)]
             [(nmos)      (method-nmos-location-y record)]
             [(pmos)      (method-pmos-location-y record)]
             [(pretty-print) (method-pretty-print-location record)]
@@ -154,9 +144,8 @@
     (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
     (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
     (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
-    (check (%circuit-location-object 'y-- (location 0 0 0)) => (location 0 0 -1))
-    (check (%circuit-location-object 'nmos (location 0 0 0)) => (location 0 0 -1))
-    (check (%circuit-location-object 'pmos (location 0 0 0)) => (location 0 0 +1))
+    (check (%circuit-location-object 'nmos (location 0 1 0)) => (location 0 0 -1))
+    (check (%circuit-location-object 'pmos (location 0 1 0)) => (location 0 0 +1))
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -204,12 +193,11 @@
         Returns a <mosfet> structure."
         (let* ([new-gate   (car nodes)]
                [new-node   (cadr nodes)]
-               [direction  (if (nmos? anchor) 'y-- 'y++)]
                [transistor (method-clone-mosfet anchor)])
             (set-gate!   transistor new-gate)
             (set-source! anchor     new-node)
             (set-drain!  transistor new-node)
-            (set-place!  transistor (%circuit-location-object direction (place anchor)))
+            (set-place!  transistor (%circuit-location-object 'y++ (place anchor)))
             transistor))
 
 ;;  ------------    method-expand-mosfet-1pu    -----------------------
@@ -226,7 +214,7 @@
             (set-drain!  pmos new-drain)
             (set-bulk!   pmos "vdd")
             (set-size!   pmos "g")
-            (set-place!  pmos (method-rise-location-x (method-pmos-location-y (place anchor))))
+            (set-place!  pmos (%circuit-location-object 'pmos (place anchor)))
             pmos))
 
     (check (method-expand-mosfet-1pu (method-generate-pmos) '(A Y)) => (method-generate-pmos))
@@ -245,7 +233,7 @@
             (set-drain!  nmos new-drain)
             (set-bulk!   nmos "gnd")
             (set-size!   nmos "1")
-            (set-place!  nmos (method-rise-location-x (method-nmos-location-y (place anchor))))
+            (set-place!  nmos (%circuit-location-object 'nmos (place anchor)))
             nmos))
 
     (check (method-expand-mosfet-1pd (method-generate-nmos) '(A Y)) => (method-generate-nmos))
