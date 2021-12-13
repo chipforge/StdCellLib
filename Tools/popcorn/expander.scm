@@ -141,8 +141,8 @@
         (case method
             [(stacked++) (method-rise-location-stacked record)]
             [(x++)       (method-rise-location-x record)]
-            [(y++)       (method-rise-location-y record)]
-            [(y--)       (method-reduce-location-y record)]
+            [(y++)       (method-rise-location-stacked (method-rise-location-y record))]
+            [(y--)       (method-rise-location-stacked (method-reduce-location-y record))]
             [(nmos)      (method-nmos-location-y record)]
             [(pmos)      (method-pmos-location-y record)]
             [(pretty-print) (method-pretty-print-location record)]
@@ -305,7 +305,7 @@
 
     (define (grep-highest-nmos-anchor netlist)
         "Just grep the nmos with the hightest gate name.  Returns a <mosfet> structure."
-        (car (reverse (sort-netlist-descending netlist))))
+        (car (reverse (sort-netlist-ascending netlist))))
 
 ;;  ------------    grep most right anchor  ---------------------------
 
@@ -378,7 +378,7 @@ netlist;            '()
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
                ; same with gate name
-               [new-gate     (%input-node-object 'next-number (gate highest-nmos))]
+               [new-gate     (%input-node-object 'next-number (gate highest-pmos))]
                ; generate new mosfet additions
                [new-pmos     (method-expand-mosfet-parallel highest-pmos (list new-gate new-node))]
                [new-nmos     (method-expand-mosfet-serial   highest-nmos (list new-gate new-node))])
@@ -397,10 +397,10 @@ netlist;            '()
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
                ; same with gate name
-               [new-gate     (%input-node-object 'next-number (gate highest-nmos))]
+               [new-gate     (%input-node-object 'next-number (gate highest-pmos))]
                ; generate new mosfet additions
-               [new-nmos     (method-expand-mosfet-parallel highest-nmos (list new-gate new-node))]
-               [new-pmos     (method-expand-mosfet-serial   highest-pmos (list new-gate new-node))])
+               [new-pmos     (method-expand-mosfet-serial   highest-pmos (list new-gate new-node))]
+               [new-nmos     (method-expand-mosfet-parallel highest-nmos (list new-gate new-node))])
             ; enlarge netlist
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) netlist)))
 
@@ -416,10 +416,10 @@ netlist;            '()
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
                ; same with gate name
-               [new-gate     (%input-node-object 'next-char (gate highest-nmos))]
+               [new-gate     (%input-node-object 'next-char (gate highest-pmos))]
                ; generate new mosfet additions
                [new-nmos     (method-expand-mosfet-serial highest-nmos (list new-gate new-node))]
-               [new-pmos     (method-expand-mosfet-1pu highest-pmos (list new-gate new-node))])
+               [new-pmos     (method-expand-mosfet-1pu    highest-pmos (list new-gate new-node))])
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "gnd" new-node)))))
 
 ;;  ------------    expand-netlist-pd       ---------------------------
@@ -436,7 +436,7 @@ netlist;            '()
                ; same with gate name
                [new-gate     (%input-node-object 'next-char (gate highest-nmos))]
                ; generate new mosfet additions
-               [new-nmos     (method-expand-mosfet-1pd highest-nmos (list new-gate new-node))]
+               [new-nmos     (method-expand-mosfet-1pd    highest-nmos (list new-gate new-node))]
                [new-pmos     (method-expand-mosfet-serial highest-pmos (list new-gate new-node))])
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "vdd" new-node)))))
 
@@ -458,7 +458,7 @@ netlist;            '()
                 (set-description! new-cell cell-descr)
 
                 ; write back netlist into <cell> structure
-                (set-netlist! new-cell (sort-netlist-normalized (expand-netlist-w-buffer new-netlist buffer-limit)))
+                (set-netlist! new-cell (sort-netlist-descending (expand-netlist-w-buffer new-netlist buffer-limit)))
 
                 ; netlist dependencies
                 (set-inputs!  new-cell (remove-doubled-nodes (sort-nodes-descending (grep-input-nodes new-netlist))))
