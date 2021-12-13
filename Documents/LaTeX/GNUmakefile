@@ -84,9 +84,9 @@ help:
 .PHONY: clean
 clean:
 	-$(RM) *.aux *.idx *.log *.toc *.out
-	-$(RM) $(SCHEMATICS)
-	-$(RM) $(DATASHEETS)
-	#-$(RM) $(TRUTHTABLES)
+	-$(RM) *_schematic.tex
+	-$(RM) *_datasheet.tex
+	#-$(RM) *_truthtable.tex
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
