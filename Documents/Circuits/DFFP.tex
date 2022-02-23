@@ -1,0 +1,57 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/Circuits/DFFP.tex
+%%
+%%  Purpose:        Circuit File for DFFP
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{24}{10}
+            \pin{1}{1}{L}{X}   % pin X
+            \wire{2}{1}{13}{1}
+            \junct{3}{1}
+            \wire{3}{1}{3}{6}
+            \wire{3}{6}{4}{6}
+            \wire{13}{1}{13}{6}
+            \wire{13}{6}{14}{6}
+            \pin{1}{8}{L}{D}   % pin D
+            \wire{2}{8}{4}{8}
+            \usgate
+            \flipflop[\clockin{n}]{d}{8}{6}{R}{}{}
+            \wire{12}{8}{14}{8}
+            \flipflop[\clockin{p}]{d}{18}{6}{R}{}{}
+            \pin{23}{8}{R}{Q}  % pin Q
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}
