@@ -59,6 +59,10 @@
 .Ar table\-file
 .Nm
 .Op Fl v
+.Op Fl e Ar format
+.Ar table\-file
+.Nm
+.Op Fl v
 .Op Fl m  | \-cdnf
 .Ar table\-file
 .Nm
@@ -92,13 +96,13 @@ function of the input table.
 .Nm
 uses a table sorting algorithm essentially similiar to Quine\-McCluskey for optimizing (or reducing) the Truth Table.
 .Sh OPTIONS
-.Ss \-C Ar cmos 
-Find a network Equation for a CMOS network, given a combinatorial functionality, which
+.Ss \-C Ar cmos
+Find a network Equation for the CMOS network, given a combinatorial functionality; which
 .Bl -ohang
 .It Em pu, Em pullup
-pulls up the output regarding the given functionality inside the Truth table. This means all LOW\-level inputs are collected in one boolean Equation which leads into a HIGH\-level output.
+pulls up the output regarding the given functionality inside the Truth Table. This means all LOW\-level inputs are collected in one boolean Equation which leads into a HIGH\-level output.
 .It Em pd, Em pulldown
-pulls down the output regarding the given functionality inside the Truth table. This means all HIGH\-level inputs are collected in one boolean Equation which leads into a LOW\-level output.
+pulls down the output regarding the given functionality inside the Truth Table. This means all HIGH\-level inputs are collected in one boolean Equation which leads into a LOW\-level output.
 .El
 .Pp
 Both options respect undriven tri\-stated outputs and invoke undefined output states.
@@ -106,6 +110,14 @@ Both options respect undriven tri\-stated outputs and invoke undefined output st
 If the algorithm fails, the
 .Dv STDOUT
 remains empty.
+.Ss \-e Ar format
+Export the information in the specified file format instead of a default
+.Xr table 5
+file.
+.Bl -ohang
+.It Em latex
+generates a LaTeX file.
+.El
 .Ss \-h, \-\-help
 Display help message and exit.
 .Ss \-m, \-\-cdnf
