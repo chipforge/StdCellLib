@@ -82,6 +82,7 @@ clean:
 	$(MAKE) -C $(SCHEMATICDIR) $@
 	$(MAKE) -C $(DATASHEETDIR) $@
 	-$(RM) *.aux *.bcf *.idx *.log *.toc *.out
+	-$(RM) *.acn *.bbl *.blg *.glo *.ist *.xml *.xdy *.gls *.glg
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
@@ -107,7 +108,7 @@ datasheets:
 reference: truthtables schematics datasheets #$(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(BIBER) $(PROJECT)
-	$(GLOSSARY) $(PROJECT).glo
+	$(GLOSSARY) $(PROJECT)
 	$(LATEX) $(PROJECT).tex
 	$(MV) $(PROJECT).pdf $(RELEASEDIR)
 

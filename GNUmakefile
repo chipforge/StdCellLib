@@ -66,7 +66,7 @@ help:
 	#   catalog    - (re-)generate combinatorial catalog (DON'T DO THAT!!)
 	#   layout     - generate physical layouts
 	#   datasheet  - generate cell data sheet
-	#   doc        - generate complete data book
+	#   reference  - generate complete reference book
 	#
 
 #   'clean' directories
@@ -75,7 +75,7 @@ help:
 clean:
 	# ---- clean up all intermediate files ----
 	$(MAKE) -C $(TOOLSDIR) $@
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX $@
+	$(MAKE) -C $(DOCUMENTSDIR) $@
 	# ---- clean generated catalog files ----
 	$(MAKE) -C $(CATALOGDIR) $@
 
@@ -117,9 +117,9 @@ layout:
 
 #   grep all hierarchical LaTeX files and build the up-to-date PDF
 
-.PHONY: doc
-doc:
-	$(MAKE) -C $(DOCUMENTSDIR)/LaTeX $@
+.PHONY: reference
+reference:
+	$(MAKE) -C $(DOCUMENTSDIR) $@
 
 #   ----------------------------------------------------------------
 #               DISTRIBUTION
@@ -128,7 +128,7 @@ doc:
 #   make archive by building a tarball with all important files
 
 .PHONY: dist
-dist: clean doc
+dist: clean reference clean
 	# ---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
 
