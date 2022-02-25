@@ -50,8 +50,9 @@ BOOKDIR ?= $(DOCUMENTSDIR)/Book
 
 #   project tools
 
-LATEX ?=        pdflatex # -output-directory $(RELEASEDIR)
-BIBER ?=        biber
+LATEX ?= pdflatex # -output-directory $(RELEASEDIR)
+BIBER ?= biber
+GLOSSARY ?= makeglossaries
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -106,6 +107,7 @@ datasheets:
 reference: truthtables schematics datasheets #$(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(BIBER) $(PROJECT)
+	$(GLOSSARY) $(PROJECT).glo
 	$(LATEX) $(PROJECT).tex
 	$(MV) $(PROJECT).pdf $(RELEASEDIR)
 
