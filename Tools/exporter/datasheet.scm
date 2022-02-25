@@ -141,7 +141,7 @@
             "\n"
             "\n\\begin{figure}[htp!]"
             "\n    \\centering"
-            "\n    \\input{Layout/" (id cell) ".tex}"
+            "\n    \\input{Layouts/" (id cell) ".tex}"
             "\n\\end{figure}"
             "\n"))
 
@@ -186,8 +186,8 @@
             (circuit cell)
             (truthtable cell)
             (schematic cell)
-            ;(layout cell)
-            ;(loading cell)
+            (layout cell)
+            (loading cell)
             (files cell filelist)))
 
 ;;  ------------    exporter datasheet in latex -----------------------

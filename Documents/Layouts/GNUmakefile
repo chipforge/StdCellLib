@@ -9,7 +9,7 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Documents/GNUmakefile
+#   File:           StdCellLib/Documents/Layout/GNUmakefile
 #
 #   Purpose:        Makefile for Document Generation
 #
@@ -35,26 +35,21 @@
 #   ////////////////////////////////////////////////////////////////////
 
 #   project root directory, relative, used inside include.mk file
-PRD =               ..
+PRD =               ../..
 
 #   common definitions
 
 include $(PRD)/include.mk
 
-#   directory pathes
+#   virtuell search pathes
 
-TRUTHTABLEDIR ?= $(DOCUMENTSDIR)/Truthtables
-SCHEMATICDIR ?= $(DOCUMENTSDIR)/Schematics
-LAYOUTDIR ?= $(DOCUMENTSDIR)/Layouts
-LOADINGDIR ?= $(DOCUMENTSDIR)/Loading
-DATASHEETDIR ?= $(DOCUMENTSDIR)/Datasheets
-BOOKDIR ?= $(DOCUMENTSDIR)/Book
+VPATH = $(CATALOGDIR)
+
+#   auxiliary stuff for targets
+
+LAYOUTS := $(foreach i,$(CELLS),$(i).tex)
 
 #   project tools
-
-LATEX ?= pdflatex # -output-directory $(RELEASEDIR)
-BIBER ?= biber
-GLOSSARY ?= makeglossaries
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -68,61 +63,24 @@ help:
 	#       available targets:
 	#   ----------------------------------------------------------
 	#
-	#   help        - print this help screen
-	#   clean       - clean up all intermediate files
+	#   help       - print this help screen
+	#   clean      - clean up all intermediate files
 	#
-	#   truthtables - generate truth tables for every cell
-	#   schematics  - generate schematics for every cell
-	#   layouts     - generate layouts for every cell
-	#   loading     - generate loading for every cell
-	#   datasheets  - generate datasheets for every cell
-	#   reference   - generate complete reference book
+	#   layouts    - generate schematic for every cell
 	#
 
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(TRUTHTABLEDIR) $@
-	$(MAKE) -C $(SCHEMATICDIR) $@
-	$(MAKE) -C $(LAYOUTDIR) $@
-	$(MAKE) -C $(LOADINGDIR) $@
-	$(MAKE) -C $(DATASHEETDIR) $@
-	-$(RM) *.aux *.bcf *.idx *.log *.toc *.out *.acr *.alg
-	-$(RM) *.acn *.bbl *.blg *.glo *.ist *.xml *.xdy *.gls *.glg
+	-$(RM) *.tex
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS
 #   ----------------------------------------------------------------
 
-#   generate en detail
-
-.PHONY: truthtables
-truthtables:
-	$(MAKE) -C $(TRUTHTABLEDIR) $@
-
-.PHONY: schematics
-schematics:
-	$(MAKE) -C $(SCHEMATICDIR) $@
-
 .PHONY: layouts
-layouts:
-	$(MAKE) -C $(LAYOUTDIR) $@
+layouts: $(LAYOUTS)
 
-.PHONY: loading
-loading:
-	$(MAKE) -C $(LOADINGDIR) $@
-
-.PHONY: datasheets
-datasheets:
-	$(MAKE) -C $(DATASHEETDIR) $@
-
-#   grep all hierarchical LaTeX files and build the up-to-date PDF
-
-.PHONY: reference
-reference: truthtables schematics layouts loading datasheets #$(PROJECT).tex
-	$(LATEX) $(PROJECT).tex
-	$(BIBER) $(PROJECT)
-	$(GLOSSARY) $(PROJECT)
-	$(LATEX) $(PROJECT).tex
-	$(MV) $(PROJECT).pdf $(RELEASEDIR)
+%.tex: %
+	touch $@
 
