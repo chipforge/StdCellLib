@@ -198,11 +198,11 @@
         Returns list for (map display (list ..))"
         (map rdisplay
             (list
-                (generic-fileheader "%%" "Documents/LaTeX/" (id cell) "Schematic File")
+                (generic-fileheader "%%" (id cell) "Schematic File")
                 (generic-copyleft "%%")
                 (generic-license "%%")
                 (circuitdiagram cell)
-                (generic-filefooter "%%" "Documents/LaTeX/"))))
+                (generic-filefooter "%%" (id cell) "Schematic File"))))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY

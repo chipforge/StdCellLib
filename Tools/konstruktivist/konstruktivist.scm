@@ -9,7 +9,7 @@
 ;;                          www.chipforge.org
 ;;                  there are projects from small cores up to PCBs, too.
 ;;
-;;  File:           StdCellLib/Tools/schematic/schematic.scm
+;;  File:           StdCellLib/Tools/konstruktivist/konstruktivist.scm
 ;;
 ;;  Purpose:        Schematic Main functionality
 ;;

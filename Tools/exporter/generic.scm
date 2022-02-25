@@ -80,7 +80,7 @@
 
 ;;  ------------    generic file header     ---------------------------
 
-    (define (generic-fileheader comment-sign file-path file-name purpose)
+    (define (generic-fileheader comment-sign file-name purpose)
         "Generates generic file heder lines, starting with comment-sign.
         Returns list for (map display (list ..))"
         (list
@@ -89,7 +89,7 @@
             "\n" comment-sign
             "\n" comment-sign " Home:           https://www.github.com/chipforge/stdcelllib"
             "\n" comment-sign
-            "\n" comment-sign " File:           " file-path file-name
+            "\n" comment-sign " File:           " file-name
             "\n" comment-sign
             "\n" comment-sign " Purpose:        " purpose
             "\n" comment-sign " ///////////////////////////////////////////////////////////////////"))
@@ -127,7 +127,7 @@
 
 ;;  ------------    generic file footer     ---------------------------
 
-    (define (generic-filefooter comment-sign file-name)
+    (define (generic-filefooter comment-sign file-name purpose)
         "Generates generic footer text line by line, starting with comment-sign.
         Returns list for (map display (list ..))"
         (list
@@ -139,7 +139,7 @@
             "\n" comment-sign "    ;;;;;;;;;;;;   ;; ;; ;; ;; ;; ;;;;' ;;  ;; ;; ;;';; ;; ;; ;;"
             "\n" comment-sign "       :' ;;       ';;;' ;; ;; ;; ;;    ;;  ';;;' ;; ;; ';;;; ;;;;"
             "\n" comment-sign
-            "\n" comment-sign " END OF AUTO-GENERATED FILE " file-name))
+            "\n" comment-sign " END OF AUTO-GENERATED FILE " file-name purpose))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
