@@ -57,7 +57,17 @@
 
     ; change this switch during development only
     ; mode must be a symbol in '(off summary report-failed report)
-    (check-set-mode! 'report) ;(check-set-mode! 'off)
+    (check-set-mode! 'off)
+
+;;  ------------    naming      ---------------------------------------
+
+    (define (naming cell)
+        "Generates cell naming information.
+        Returns list for (map display (list ..))"
+        (list
+            ; start with subsection header
+            "\n\\subsection{" (id cell) " - " (description cell) "} \\label{cell:" (id cell) "}"
+            "\n"))
 
 ;;  ------------    synopsys    ---------------------------------------
 
@@ -65,6 +75,9 @@
         "Generates synopsys information.
         Returns list for (map display (list ..))"
         (list
+            "\n"
+            "\n\\subsubsection*{Synopsys:}"
+            "\n"
             "\n\\begin{quote}"
             "\n    " (id cell) " (" (outputs cell) " " (inputs cell) (clocks cell)")"
             "\n\\end{quote}"
@@ -76,9 +89,12 @@
         "Include circuit diagram.
         Returns list for (map display (list ..))"
         (list
-            "\n\\begin{figure}[h]"
+            "\n"
+            "\n\\subsubsection*{Circuitry:}"
+            "\n"
+            "\n\\begin{figure}[htp!]"
             "\n    \\centering"
-            "\n    \\input{" (id cell) "_circuit.tex}"
+            "\n    \\input{Circuits/" (id cell) ".tex}"
             "\n\\end{figure}"
             "\n"))
 
@@ -88,17 +104,14 @@
         "Include truth table.
         Returns list for (map display (list ..))"
         (list
-            ;"\n"   ; ?? frame-ing
-            "\n\\input{" (id cell) "_truthtable.tex}")) ; !! generate here from table file !!
-
-;;  ------------    file list   ---------------------------------------
-
-    (define (files cell filelist)
-        "Generates file list.
-        Returns list for (map display (list ..))"
-        (list
-            ; generate topics !!
-        ))
+            "\n"
+            "\n\\subsubsection*{Truth Table:}"
+            "\n"
+            "\n\\begin{table}[htp!]"
+            "\n    \\centering"
+            "\n    \\input{Truthtables/" (id cell) ".tex}"
+            "\n\\end{table}"
+            "\n"))
 
 ;;  ------------    schematic   ---------------------------------------
 
@@ -107,11 +120,12 @@
         Returns list for (map display (list ..))"
         (list
             "\n\\begin{landscape}"
-            "\n    \\fbox{" (description cell) "}"
-            "\n    \\begin{figure}[b]"
+            "\n"
+            "\n\\subsubsection*{Schematic:}"
+            "\n"
+            "\n    \\begin{figure}[htp!]"
             "\n        \\centering"
-
-            "\n        \\input{" (id cell) "_schematic.tex}"    ; !! take PS file if available
+            "\n        \\input{Schematics/" (id cell) ".tex}"    ; !! take PS file if available
             "\n    \\end{figure}"
             "\n\\end{landscape}"
             "\n"))
@@ -122,8 +136,40 @@
         "Include layout picture.
         Returns list for (map display (list ..))"
         (list
-            ;"\n"   ; ?? frame-ing
-            "\n\\input{" (id cell) "_layout.tex}" ; !!
+            "\n"
+            "\n\\subsubsection*{Layout:}"
+            "\n"
+            "\n\\begin{figure}[htp!]"
+            "\n    \\centering"
+            "\n    \\input{Layout/" (id cell) ".tex}"
+            "\n\\end{figure}"
+            "\n"))
+
+;;  ------------    loading     ---------------------------------------
+
+    (define (loading cell)
+        "Include loading table.
+        Returns list for (map display (list ..))"
+        (list
+            "\n"
+            "\n\\subsubsection*{Loading Characteristics:}"
+            "\n"
+            "\n\\begin{figure}[htp!]"
+            "\n    \\centering"
+            "\n    \\input{Loading/" (id cell) ".tex}"
+            "\n\\end{figure}"
+            "\n"))
+
+;;  ------------    file list   ---------------------------------------
+
+    (define (files cell filelist)
+        "Generates file list.
+        Returns list for (map display (list ..))"
+        (list
+            "\n"
+            "\n\\subsubsection*{File List:}"
+            "\n"
+            ; generate topics !!
         ))
 
 ;;  ------------    page frame  ---------------------------------------
@@ -132,19 +178,17 @@
         "Generates datasheet frame.
         Returns list for (map display (list ..))"
         (list
-            ; start with subsection header
-            "\n\\subsection{" (id cell) " - " (description cell) "} \\label{cell:" (id cell) "}"
-            "\n"
-            "\n\\paragraph{Description:}"
-            "\n"
+            (naming cell)
+            "\n\\thispagestyle{myheadings}"
+            "\n\\markboth{" (id cell) " \\hfill " (description cell) "}{"
+                            (description cell) " \\hfill " (id cell) "}"
             (synopsys cell)
             (circuit cell)
-;            (truthtable cell)
-;            (files cell filelist)
+            (truthtable cell)
             (schematic cell)
-;            (layout cell)
-            ; clear page for next subsection 
-            "\n\\clearpage"))
+            ;(layout cell)
+            ;(loading cell)
+            (files cell filelist)))
 
 ;;  ------------    exporter datasheet in latex -----------------------
 
@@ -153,11 +197,11 @@
         Returns list for (map display (list ..))"
         (map rdisplay
             (list
-                (generic-fileheader "%%" "Documents/LaTeX/" (id cell) "Data Sheet")
+                (generic-fileheader "%%" (id cell) "Data Sheet")
                 (generic-copyleft "%%")
                 (generic-license "%%")
                 (outer-page-frame cell filelist)
-                (generic-filefooter "%%" "Documents/LaTeX/"))))
+                (generic-filefooter "%%" (id cell) "Data Sheet"))))
 
 ;;  ===================================================================
 ;;                  END OF R7RS LIBRARY
