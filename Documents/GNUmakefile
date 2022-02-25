@@ -81,7 +81,7 @@ clean:
 	$(MAKE) -C $(TRUTHTABLEDIR) $@
 	$(MAKE) -C $(SCHEMATICDIR) $@
 	$(MAKE) -C $(DATASHEETDIR) $@
-	-$(RM) *.aux *.bcf *.idx *.log *.toc *.out
+	-$(RM) *.aux *.bcf *.idx *.log *.toc *.out *.acr *.alg
 	-$(RM) *.acn *.bbl *.blg *.glo *.ist *.xml *.xdy *.gls *.glg
 
 #   ----------------------------------------------------------------
