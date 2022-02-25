@@ -33,7 +33,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\documentclass[10pt,a4paper]{report}
+\documentclass[a4paper,10pt,twoside,openany,headsepline,footsepline,draft]{scrbook}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[style=authoryear]{biblatex}
@@ -41,15 +41,23 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 %\usepackage{gensymb}
+\usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage[digital,srcmeas,semicon]{circdia}
 % \usepackage[dvipsnames]{xcolor}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{pdflscape}
+\pagestyle{myheadings}
+\markboth{LibreSilicon's Standard Cell Library - Reference Manual -\hfill}{\hfill - Reference Manual - LibreSilicon's Standard Cell Library}
+
+\input{glossary.tex}
+
+\usepackage[colorlinks=true,linkcolor=blue,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
 
 \addbibresource{readings.bib}
 
 \title{LibreSilicon's Standard Cell Library}
+\subtitle{- Reference Manual -}
 \author{chipforge \texttt{<stdcelllib@nospam.chipforge.org>}}
 \date{\today}
 
@@ -58,7 +66,6 @@
 \maketitle
 %\setlength{\parindent}{0pt} % get rid of annoying indents
 
-\begin{abstract}
 \begin{quote}
 Copyright \textcopyright  2018 - 2022 CHIPFORGE. All rights reserved.
 
@@ -68,14 +75,12 @@ This design is distributed in the hope that it will be useful, but WITHOUT ANY W
 
 For further clarification consult the complete documentation of the process.
 \end{quote}
-\end{abstract}
+\uppertitleback
+
+\vfill
 \input{table-revision_history}
 
-%\clearpage
-%\makeindex  % usefull for ToC
 \tableofcontents
-%\clearpage
-
 %%  -------------------------------------------------------------------
 %%                  PART I
 %%  -------------------------------------------------------------------
