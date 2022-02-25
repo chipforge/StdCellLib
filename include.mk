@@ -75,5 +75,6 @@ CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
 COBBLESTONE = $(TOOLSDIR)/cobblestone/cobblestone
 DATASHEET = $(TOOLSDIR)/datasheet/datasheet
 POPCORN = $(TOOLSDIR)/popcorn/popcorn
-SCHEMATIC = $(TOOLSDIR)/konstruktivist/konstruktivist
+KONSTRUKTIVIST = $(TOOLSDIR)/konstruktivist/konstruktivist
+SCARBATA = $(TOOLSDIR)/scarbata/scarbata
 
