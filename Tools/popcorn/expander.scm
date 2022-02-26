@@ -96,7 +96,7 @@
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
             (set-stacked! new-record (+ (stacked record) 1))
-            (set-x-axis!  new-record 1)
+            (set-x-axis!  new-record (x-axis record))
             (set-y-axis!  new-record (if (< (y-axis record) 0)
                                         (- (y-axis record) 1)
                                         (+ (y-axis record) 1)))
@@ -108,7 +108,7 @@
         "Rebase the coodinatates for a nmos <location> on y-axis.
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
-            (set-stacked! new-record (stacked record))
+            (set-stacked! new-record 1)
             (set-x-axis!  new-record (+ (x-axis record) 1))
             (set-y-axis!  new-record -1)
             new-record))
@@ -119,7 +119,7 @@
         "Rebase the coodinatates for a pmos <location> on y-axis.
         Returns (cloned) <location>."
         (let* ([new-record (method-generate-location+)])
-            (set-stacked! new-record (stacked record))
+            (set-stacked! new-record 1)
             (set-x-axis!  new-record (+ (x-axis record) 1))
             (set-y-axis!  new-record 1)
             new-record))
@@ -144,8 +144,8 @@
     (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
     (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
     (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
-    (check (%circuit-location-object 'nmos (location 0 1 0)) => (location 0 0 -1))
-    (check (%circuit-location-object 'pmos (location 0 1 0)) => (location 0 0 +1))
+    (check (%circuit-location-object 'nmos (location 0 1 0)) => (location 1 0 -1))
+    (check (%circuit-location-object 'pmos (location 0 1 0)) => (location 1 0 +1))
 
 ;;  -------------------------------------------------------------------
 ;;                  TRANSISTOR DATA STRUCTURE
@@ -245,24 +245,24 @@
 ;   handle netlists as 'object' and encapsulate their functionality, so
 ;   provide a couple of methods for dealing with netlists
 
-;;  ------------    method-add-mosfet-to-netlist    -------------------
+;;  ------------    method-add-mosfets-to-netlist   -------------------
 
     (define (method-add-mosfets-to-netlist transistors netlist)
-        "Just add a mosfet to the netlist.  Returns a netlist."
+        "Just add all mosfet to the netlist.  Returns a netlist."
         (append transistors netlist))
 
 ;;  ------------    method-delete-mosfet-from-netlist   ---------------
 
-    (define (method-delete-mosfet-from netlist transistor netlist)
+    (define (method-delete-mosfet-from transistors netlist)
         "Go thrue netlist and remove *all* items identical to transistor.
         Returns a netlist."
         (cond
-            [(null? netlist) ’()]
-            [(equal? (car netlist) transistor)
-                (method-delete-mosfet-from-netlist (cdr netlist) transistor)]
+            [(null? netlist) netlist]
+            [(equal? (car transistors) (car netlist))
+                (method-delete-mosfet-from (car transistors) (cdr netlist))]
             [else
                 (cons (car netlist)
-                      (method-delete-mosfet-from-netlist (cdr netlist) transistor))]))
+                      (method-delete-mosfet-from (car transistors) (cdr netlist)))]))
 
 ;;  ------------    %netlist-object     -------------------------------
 
@@ -272,7 +272,7 @@
         (case method
             [(empty?) (null? netlist)]
             [(add)    (method-add-mosfets-to-netlist transistors netlist)]
-            [(delete) (method-delete-mosfet-from netlist transistors netlist)]
+            [(delete) (method-delete-mosfet-from transistors netlist)]
             [else =>  (list? netlist)]))
 
 ;   Checks:
@@ -338,21 +338,31 @@ netlist;            '()
                 ;(if (equal? (bulk transistor)   old-node) (set-bulk!   transistor new-node))
                 (method-add-mosfets-to-netlist (list transistor) (netlist-rename-node (cdr netlist) nodes)))))
 
+;;  ------------    remove-netlist-buffer   ---------------------------
+
+    (define (remove-netlist-buffer netlist)
+        "Check wether netlist has output buffer and remove them.
+        Returns a netlist"
+        (let* ([buffer (method-netlist-buffered? netlist)])
+            (if (pair? buffer)  ; already buffered?
+                ; yes, remove
+                (%netlist-object 'delete buffer netlist)
+                ; no, fine
+                netlist)))
+
 ;;  ------------    expand-netlist-w-buffer     -----------------------
 
     (define (expand-netlist-w-buffer netlist buffer-limit)
         "Expand netlist with buffer, when the highest stacked transistor already
         reaches the buffer-limit.  Returns a netlist."
-        (if (pair? (method-netlist-buffered? netlist))  ; already buffered
+        (if (> buffer-limit (grep-highest-stacked-transistor netlist))
+            ; buffer-limit still not reached, do not touch netlist
             netlist
-            (if (> buffer-limit (grep-highest-stacked-transistor netlist))
-                ; buffer-limit still not reached, do not touch netlist
-                netlist
-                ; buffer-limit already reached, has to be buffered
-                (let* ([anchor   (grep-most-right-anchor netlist)]
-                       [new-nmos (method-expand-mosfet-1pd anchor (list "O" "Z"))]
-                       [new-pmos (method-expand-mosfet-1pu anchor (list "O" "Z"))])
-                    (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "Y" "O")))))))
+            ; buffer-limit already reached, has to be buffered
+            (let* ([anchor   (grep-most-right-anchor netlist)]
+                   [new-nmos (method-expand-mosfet-1pd anchor (list "O" "Z"))]
+                   [new-pmos (method-expand-mosfet-1pu anchor (list "O" "Z"))])
+                (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "Y" "O"))))))
 
 ;;  ------------    expand-netlist-nand     ---------------------------
 
@@ -435,7 +445,7 @@ netlist;            '()
         Use named method and update current cell informations.  Returns <cell>
         structure."
         (let* ([new-cell (method-generate-cell)]
-               [current-netlist (netlist cell)]
+               [current-netlist (remove-netlist-buffer (netlist cell))]
                [new-netlist (case method [(nand) (expand-netlist-nand current-netlist)]
                                          [(nor)  (expand-netlist-nor  current-netlist)]
                                          [(pu)   (expand-netlist-pu   current-netlist)]
