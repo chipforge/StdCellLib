@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2021 by
+;;  Copyright (c) 2021 - 2022by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -116,7 +116,7 @@
 ;;  ------------    schematic   ---------------------------------------
 
     (define (schematic cell)
-        "Include schematic diagram.
+        "Include schematic diagram if available.
         Returns list for (map display (list ..))"
         (list
             "\n\\begin{landscape}"
@@ -124,8 +124,10 @@
             "\n\\subsubsection*{Schematic:}"
             "\n"
             "\n    \\begin{figure}[htp!]"
-            "\n        \\centering"
-            "\n        \\input{Schematics/" (id cell) ".tex}"    ; !! take PS file if available
+            "\n            \\centering"
+            "\n        \\begin{minipage}{.9\\textwidth}"
+            "\n            \\input{Schematics/" (id cell) ".tex}"
+            "\n        \\end{minipage}"
             "\n    \\end{figure}"
             "\n\\end{landscape}"
             "\n"))
@@ -136,13 +138,17 @@
         "Include layout picture.
         Returns list for (map display (list ..))"
         (list
+            "\n\\begin{landscape}"
             "\n"
             "\n\\subsubsection*{Layout:}"
             "\n"
-            "\n\\begin{figure}[htp!]"
-            "\n    \\centering"
-            "\n    \\input{Layouts/" (id cell) ".tex}"
-            "\n\\end{figure}"
+            "\n    \\begin{figure}[htp!]"
+            "\n            \\centering"
+            "\n        \\begin{minipage}{.9\\textwidth}"
+            "\n            \\input{Layouts/" (id cell) ".tex}"
+            "\n        \\end{minipage}"
+            "\n    \\end{figure}"
+            "\n\\end{landscape}"
             "\n"))
 
 ;;  ------------    loading     ---------------------------------------
@@ -152,7 +158,7 @@
         Returns list for (map display (list ..))"
         (list
             "\n"
-            "\n\\subsubsection*{Loading Characteristics:}"
+            "\n\\subsubsection*{Logical Effort:}"
             "\n"
             "\n\\begin{figure}[htp!]"
             "\n    \\centering"
