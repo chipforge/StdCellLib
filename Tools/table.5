@@ -66,6 +66,16 @@ Every line starts with comment, an identifier, or forms a table entry.
 Two slash signs mark the beginning of a comment line; subsequent characters up
 to the end of the line are not interpreted by the routines which search the
 file.
+.Ss .cell
+This dot-command is a string giving the unique cell identifier inside the
+Standard Cell Library.
+E.g.
+.Em INV ,
+.Em NAND2 ,
+.Em NOR2 ,
+.Em XOR2 ...
+.Pp
+This command is optional.
 .Ss .inputs
 This dot-command follows a white-space-separated list of strings (terminated by
 the end of the line) giving the formal input signal names for the following table being
