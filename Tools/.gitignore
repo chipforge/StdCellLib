@@ -9,7 +9,7 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           .gitignore
+#   File:           Tools/.gitignore
 #
 #   Purpose:        git ignore File
 #
@@ -33,4 +33,5 @@
 #       See the Libre Silicon Public License for more details.
 #
 #   ////////////////////////////////////////////////////////////////////
-*.tgz
+*.ps
+*.pdf
