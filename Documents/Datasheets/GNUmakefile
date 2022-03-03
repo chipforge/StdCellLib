@@ -49,7 +49,13 @@ VPATH = $(CATALOGDIR)
 
 DATASHEETS := $(foreach i,$(CELLS),$(i).tex)
 
-#   project tools
+#   directory pathes
+
+CIRCUITRYDIR ?= ./Circuitry
+TRUTHTABLEDIR ?= ./Truthtables
+SCHEMATICDIR ?= ./Schematics
+LAYOUTDIR ?= ./Layouts
+LOADINGDIR ?= ./Loading
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -69,17 +75,82 @@ help:
 	#   datasheets - generate data sheet for every cell
 	#
 
+#   'clean' current directory
 
 .PHONY: clean
 clean:
+	#-$(MAKE) -C $(CIRCUITRYDIR) $@
+	-$(MAKE) -C $(TRUTHTABLEDIR) $@
+	-$(MAKE) -C $(SCHEMATICDIR) $@
+	-$(MAKE) -C $(LAYOUTDIR) $@
+	-$(MAKE) -C $(LOADINGDIR) $@
 	-$(RM) *.tex *.aux
 
 #   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
+#               CIRCUITRY
 #   ----------------------------------------------------------------
 
+#   Go down into directory, collect information and beautify them
+#   for LaTeX.
+
+.PHONY: circuitry
+circuitry:
+	$(MAKE) -C $(CIRCUITRYDIR) $@
+
+#   ----------------------------------------------------------------
+#               TRUTH TABLES
+#   ----------------------------------------------------------------
+
+#   Go down into directory, collect information and beautify them
+#   for LaTeX.
+
+.PHONY: truthtables
+truthtables:
+	$(MAKE) -C $(TRUTHTABLEDIR) $@
+
+#   ----------------------------------------------------------------
+#               SCHEMATICS
+#   ----------------------------------------------------------------
+
+#   Go down into directory, collect information and beautify them
+#   for LaTeX.
+
+.PHONY: schematics
+schematics:
+	$(MAKE) -C $(SCHEMATICDIR) $@
+
+#   ----------------------------------------------------------------
+#               LAYOUTS
+#   ----------------------------------------------------------------
+
+#   Go down into directory, collect information and beautify them
+#   for LaTeX.
+
+.PHONY: layouts
+layouts:
+	$(MAKE) -C $(LAYOUTDIR) $@
+
+#   ----------------------------------------------------------------
+#               LOADING
+#   ----------------------------------------------------------------
+
+#   Go down into directory, collect information and beautify them
+#   for LaTeX.
+
+.PHONY: loading
+loading:
+	$(MAKE) -C $(LOADINGDIR) $@
+
+#   ----------------------------------------------------------------
+#               DATASHEETS TARGET
+#   ----------------------------------------------------------------
+
+#   Present all usefull informations for the Datasheets, e.g. Truth
+#   Tables, Schematics etc in one Datasheet per Cell.
+#   This information has to be collected.
+
 .PHONY: datasheets
-datasheets: $(DATASHEETS)
+datasheets: truthtables schematics layouts loading $(DATASHEETS)
 
 %.tex: %
 	$(DATASHEET) $< > $@
