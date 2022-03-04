@@ -451,7 +451,8 @@ netlist;            '()
                                          [(pu)   (expand-netlist-pu   current-netlist)]
                                          [(pd)   (expand-netlist-pd   current-netlist)])])
             (begin
-                ; set name + description
+                ; set origin + name + description
+                (set-origin! new-cell (id cell))
                 (set-id! new-cell cell-name)
                 (set-description! new-cell cell-descr)
 

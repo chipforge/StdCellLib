@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c) 2019 - 2021 by
+;;  Copyright (c) 2019 - 2022 by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -106,6 +106,7 @@
           ; cell representations
           cell cell?
           id set-id!
+          origin set-origin!
           description set-description!
           inputs set-inputs!
           outputs set-outputs!
@@ -734,6 +735,8 @@
 ;       +---------------+
 ;       | cell text     | ->    "a Not (or Inverter) gate"
 ;       +---------------+
+;       | cell origin   | ->    '("")
+;       +---------------+
 ;       | cell inputs   | ->    '("A")
 ;       +---------------+
 ;       | cell outputs  | ->    '("Y")
@@ -747,23 +750,24 @@
 
     (define-record-type <cell>
         ; constructor
-        (cell cell-id cell-text cell-inputs cell-outputs cell-clocks cell-netlist cell-ascii-art)
+        (cell cell-id cell-text cell-origin cell-inputs cell-outputs cell-clocks cell-netlist cell-ascii-art)
         ; predicate
         cell?
         ; getters & setters (omit the setters from immutable fields)
         (cell-id id set-id!)
         (cell-text description set-description!)
+        (cell-origin origin set-origin!)
         (cell-inputs inputs set-inputs!)
         (cell-outputs outputs set-outputs!)
         (cell-clocks clocks set-clocks!)
         (cell-netlist netlist set-netlist!)
         (cell-ascii-art ascii-art set-ascii-art!))
 
-;;  ------------    generate empty <mosfet>     -----------------------
+;;  ------------    generate empty <cell>   ---------------------------
 
     (define (method-generate-cell)
         "Generate empty <cell> record structure.  Returns <cell>."
-        (cell "" "" '() '() '() '() '()))
+        (cell "" "" "" '() '() '() '() '()))
 
 ;;  ------------    pretty print <cell>     ---------------------------
 
@@ -772,6 +776,7 @@
         (list
             (id record)
             (description record)
+            (origin record)
             (method-pretty-print-nodes (inputs record))
             (method-pretty-print-nodes (outputs record))
             (method-pretty-print-nodes (clocks record))
@@ -839,6 +844,8 @@
                 (set-outputs! current-cell (cdr textline))]
             [(equal? (string->symbol (car textline)) '|.clocks|)
                 (set-clocks! current-cell (cdr textline))]
+            [(equal? (string->symbol (car textline)) '|.origin|)
+                (set-origin! current-cell (cdr textline))]
             [(equal? (string->symbol (car textline)) 'pmos)
                 (set-netlist! current-cell (cons (read-pmos-line! (cdr textline)) (netlist current-cell)))]
             [(equal? (string->symbol (car textline)) 'nmos)

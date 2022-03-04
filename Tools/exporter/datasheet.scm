@@ -94,7 +94,7 @@
             "\n"
             "\n\\begin{figure}[htp!]"
             "\n    \\centering"
-            "\n    \\input{Circuits/" (id cell) ".tex}"
+            "\n    \\input{./Datasheets/Circuitry/" (id cell) ".tex}"
             "\n\\end{figure}"
             "\n"))
 
@@ -109,7 +109,7 @@
             "\n"
             "\n\\begin{table}[htp!]"
             "\n    \\centering"
-            "\n    \\input{Truthtables/" (id cell) ".tex}"
+            "\n    \\input{./Datasheets/Truthtables/" (id cell) ".tex}"
             "\n\\end{table}"
             "\n"))
 
@@ -126,7 +126,7 @@
             "\n    \\begin{figure}[htp!]"
             "\n            \\centering"
             "\n        \\begin{minipage}{.9\\textwidth}"
-            "\n            \\input{Schematics/" (id cell) ".tex}"
+            "\n            \\input{./Datasheets/Schematics/" (id cell) ".tex}"
             "\n        \\end{minipage}"
             "\n    \\end{figure}"
             "\n\\end{landscape}"
@@ -145,7 +145,7 @@
             "\n    \\begin{figure}[htp!]"
             "\n            \\centering"
             "\n        \\begin{minipage}{.9\\textwidth}"
-            "\n            \\input{Layouts/" (id cell) ".tex}"
+            "\n            \\input{./Datasheets/Layouts/" (id cell) ".tex}"
             "\n        \\end{minipage}"
             "\n    \\end{figure}"
             "\n\\end{landscape}"
@@ -162,7 +162,7 @@
             "\n"
             "\n\\begin{figure}[htp!]"
             "\n    \\centering"
-            "\n    \\input{Loading/" (id cell) ".tex}"
+            "\n    \\input{./Datasheets/Loading/" (id cell) ".tex}"
             "\n\\end{figure}"
             "\n"))
 
@@ -174,6 +174,18 @@
         (list
             "\n"
             "\n\\subsubsection*{File List:}"
+            "\n"
+            ; generate topics !!
+        ))
+
+;;  ------------    see also    ---------------------------------------
+
+    (define (see-also cell)
+        "Generates see-also information.
+        Returns list for (map display (list ..))"
+        (list
+            "\n"
+            "\n\\subsubsection*{See also:}" (origin cell)
             "\n"
             ; generate topics !!
         ))
@@ -194,7 +206,8 @@
             (schematic cell)
             (layout cell)
             (loading cell)
-            (files cell filelist)))
+            (files cell filelist)
+            (see-also cell)))
 
 ;;  ------------    exporter datasheet in latex -----------------------
 
