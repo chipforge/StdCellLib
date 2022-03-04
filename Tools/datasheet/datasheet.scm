@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c) 2021 by
+;;  Copyright (c) 2021 - 2022 by
 ;;                  chipforge <datasheet@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -74,7 +74,7 @@
     (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a - Version 2021-X-31 'Halloween'
+"~a - Version 2022-VII-04 'FSiC 2022' "~a - Version 2022-VII-04 'FSiC 2022'
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Copyright (c) 2021 by chipforge <datasheet@nospam.chipforge.org>"
+Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
         eigen-name)
         (newline (@port))
     )
