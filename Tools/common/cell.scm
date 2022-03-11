@@ -534,12 +534,14 @@
         Returns a short netlist."
         (if (null? netlist)
             '()
-            (if (and ; 1st indicator: transistor drain is an output node
-                    (%output-node-object 'valid? (drain (car netlist)))
-                    ; 2nd indicator: transistor gate is an internal node
-                    (%internal-node-object 'valid? (gate (car netlist))))
-                (cons (car netlist) (method-netlist-buffered? (cdr netlist)))
-                (method-netlist-buffered? (cdr netlist)))))
+            (let* ([candidate (car netlist)]
+                   [others (cdr netlist)])
+                (if (and ; 1st indicator: transistor drain is an output node
+                        (%output-node-object 'valid? (drain candidate))
+                        ; 2nd indicator: transistor gate is an internal node
+                        (%internal-node-object 'valid? (gate candidate)))
+                    (cons candidate (method-netlist-buffered? others ))
+                    (method-netlist-buffered? others)))))
 
 ;;  ------------    netlist pull-up network?    -----------------------
 
@@ -548,12 +550,14 @@
         Returns a short netlist."
         (if (null? netlist)
             '()
-            (if (and ; 1st indicator: transistors are pmos
-                    (pmos? (car netlist))
-                    ; 2nd indicator: transistor gate is an input node
-                    (%input-node-object 'valid? (gate (car netlist))))
-                (cons (car netlist) (method-netlist-pullup? (cdr netlist)))
-                (method-netlist-pullup? (cdr netlist)))))
+            (let* ([candidate (car netlist)]
+                   [others (cdr netlist)])
+                (if (and ; 1st indicator: transistors are pmos
+                        (pmos? candidate)
+                        ; 2nd indicator: transistor gate is an input node
+                        (%input-node-object 'valid? (gate candidate)))
+                    (cons candidate (method-netlist-pullup? others))
+                    (method-netlist-pullup? others)))))
 
 ;;  ------------    netlist pull-down network?  -----------------------
 
@@ -562,12 +566,14 @@
         Returns a short netlist."
         (if (null? netlist)
             '()
-            (if (and ; 1st indicator: transistors are nmos
-                    (nmos? (car netlist))
-                    ; 2nd indicator: transistor gate is an input node
-                    (%input-node-object 'valid? (gate (car netlist))))
-                (cons (car netlist) (method-netlist-pulldown? (cdr netlist)))
-                (method-netlist-pulldown? (cdr netlist)))))
+            (let* ([candidate (car netlist)]
+                   [others (cdr netlist)])
+                (if (and ; 1st indicator: transistors are nmos
+                        (nmos? candidate)
+                        ; 2nd indicator: transistor gate is an input node
+                        (%input-node-object 'valid? (gate candidate)))
+                    (cons candidate (method-netlist-pulldown? others))
+                    (method-netlist-pulldown? others)))))
 
 ;;  ------------    sort netlist ascending  ---------------------------
 
