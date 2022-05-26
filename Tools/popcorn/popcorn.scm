@@ -76,7 +76,7 @@
     (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a - Version 2022-VII-04 'FSiC 2022' "~a - Version 2022-VII-04 'FSiC 2022'
+"~a - Version 2022-VII-04 'FSiC 2022'
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ Copyright (c) 2019 - 2022 by chipforge <popcorn@nospam.chipforge.org>"
    -c cellname         cell name for generated output
    -h | --help         print help screen and exit
    -H number           set cell highth in metal tracks
-   -m method           enlarge cell - aoi nand none nor oai pd pu
+   -m method           enlarge cell - nand none nor pd pu
    -T file             TOML configuration file
    -v                  print verbose messages
    --version           print version and exit"
@@ -315,7 +315,7 @@ Copyright (c) 2019 - 2022 by chipforge <popcorn@nospam.chipforge.org>"
 
         ; select work load
         (case expansion-method
-            ((none nand nor aoi oai pu pd)
+            ((none nand nor pu pd)
                  (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method buffer-limit cell-name cell-descr)])
                     ; beautify annotation with schematic here !!
                     (rdisplay (exporter:dataset-cell cell))

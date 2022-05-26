@@ -71,11 +71,9 @@
 The
 .Nm
 utility expands a given combinatorial cell by different methods (
-.Em aoi ,
 .Em nand ,
 .Em none ,
 .Em nor ,
-.Em oai ,
 .Em pd ,
 .Em pu
 )  and writes out the new derived cell information on
@@ -132,10 +130,6 @@ Display help message and exit.
 .Ss \-m Ar method
 Expand cell with one of following methods:
 .Bl -ohang
-.It Em aoi
-Add nMOS transistor in serial into highest free pull\-down path.
-Use new character for last mosfet gate name, enumerate this character for new
-mosfet gate name.
 .It Em nand
 Add nMOS transistor in serial into highest free pull\-down path and perform
 the complementary operation for the pull\-up network.
@@ -146,10 +140,6 @@ Do not expand cell. This is the default value.
 Add pMOS transistor in serial into highest free pull-up path and perform
 the complementary operation for the pull\-down network.
 Use same character and next number for new mosfet gate name.
-.It Em oai
-Add pMOS transistor in serial into highest free pull\-up path.
-Choose new character for last mosfet gate name, enumerate this character for new
-mosfet gate name.
 .It Em pd
 Add a nMOS transistors in parallel to the exisiting pull\-down network and perform
 the complementary operation for the pull\-up network.
