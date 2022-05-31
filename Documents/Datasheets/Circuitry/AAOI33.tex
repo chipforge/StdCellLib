@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AAO33.tex
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AAOI33.tex
 %%
-%%  Purpose:        Circuit File for AAO33
+%%  Purpose:        Circuit File for AAOI33
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,7 +33,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{circuitdiagram}[draft]{24}{12}
+\begin{circuitdiagram}[draft]{18}{12}
 
     \usgate
     % ----  1st column  ----
@@ -51,10 +51,7 @@
     \wire{9}{3}{9}{5}
     \gate[\inputs{2}]{nor}{12}{7}{R}{}{}
 
-    % ----  3rd column  ----
-    \gate{not}{19}{7}{R}{}{}
-
     % ----  result ----
-    \pin{23}{7}{R}{Z}
+    \pin{17}{7}{R}{Y}
 
 \end{circuitdiagram}
