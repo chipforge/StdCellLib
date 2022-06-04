@@ -66,26 +66,29 @@ CELLS +=        AAAO222 \
                 AAOA221 \
                 AAOA2211 \
                 AAOAAO2212 \
+                AAOAAO2213 \
                 AAOAO2211 \
                 AAOOA222 \
                 AAOOA223 \
                 AAOOA2212 \
+                AAOOA2213 \
                 AAOOAAO2222 \
                 AAOOAAO2223 \
                 AAOOAO2221 \
+                AAOOAO2222 \
                 AND3 \
                 AO22 \
                 AO31 \
                 AO32 \
                 AOA211 \
-                AOA213 \
                 AOA221 \
                 AOAAO2112 \
                 AOAAO2113 \
                 AOAO2111 \
                 AOOA212 \
                 AOOA213 \
-                AOOAAOI2122 \
+                AOOAAO2122 \
+                AOOAAO2123 \
                 AOOAO2121 \
                 OA22 \
                 OA31 \
@@ -96,8 +99,8 @@ CELLS +=        AAAO222 \
                 OAAO223 \
                 OAAOA2121 \
                 OAAOOA2122 \
+                OAAOOA2123 \
                 OAO211 \
-                OAO213 \
                 OAO221 \
                 OAOA2111 \
                 OAOOA2112 \
@@ -108,17 +111,22 @@ CELLS +=        AAAO222 \
                 OOA33 \
                 OOA331 \
                 OOAAO222 \
+                OOAAO223 \
                 OOAAO2212 \
+                OOAAO2213 \
+                OOAAOA2221 \
                 OOAO221 \
                 OOAO2211 \
                 OOAO2212 \
                 OOAO2213 \
                 OOAOA2211 \
                 OOAOOA2212 \
+                OOAOOA2213 \
                 OOOA222 \
                 OOOA322 \
                 OOOA332 \
                 OOOA333 \
+                OOOAAO2222 \
                 OOOAO2221 \
                 OOOAO2222 \
                 OOOAO2223 \
@@ -199,6 +207,11 @@ AAOAAO2212:     AAOAO2211
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+AAOAAO2213:     DESCR = "2-2-1-3-input AND-AND-OR-AND-AND-OR gate"
+AAOAAO2213:     AAOAAO2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 AAOAO2211:      DESCR = "2-2-1-1-input AND-AND-OR-AND-OR gate"
 AAOAO2211:      AAOA221
 	$(POPCORN) -m pd -c $@ $< > $@
@@ -219,6 +232,11 @@ AAOOA2212:      AAOA2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+AAOOA2213:      DESCR = "2-2-1-3-input AND-AND-OR-OR-AND gate"
+AAOOA2213:      AAOOA2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 AAOOAAO2222:    DESCR = "2-2-2-2-input AND-AND-OR-OR-AND-AND-OR gate"
 AAOOAAO2222:    AAOOAO2221
 	$(POPCORN) -m nand -c $@ $< > $@
@@ -232,6 +250,11 @@ AAOOAAO2223:    AAOOAAO2222
 AAOOAO2221:     DESCR = "2-2-2-1-input AND-AND-OR-OR-AND-OR gate"
 AAOOAO2221:     AAOOA222
 	$(POPCORN) -m pd -c $@ $< > $@
+	$(BLUE)
+
+AAOOAO2222:     DESCR = "2-2-2-2-input AND-AND-OR-OR-AND-OR gate"
+AAOOAO2222:     AAOOAO2221
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AND3:           DESCR = "3-input AND gate"
@@ -257,11 +280,6 @@ AO32:           AO31
 AOA211:         DESCR = "2-1-1-input AND-OR-AND gate"
 AOA211:         AO21
 	$(POPCORN) -m pu -c $@ $< > $@
-	$(BLUE)
-
-AOA213:         DESCR = "2-1-3-input AND-OR-AND gate"
-AOA213:         AOA212
-	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AOA221:         DESCR = "2-2-1-input AND-OR-AND gate"
@@ -290,12 +308,17 @@ AOOA212:        AOA211
 	$(BLUE)
 
 AOOA213:        DESCR = "2-1-3-input AND-OR-OR-AND gate"
-AOOA213:        AOA212
+AOOA213:        AOOA212
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AOOAAO2122:     DESCR = "2-1-2-2-input AND-OR-OR-AND-AND-OR gate"
 AOOAAO2122:     AOOAO2121
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+AOOAAO2123:     DESCR = "2-1-2-3-input AND-OR-OR-AND-AND-OR gate"
+AOOAAO2123:     AOOAOI2121
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
@@ -349,14 +372,14 @@ OAAOOA2122:     OAAOA2121
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OAAOOA2123:     DESCR = "2-1-2-3-input OR-AND-AND-OR-AND-AND gate"
+OAAOOA2123:     OAAOOA2122
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OAO211:         DESCR = "2-1-1-input OR-AND-OR gate"
 OAO211:         OA21
 	$(POPCORN) -m pd -c $@ $< > $@
-	$(BLUE)
-
-OAO213:         DESCR = "2-1-3-input OR-AND-OR gate"
-OAO213:         OAO212
-	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
 OAO221:         DESCR = "2-2-1-input OR-AND-OR gate"
@@ -409,9 +432,24 @@ OOAAO222:       OOAO221
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+OOAAO223:       DESCR = "2-2-3-input OR-OR-AND-AND-OR gate"
+OOAAO223:       OOAAO222
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 OOAAO2212:      DESCR = "2-2-1-2-input OR-OR-AND-AND-OR gate"
 OOAAO2212:      OOAO2211
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAO2213:      DESCR = "2-2-1-3-input OR-OR-AND-AND-OR gate"
+OOAAO2213:      OOAAO2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAOA2221:     DESCR = "2-2-2-1-input OR-OR-AND-AND-OR-AND gate"
+OOAAOA2221:     OOAAO222
+	$(POPCORN) -m pu -c $@ $< > $@
 	$(BLUE)
 
 OAAO223:        DESCR = "2-2-3-input OR-AND-AND-OR gate"
@@ -449,6 +487,11 @@ OOAOOA2212:     OOAOA2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OOAOOA2213:     DESCR = "2-2-1-3-input OR-OR-AND-OR-OR-AND gate"
+OOAOOA2213:     OOAOOA2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OOOA222:        DESCR = "2-2-2-input OR-OR-OR-AND gate"
 OOOA222:        OOA221
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -467,6 +510,11 @@ OOOA332:        OOA331
 OOOA333:        DESCR = "3-3-3-input OR-OR-OR-AND gate"
 OOOA333:        OOOA332
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
+OOOAAO2222:     DESCR = "2-2-2-2-input OR-OR-OR-AND-AND-OR gate"
+OOOAAO2222:     OOOAO2221
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
 OOOAO2221:      DESCR = "2-2-2-1-input OR-OR-OR-AND-OR gate"
@@ -509,19 +557,21 @@ CELLS +=        AAAO222 \
                 AAOA221 \
                 AAOA2211 \
                 AAOAAO2212 \
+                AAOAAO2213 \
                 AAOAO2211 \
                 AAOOA222 \
                 AAOOA223 \
                 AAOOA2212 \
+                AAOOA2213 \
                 AAOOAAO2222 \
                 AAOOAAO2223 \
                 AAOOAO2221 \
+                AAOOAO2222 \
                 AND3 \
                 AO22 \
                 AO31 \
                 AO32 \
                 AOA211 \
-                AOA213 \
                 AOA221 \
                 AOAAO2112 \
                 AOAAO2113 \
@@ -529,6 +579,7 @@ CELLS +=        AAAO222 \
                 AOOA212 \
                 AOOA213 \
                 AOOAAOI2122 \
+                AOOAAOI2123 \
                 AOOAO2121 \
                 OA22 \
                 OA31 \
@@ -539,8 +590,8 @@ CELLS +=        AAAO222 \
                 OAAO223 \
                 OAAOA2121 \
                 OAAOOA2122 \
+                OAAOOA2123 \
                 OAO211 \
-                OAO213 \
                 OAO221 \
                 OAOA2111 \
                 OAOOA2112 \
@@ -551,17 +602,22 @@ CELLS +=        AAAO222 \
                 OOA33 \
                 OOA331 \
                 OOAAO222 \
+                OOAAO223 \
                 OOAAO2212 \
+                OOAAO2213 \
+                OOAAOA2221 \
                 OOAO221 \
                 OOAO2211 \
                 OOAO2212 \
                 OOAO2213 \
                 OOAOA2211 \
                 OOAOOA2212 \
+                OOAOOA2213 \
                 OOOA222 \
                 OOOA322 \
                 OOOA332 \
                 OOOA333 \
+                OOOAAO2222 \
                 OOOAO2221 \
                 OOOAO2222 \
                 OOOAO2223 \
@@ -642,6 +698,11 @@ AAOAAO2212:     AAOAO2211
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+AAOAAO2213:     DESCR = "2-2-1-3-input AND-AND-OR-AND-AND-OR gate"
+AAOAAO2213:     AAOAAO2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 AAOAO2211:      DESCR = "2-2-1-1-input AND-AND-OR-AND-OR gate"
 AAOAO2211:      AAOA221
 	$(POPCORN) -m pd -c $@ $< > $@
@@ -662,6 +723,11 @@ AAOOA2212:      AAOA2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+AAOOA2213:      DESCR = "2-2-1-3-input AND-AND-OR-OR-AND gate"
+AAOOA2213:      AAOOA2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 AAOOAAO2222:    DESCR = "2-2-2-2-input AND-AND-OR-OR-AND-AND-OR gate"
 AAOOAAO2222:    AAOOAO2221
 	$(POPCORN) -m nand -c $@ $< > $@
@@ -675,6 +741,11 @@ AAOOAAO2223:    AAOOAAO2222
 AAOOAO2221:     DESCR = "2-2-2-1-input AND-AND-OR-OR-AND-OR gate"
 AAOOAO2221:     AAOOA222
 	$(POPCORN) -m pd -c $@ $< > $@
+	$(BLUE)
+
+AAOOAO2222:     DESCR = "2-2-2-2-input AND-AND-OR-OR-AND-OR gate"
+AAOOAO2222:     AAOOAO2221
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AND3:           DESCR = "3-input AND gate"
@@ -702,11 +773,6 @@ OAO211:         OAI21
 	$(POPCORN) -m pd -c $@ $< > $@
 	$(BLUE)
 
-OAO213:         DESCR = "2-1-3-input OR-AND-OR gate"
-OAO213:         OAO212
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(BLUE)
-
 OAO221:         DESCR = "2-2-1-input OR-AND-OR gate"
 OAO221:         OA22
 	$(POPCORN) -m pd -c $@ $< > $@
@@ -730,11 +796,6 @@ OAOOA2113:      OAOOA2112
 AOA211:         DESCR = "2-1-1-input AND-OR-AND gate"
 AOA211:         AOI21
 	$(POPCORN) -m pu -c $@ $< > $@
-	$(BLUE)
-
-AOA213:         DESCR = "2-1-3-input AND-OR-AND gate"
-AOA213:         AOA212
-	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AOA221:         DESCR = "2-2-1-input AND-OR-AND gate"
@@ -769,6 +830,11 @@ AOOA213:        AOA212
 
 AOOAAO2122:     DESCR = "2-1-2-2-input AND-OR-OR-AND-AND-OR gate"
 AOOAAO2122:     AOOAO2121
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+AOOAAO2123:     DESCR = "2-1-2-3-input AND-OR-OR-AND-AND-OR gate"
+AOOAAO2123:     AOOAO2121
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
@@ -817,6 +883,11 @@ OAAOOA2122:     OAAOA2121
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OAAOOA2123:     DESCR = "2-1-2-3-input OR-AND-AND-OR-AND-AND gate"
+OAAOOA2123:     OAAOOA2122
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OOA221:         DESCR = "2-2-1-input OR-OR-AND gate"
 OOA221:         OOAI22
 	$(POPCORN) -m pu -c $@ $< > $@
@@ -847,9 +918,24 @@ OOAAO222:       OOAO221
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+OOAAO223:       DESCR = "2-2-3-input OR-OR-AND-AND-OR gate"
+OOAAO223:       OOAAO222
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 OOAAO2212:      DESCR = "2-2-1-2-input OR-OR-AND-AND-OR gate"
 OOAAO2212:      OOAO2211
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAO2213:      DESCR = "2-2-1-3-input OR-OR-AND-AND-OR gate"
+OOAAO2213:      OOAAO2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAOA2221:     DESCR = "2-2-2-1-input OR-OR-AND-AND-OR-AND gate"
+OOAAOA2221:     OOAAO222
+	$(POPCORN) -m pu -c $@ $< > $@
 	$(BLUE)
 
 OOAO221:        DESCR = "2-2-1-input OR-OR-AND-OR gate"
@@ -882,6 +968,11 @@ OOAOOA2212:     OOAOA2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OOAOOA2213:     DESCR = "2-2-1-3-input OR-OR-AND-OR-OR-AND gate"
+OOAOOA2213:     OOAOOA2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OOOA222:        DESCR = "2-2-2-input OR-OR-OR-AND gate"
 OOOA222:        OOA221
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -889,7 +980,7 @@ OOOA222:        OOA221
 
 OOOA322:        DESCR = "3-2-2-input OR-OR-OR-AND gate"
 OOOA322:        OOA321
-	$(POPCORN) -m or -c $@ $< > $@
+	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 OOOA332:        DESCR = "3-3-2-input OR-OR-OR-AND gate"
@@ -900,6 +991,11 @@ OOOA332:        OOA331
 OOOA333:        DESCR = "3-3-3-input OR-OR-OR-AND gate"
 OOOA333:        OOOA332
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
+OOOAAO2222:     DESCR = "2-2-2-2-input OR-OR-OR-AND-AND-OR gate"
+OOOAAO2222:     OOOAO2221
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
 OOOAO2221:      DESCR = "2-2-2-1-input OR-OR-OR-AND-OR gate"
@@ -943,15 +1039,17 @@ CELLS +=        AAAOI222 \
                 AAOAI221 \
                 AAOAI2211 \
                 AAOAAOI2212 \
+                AAOAAOI2213 \
                 AAOAOI2211 \
                 AAOOAI222 \
                 AAOOAI223 \
                 AAOOAI2212 \
+                AAOOAI2213 \
                 AAOOAAOI2222 \
                 AAOOAAOI2223 \
                 AAOOAOI2221 \
+                AAOOAOI2222 \
                 AOAI211 \
-                AOAI213 \
                 AOAI221 \
                 AOAAOI2112 \
                 AOAAOI2113 \
@@ -959,6 +1057,7 @@ CELLS +=        AAAOI222 \
                 AOOAI212 \
                 AOOAI213 \
                 AOOAAOI2122 \
+                AOOAAOI2123 \
                 AOOAOI2121 \
                 AOI22 \
                 AOI31 \
@@ -974,8 +1073,8 @@ CELLS +=        AAAOI222 \
                 OAAOI223 \
                 OAAOAI2121 \
                 OAAOOAI2122 \
+                OAAOOAI2123 \
                 OAOI211 \
-                OAOI213 \
                 OAOI221 \
                 OAOAI2111 \
                 OAOOAI2112 \
@@ -986,17 +1085,21 @@ CELLS +=        AAAOI222 \
                 OOAI33 \
                 OOAI331 \
                 OOAAOI222 \
+                OOAAOI223 \
                 OOAAOI2212 \
+                OOAAOAI2221 \
                 OOAOI221 \
                 OOAOI2211 \
                 OOAOI2212 \
                 OOAOI2213 \
                 OOAOAI2211 \
                 OOAOOAI2212 \
+                OOAOOAI2213 \
                 OOOAI222 \
                 OOOAI322 \
                 OOOAI332 \
                 OOOAI333 \
+                OOOAAOI2222 \
                 OOOAOI2221 \
                 OOOAOI2222 \
                 OOOAOI2223
@@ -1026,7 +1129,7 @@ AAAOAI2221:     AAAOI222
 	$(POPCORN) -m pu -c $@ $< > $@
 	$(BLUE)
 
-AAAOOAI2222:    DESCR = "2-2-2-2-input AND-AND-AND-OR-OR-AND gate"
+AAAOOAI2222:    DESCR = "2-2-2-2-input AND-AND-AND-OR-OR-AND-Invert gate"
 AAAOOAI2222:    AAAOAI2221
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
@@ -1076,6 +1179,11 @@ AAOAAOI2212:    AAOAOI2211
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+AAOAAOI2213:    DESCR = "2-2-1-3-input AND-AND-OR-AND-AND-OR-Invert gate"
+AAOAAOI2213:    AAOAAOI2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 AAOAOI2211:     DESCR = "2-2-1-1-input AND-AND-OR-AND-OR-Invert gate"
 AAOAOI2211:     AAOAI221
 	$(POPCORN) -m pd -c $@ $< > $@
@@ -1106,19 +1214,24 @@ AAOOAI2212:     AAOAI2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+AAOOAI2213:     DESCR = "2-2-1-3-input AND-AND-OR-OR-AND-Invert gate"
+AAOOAI2213:     AAOOAI2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 AAOOAOI2221:    DESCR = "2-2-2-1-input AND-AND-OR-OR-AND-OR-Invert gate"
 AAOOAOI2221:    AAOOAI222
 	$(POPCORN) -m pd -c $@ $< > $@
 	$(BLUE)
 
+AAOOAOI2222:    DESCR = "2-2-2-2-input AND-AND-OR-OR-AND-OR-Invert gate"
+AAOOAOI2222:    AAOOAOI2221
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 AOAI211:        DESCR = "2-1-1-input AND-OR-AND-Invert gate"
 AOAI211:        AOI21
 	$(POPCORN) -m pu -c $@ $< > $@
-	$(BLUE)
-
-AOAI213:        DESCR = "2-1-3-input AND-OR-AND-Invert gate"
-AOAI213:        AOAI212
-	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AOAI221:        DESCR = "2-2-1-input AND-OR-AND-Invert gate"
@@ -1162,12 +1275,17 @@ AOOAI212:       AOAI211
 	$(BLUE)
 
 AOOAI213:       DESCR = "2-1-3-input AND-OR-OR-AND-Invert gate"
-AOOAI213:       AOAI212
+AOOAI213:       AOOAI212
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
 AOOAAOI2122:    DESCR = "2-1-2-2-input AND-OR-OR-AND-AND-OR-Invert gate"
 AOOAAOI2122:    AOOAOI2121
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+AOOAAOI2123:    DESCR = "2-1-2-3-input AND-OR-OR-AND-AND-OR-Invert gate"
+AOOAAOI2123:    AOOAOI2121
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
@@ -1231,14 +1349,14 @@ OAAOOAI2122:    OAAOAI2121
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OAAOOAI2123:    DESCR = "2-1-2-3-input OR-AND-AND-OR-AND-AND-Invert gate"
+OAAOOAI2123:    OAAOOAI2122
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OAOI211:        DESCR = "2-1-1-input OR-AND-OR-Invert gate"
 OAOI211:        OAI21
 	$(POPCORN) -m pd -c $@ $< > $@
-	$(BLUE)
-
-OAOI213:        DESCR = "2-1-3-input OR-AND-OR-Invert gate"
-OAOI213:        OAOI212
-	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
 OAOI221:        DESCR = "2-2-1-input OR-AND-OR-Invert gate"
@@ -1291,9 +1409,24 @@ OOAAOI222:      OOAOI221
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
+OOAAOI223:      DESCR = "2-2-3-input OR-OR-AND-AND-OR-Invert gate"
+OOAAOI223:      OOAAOI222
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
 OOAAOI2212:     DESCR = "2-2-1-2-input OR-OR-AND-AND-OR-Invert gate"
 OOAAOI2212:     OOAOI2211
 	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAOI2213:     DESCR = "2-2-1-3-input OR-OR-AND-AND-OR-Invert gate"
+OOAAOI2213:     OOAAOI2212
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(BLUE)
+
+OOAAOAI2221:    DESCR = "2-2-2-1-input OR-OR-AND-AND-OR-AND-Invert gate"
+OOAAOAI2221:    OOAAOI222
+	$(POPCORN) -m pu -c $@ $< > $@
 	$(BLUE)
 
 OOAOI221:       DESCR = "2-2-1-input OR-OR-AND-OR-Invert gate"
@@ -1326,6 +1459,11 @@ OOAOOAI2212:    OOAOAI2211
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(BLUE)
 
+OOAOOAI2213:    DESCR = "2-2-1-3-input OR-OR-AND-OR-OR-AND-Invert gate"
+OOAOOAI2213:    OOAOOAI2212
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
 OOOAI222:       DESCR = "2-2-2-input OR-OR-OR-AND-Invert gate"
 OOOAI222:       OOAI221
 	$(POPCORN) -m nor -c $@ $< > $@
@@ -1344,6 +1482,11 @@ OOOAI332:       OOAI331
 OOOAI333:       DESCR = "3-3-3-input OR-OR-OR-AND-Invert gate"
 OOOAI333:       OOOAI332
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(BLUE)
+
+OOOAAOI2222:    DESCR = "2-2-2-2-input OR-OR-OR-AND-AND-OR-Invert gate"
+OOOAAOI2222:    OOOAOI2221
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(BLUE)
 
 OOOAOI2221:     DESCR = "2-2-2-1-input OR-OR-OR-AND-OR-Invert gate"
