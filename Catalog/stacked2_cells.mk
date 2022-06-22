@@ -40,7 +40,7 @@
 
 #   list all dependencies for cells with up to 2 stacked transistors
 #
-include crafted2_cells.mk
+#include crafted2_cells.mk
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
@@ -60,32 +60,32 @@ CELLS +=        AAO22 \
 AAO22:          DESCR = "2-2-input AND-AND-OR gate"
 AAO22:          AO21
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 AND2:           DESCR = "2-input AND gate"
 AND2:           INV
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 AO21:           DESCR = "2-1-input AND-OR gate"
 AO21:           AND2
 	$(POPCORN) -m pd -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 OA21:           DESCR = "2-1-input OR-AND gate"
 OA21:           OR2
 	$(POPCORN) -m pu -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 OOA22:          DESCR = "2-2-input OR-OR-AND gate"
 OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 OR2:            DESCR = "2-input OR gate"
 OR2:            INV
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 BUFFERED = true
 
@@ -103,31 +103,31 @@ CELLS +=        AAOI22 \
 AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
 AAOI22:         AOI21
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
 AOI21:          NAND2
 	$(POPCORN) -m pd -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 NAND2:          DESCR = "2-input Not-AND (or NAND) gate"
 NAND2:          INV
 	$(POPCORN) -m nand -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 NOR2:           DESCR = "2-input Not-OR (or NOR) gate"
 NOR2:           INV
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 OAI21:          DESCR = "2-1-input OR-AND-Invert gate"
 OAI21:          NOR2
 	$(POPCORN) -m pu -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 OOAI22:         DESCR = "2-2-input OR-OR-AND-Invert gate"
 OOAI22:         OAI21
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(GREEN)
+	$(STACKED2)
 
 endif
