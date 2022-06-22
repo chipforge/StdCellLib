@@ -1,0 +1,61 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AOOAI214.tex
+%%
+%%  Purpose:        Circuit File for AOOAI214
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 - 2022 by
+%%                  chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{circuitdiagram}[draft]{25}{16}
+
+    \usgate
+    % ----  1st column  ----
+    \pin{1}{1}{L}{A}
+    \pin{1}{5}{L}{A1}
+    \gate[\inputs{2}]{and}{5}{3}{R}{}{}
+
+    % ----  2nd column  ----
+    \pin{8}{7}{L}{B}
+    \gate[\inputs{2}]{or}{12}{5}{R}{}{}
+
+    \pin{8}{9}{L}{C}
+    \pin{8}{11}{L}{C1}
+    \pin{8}{13}{L}{C2}
+    \pin{8}{15}{L}{C3}
+    \gate[\inputs{4}]{or}{12}{12}{R}{}{}
+
+    % ----  3rd column  ----
+    \wire{16}{5}{16}{8}
+    \gate[\inputs{2}]{nand}{19}{10}{R}{}{}
+
+    % ----  result ----
+    \pin{24}{10}{R}{Y}
+
+\end{circuitdiagram}
