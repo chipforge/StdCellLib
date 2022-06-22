@@ -308,7 +308,7 @@ AOOA213:        AOOA212
 	$(STACKED3)
 
 AOOA222:        DESCR = "2-2-2-input AND-OR-OR-AND gate"
-AOOA222:        AOOA221
+AOOA222:        AOA221
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED3)
 
@@ -829,7 +829,7 @@ AOOA222:        AOA221
 	$(STACKED3)
 
 AOOA223:        DESCR = "2-2-3-input AND-OR-OR-AND gate"
-AOOA223:        AOA222
+AOOA223:        AOOA222
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED3)
 
@@ -1102,8 +1102,7 @@ CELLS +=        AAAOI222 \
                 OOOAI333 \
                 OOOAAOI2222 \
                 OOOAAOI2223 \
-                OOOAOI2221 \
-                OOOAOI2223
+                OOOAOI2221
 
 AAAOI222:       DESCR = "2-2-2-input AND-AND-AND-OR-Invert gate"
 AAAOI222:       AAOI221
@@ -1276,7 +1275,7 @@ AOOAI213:       AOOAI212
 	$(STACKED3)
 
 AOOAI222:       DESCR = "2-2-2-input AND-OR-OR-AND-Invert gate"
-AOOAI222:       AOOAI221
+AOOAI222:       AOAI221
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED3)
 

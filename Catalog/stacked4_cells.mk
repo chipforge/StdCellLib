@@ -361,7 +361,7 @@ AOAOOA21112:    AOAOA21111
 	$(STACKED4)
 
 AOOA214:        DESCR = "2-1-4-input AND-OR-OR-AND gate"
-AOOA214:        AOA213
+AOOA214:        AOOA213
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
@@ -860,7 +860,7 @@ AOAOOA21112:    AOAOA21111
 	$(STACKED4)
 
 AOOA214:        DESCR = "2-1-4-input AND-OR-OR-AND gate"
-AOOA214:        AOAI213
+AOOA214:        AOOAI213
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
@@ -1359,7 +1359,7 @@ AOAOOAI21112:   AOAOAI21111
 	$(STACKED4)
 
 AOOAI214:       DESCR = "2-1-4-input AND-OR-OR-AND-Invert gate"
-AOOAI214:       AOAI213
+AOOAI214:       AOOAI213
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
