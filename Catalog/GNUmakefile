@@ -63,18 +63,22 @@ DESCR ?=            '?'
 
 POPCORN +=          -b $(BUFFER) \
                     -D $(DESCR)
-NETLIST ?=          gnetlist -g geda # FIXME!! backend target still does not exist
+NETLIST ?=          lepton-netlist -g geda # FIXME!! backend target still does not exist
 
 #   tool variables
 
 TRACE.DOT ?=        trace.dot
 TRACE.PDF ?=        trace.pdf
-DOT ?=              dot -Tpdf $(TRACE.DOT) -o $(TRACE.PDF)
+TRACE.SVG ?=        trace.svg
+#DOT ?=              dot -Tpdf $(TRACE.DOT) -o $(TRACE.PDF)
+DOT ?=              dot -Tsvg $(TRACE.DOT) -o $(TRACE.SVG)
 
-GREEN ?=            -@echo "    $< -> $@ [color=green]" >> $(TRACE.DOT)
-BLUE ?=             -@echo "    $< -> $@ [color=blue]" >> $(TRACE.DOT)
-RED ?=              -@echo "    $< -> $@ [color=red]" >> $(TRACE.DOT)
-PINK ?=             -@echo "    $< -> $@ [color=pink]" >> $(TRACE.DOT)
+STACKED2 ?=         -@echo "    $< -> $@ [color=blueviolet]" >> $(TRACE.DOT)
+STACKED3 ?=         -@echo "    $< -> $@ [color=dodgerblue]" >> $(TRACE.DOT)
+STACKED4 ?=         -@echo "    $< -> $@ [color=lime]" >> $(TRACE.DOT)
+STACKED5 ?=         -@echo "    $< -> $@ [color=yellow]" >> $(TRACE.DOT)
+STACKED6 ?=         -@echo "    $< -> $@ [color=orange]" >> $(TRACE.DOT)
+STACKED7 ?=         -@echo "    $< -> $@ [color=red]" >> $(TRACE.DOT)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -96,7 +100,7 @@ help:
 	#   trace      - generate catalog's cell generation tree
 	#
 	#   ----------------------------------------------------------
-	#       available cells [limit=$(LIMIT) + buffer=$(BUFFER)]:
+	#       available cells [LIMIT=$(LIMIT) + BUFFER=$(BUFFER)]:
 	#   ----------------------------------------------------------
 	#   $(CELLS)
 	#
