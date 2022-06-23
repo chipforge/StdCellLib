@@ -1,0 +1,699 @@
+% cd-semicon.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 2.0a -- 2021/03/01.
+% Supports additional semiconductor symbols for circdia.sty.
+% Diodes
+\renewcommand{\diodeL}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{capdio}}{\begin{scope}[shift = {(0.45, 0)}]}{}
+ \iffilleddiode
+  \filldraw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, -1.25) -- (-1.25, 1.25);
+ \ifthenelse{\equal{\cdinfo}{capdio}}{
+  \end{scope}
+  \draw [cdmedlines] (-1.7, -1.25) -- (-1.7, 1.25);
+  \draw (-1.7, 0) -- (-2, 0);
+  \ifemptydiode\draw (1.7, 0) -- (2, 0);\else\draw (-0.8, 0) -- (2, 0);\fi
+ }{
+  \iflineddiode
+   \draw (-2, 0) -- (2, 0);
+  \else
+   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
+  \fi
+ }
+}
+\renewcommand{\diodeR}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{capdio}}{\begin{scope}[shift = {(-0.45, 0)}]}{}
+ \iffilleddiode
+  \filldraw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (1.25, -1.25) -- (1.25, 1.25);
+ \ifthenelse{\equal{\cdinfo}{capdio}}{
+  \end{scope}
+  \draw [cdmedlines] (1.7, -1.25) -- (1.7, 1.25);
+  \ifemptydiode\draw (-1.7, 0) -- (-2, 0);\else\draw (0.8, 0) -- (-2, 0);\fi
+  \draw (1.7, 0) -- (2, 0);
+ }{
+  \iflineddiode
+   \draw (-2, 0) -- (2, 0);
+  \else
+   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
+  \fi
+ }
+}
+\renewcommand{\diodeU}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{capdio}}{\begin{scope}[shift = {(0, -0.45)}]}{}
+ \iffilleddiode
+  \filldraw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, 1.25) -- (1.25, 1.25);
+ \ifthenelse{\equal{\cdinfo}{capdio}}{
+  \end{scope}
+  \draw [cdmedlines] (-1.25, 1.7) -- (1.25, 1.7);
+  \ifemptydiode\draw (0, -1.7) -- (0, -2);\else\draw (0, 0.8) -- (0, -2);\fi
+  \draw (0, 1.7) -- (0, 2);
+ }{
+  \iflineddiode
+   \draw (0, -2) -- (0, 2);
+  \else
+   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
+  \fi
+ }
+}
+\renewcommand{\diodeD}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{capdio}}{\begin{scope}[shift = {(0, 0.45)}]}{}
+ \iffilleddiode
+  \filldraw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, -1.25) -- (1.25, -1.25);
+ \ifthenelse{\equal{\cdinfo}{capdio}}{
+  \end{scope}
+  \draw [cdmedlines] (-1.25, -1.7) -- (1.25, -1.7);
+  \draw (0, -1.7) -- (0, -2);
+  \ifemptydiode\draw (0, 1.7) -- (0, 2);\else\draw (0, -0.8) -- (0, 2);\fi
+ }{
+  \iflineddiode
+   \draw (0, -2) -- (0, 2);
+  \else
+   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
+  \fi
+ }
+}
+% Diacs
+\newcommand{\diac}[6][]{
+ \prepareelement{D}{diac}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname diac\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\diacH}[1]{
+ \setstandardsuborient{U}
+ \setstandardtextpos{ud}
+ \placerefvalH{-1.75}{0}{1.75}{-3.5}{0}{3.5}
+ #1
+ \ifthenelse{\equal{\cdsuborient}{U}}{
+  \iffilleddiode
+   \filldraw [cdmedlines] (-1.25, -2.1) -- (1.25, -0.85) -- (-1.25, 0.4) (1.25, 2.1) -- (-1.25, 0.85) -- (1.25, -0.4);
+  \else
+   \draw [cdmedlines] (-1.25, -2.1) -- (1.25, -0.85) -- (-1.25, 0.4) (1.25, 2.1) -- (-1.25, 0.85) -- (1.25, -0.4);
+  \fi
+ }{
+  \iffilleddiode
+   \filldraw [cdmedlines] (1.25, -2.1) -- (-1.25, -0.85) -- (1.25, 0.4) (-1.25, 2.1) -- (1.25, 0.85) -- (-1.25, -0.4);
+  \else
+   \draw [cdmedlines] (1.25, -2.1) -- (-1.25, -0.85) -- (1.25, 0.4) (-1.25, 2.1) -- (1.25, 0.85) -- (-1.25, -0.4);
+  \fi
+ }
+ \draw [cdmedlines] (-1.25, -2.1) -- (-1.25, 2.1) (1.25, -2.1) -- (1.25, 2.1);
+ \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
+}
+\newcommand{\diacV}[1]{
+ \setstandardsuborient{L}
+ \setstandardtextpos{r}
+ \placerefvalV{-2.5}{0}{2.5}{-2.75}{0}{2.75}
+ #1
+ \ifthenelse{\equal{\cdsuborient}{L}}{
+  \iffilleddiode
+   \filldraw [cdmedlines] (-2.1, 1.25) -- (-0.85, -1.25) -- (0.4, 1.25) (2.1, -1.25) -- (0.85, 1.25) -- (-0.4, -1.25);
+  \else
+   \draw [cdmedlines] (-2.1, 1.25) -- (-0.85, -1.25) -- (0.4, 1.25) (2.1, -1.25) -- (0.85, 1.25) -- (-0.4, -1.25);
+  \fi
+ }{
+  \iffilleddiode
+   \filldraw [cdmedlines] (-2.1, -1.25) -- (-0.85, 1.25) -- (0.4, -1.25) (2.1, 1.25) -- (0.85, -1.25) -- (-0.4, 1.25);
+  \else
+   \draw [cdmedlines] (-2.1, -1.25) -- (-0.85, 1.25) -- (0.4, -1.25) (2.1, 1.25) -- (0.85, -1.25) -- (-0.4, 1.25);
+  \fi
+ }
+ \draw [cdmedlines] (-2.1, -1.25) -- (2.1, -1.25) (-2.1, 1.25) -- (2.1, 1.25);
+ \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
+}
+% Transistors up/down
+\newcommand{\transU}[1]{
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{nj}\OR\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+  \setstandardsuborient{R}
+ }{
+  \setstandardsuborient{L}
+ }
+ \setstandardtextpos{u}
+ \placerefvalTU
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \newcommand{\transbase}{\draw (0, -1.1) -- (0, -3);}
+  \newcommand{\transthick}{\draw [cdthicklines] (-1.75, -1.1) -- (1.75, -1.1);}
+  \newcommand{\transceconn}{\draw (-2.376973, 1) -- (-3, 1) (2.376973, 1) -- (3, 1);}
+ }{}
+ #1
+ \ifcircledtrans\draw [cdmedlines] (0, -0.2) circle (2.662705);\fi
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \transbase\transthick\transceconn
+  \draw (-0.7, -1.1) -- (-2.376973, 1) (0.7, -1.1) -- (2.376973, 1);
+  \ifthenelse{\equal{\cdtype}{npn}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{\cdbigarrow{-2.209276}{0.79}{128.609}}{\cdbigarrow{2.209276}{0.79}{51.391}}
+  }{
+   \ifthenelse{\equal{\cdsuborient}{L}}{\cdbigarrow{-1.035395}{-0.68}{-51.391}}{\cdbigarrow{1.035395}{-0.68}{-128.609}}
+  }
+ }{
+  \draw (-1.5, -0.2) |- (-2.5, 2) (1.5, -0.2) |- (2.5, 2);
+  \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+   \draw [cdthicklines] (-1.9, -0.2) -- (1.9, -0.2);
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-1.5, -0.2) -- (-1.5, -3);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{-1.5}{-0.4}{90}}{\cdbigarrow{-1.5}{-2.2}{-90}}
+   }{
+    \draw (1.5, -0.2) -- (1.5, -3);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{1.5}{-0.4}{90}}{\cdbigarrow{1.5}{-2.2}{-90}}
+   }
+  }{
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{penh*}}{
+    \draw [cdthicklines] (-1.9, -0.2) -- (-1.1, -0.2) (-0.4, -0.2) -- (0.4, -0.2) (1.1, -0.2) -- (1.9, -0.2);
+   }{
+    \draw [cdthicklines] (-1.9, -0.2) -- (1.9, -0.2);
+   }
+   \ifthenelse{\equal{\cdsuborient}{L}}{\draw (1.5, -1.1) -| (-1.5, -3);}{\draw (-1.5, -1.1) -| (1.5, -3);}
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{pdep}}{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\draw (0, -0.2) |- (-1.5, 2);}{\draw (0, -0.2) |- (1.5, 2);}
+   }{
+    \draw (0, -0.2) -- (0, 3);
+   }
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+    \cdbigarrow{0}{0}{-90}
+   }{
+    \cdbigarrow{0}{1.8}{90}
+   }
+  }
+ }
+}
+\newcommand{\transD}[1]{
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{nj}\OR\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+  \setstandardsuborient{L}
+ }{
+  \setstandardsuborient{R}
+ }
+ \setstandardtextpos{d}
+ \placerefvalTD
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \newcommand{\transbase}{\draw (0, 1.1) -- (0, 3);}
+  \newcommand{\transthick}{\draw [cdthicklines] (-1.75, 1.1) -- (1.75, 1.1);}
+  \newcommand{\transceconn}{\draw (-2.376973, -1) -- (-3, -1) (2.376973, -1) -- (3, -1);}
+ }{}
+ #1
+ \ifcircledtrans\draw [cdmedlines] (0, 0.2) circle (2.662705);\fi
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \transbase\transthick\transceconn
+  \draw (-0.7, 1.1) -- (-2.376973, -1) (0.7, 1.1) -- (2.376973, -1);
+  \ifthenelse{\equal{\cdtype}{npn}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{\cdbigarrow{-2.209276}{-0.79}{-128.609}}{\cdbigarrow{2.209276}{-0.79}{-51.391}}
+  }{
+   \ifthenelse{\equal{\cdsuborient}{L}}{\cdbigarrow{-1.035395}{0.68}{51.391}}{\cdbigarrow{1.035395}{0.68}{128.609}}
+  }
+ }{
+  \draw (-1.5, 0.2) |- (-2.5, -2) (1.5, 0.2) |- (2.5, -2);
+  \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+   \draw [cdthicklines] (-1.9, 0.2) -- (1.9, 0.2);
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-1.5, 0.2) -- (-1.5, 3);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{-1.5}{0.4}{-90}}{\cdbigarrow{-1.5}{2.2}{90}}
+   }{
+    \draw (1.5, 0.2) -- (1.5, 3);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{1.5}{0.4}{-90}}{\cdbigarrow{1.5}{2.2}{90}}
+   }
+  }{
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{penh*}}{
+    \draw [cdthicklines] (-1.9, 0.2) -- (-1.1, 0.2) (-0.4, 0.2) -- (0.4, 0.2) (1.1, 0.2) -- (1.9, 0.2);
+   }{
+    \draw [cdthicklines] (-1.9, 0.2) -- (1.9, 0.2);
+   }
+   \ifthenelse{\equal{\cdsuborient}{L}}{\draw (1.5, 1.1) -| (-1.5, 3);}{\draw (-1.5, 1.1) -| (1.5, 3);}
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{pdep}}{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\draw (0, 0.2) |- (-1.5, -2);}{\draw (0, 0.2) |- (1.5, -2);}
+   }{
+    \draw (0, 0.2) -- (0, -3);
+   }
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+    \cdbigarrow{0}{0}{90}
+   }{
+    \cdbigarrow{0}{-1.8}{-90}
+   }
+  }
+ }
+}
+% Additional wires
+\let\wireelemTsemicon=\wireelemT
+\renewcommand{\wireelemT}[2]{
+ \wireelemTsemicon{#1}{#2}
+ \ifthenelse{\equal{#1}{L}}{
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (-3, 1) -- ++(-#2, 0);
+   }{
+    \draw (-2.5, 2) -- ++(-#2, 0);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (-3, -1) -- ++(-#2, 0);
+   }{
+    \draw (-2.5, -2) -- ++(-#2, 0);
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (3, 1) -- ++(#2, 0);
+   }{
+    \draw (2.5, 2) -- ++(#2, 0);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (3, -1) -- ++(#2, 0);
+   }{
+    \draw (2.5, -2) -- ++(#2, 0);
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \ifthenelse{\equal{\cdorient}{U}}{\draw (0, 3) -- ++(0, #2);}{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (0, 3) -- ++(0, #2);
+   }{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\draw (-1.5, 3) -- ++(0, #2);}{\draw (1.5, 3) -- ++(0, #2);}
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (0, -3) -- ++(0, -#2);
+   }{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\draw (-1.5, -3) -- ++(0, -#2);}{\draw (1.5, -3) -- ++(0, -#2);}
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{\draw (0, -3) -- ++(0, -#2);}{}
+ }{}
+}
+% Voltage arrows
+\let\voltarsemicon=\voltar
+\renewcommand{\voltar}[2]{
+ \ifthenelse{\equal{\cdelem}{D}\AND\equal{\cdtype}{diac}}{
+  \ifthenelse{\equal{#1}{UL}}{\cdbigarrow[4.2]{-2.1}{3.25}{180}\cdputtext{0}{4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{UR}}{\cdbigarrow[4.2]{2.1}{3.25}{0}\cdputtext{0}{4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{DL}}{\cdbigarrow[4.2]{-2.1}{-3.25}{180}\cdputtext{0}{-4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{DR}}{\cdbigarrow[4.2]{2.1}{-3.25}{0}\cdputtext{0}{-4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{LU}}{\cdbigarrow[4.2]{-3.25}{2.1}{90}\cdputtext{-3.75}{0}{r}{#2}}{}
+  \ifthenelse{\equal{#1}{LD}}{\cdbigarrow[4.2]{-3.25}{-2.1}{-90}\cdputtext{-3.75}{0}{r}{#2}}{}
+  \ifthenelse{\equal{#1}{RU}}{\cdbigarrow[4.2]{3.25}{2.1}{90}\cdputtext{3.75}{0}{l}{#2}}{}
+  \ifthenelse{\equal{#1}{RD}}{\cdbigarrow[4.2]{3.25}{-2.1}{-90}\cdputtext{3.75}{0}{l}{#2}}{}
+ }{
+  \voltarsemicon{#1}{#2}
+ }
+}
+% Schottky diodes and transistors
+\newcommand{\schottky}{
+ \ifthenelse{\equal{\cdelem}{D}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \draw [cdmedlines] (-1.25, -1.25) -| (-1.75, -0.75) (-1.25, 1.25) -| (-0.75, 0.75);
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \draw [cdmedlines] (1.25, -1.25) -| (0.75, -0.75) (1.25, 1.25) -| (1.75, 0.75);
+  }{}
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \draw [cdmedlines] (-1.25, 1.25) |- (-0.75, 1.75) (1.25, 1.25) |- (0.75, 0.75);
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \draw [cdmedlines] (-1.25, -1.25) |- (-0.75, -0.75) (1.25, -1.25) |- (0.75, -1.75);
+  }{}
+ }{}
+ \ifthenelse{\equal{\cdelem}{T}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \draw [cdmedlines]  (1.1, -1.99) -| (0.55, -1.49) (1.1, 1.99) -| (1.65, 1.49);
+   \renewcommand{\transthick}{\draw [cdthicklines] (1.1, -1.9) -- (1.1, 1.9);}
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \draw [cdmedlines] (-1.1, -1.99) -| (-1.65, -1.49) (-1.1, 1.99) -| (-0.55, 1.49);
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.1, -1.9) -- (-1.1, 1.9);}
+  }{}
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \draw [cdmedlines] (-1.99, -1.1) |- (-1.49, -0.55) (1.99, -1.1) |- (1.49, -1.65);
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.9, -1.1) -- (1.9, -1.1);}
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \draw [cdmedlines] (-1.99, 1.1) |- (-1.49, 1.65) (1.99, 1.1) |- (1.49, 0.55);
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.9, 1.1) -- (1.9, 1.1);}
+  }{}
+ }{}
+}
+% Tunnel diodes
+\newcommand{\tunnel}{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \draw [cdmedlines] (-1.25, 1.25) -- (-0.5, 1.25) (-1.25, -1.25) -- (-0.5, -1.25);
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \draw [cdmedlines] (1.25, 1.25) -- (0.5, 1.25) (1.25, -1.25) -- (0.5, -1.25);
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \draw [cdmedlines] (-1.25, 1.25) -- (-1.25, 0.5) (1.25, 1.25) -- (1.25, 0.5);
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \draw [cdmedlines] (-1.25, -1.25) -- (-1.25, -0.5) (1.25, -1.25) -- (1.25, -0.5);
+ }{}
+}
+% Capacity diodes
+\newcommand{\capdio}{\renewcommand{\cdinfo}{capdio}}
+% Thyristors
+\newcommand{\thyr}[1]{
+ \ifthenelse{\equal{\cdorient}{L}\OR\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{#1}{LU}}{\draw (-1.25, 0.625) -- (-2, 1) -- (-2, 2);}{}
+  \ifthenelse{\equal{#1}{U}}{\draw (0, 0.625) -- (0, 2);}{}
+  \ifthenelse{\equal{#1}{RU}}{\draw (1.25, 0.625) -- (2, 1) -- (2, 2);}{}
+  \ifthenelse{\equal{#1}{LD}}{\draw (-1.25, -0.625) -- (-2, -1) -- (-2, -2);}{}
+  \ifthenelse{\equal{#1}{D}}{\draw (0, -0.625) -- (0, -2);}{}
+  \ifthenelse{\equal{#1}{RD}}{\draw (1.25, -0.625) -- (2, -1) -- (2, -2);}{}
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}\OR\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{#1}{LU}}{\draw (-0.625, 1.25) -- (-1, 2) -- (-2, 2);}{}
+  \ifthenelse{\equal{#1}{L}}{\draw (-0.625, 0) -- (-2, 0);}{}
+  \ifthenelse{\equal{#1}{LD}}{\draw (-0.625, -1.25) -- (-1, -2) -- (-2, -2);}{}
+  \ifthenelse{\equal{#1}{RU}}{\draw (0.625, 1.25) -- (1, 2) -- (2, 2);}{}
+  \ifthenelse{\equal{#1}{R}}{\draw (0.625, 0) -- (2, 0);}{}
+  \ifthenelse{\equal{#1}{RD}}{\draw (0.625, -1.25) -- (1, -2) -- (2, -2);}{}
+ }{}
+}
+% Triacs
+\newcommand{\triac}[1]{
+ \ifthenelse{\equal{\cdorient}{H}}{
+  \ifthenelse{\equal{#1}{LU}}{\draw (-1.25, 1.05) -- (-2, 1.425) -- (-2, 3);}{}
+  \ifthenelse{\equal{#1}{U}}{\draw (0, 1.475) -- (0,3);}{}
+  \ifthenelse{\equal{#1}{RU}}{\draw (1.25, 1.05) -- (2, 1.425) -- (2, 3);}{}
+  \ifthenelse{\equal{#1}{LD}}{\draw (-1.25, -1.05) -- (-2, -1.425) -- (-2, -3);}{}
+  \ifthenelse{\equal{#1}{D}}{\draw (0, -1.475) -- (0,-3);}{}
+  \ifthenelse{\equal{#1}{RD}}{\draw (1.25, -1.05) -- (2, -1.425) -- (2, -3);}{}
+ }{}
+ \ifthenelse{\equal{\cdorient}{V}}{
+  \ifthenelse{\equal{#1}{LU}}{\draw (-1.05, 1.25) -- (-1.425, 2) -- (-3, 2);}{}
+  \ifthenelse{\equal{#1}{L}}{\draw (-1.475, 0) -- (-3, 0);}{}
+  \ifthenelse{\equal{#1}{LD}}{\draw (-1.05, -1.25) -- (-1.425, -2) -- (-3, -2);}{}
+  \ifthenelse{\equal{#1}{RU}}{\draw (1.05, 1.25) -- (1.425, 2) -- (3, 2);}{}
+  \ifthenelse{\equal{#1}{R}}{\draw (1.475, 0) -- (3, 0);}{}
+  \ifthenelse{\equal{#1}{RD}}{\draw (1.05, -1.25) -- (1.425, -2) -- (3, -2);}{}
+ }{}
+}
+% Multi-emitter
+\newcommand{\multemit}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \renewcommand{\transthick}{\draw [cdthicklines] (1.1, -1.75) -- (1.1, 0.75+#1);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (1.1, -0.3+\thecdcounter) -- (-#1-1+\thecdcounter, 1.376973+0.798559*#1+0.201441*\thecdcounter)
+     -- (-#1-1+\thecdcounter, 2+#1);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{-0.79}{1.209276+\thecdcounter}{141.391}
+    }{
+     \cdbigarrow{0.68}{0.035395+\thecdcounter}{-38.609}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (-1, 2.376973) -- (-#1, 1.578414+0.798559*#1) -- (-#1, 2+#1);
+  }{
+   \renewcommand{\transthick}{\draw [cdthicklines] (1.1, -0.75-#1) -- (1.1, 1.75);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (1.1, 0.3-\thecdcounter) -- (-#1-1+\thecdcounter, -1.376973-0.798559*#1-0.201441*\thecdcounter)
+     -- (-#1-1+\thecdcounter, -2-#1);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{-0.79}{-1.209276-\thecdcounter}{-141.391}
+    }{
+     \cdbigarrow{0.68}{-0.035395-\thecdcounter}{38.609}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (-1, -2.376973) -- (-#1, -1.578414-0.798559*#1) -- (-#1, -2-#1);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.1, -1.75) -- (-1.1, 0.75+#1);}
+   \renewcommand{\transceconn}{\draw (1, -2.376973) -- (1, -3);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (-1.1, -0.3+\thecdcounter) -- (#1+1-\thecdcounter, 1.376973+0.798559*#1+0.201441*\thecdcounter)
+     -- (#1+1-\thecdcounter, 2+#1);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{0.79}{1.209276+\thecdcounter}{38.609}
+    }{
+     \cdbigarrow{-0.68}{0.035395+\thecdcounter}{-141.391}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (1, 2.376973) -- (#1, 1.578414+0.798559*#1) -- (#1, 2+#1);
+  }{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.1, -0.75-#1) -- (-1.1, 1.75);}
+   \renewcommand{\transceconn}{\draw (1, 2.376973) -- (1, 3);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (-1.1, 0.3-\thecdcounter) -- (#1+1-\thecdcounter, -1.376973-0.798559*#1-0.201441*\thecdcounter)
+     -- (#1+1-\thecdcounter, -2-#1);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{0.79}{-1.209276-\thecdcounter}{-38.609}
+    }{
+     \cdbigarrow{-0.68}{-0.035395-\thecdcounter}{141.391}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (1, -2.376973) -- (#1, -1.578414-0.798559*#1) -- (#1, -2-#1);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-0.75-#1, -1.1) -- (1.75, -1.1);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (0.3-\thecdcounter, -1.1) -- (-1.376973-0.798559*#1-0.201441*\thecdcounter, #1+1-\thecdcounter)
+     -- (-2-#1, #1+1-\thecdcounter);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{-1.209276-\thecdcounter}{0.79}{128.609}
+    }{
+     \cdbigarrow{-0.035395-\thecdcounter}{-0.68}{-51.391}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (-2.376973, 1) -- (-1.578414-0.798559*#1, #1) -- (-2-#1, #1);
+  }{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.75, -1.1) -- (0.75+#1, -1.1);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (-0.3+\thecdcounter, -1.1) -- (1.376973+0.798559*#1+0.201441*\thecdcounter, #1+1-\thecdcounter)
+     -- (2+#1, #1+1-\thecdcounter);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{1.209276+\thecdcounter}{0.79}{51.391}
+    }{
+     \cdbigarrow{0.035395+\thecdcounter}{-0.68}{-128.609}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (2.376973, 1) -- (1.578414+0.798559*#1, #1) -- (2+#1, #1);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-0.75-#1, 1.1) -- (1.75, 1.1);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (0.3-\thecdcounter, 1.1) -- (-1.376973-0.798559*#1-0.201441*\thecdcounter, -#1-1+\thecdcounter)
+     -- (-2-#1, -#1-1+\thecdcounter);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{-1.209276-\thecdcounter}{-0.79}{-128.609}
+    }{
+     \cdbigarrow{-0.035395-\thecdcounter}{0.68}{51.391}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (-2.376973, -1) -- (-1.578414-0.798559*#1, -#1) -- (-2-#1, -#1);
+  }{
+   \renewcommand{\transthick}{\draw [cdthicklines] (-1.75, 1.1) -- (0.75+#1, 1.1);}
+   \setcounter{cdcounter}{#1}
+   \whiledo{\value{cdcounter}>1}{
+    \draw (-0.3+\thecdcounter, 1.1) -- (1.376973+0.798559*#1+0.201441*\thecdcounter, -#1-1+\thecdcounter)
+     -- (2+#1, -#1-1+\thecdcounter);
+    \ifthenelse{\equal{\cdtype}{npn}}{
+     \cdbigarrow{1.209276+\thecdcounter}{-0.79}{-51.391}
+    }{
+     \cdbigarrow{0.035395+\thecdcounter}{0.68}{128.609}
+    }
+    \addtocounter{cdcounter}{-1}
+   }
+   \draw (2.376973, -1) -- (1.578414+0.798559*#1, -#1) -- (2+#1, -#1);
+  }
+ }{}
+}
+% Place reference and value
+\newcommand{\placerefvalTU}{
+ \ifthenelse{\boolean{circledtrans}}{
+  \ifthenelse{\equal{\cdtextpos}{u}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{1}
+    \edef\cdrefvalx{0}\edef\cdrefvaly{3.5}\renewcommand{\cdrefvalalign}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{-0.5}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{r}
+     \edef\cdvaluex{0.5}\edef\cdvaluey{3.5}\renewcommand{\cdvaluealign}{l}
+    }{
+     \renewcommand{\cdrefvaltog}{1}
+     \edef\cdrefvalx{0}\edef\cdrefvaly{3.5}\renewcommand{\cdrefvalalign}{c}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{uu}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{0}{3.5}{c}{u}
+   }{
+    \placerefvaltwoline{0}{3.5}{c}{u}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{d}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-0.5}\edef\cdrefery{-4}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.5}\edef\cdvaluey{-4}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.75}{-4}{l}{d}}{\placerefvaltwoline{0.75}{-4}{r}{d}}
+   }
+  }{}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{u}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{1}
+    \edef\cdrefvalx{0}\edef\cdrefvaly{2.25}\renewcommand{\cdrefvalalign}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{-0.5}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{r}
+     \edef\cdvaluex{0.5}\edef\cdvaluey{3.5}\renewcommand{\cdvaluealign}{l}
+    }{
+     \renewcommand{\cdrefvaltog}{1}
+     \edef\cdrefvalx{0}\edef\cdrefvaly{3.5}\renewcommand{\cdrefvalalign}{c}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{uu}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{0}{2.25}{c}{u}
+   }{
+    \placerefvaltwoline{0}{3.5}{c}{u}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{d}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-0.5}\edef\cdrefery{-2.75}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.5}\edef\cdvaluey{-2.75}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+     \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.5}{-1.75}{l}{d}}{\placerefvaltwoline{0.5}{-1.75}{r}{d}}
+    }{
+     \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.75}{-2.5}{l}{d}}{\placerefvaltwoline{0.75}{-2.5}{r}{d}}
+    }
+   }
+  }{}
+ }
+}
+\newcommand{\placerefvalTD}{
+ \ifthenelse{\boolean{circledtrans}}{
+  \ifthenelse{\equal{\cdtextpos}{d}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{1}
+    \edef\cdrefvalx{0}\edef\cdrefvaly{-3.5}\renewcommand{\cdrefvalalign}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{-0.5}\edef\cdrefery{-3.5}\renewcommand{\cdreferalign}{r}
+     \edef\cdvaluex{0.5}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{l}
+    }{
+     \renewcommand{\cdrefvaltog}{1}
+     \edef\cdrefvalx{0}\edef\cdrefvaly{-3.5}\renewcommand{\cdrefvalalign}{c}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{dd}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{0}{-3.5}{c}{d}
+   }{
+    \placerefvaltwoline{0}{-3.5}{c}{d}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{u}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-0.5}\edef\cdrefery{4}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.5}\edef\cdvaluey{4}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.75}{4}{l}{u}}{\placerefvaltwoline{0.75}{4}{r}{u}}
+   }
+  }{}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{d}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{1}
+    \edef\cdrefvalx{0}\edef\cdrefvaly{-2.25}\renewcommand{\cdrefvalalign}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{-0.5}\edef\cdrefery{-3.5}\renewcommand{\cdreferalign}{r}
+     \edef\cdvaluex{0.5}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{l}
+    }{
+     \renewcommand{\cdrefvaltog}{1}
+     \edef\cdrefvalx{0}\edef\cdrefvaly{-3.5}\renewcommand{\cdrefvalalign}{c}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{dd}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{0}{-2.25}{c}{d}
+   }{
+    \placerefvaltwoline{0}{-3.5}{c}{d}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{u}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-0.5}\edef\cdrefery{2.75}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.5}\edef\cdvaluey{2.75}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+     \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.5}{1.75}{l}{u}}{\placerefvaltwoline{0.5}{1.75}{r}{u}}
+    }{
+     \ifthenelse{\equal{\cdsuborient}{L}}{\placerefvaltwoline{-0.75}{2.5}{l}{u}}{\placerefvaltwoline{0.75}{2.5}{r}{u}}
+    }
+   }
+  }{}
+ }
+}

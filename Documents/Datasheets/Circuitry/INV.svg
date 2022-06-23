@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1067" version="1.1">
+<style type="text/css">
+.l0{
+ fill: #ffffff;
+  stroke: #ffffff;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l1{
+ fill: #0044ee;
+  stroke: #0044ee;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l2{
+  fill: none;
+  stroke: #aaaaaa;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l3{
+ fill: #222222; fill-opacity: 0.5;
+  stroke: #222222;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l4{
+ fill: #229900;
+  stroke: #229900;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l5{
+ fill: #bb2200;
+  stroke: #bb2200;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l6{
+ fill: #00ccee; fill-opacity: 0.5;
+  stroke: #00ccee;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l7{
+ fill: #ff0000; fill-opacity: 0.5;
+  stroke: #ff0000;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l8{
+ fill: #888800; fill-opacity: 0.5;
+  stroke: #888800;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l9{
+ fill: #00aaaa; fill-opacity: 0.5;
+  stroke: #00aaaa;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l10{
+ fill: #880088;
+  stroke: #880088;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l11{
+ fill: #00ff00; fill-opacity: 0.5;
+  stroke: #00ff00;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l12{
+ fill: #0000cc; fill-opacity: 0.5;
+  stroke: #0000cc;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l13{
+ fill: #666600; fill-opacity: 0.5;
+  stroke: #666600;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l14{
+  fill: none;
+  stroke: #557755;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l15{
+ fill: #aa2222; fill-opacity: 0.5;
+  stroke: #aa2222;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l16{
+ fill: #7ccc40; fill-opacity: 0.5;
+  stroke: #7ccc40;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l17{
+  fill: none;
+  stroke: #00ffcc;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l18{
+ fill: #ce0097; fill-opacity: 0.5;
+  stroke: #ce0097;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l19{
+  fill: none;
+  stroke: #d2d46b;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l20{
+  fill: none;
+  stroke: #ef6158;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+.l21{
+  fill: none;
+  stroke: #fdb200;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width: 13.2377;
+}
+text {font-family: Sans-Serif;}
+</style>
+<rect class="l0" x="0" y="0" width="1920" height="1067"/>
+<text fill="#222222"  xml:space="preserve" font-size="127.474" transform="translate(304.585, 125.76)" >@name</text>
+<text fill="#222222"  xml:space="preserve" font-size="127.474" transform="translate(304.585, 1020.53)" >@symname</text>
+<path class="l4" d="M304.585 156.226L304.585 891.653"/>
+<path class="l4" d="M304.585 891.653L917.44 523.939"/>
+<path class="l4" d="M304.585 156.226L917.44 523.939"/>
+<path class="l4" d="M1040.01 523.939L1285.15 523.939"/>
+<path class="l4" d="M59.4428 523.939L304.585 523.939"/>
+<circle class="l4" cx="978.726" cy="523.939" r="61.2855" style="fill:none;"/>
+<path class="l5" d="M1254.51 493.297L1315.8 493.297L1315.8 554.582L1254.51 554.582L1254.51 493.297z"/>
+<path class="l5" d="M28.8 493.297L90.0855 493.297L90.0855 554.582L28.8 554.582L28.8 493.297z"/>
+</svg>

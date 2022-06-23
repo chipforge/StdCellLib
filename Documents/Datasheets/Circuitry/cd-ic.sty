@@ -1,0 +1,683 @@
+% cd-ic.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 3.0a -- 2019/11/09.
+% Supports integrated circuit block symbols for circdia.sty.
+% Linear ICs
+\newcommand{\linic}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \linicLR{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\linicLR}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{78xx}}{
+  \linearborder{#1}{4}{3}
+  \linearleft{4}{3}{0}{IN}\lineardown{4}{3}{0}{GND}\linearright{4}{3}{0}{OUT}
+ }{}
+ \ifthenelse{\equal{\cdtype}{79xx}}{
+  \linearborder{#1}{4}{3}
+  \linearleft{4}{3}{0}{IN}\linearup{4}{3}{0}{GND}\linearright{4}{3}{0}{OUT}
+ }{}
+ \ifthenelse{\equal{\cdtype}{ne555}}{
+  \linearborder{#1}{3}{7}
+  \linearleft{3}{7}{-4}{RE}\linearleft{3}{7}{-2}{TR}\linearleft{3}{7}{0}{TH}\linearleft{3}{7}{2}{DC}
+  \linearleft{3}{7}{4}{CV}\lineardown{3}{7}{0}{GND}\linearup{3}{7}{0}{VCC}\linearright{3}{7}{0}{O}
+ }{}
+}
+% Internal linear border and pins
+\newcommand{\linearborder}[3]{
+ \FPadd\cdfloat{#3}{1.5}
+ \placerefvalH{-4}{0}{4}{-\FPprint\cdfloat}{0}{\FPprint\cdfloat}
+ #1
+ \draw [cdmedlines] (-#2.3, -#3.3) rectangle (#2.3, #3.3);
+}
+\newcommand{\linearleft}[4]{
+ \ifthenelse{\equal{\cdorient}{L}}{\linearpin{#1}{#2}{R}{#3}{#4}}{\linearpin{#1}{#2}{L}{#3}{#4}}
+}
+\newcommand{\linearright}[4]{
+ \ifthenelse{\equal{\cdorient}{L}}{\linearpin{#1}{#2}{L}{#3}{#4}}{\linearpin{#1}{#2}{R}{#3}{#4}}
+}
+\newcommand{\linearup}[4]{
+ \ifthenelse{\equal{\cdorient}{L}}{\linearpin{#1}{#2}{U}{-#3}{#4}}{\linearpin{#1}{#2}{U}{#3}{#4}}
+}
+\newcommand{\lineardown}[4]{
+ \ifthenelse{\equal{\cdorient}{L}}{\linearpin{#1}{#2}{D}{-#3}{#4}}{\linearpin{#1}{#2}{D}{#3}{#4}}
+}
+\newcommand{\linearpin}[5]{
+ \ifthenelse{\equal{#3}{L}}{
+  \begin{scope}[shift = {(-#1.3, #4)}]
+   \draw (0, 0) -- (-0.7, 0);
+   \cdputtext{0.3}{0}{l}{#5}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#3}{R}}{
+  \begin{scope}[shift = {(#1.3, #4)}]
+   \draw (0, 0) -- (0.7, 0);
+   \cdputtext{-0.3}{0}{r}{#5}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#3}{U}}{
+  \begin{scope}[shift = {(#4, #2.3)}]
+   \draw (0, 0) -- (0, 0.7);
+   \cdputtext{0}{-1.3}{c}{#5}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#3}{D}}{
+  \begin{scope}[shift = {(#4, -#2.3)}]
+   \draw (0, 0) -- (0, -0.7);
+   \cdputtext{0}{1.3}{c}{#5}
+  \end{scope}
+ }{}
+}
+% TTL ICs
+\newcommand{\ttlic}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \ifthenelse{\cdtype>7399\AND\cdtype<7430}{\ttlicLRA{#1}}{}   % 7400-7429
+  \ifthenelse{\cdtype>7429\AND\cdtype<7460}{\ttlicLRB{#1}}{}   % 7430-7459
+  \ifthenelse{\cdtype>7459\AND\cdtype<7500}{\ttlicLRC{#1}}{}   % 7460-7499
+  \ifthenelse{\cdtype>74099\AND\cdtype<74150}{\ttlicLRD{#1}}{}   % 74100-74149
+  \ifthenelse{\cdtype>74149\AND\cdtype<74200}{\ttlicLRE{#1}}{}   % 74150-74199
+  \ifthenelse{\cdtype>74199\AND\cdtype<74300}{\ttlicLRF{#1}}{}   % 74200-74299
+  \ifthenelse{\cdtype>74299\AND\cdtype<74500}{\ttlicLRG{#1}}{}   % 74300-74499
+  \ifthenelse{\cdtype>74499\AND\cdtype<74700}{\ttlicLRH{#1}}{}   % 74500-74699
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\ttlicLRA}[1]{
+ \setstandardtextpos{ud}
+ % 4x NAND (2), 4x NOR (2)
+ \ifthenelse{\equal{\cdtype}{7400}\OR\equal{\cdtype}{7402}}{\digfourtwoone{}{n}{#1}}{}
+ % 4x NAND OC (2)
+ \ifthenelse{\equal{\cdtype}{7401}\OR\equal{\cdtype}{7403}\OR\equal{\cdtype}{7426}}{\digfourtwoone{}{noc}{#1}}{}
+ % 6x Inverter
+ \ifthenelse{\equal{\cdtype}{7404}}{\digsixoneone{}{n}{#1}}{}
+ % 6x Inverter OC
+ \ifthenelse{\equal{\cdtype}{7405}\OR\equal{\cdtype}{7406}}{\digsixoneone{}{noc}{#1}}{}
+ % 6x Buffer
+ \ifthenelse{\equal{\cdtype}{7407}}{\digsixoneone{}{}{#1}}{}
+ % 4x AND (2)
+ \ifthenelse{\equal{\cdtype}{7408}}{\digfourtwoone{}{}{#1}}{}
+ % 4x AND OC (2)
+ \ifthenelse{\equal{\cdtype}{7409}}{\digfourtwoone{}{oc}{#1}}{}
+ % 3x NAND (3), 3x NOR (3)
+ \ifthenelse{\equal{\cdtype}{7410}\OR\equal{\cdtype}{7427}}{\digthreethreeone{}{n}{#1}}{}
+ % 3x AND (3)
+ \ifthenelse{\equal{\cdtype}{7411}}{\digthreethreeone{}{}{#1}}{}
+ % 6x Inverter ST (3)
+ \ifthenelse{\equal{\cdtype}{7414}}{\digsixoneone{st}{n}{#1}}{}
+ % 2x NAND (4)
+ \ifthenelse{\equal{\cdtype}{7420}}{\digtwofourone{}{n}{#1}}{}
+ % 2x AND (4)
+ \ifthenelse{\equal{\cdtype}{7421}}{\digtwofourone{}{}{#1}}{}
+ % 2x NAND OC (4)
+ \ifthenelse{\equal{\cdtype}{7422}}{\digtwofourone{}{noc}{#1}}{}
+}
+\newcommand{\ttlicLRB}[1]{
+ \setstandardtextpos{ud}
+ % 1x NAND (8)
+ \ifthenelse{\equal{\cdtype}{7430}}{\digeightone{}{n}{#1}}{}
+ % 4x OR (2)
+ \ifthenelse{\equal{\cdtype}{7432}}{\digfourtwoone{}{}{#1}}{}
+ % 4x NOR OC (2)
+ \ifthenelse{\equal{\cdtype}{7433}}{\digfourtwoone{}{noc}{#1}}{}
+ % 4x NAND (2)
+ \ifthenelse{\equal{\cdtype}{7437}}{\digfourtwoone{}{n}{#1}}{}
+ % BCD to 1-of-10
+ \ifthenelse{\equal{\cdtype}{7442}}{
+  \digitalborder{#1}{10}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{A2}\digitalin{3}{A3}\digitalout[n]{-9}{Q0}\digitalout[n]{-7}{Q1}
+  \digitalout[n]{-5}{Q2}\digitalout[n]{-3}{Q3}\digitalout[n]{-1}{Q4}\digitalout[n]{1}{Q5}\digitalout[n]{3}{Q6}
+  \digitalout[n]{5}{Q7}\digitalout[n]{7}{Q8}\digitalout[n]{9}{Q9}
+ }{}
+ % BCD to 7-segment
+ \ifthenelse{\equal{\cdtype}{7447}}{
+  \digitalborder{#1}{7}
+  \digitalin[n]{-6}{BI}\digitalin[n]{-4}{RB}\digitalin[n]{-2}{LT}\digitalin{0}{A0}\digitalin{2}{A1}\digitalin{4}{A2}
+  \digitalin{6}{A3}\digitalout[noc]{-6}{Qa}\digitalout[noc]{-4}{Qb}\digitalout[noc]{-2}{Qc}\digitalout[noc]{0}{Qd}
+  \digitalout[noc]{2}{Qe}\digitalout[noc]{4}{Qf}\digitalout[noc]{6}{Qg}
+ }{}
+}
+\newcommand{\ttlicLRC}[1]{
+ \setstandardtextpos{ud}
+ % 2x JK negative edge with reset
+ \ifthenelse{\equal{\cdtype}{7473}}{\digtwoJKR{#1}}{}
+ % 2x D positive edge with set and reset
+ \ifthenelse{\equal{\cdtype}{7474}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-7}{R}\digitalin[d]{-5}{C}\digitalin{-3}{D}\digitalin[n]{-1}{S}\digitalout[n]{-6}{Q}\digitalout{-2}{Q}
+  \digitalsep{0}
+  \digitalin[n]{1}{R}\digitalin[d]{3}{C}\digitalin{5}{D}\digitalin[n]{7}{S}\digitalout[n]{2}{Q}\digitalout{6}{Q}
+ }{}
+ % 4x D positive state
+ \ifthenelse{\equal{\cdtype}{7475}}{
+  \digitalborder{#1}{8}
+  \digitalin{-6}{C}\digitalin{-4}{D0}\digitalin{-2}{D1}\digitalout[n]{-7}{Q0}\digitalout{-5}{Q0}\digitalout[n]{-3}{Q1}
+  \digitalout{-1}{Q1}
+  \digitalsep{0}
+  \digitalin{2}{C}\digitalin{4}{D0}\digitalin{6}{D1}\digitalout[n]{1}{Q0}\digitalout{3}{Q0}\digitalout[n]{5}{Q1}
+  \digitalout{7}{Q1}
+ }{}
+ % 2x JK negative edge with set and reset
+ \ifthenelse{\equal{\cdtype}{7476}}{\digtwoJKSR{}{nd}{#1}}{}
+ % 4-bit adder
+ \ifthenelse{\equal{\cdtype}{7483}}{
+  \digitalborder{#1}{9}
+  \digitalin{-8}{CI}\digitalin{-6}{A0}\digitalin{-4}{A1}\digitalin{-2}{A2}\digitalin{0}{A3}\digitalin{2}{B0}
+  \digitalin{4}{B1}\digitalin{6}{B2}\digitalin{8}{B3}\digitalout{-4}{$\Sigma$0}\digitalout{-2}{$\Sigma$1}
+  \digitalout{0}{$\Sigma$2}\digitalout{2}{$\Sigma$3}\digitalout{4}{CO}
+ }{}
+ % 4-bit comparator
+ \ifthenelse{\equal{\cdtype}{7485}}{
+  \digitalborder{#1}{11}
+  \digitalin{-10}{$<$I}\digitalin{-8}{$=$I}\digitalin{-6}{$>$I}\digitalin{-4}{A0}\digitalin{-2}{A1}\digitalin{0}{A2}
+  \digitalin{2}{A3}\digitalin{4}{B0}\digitalin{6}{B1}\digitalin{8}{B2}\digitalin{10}{B3}\digitalout{-6}{Q0}
+  \digitalout{-4}{Q1}\digitalout{-2}{Q2}\digitalout{0}{Q3}\digitalout{2}{$<$O}\digitalout{4}{$=$O}\digitalout{6}{$>$O}
+ }{}
+ % 4x XOR (2)
+ \ifthenelse{\equal{\cdtype}{7486}}{\digfourtwoone{}{}{#1}}{}
+ % decimal counter with set and reset
+ \ifthenelse{\equal{\cdtype}{7490}}{
+  \digitalborder{#1}{6}
+  \digitalin{-5}{R0}\digitalin{-3}{R1}\digitalin[nd]{-1}{C0}\digitalin[nd]{1}{C1}\digitalin{3}{S0}\digitalin{5}{S1}
+  \digitalout{-3}{Q0}\digitalout{-1}{Q1}\digitalout{1}{Q2}\digitalout{3}{Q3}
+ }{}
+ % 0 to 11 counter with reset
+ \ifthenelse{\equal{\cdtype}{7492}}{
+  \digitalborder{#1}{4}
+  \digitalin{-3}{R0}\digitalin{-1}{R1}\digitalin[nd]{1}{C0}\digitalin[nd]{3}{C1}\digitalout{-3}{Q0}\digitalout{-1}{Q1}
+  \digitalout{1}{Q2}\digitalout{3}{Q3}
+ }{}
+}
+\newcommand{\ttlicLRD}[1]{
+ \setstandardtextpos{ud}
+ % 2x JK negative edge with reset
+ \ifthenelse{\equal{\cdtype}{74107}}{\digtwoJKR{#1}}{}
+ % 2x JK_ positive edge with set and reset
+ \ifthenelse{\equal{\cdtype}{74109}}{\digtwoJKSR{n}{d}{#1}}{}
+ % 2x JK negative edge with set and reset
+ \ifthenelse{\equal{\cdtype}{74112}}{\digtwoJKSR{}{nd}{#1}}{}
+ % 2x JK negative edge with set
+ \ifthenelse{\equal{\cdtype}{74113}}{\digtwoJKS{#1}}{}
+ % 2x JK negative edge with common clock, set, and common reset
+ \ifthenelse{\equal{\cdtype}{74114}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-7}{R}\digitalin{-5}{K0}\digitalin{-3}{K1}\digitalin[nd]{-1}{C}\digitalin{1}{J0}\digitalin{3}{J1}
+  \digitalin[n]{5}{S0}\digitalin[n]{7}{S1}\digitalout[n]{-6}{Q0}\digitalout{-2}{Q0}\digitalout[n]{2}{Q1}
+  \digitalout{6}{Q1}
+ }{}
+ % Monoflop
+ \ifthenelse{\equal{\cdtype}{74122}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-7}{R}\digitalin[nd]{-5}{A0}\digitalin[nd]{-3}{A1}\digitalin[d]{-1}{B0}\digitalin[d]{1}{B1}
+  \digitalin{3}{Rint}\digitalin{5}{Cext}\digitalin{7}{RCext}\digitalout[n]{-2}{Q}\digitalout{2}{Q}
+ }{}
+ % 2x Monoflop
+ \ifthenelse{\equal{\cdtype}{74123}}{
+  \digitalborder{#1}{10}
+  \digitalin[n]{-9}{R}\digitalin[nd]{-7}{A}\digitalin[d]{-5}{B}\digitalin{-3}{Cext}\digitalin{-1}{RCext}
+  \digitalout[n]{-7}{Q}\digitalout{-3}{Q}
+  \digitalsep{0}
+  \digitalin[n]{1}{R}\digitalin[nd]{3}{A}\digitalin[d]{5}{B}\digitalin{7}{Cext}\digitalin{9}{RCext}\digitalout[n]{3}{Q}
+  \digitalout{7}{Q}
+ }{}
+ % 4x Buffer (Tristate, negative Enable)
+ \ifthenelse{\equal{\cdtype}{74125}}{\digfourtwoonets{n}{3}{#1}}{}
+ % 4x Buffer (Tristate, positive Enable)
+ \ifthenelse{\equal{\cdtype}{74126}}{\digfourtwoonets{}{3}{#1}}{}
+ % 4x NAND ST (2)
+ \ifthenelse{\equal{\cdtype}{74132}}{\digfourtwoone{st}{n}{#1}}{}
+ % NAND (13)
+ \ifthenelse{\equal{\cdtype}{74133}}{
+  \digitalborder{#1}{13}
+  \digitalin{-12}{A}\digitalin{-10}{B}\digitalin{-8}{C}\digitalin{-6}{D}\digitalin{-4}{E}\digitalin{-2}{F}
+  \digitalin{0}{G}\digitalin{2}{H}\digitalin{4}{I}\digitalin{6}{J}\digitalin{8}{K}\digitalin{10}{L}\digitalin{12}{M}
+  \digitalout[n]{0}{Q}
+ }{}
+ % 4x XOR OC (2)
+ \ifthenelse{\equal{\cdtype}{74136}}{\digfourtwoone{}{oc}{#1}}{}
+ % 3-bit to 1-of-8, active low
+ \ifthenelse{\equal{\cdtype}{74137}}{
+  \digitalborder{#1}{8}
+  \digitalin{-5}{A0}\digitalin{-3}{A1}\digitalin{-1}{A2}\digitalin[d]{1}{C}\digitalin{3}{D0}\digitalin[n]{5}{D1}
+  \digitalout[n]{-7}{Q0}\digitalout[n]{-5}{Q1}\digitalout[n]{-3}{Q2}\digitalout[n]{-1}{Q3}\digitalout[n]{1}{Q4}
+  \digitalout[n]{3}{Q5}\digitalout[n]{5}{Q6}\digitalout[n]{7}{Q7}
+ }{}
+ % 3-bit to 1-of-8, active low
+ \ifthenelse{\equal{\cdtype}{74138}}{
+  \digitalborder{#1}{8}
+  \digitalin{-5}{A0}\digitalin{-3}{A1}\digitalin{-1}{A2}\digitalin{1}{D0}\digitalin[n]{3}{D1}\digitalin[n]{5}{D2}
+  \digitalout[n]{-7}{Q0}\digitalout[n]{-5}{Q1}\digitalout[n]{-3}{Q2}\digitalout[n]{-1}{Q3}\digitalout[n]{1}{Q4}
+  \digitalout[n]{3}{Q5}\digitalout[n]{5}{Q6}\digitalout[n]{7}{Q7}
+ }{}
+ % 2x 2-bit to 1-of-4, active low
+ \ifthenelse{\equal{\cdtype}{74139}}{
+  \digitalborder{#1}{8}
+  \digitalin{-6}{A0}\digitalin{-4}{A1}\digitalin[n]{-2}{D}\digitalout[n]{-7}{Q0}\digitalout[n]{-5}{Q1}
+  \digitalout[n]{-3}{Q2}\digitalout[n]{-1}{Q3}
+  \digitalsep{0}
+  \digitalin{2}{A0}\digitalin{4}{A1}\digitalin[n]{6}{D}\digitalout[n]{1}{Q0}\digitalout[n]{3}{Q1}\digitalout[n]{5}{Q2}
+  \digitalout[n]{7}{Q3}
+ }{}
+ % BCD to 1-of-10 OC, active low
+ \ifthenelse{\equal{\cdtype}{74145}}{
+  \digitalborder{#1}{10}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{A2}\digitalin{3}{A3}\digitalout[noc]{-9}{Q0}\digitalout[noc]{-7}{Q1}
+  \digitalout[noc]{-5}{Q2}\digitalout[noc]{-3}{Q3}\digitalout[noc]{-1}{Q4}\digitalout[noc]{1}{Q5}\digitalout[noc]{3}{Q6}
+  \digitalout[noc]{5}{Q7}\digitalout[noc]{7}{Q8}\digitalout[noc]{9}{Q9}
+ }{}
+ % 148
+}
+\newcommand{\ttlicLRE}[1]{
+ \setstandardtextpos{ud}
+ % 1-of-8
+ \ifthenelse{\equal{\cdtype}{74151}}{
+  \digitalborder{#1}{12}
+  \digitalin[n]{-11}{E}\digitalin{-9}{A0}\digitalin{-7}{A1}\digitalin{-5}{A2}\digitalin{-3}{D0}\digitalin{-1}{D1}
+  \digitalin{1}{D2}\digitalin{3}{D3}\digitalin{5}{D4}\digitalin{7}{D5}\digitalin{9}{D6}\digitalin{11}{D7}
+  \digitalout[n]{-2}{Q}\digitalout{2}{Q}
+ }{}
+ % 2x 1-of-4
+ \ifthenelse{\equal{\cdtype}{74153}}{
+  \digitalborder{#1}{12}
+  \digitalin[n]{-11}{EX}\digitalin[n]{-9}{EY}\digitalin{-7}{A0}\digitalin{-5}{A1}\digitalin{-3}{X0}\digitalin{-1}{X1}
+  \digitalin{1}{X2}\digitalin{3}{X3}\digitalin{5}{Y0}\digitalin{7}{Y1}\digitalin{9}{Y2}\digitalin{11}{Y3}
+  \digitalout{-2}{X}\digitalout{2}{Y}
+ }{}
+ % 2x 2-bit to 1-of-4, active low
+ \ifthenelse{\equal{\cdtype}{74155}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-5}{EX}\digitalin[n]{-3}{EY}\digitalin{-1}{A0}\digitalin{1}{A1}\digitalin{3}{X}\digitalin[n]{5}{Y}
+  \digitalout[n]{-7}{X0}\digitalout[n]{-5}{X1}\digitalout[n]{-3}{X2}\digitalout[n]{-1}{X3}\digitalout[n]{1}{Y0}
+  \digitalout[n]{3}{Y1}\digitalout[n]{5}{Y2}\digitalout[n]{7}{Y3}
+ }{}
+ % 4x 1-of-2
+ \ifthenelse{\equal{\cdtype}{74157}}{
+  \digitalborder{#1}{10}
+  \digitalin[n]{-9}{E}\digitalin{-7}{A}\digitalin{-5}{X0}\digitalin{-3}{Y0}\digitalin{-1}{X1}\digitalin{1}{Y1}
+  \digitalin{3}{X2}\digitalin{5}{Y2}\digitalin{7}{X3}\digitalin{9}{Y3}\digitalout{-3}{Q0}\digitalout{-1}{Q1}
+  \digitalout{1}{Q2}\digitalout{3}{Q3}
+ }{}
+ % 8-bit shift register postive edge with reset
+ \ifthenelse{\equal{\cdtype}{74164}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-7}{R}\digitalin[d]{0}{C}\digitalin{5}{D0}\digitalin{7}{D1}
+  \digitalout{-7}{Q0}\digitalout{-5}{Q1}\digitalout{-3}{Q2}\digitalout{-1}{Q3}
+  \digitalout{1}{Q4}\digitalout{3}{Q5}\digitalout{5}{Q6}\digitalout{7}{Q7}
+ }{}
+ % 4-bit D postive edge with reset, Enable and Tristate
+ \ifthenelse{\equal{\cdtype}{74173}}{
+  \digitalborder{#1}{10}
+  \digitalin{-9}{R}\digitalin[n]{-7}{O0}\digitalin[n]{-5}{O1}\digitalin[n]{-3}{I0}\digitalin[n]{-1}{I1}
+  \digitalin[d]{1}{C}\digitalin{3}{D0}\digitalin{5}{D1}\digitalin{7}{D2}\digitalin{9}{D3}\digitalout[3]{-3}{Q0}
+  \digitalout[3]{-1}{Q1}\digitalout[3]{1}{Q2}\digitalout[3]{3}{Q3}
+ }{}
+ % 4-bit D postive edge with reset
+ \ifthenelse{\equal{\cdtype}{74175}}{
+  \digitalborder{#1}{8}
+  \digitalin[n]{-5}{R}\digitalin[d]{-3}{C}\digitalin{-1}{D0}\digitalin{1}{D1}\digitalin{3}{D2}\digitalin{5}{D3}
+  \digitalout[n]{-7}{Q0}\digitalout{-5}{Q0}\digitalout[n]{-3}{Q1}\digitalout{-1}{Q1}\digitalout[n]{1}{Q2}
+  \digitalout{3}{Q2}\digitalout[n]{5}{Q3}\digitalout{7}{Q3}
+ }{}
+ % 151, 153, 156, 157, 158, 161, 163, 164, 165, 166, 169, 174, 175, 191, 193, 194, 195, 197
+}
+\newcommand{\ttlicLRF}[1]{
+ \setstandardtextpos{ud}
+ % 8x Inverter (Tristate, negative Enable)
+ \ifthenelse{\equal{\cdtype}{74240}}{
+  \digitalborder{#1}{10}
+  \digitalin[nst]{-9}{E}\digitalin[st]{-7}{D0}\digitalin[st]{-5}{D1}\digitalin[st]{-3}{D2}\digitalin[st]{-1}{D3}
+  \digitalout[n3]{-8}{Q0}\digitalout[n3]{-6}{Q1}\digitalout[n3]{-4}{Q2}\digitalout[n3]{-2}{Q3}
+  \digitalsep{0}
+  \digitalin[nst]{1}{E}\digitalin[st]{3}{D0}\digitalin[st]{5}{D1}\digitalin[st]{7}{D2}\digitalin[st]{9}{D3}
+  \digitalout[n3]{2}{Q0}\digitalout[n3]{4}{Q1}\digitalout[n3]{6}{Q2}\digitalout[n3]{8}{Q3}
+ }{}
+ % 8x Buffer (Tristate, negative Enable)
+ \ifthenelse{\equal{\cdtype}{74244}}{
+  \digitalborder{#1}{10}
+  \digitalin[nst]{-9}{E}\digitalin[st]{-7}{D0}\digitalin[st]{-5}{D1}\digitalin[st]{-3}{D2}\digitalin[st]{-1}{D3}
+  \digitalout[3]{-8}{Q0}\digitalout[3]{-6}{Q1}\digitalout[3]{-4}{Q2}\digitalout[3]{-2}{Q3}
+  \digitalsep{0}
+  \digitalin[nst]{1}{E}\digitalin[st]{3}{D0}\digitalin[st]{5}{D1}\digitalin[st]{7}{D2}\digitalin[st]{9}{D3}
+  \digitalout[3]{2}{Q0}\digitalout[3]{4}{Q1}\digitalout[3]{6}{Q2}\digitalout[3]{8}{Q3}
+ }{}
+ % 8-bit D positive edge with reset
+ \ifthenelse{\equal{\cdtype}{74273}}{
+  \digitalborder{#1}{10}
+  \digitalin[n]{-9}{R}\digitalin[d]{-7}{C}
+  \digitalin{-5}{D0}\digitalin{-3}{D1}\digitalin{-1}{D2}\digitalin{1}{D3}
+  \digitalin{3}{D4}\digitalin{5}{D5}\digitalin{7}{D6}\digitalin{9}{D7}
+  \digitalout{-7}{Q0}\digitalout{-5}{Q1}\digitalout{-3}{Q2}\digitalout{-1}{Q3}
+  \digitalout{1}{Q4}\digitalout{3}{Q5}\digitalout{5}{Q6}\digitalout{7}{Q7}
+ }{}
+ % 4-bit adder
+ \ifthenelse{\equal{\cdtype}{74283}}{
+  \digitalborder{#1}{9}
+  \digitalin{-8}{CI}\digitalin{-6}{A0}\digitalin{-4}{A1}\digitalin{-2}{A2}\digitalin{0}{A3}\digitalin{2}{B0}
+  \digitalin{4}{B1}\digitalin{6}{B2}\digitalin{8}{B3}\digitalout{-4}{$\Sigma$0}\digitalout{-2}{$\Sigma$1}
+  \digitalout{0}{$\Sigma$2}\digitalout{2}{$\Sigma$3}\digitalout{4}{CO}
+ }{}
+ % 221, 241, 242, 243, 245, 247, 251, 253, 257, 258, 259, 260, 266, 279, 290, 293, 298
+}
+\newcommand{\ttlicLRG}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{74390}}{
+  \digitalborder{#1}{8}
+  \digitalin{-6}{R}\digitalin[nd]{-4}{C0}\digitalin[nd]{-2}{C1}
+  \digitalout{-7}{Q0}\digitalout{-5}{Q1}\digitalout{-3}{Q2}\digitalout{-1}{Q3}
+  \digitalsep{0}
+  \digitalin{2}{R}\digitalin[nd]{4}{C0}\digitalin[nd]{6}{C1}
+  \digitalout{1}{Q0}\digitalout{3}{Q1}\digitalout{5}{Q2}\digitalout{7}{Q3}
+ }{}
+ \ifthenelse{\equal{\cdtype}{74393}}{
+  \digitalborder{#1}{8}
+  \digitalin{-5}{R}\digitalin[nd]{-3}{C}\digitalout{-7}{Q0}\digitalout{-5}{Q1}\digitalout{-3}{Q2}\digitalout{-1}{Q3}
+  \digitalsep{0}
+  \digitalin{3}{R}\digitalin[nd]{5}{C}\digitalout{1}{Q0}\digitalout{3}{Q1}\digitalout{5}{Q2}\digitalout{7}{Q3}
+ }{}
+ % 367, 368, 373, 374, 375, 377, 399, 440, 441
+}
+\newcommand{\ttlicLRH}[1]{
+ \setstandardtextpos{ud}
+ % 590, 624, 629, 640, 641, 645, 668, 682, 688
+}
+% Internal direct digital ICs
+\newcommand{\digfourtwoone}[3]{
+ \digitalborder{#3}{8}
+ \digitalin[#1]{-7}{A}\digitalin[#1]{-5}{B}\digitalout[#2]{-6}{Q}
+ \digitalsep{-4}
+ \digitalin[#1]{-3}{A}\digitalin[#1]{-1}{B}\digitalout[#2]{-2}{Q}
+ \digitalsep{0}
+ \digitalin[#1]{1}{A}\digitalin[#1]{3}{B}\digitalout[#2]{2}{Q}
+ \digitalsep{4}
+ \digitalin[#1]{5}{A}\digitalin[#1]{7}{B}\digitalout[#2]{6}{Q}
+}
+\newcommand{\digsixoneone}[3]{ 
+ \digitalborder{#3}{6}
+ \digitalin[#1]{-5}{A}\digitalout[#2]{-5}{Q}
+ \digitalsep{-4}
+ \digitalin[#1]{-3}{A}\digitalout[#2]{-3}{Q}
+ \digitalsep{-2}
+ \digitalin[#1]{-1}{A}\digitalout[#2]{-1}{Q}
+ \digitalsep{0}
+ \digitalin[#1]{1}{A}\digitalout[#2]{1}{Q}
+ \digitalsep{2}
+ \digitalin[#1]{3}{A}\digitalout[#2]{3}{Q}
+ \digitalsep{4}
+ \digitalin[#1]{5}{A}\digitalout[#2]{5}{Q}
+}
+\newcommand{\digthreethreeone}[3]{
+ \digitalborder{#3}{9}
+ \digitalin[#1]{-8}{A}\digitalin[#1]{-6}{B}\digitalin[#1]{-4}{C}\digitalout[#2]{-6}{Q}
+ \digitalsep{-3}
+ \digitalin[#1]{-2}{A}\digitalin[#1]{0}{B}\digitalin[#1]{2}{C}\digitalout[#2]{0}{Q}
+ \digitalsep{3}
+ \digitalin[#1]{4}{A}\digitalin[#1]{6}{B}\digitalin[#1]{8}{C}\digitalout[#2]{6}{Q}
+}
+\newcommand{\digtwofourone}[3]{
+ \digitalborder{#3}{8}
+ \digitalin[#1]{-7}{A}\digitalin[#1]{-5}{B}\digitalin[#1]{-3}{C}\digitalin[#1]{-1}{D}\digitalout[#2]{-4}{Q}
+ \digitalsep{0}
+ \digitalin[#1]{1}{A}\digitalin[#1]{3}{B}\digitalin[#1]{5}{C}\digitalin[#1]{7}{D}\digitalout[#2]{4}{Q}
+}
+\newcommand{\digeightone}[3]{
+ \digitalborder{#3}{8}
+ \digitalin[#1]{-7}{A}\digitalin[#1]{-5}{B}\digitalin[#1]{-3}{C}\digitalin[#1]{-1}{D}\digitalin[#1]{1}{E}
+ \digitalin[#1]{3}{F}\digitalin[#1]{5}{G}\digitalin[#1]{7}{H}\digitalout[#2]{0}{Q}
+}
+\newcommand{\digtwoJKR}[1]{
+ \digitalborder{#1}{8}
+ \digitalin[n]{-7}{R}\digitalin{-5}{K}\digitalin[nd]{-3}{C}\digitalin{-1}{J}\digitalout[n]{-6}{Q}\digitalout{-2}{Q}
+ \digitalsep{0}
+ \digitalin[n]{1}{R}\digitalin{3}{K}\digitalin[nd]{5}{C}\digitalin{7}{J}\digitalout[n]{2}{Q}\digitalout{6}{Q}
+}
+\newcommand{\digtwoJKSR}[3]{
+ \digitalborder{#3}{10}
+ \digitalin[n]{-9}{R}\digitalin[#1]{-7}{K}\digitalin[#2]{-5}{C}\digitalin{-3}{J}\digitalin[n]{-1}{S}
+ \digitalout[n]{-7}{Q}\digitalout{-3}{Q}
+ \digitalsep{0}
+ \digitalin[n]{1}{R}\digitalin[#1]{3}{K}\digitalin[#2]{5}{C}\digitalin{7}{J}\digitalin[n]{9}{S}\digitalout[n]{3}{Q}
+ \digitalout{7}{Q}
+}
+\newcommand{\digtwoJKS}[1]{
+ \digitalborder{#1}{8}
+ \digitalin{-7}{K}\digitalin[nd]{-5}{C}\digitalin{-3}{J}\digitalin[n]{-1}{S}\digitalout[n]{-6}{Q}\digitalout{-2}{Q}
+ \digitalsep{0}
+ \digitalin{1}{K}\digitalin[nd]{3}{C}\digitalin{5}{J}\digitalin[n]{7}{S}\digitalout[n]{2}{Q}\digitalout{6}{Q}
+}
+\newcommand{\digfourtwoonets}[3]{
+ \digitalborder{#3}{8}
+ \digitalin[#1]{-7}{E}\digitalin{-5}{A}\digitalout[#2]{-6}{Q}
+ \digitalsep{-4}
+ \digitalin[#1]{-3}{E}\digitalin{-1}{A}\digitalout[#2]{-2}{Q}
+ \digitalsep{0}
+ \digitalin[#1]{1}{E}\digitalin{3}{A}\digitalout[#2]{2}{Q}
+ \digitalsep{4}
+ \digitalin[#1]{5}{E}\digitalin{7}{A}\digitalout[#2]{6}{Q}
+}
+% Internal digital seperator
+\newcommand{\digitalsep}[1]{
+ \draw [cdvthinlines] (-3.3, #1) -- (3.3, #1);
+}
+% Operational amplifier text
+\newcommand{\optext}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{\cdputtext{0.75}{0}{c}{#1}}{}
+ \ifthenelse{\equal{\cdorient}{R}}{\cdputtext{-0.75}{0}{c}{#1}}{}
+}
+% Pin numbers
+\newcommand{\pinnos}{\@ifnextchar\bgroup{\pinnoone}{}}
+\newcommand{\pinnoone}[1]{
+ \textsmaller{\sffamily\expandafter\csname pinnoput\cdtype\cdorient\cdsuborient\endcsname#1{}{}{}{}{}{}{}}
+ \@ifnextchar\bgroup{\pinnoone}{}
+}
+% Pin numbers: operational amplifiers
+\newcommand{\pinnoputopLD}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{-3.25}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{-0.5}{2.4}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{-0.5}{-2.6}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopLU}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{-3.25}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{-0.5}{2.4}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{-0.5}{-2.6}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopRD}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{3.25}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{0.5}{2.4}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{0.5}{-2.6}{l}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopRU}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{3.25}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{0.5}{2.4}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{0.5}{-2.6}{l}{#4#5#6}}{}
+}
+% Pin numbers: gates
+\newcommand{\pinnoputbufL}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-0.5}{3.15}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-0.5}{-3.35}{r}{#4#5#6}}{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-0.5}{1.9}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-0.5}{-2.1}{r}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnotL}{\pinnoputbufL}
+\newcommand{\pinnoputbufR}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{0.5}{3.15}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{0.5}{-3.35}{l}{#4#5#6}}{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{0.5}{1.9}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{0.5}{-2.1}{l}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnotR}{\pinnoputbufR}
+\newcommand{\pinnoputandL}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{2.5}{-1.1+4*#2}{l}{#4#5#6}
+   }{
+    \cdputtext{2.5}{1.9-\cdinfo+2*#2}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.5}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-1.5}{3.4}{r}{#4#5#6}
+   }{
+    \cdputtext{-1.5}{0.4+\cdinfo}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1#2}{3d}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-1.5}{-3.6}{r}{#4#5#6}
+   }{
+    \cdputtext{-1.5}{-0.6-\cdinfo}{r}{#4#5#6}
+   }
+  }{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{2.75}{-1.1+4*#2}{l}{#4#5#6}
+   }{
+    \cdputtext{2.75}{1.9-\cdinfo+2*#2}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-1.5}{3.15}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-1.5}{-3.35}{r}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnandL}{\pinnoputandL}
+\newcommand{\pinnoputorL}{\pinnoputandL}
+\newcommand{\pinnoputnorL}{\pinnoputandL}
+\newcommand{\pinnoputxorL}{\pinnoputandL}
+\newcommand{\pinnoputxnorL}{\pinnoputandL}
+\newcommand{\pinnoputandR}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-2.5}{-1.1+4*#2}{r}{#4#5#6}
+   }{
+    \cdputtext{-2.5}{1.9-\cdinfo+2*#2}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{3.5}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{1.5}{3.4}{l}{#4#5#6}
+   }{
+    \cdputtext{1.5}{0.4+\cdinfo}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1#2}{3d}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{1.5}{-3.6}{l}{#4#5#6}
+   }{
+    \cdputtext{1.5}{-0.6-\cdinfo}{l}{#4#5#6}
+   }
+  }{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-2.75}{-1.1+4*#2}{r}{#4#5#6}
+   }{
+    \cdputtext{-2.75}{1.9-\cdinfo+2*#2}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{1.5}{3.15}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{1.5}{-3.35}{l}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnandR}{\pinnoputandR}
+\newcommand{\pinnoputorR}{\pinnoputandR}
+\newcommand{\pinnoputnorR}{\pinnoputandR}
+\newcommand{\pinnoputxorR}{\pinnoputandR}
+\newcommand{\pinnoputxnorR}{\pinnoputandR}
+% Pin numbers: flipflops
+\newcommand{\pinnoputsrL}[7]{
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputnsrL}{\pinnoputsrL}
+\newcommand{\pinnoputsrmsL}{\pinnoputsrL}
+\newcommand{\pinnoputnsrmsL}{\pinnoputsrL}
+\newcommand{\pinnoputsrR}[7]{
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+}
+\newcommand{\pinnoputnsrR}{\pinnoputsrR}
+\newcommand{\pinnoputsrmsR}{\pinnoputsrR}
+\newcommand{\pinnoputnsrmsR}{\pinnoputsrR}
+\newcommand{\pinnoputdL}[7]{
+ \ifthenelse{\equal{#1}{d}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-0.5}{4.15}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-0.5}{-4.35}{r}{#3#4#5}}{}
+}
+\newcommand{\pinnoputndL}{\pinnoputdL}
+\newcommand{\pinnoputdmsL}{\pinnoputdL}
+\newcommand{\pinnoputndmsL}{\pinnoputdL}
+\newcommand{\pinnoputdR}[7]{
+ \ifthenelse{\equal{#1}{d}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{0.5}{4.15}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{0.5}{-4.35}{l}{#3#4#5}}{}
+}
+\newcommand{\pinnoputndR}{\pinnoputdR}
+\newcommand{\pinnoputdmsR}{\pinnoputdR}
+\newcommand{\pinnoputndmsR}{\pinnoputdR}
+\newcommand{\pinnoputjkL}[7]{
+ \ifthenelse{\equal{#1}{j}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{k}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-0.5}{4.15}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-0.5}{-4.35}{r}{#3#4#5}}{}
+}
+\newcommand{\pinnoputnjkL}{\pinnoputjkL}
+\newcommand{\pinnoputjkmsL}{\pinnoputjkL}
+\newcommand{\pinnoputnjkmsL}{\pinnoputjkL}
+\newcommand{\pinnoputjkR}[7]{
+ \ifthenelse{\equal{#1}{j}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{k}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{0.5}{4.15}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{0.5}{-4.35}{l}{#3#4#5}}{}
+}
+\newcommand{\pinnoputnjkR}{\pinnoputjkR}
+\newcommand{\pinnoputjkmsR}{\pinnoputjkR}
+\newcommand{\pinnoputnjkmsR}{\pinnoputjkR}

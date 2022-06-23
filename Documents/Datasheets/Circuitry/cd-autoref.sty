@@ -1,0 +1,57 @@
+% cd-autoref.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.4.
+% Supports automatic referencing for circdia.sty.
+\newcommand{\autorefsymbol}{*}
+% Counters
+\newcounter{cdswitch}
+\newcommand{\cdswitchname}{S}
+\renewcommand{\thecdswitch}{\cdswitchname\arabic{cdswitch}}
+\newcounter{cdresis}
+\newcommand{\cdresisname}{R}
+\renewcommand{\thecdresis}{\cdresisname\arabic{cdresis}}
+\newcounter{cdcapac}
+\newcommand{\cdcapacname}{C}
+\renewcommand{\thecdcapac}{\cdcapacname\arabic{cdcapac}}
+\newcounter{cdinduc}
+\newcommand{\cdinducname}{L}
+\renewcommand{\thecdinduc}{\cdinducname\arabic{cdinduc}}
+\newcounter{cddiode}
+\newcommand{\cddiodename}{D}
+\renewcommand{\thecddiode}{\cddiodename\arabic{cddiode}}
+\newcounter{cdtrans}
+\newcommand{\cdtransname}{T}
+\renewcommand{\thecdtrans}{\cdtransname\arabic{cdtrans}}
+\newcounter{cdic}
+\newcommand{\cdicname}{IC}
+\renewcommand{\thecdic}{\cdicname\arabic{cdic}}
+% Commands
+\newcommand{\newautoref}{%
+ \setcounter{cdswitch}{0}%
+ \setcounter{cdresis}{0}%
+ \setcounter{cdcapac}{0}%
+ \setcounter{cdinduc}{0}%
+ \setcounter{cddiode}{0}%
+ \setcounter{cdtrans}{0}%
+ \setcounter{cdic}{0}%
+}%
+\renewcommand{\formatrefer}[1]{%
+ \ifthenelse{\equal{#1}{\autorefsymbol}}{%
+  \ifthenelse{\equal{\cdelem}{S}}{\stepcounter{cdswitch}\thecdswitch}{}%
+  \ifthenelse{\equal{\cdelem}{R}}{\stepcounter{cdresis}\thecdresis}{}%
+  \ifthenelse{\equal{\cdelem}{C}}{\stepcounter{cdcapac}\thecdcapac}{}%
+  \ifthenelse{\equal{\cdelem}{L}}{\stepcounter{cdinduc}\thecdinduc}{}%
+  \ifthenelse{\equal{\cdelem}{D}}{\stepcounter{cddiode}\thecddiode}{}%
+  \ifthenelse{\equal{\cdelem}{T}}{\stepcounter{cdtrans}\thecdtrans}{}%
+  \ifthenelse{\equal{\cdelem}{IC}}{\stepcounter{cdic}\thecdic}{}%
+ }{#1}%
+}%
+\newcommand{\cdlabel}[1]{%
+ \ifthenelse{\equal{\cdelem}{S}}{\addtocounter{cdswitch}{-1}\refstepcounter{cdswitch}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{R}}{\addtocounter{cdresis}{-1}\refstepcounter{cdresis}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{C}}{\addtocounter{cdcapac}{-1}\refstepcounter{cdcapac}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{L}}{\addtocounter{cdinduc}{-1}\refstepcounter{cdinduc}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{D}}{\addtocounter{cddiode}{-1}\refstepcounter{cddiode}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{T}}{\addtocounter{cdtrans}{-1}\refstepcounter{cdtrans}\label{#1}}{}%
+ \ifthenelse{\equal{\cdelem}{IC}}{\addtocounter{cdic}{-1}\refstepcounter{cdic}\label{#1}}{}%
+}%

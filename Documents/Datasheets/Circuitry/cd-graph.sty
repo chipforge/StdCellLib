@@ -1,0 +1,144 @@
+% cd-graph.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.2.
+% Supports graphs in coordinate systems for circdia.sty.
+% Bode diagram
+\newenvironment{bodedia}[4]{
+ \newcommand{\horizgrid}[4]{
+  \setcounter{cdcounter}{##1}
+  \whiledo{\value{cdcounter}<##2}{
+   \draw [cdgridstyle] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);
+   \draw [cdgridstyle, shift = {(0.301030*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.477121*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.602060*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.698970*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.778151*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.845098*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.903090*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \draw [cdgridstyle, shift = {(0.954243*#3, 0)}] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);    
+   \stepcounter{cdcounter}
+  }
+  \draw [cdgridstyle] (\thecdcounter*#3, ##3*#4-0.5) -- (\thecdcounter*#3, ##4*#4+0.5);
+ }
+ \newcommand{\vertgrid}[5]{
+  \setcounter{cdcounter}{##3}
+  \whiledo{\value{cdcounter}<##4}{
+   \draw [cdgridstyle] (##1*#3-0.5, \thecdcounter*#4) -- (##2*#3+0.5, \thecdcounter*#4);
+   \addtocounter{cdcounter}{##5}
+  }
+  \draw [cdgridstyle] (##1*#3-0.5, \thecdcounter*#4) -- (##2*#3+0.5, \thecdcounter*#4);
+ }
+ \newcommand{\horizaxis}[4][1.5]{
+  \draw (##2*#3-1, 0) -- (##3*#3+1, 0);
+  \begin{scope}[shift = {(##3*#3, 0)}]
+   \cdbigarrow{2}{0}{0}
+   \cdputtext{2}{##1}{r}{##4}
+  \end{scope}
+ }
+ \newcommand{\vertaxis}[5][0.75]{
+  \draw (##2*#3-3, ##3*#4-1) -- (##2*#3-3, ##4*#4+1);
+  \begin{scope}[shift = {(##2*#3-3, ##4*#4)}]
+   \cdbigarrow{0}{2}{90}
+   \ifthenelse{\lengthtest{##1pt>0pt}}{\cdputtext{##1}{1}{l}{##5}}{\cdputtext{##1}{1}{r}{##5}}
+  \end{scope}
+ }
+ \newcommand{\horiztick}[3][-1.5]{
+  \begin{scope}[shift = {(##2*#3, 0)}]
+   \draw (0, -0.3) -- (0, 0.3);
+   \cdputtext{0}{##1}{c}{##3}
+  \end{scope}
+ }
+ \newcommand{\verttick}[4][-0.75]{
+  \begin{scope}[shift = {(##2*#3-3, ##3*#4)}]
+   \draw (-0.3, 0) -- (0.3, 0);
+   \ifthenelse{\lengthtest{##1pt>0pt}}{\cdputtext{##1}{0}{l}{##4}}{\cdputtext{##1}{0}{r}{##4}}
+  \end{scope}
+ }
+ \newcommand{\coordcurve}[2][0.6]{
+  \begin{scope}[xscale = #3, yscale = #4]
+   \draw [cdmedlines] plot [smooth, tension = ##1] coordinates {##2};
+  \end{scope}
+ }
+ \newcommand{\scaledscope}[2][]{
+  \begin{scope}[xscale = #3, yscale = #4, ##1]
+   ##2
+  \end{scope}
+ }
+ \begin{scope}[shift = {(#1, #2)}]
+}{\end{scope}}
+% General Cartesian diagram
+\newenvironment{cartdia}[4]{
+ \newcommand{\horizgrid}[5]{
+  \FPsub\cdfloat{##2}{##1}
+  \FPdiv\cdfloat\cdfloat{##5}
+  \FPadd\cdfloat\cdfloat{1.001}
+  \FPtrunc\cdfloat\cdfloat0
+  \setcounter{cdcounter}{\FPprint\cdfloat}
+  \FPset\cdfloat{##1}
+  \whiledo{\value{cdcounter}>0}{
+   \draw [cdgridstyle] (\FPprint\cdfloat*#3, ##3*#4-0.5) -- (\FPprint\cdfloat*#3, ##4*#4+0.5);
+   \FPadd\cdfloat\cdfloat{##5}
+   \addtocounter{cdcounter}{-1}
+  }
+ }
+ \newcommand{\vertgrid}[5]{
+  \FPsub\cdfloat{##4}{##3}
+  \FPdiv\cdfloat\cdfloat{##5}
+  \FPadd\cdfloat\cdfloat{1.001}
+  \FPtrunc\cdfloat\cdfloat0
+  \setcounter{cdcounter}{\FPprint\cdfloat}
+  \FPset\cdfloat{##3}
+  \whiledo{\value{cdcounter}>0}{
+   \draw [cdgridstyle] (##1*#3-0.5, \FPprint\cdfloat*#4) -- (##2*#3+0.5, \FPprint\cdfloat*#4);
+   \FPadd\cdfloat\cdfloat{##5}
+   \addtocounter{cdcounter}{-1}
+  }
+ }
+ \newcommand{\horizaxis}[4][1.5]{
+  \draw (##2*#3-1, 0) -- (##3*#3+1, 0);
+  \begin{scope}[shift = {(##3*#3, 0)}]
+   \cdbigarrow{2}{0}{0}
+   \cdputtext{2}{##1}{r}{##4}
+  \end{scope}
+ }
+ \newcommand{\vertaxis}[4][0.75]{
+  \draw (0, ##2*#4-1) -- (0, ##3*#4+1);
+  \begin{scope}[shift = {(0, ##3*#4)}]
+   \cdbigarrow{0}{2}{90}
+   \ifthenelse{\lengthtest{##1pt>0pt}}{\cdputtext{##1}{1}{l}{##4}}{\cdputtext{##1}{1}{r}{##4}}
+  \end{scope}
+ }
+ \newcommand{\horiztick}[3][-1.5]{
+  \begin{scope}[shift = {(##2*#3, 0)}]
+   \draw (0, -0.3) -- (0, 0.3);
+   \cdputtext{0}{##1}{c}{##3}
+  \end{scope}
+ }
+ \newcommand{\verttick}[3][-0.75]{
+  \begin{scope}[shift = {(0, ##2*#4)}]
+   \draw (-0.3, 0) -- (0.3, 0);
+   \ifthenelse{\lengthtest{##1pt>0pt}}{\cdputtext{##1}{0}{l}{##3}}{\cdputtext{##1}{0}{r}{##3}}
+  \end{scope}
+ }
+ \newcommand{\coordcurve}[2][0.6]{
+  \begin{scope}[xscale = #3, yscale = #4]
+   \draw [cdmedlines] plot [smooth, tension = ##1] coordinates {##2};
+  \end{scope}
+ }
+ \newcommand{\scaledscope}[2][]{
+  \begin{scope}[xscale = #3, yscale = #4, ##1]
+   ##2
+  \end{scope}
+ }
+ \begin{scope}[shift = {(#1, #2)}]
+}{\end{scope}}
+% Pole-zero diagram
+\newenvironment{polezerodia}[3]{
+ \newcommand{\drawpole}[2]{
+  \draw [shift = {(##1*#3, ##2*#3)}] (-0.5, -0.5) -- (0.5, 0.5) (-0.5, 0.5) -- (0.5, -0.5);
+ }
+ \newcommand{\drawzero}[2]{
+  \draw (##1*#3, ##2*#3) circle (0.6);
+ }
+ \begin{cartdia}{#1}{#2}{#3}{#3}
+}{\end{cartdia}}

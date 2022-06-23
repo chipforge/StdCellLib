@@ -1,0 +1,274 @@
+% cd-switch.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.5a -- 2021/03/01.
+% Supports additional switch and relay symbols for circdia.sty.
+% Relays
+\newcommand{\relay}[6][]{
+ \prepareelement{S}{relay}{#4}{#5}{#6}
+ \renewcommand{\cdelemx}{#2}
+ \renewcommand{\cdelemy}{#3}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname relay\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\relayH}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-2}{0}{2}{-3.75}{0}{3.75}
+ #1
+ \draw [cdmedlines] (-1.5, -2.45) rectangle (1.5, 2.45) (-1.5, -1.5) -- (1.5, 1.5);
+ \draw (-1.5, 0) -- (-2, 0) (1.5, 0) -- (2, 0);
+}
+\newcommand{\relayV}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-3}{0}{3}{-2.75}{0}{2.75}
+ #1
+ \draw [cdmedlines] (-2.45, -1.5) rectangle (2.45, 1.5) (-1.5, -1.5) -- (1.5, 1.5);
+ \draw (0, -1.5) -- (0, -2) (0, 1.5) -- (0, 2);
+}
+% Switch and switch
+\newcommand{\swiandswi}[2]{
+ #1
+ \edef\cdelemxfirst{\cdelemx}
+ \edef\cdelemyfirst{\cdelemy}
+ \edef\cdorientfirst{\cdorient}
+ #2
+ \ifthenelse{\equal{\cdorientfirst}{L}\OR\equal{\cdorientfirst}{R}}{
+  \ifthenelse{\equal{\cdorient}{L}\OR\equal{\cdorient}{R}}{
+   \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) |- (\cdelemx, 0.5*\cdelemyfirst + 0.5*\cdelemy) -- (\cdelemx, \cdelemy);
+  }{
+   \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) |- (\cdelemx, \cdelemy);
+  }
+ }{
+  \ifthenelse{\equal{\cdorient}{L}\OR\equal{\cdorient}{R}}{
+   \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+  }{
+   \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) -| (0.5*\cdelemxfirst + 0.5*\cdelemx, \cdelemy) -- (\cdelemx, \cdelemy);
+  }
+ }
+}
+% Relay and switch
+\newcommand{\relandswi}[2]{
+ #1
+ \edef\cdelemxfirst{\cdelemx}
+ \edef\cdelemyfirst{\cdelemy}
+ \edef\cdorientfirst{\cdorient}
+ #2
+ \ifthenelse{\equal{\cdorientfirst}{H}}{
+  \ifthenelse{\equal{\cdorient}{L}\OR\equal{\cdorient}{R}}{
+   \FPiflt\cdelemy\cdelemyfirst
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst-2.45) |- (\cdelemx, \cdelemyfirst-3.5) -- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst+2.45) |- (\cdelemx, \cdelemyfirst+3.5) -- (\cdelemx, \cdelemy);
+   \fi
+  }{
+   \FPiflt\cdelemy\cdelemyfirst
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst-2.45) |- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst+2.45) |- (\cdelemx, \cdelemy);
+   \fi
+  }
+ }{
+  \ifthenelse{\equal{\cdorient}{L}\OR\equal{\cdorient}{R}}{
+   \FPiflt\cdelemx\cdelemxfirst
+    \draw [cddashedlines] (\cdelemxfirst-2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst+2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+   \fi
+  }{
+   \FPiflt\cdelemx\cdelemxfirst
+    \draw [cddashedlines] (\cdelemxfirst-2.45, \cdelemyfirst) -| (\cdelemxfirst-3.5, \cdelemy) -- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst+2.45, \cdelemyfirst) -| (\cdelemxfirst+3.5, \cdelemy) -- (\cdelemx, \cdelemy);
+   \fi
+  }
+ }
+}
+% Push switches
+\newcommand{\pushswi}{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}\OR\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.9) -- (-0.4, 2.3) (0.4, 0.6) -- (0.4, 2.3) (-0.8, 2.3) -- (0.8, 2.3);
+    \draw (0, 2.1) -- (-0.6, 1.2) -- (0.6, 1.2) -- cycle;
+   }{
+    \draw (-0.4, -0.9) -- (-0.4, -2.3) (0.4, -0.6) -- (0.4, -2.3) (-0.8, -2.3) -- (0.8, -2.3);
+    \draw (0, -2.1) -- (-0.6, -1.2) -- (0.6, -1.2) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{on}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0) -- (-0.4, 1.55) (0.4, 0) -- (0.4, 1.55) (-0.8, 1.55) -- (0.8, 1.55);
+    \draw (0, 1.35) -- (-0.6, 0.45) -- (0.6, 0.45) -- cycle;
+   }{
+    \draw (-0.4, 0) -- (-0.4, -1.55) (0.4, 0) -- (0.4, -1.55) (-0.8, -1.55) -- (0.8, -1.55);
+    \draw (0, -1.35) -- (-0.6, -0.45) -- (0.6, -0.45) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.222956) -- (-0.4, 1.735797) (0.4, 0.148637) -- (0.4, 1.735797) (-0.8, 1.735797) -- (0.8, 1.735797);
+    \draw (0, 1.535797) -- (-0.6, 0.635797) -- (0.6, 0.635797) -- cycle;
+   }{
+    \draw (-0.4, -0.222956) -- (-0.4, -1.735797) (0.4, -0.148637) -- (0.4, -1.735797) (-0.8, -1.735797) -- (0.8, -1.735797);
+    \draw (0, -1.535797) -- (-0.6, -0.635797) -- (0.6, -0.635797) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.669523) -- (-0.4, 2.107936) (0.4, 0.446349) -- (0.4, 2.107936) (-0.8, 2.107936) -- (0.8, 2.107936);
+    \draw (0, 1.907936) -- (-0.6, 1.007936) -- (0.6, 1.007936) -- cycle;
+   }{
+    \draw (-0.4, -0.669523) -- (-0.4, -2.107936) (0.4, -0.446349) -- (0.4, -2.107936) (-0.8, -2.107936) -- (0.8, -2.107936);
+    \draw (0, -1.907936) -- (-0.6, -1.007936) -- (0.6, -1.007936) -- cycle;
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}\OR\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.6) -- (-0.4, 2.3) (0.4, 0.9) -- (0.4, 2.3) (-0.8, 2.3) -- (0.8, 2.3);
+    \draw (0, 2.1) -- (-0.6, 1.2) -- (0.6, 1.2) -- cycle;
+   }{
+    \draw (-0.4, -0.6) -- (-0.4, -2.3) (0.4, -0.9) -- (0.4, -2.3) (-0.8, -2.3) -- (0.8, -2.3);
+    \draw (0, -2.1) -- (-0.6, -1.2) -- (0.6, -1.2) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{on}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0) -- (-0.4, 1.55) (0.4, 0) -- (0.4, 1.55) (-0.8, 1.55) -- (0.8, 1.55);
+    \draw (0, 1.35) -- (-0.6, 0.45) -- (0.6, 0.45) -- cycle;
+   }{
+    \draw (-0.4, 0) -- (-0.4, -1.55) (0.4, 0) -- (0.4, -1.55) (-0.8, -1.55) -- (0.8, -1.55);
+    \draw (0, -1.35) -- (-0.6, -0.45) -- (0.6, -0.45) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.148637) -- (-0.4, 1.735797) (0.4, 0.222956) -- (0.4, 1.735797) (-0.8, 1.735797) -- (0.8, 1.735797);
+    \draw (0, 1.535797) -- (-0.6, 0.635797) -- (0.6, 0.635797) -- cycle;
+   }{
+    \draw (-0.4, -0.148637) -- (-0.4, -1.735797) (0.4, -0.222956) -- (0.4, -1.735797) (-0.8, -1.735797) -- (0.8, -1.735797);
+    \draw (0, -1.535797) -- (-0.6, -0.635797) -- (0.6, -0.635797) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.4, 0.446349) -- (-0.4, 2.107936) (0.4, 0.669523) -- (0.4, 2.107936) (-0.8, 2.107936) -- (0.8, 2.107936);
+    \draw (0, 1.907936) -- (-0.6, 1.007936) -- (0.6, 1.007936) -- cycle;
+   }{
+    \draw (-0.4, -0.446349) -- (-0.4, -2.107936) (0.4, -0.669523) -- (0.4, -2.107936) (-0.8, -2.107936) -- (0.8, -2.107936);
+    \draw (0, -1.907936) -- (-0.6, -1.007936) -- (0.6, -1.007936) -- cycle;
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}\OR\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.6, -0.4) -- (-2.3, -0.4) (-0.9, 0.4) -- (-2.3, 0.4) (-2.3, -0.8) -- (-2.3, 0.8);
+    \draw (-2.1, 0) -- (-1.2, -0.6) -- (-1.2, 0.6) -- cycle;
+   }{
+    \draw (0.6, -0.4) -- (2.3, -0.4) (0.9, 0.4) -- (2.3, 0.4) (2.3, -0.8) -- (2.3, 0.8);
+    \draw (2.1, 0) -- (1.2, -0.6) -- (1.2, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{on}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (0, -0.4) -- (-1.55, -0.4) (0, 0.4) -- (-1.55, 0.4) (-1.55, -0.8) -- (-1.55, 0.8);
+    \draw (-1.35, 0) -- (-0.45, -0.6) -- (-0.45, 0.6) -- cycle;
+   }{
+    \draw (0, -0.4) -- (1.55, -0.4) (0, 0.4) -- (1.55, 0.4) (1.55, -0.8) -- (1.55, 0.8);
+    \draw (1.35, 0) -- (0.45, -0.6) -- (0.45, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.148637, -0.4) -- (-1.735797, -0.4) (-0.222956, 0.4) -- (-1.735797, 0.4) (-1.735797, -0.8) -- (-1.735797, 0.8);
+    \draw (-1.535797, 0) -- (-0.635797, -0.6) -- (-0.635797, 0.6) -- cycle;
+   }{
+    \draw (0.148637, -0.4) -- (1.735797, -0.4) (0.222956, 0.4) -- (1.735797, 0.4) (1.735797, -0.8) -- (1.735797, 0.8);
+    \draw (1.535797, 0) -- (0.635797, -0.6) -- (0.635797, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.446349, -0.4) -- (-2.107936, -0.4) (-0.669523, 0.4) -- (-2.107936, 0.4) (-2.107936, -0.8) -- (-2.107936, 0.8);
+    \draw (-1.907936, 0) -- (-1.007936, -0.6) -- (-1.007936, 0.6) -- cycle;
+   }{
+    \draw (0.446349, -0.4) -- (2.107936, -0.4) (0.669523, 0.4) -- (2.107936, 0.4) (2.107936, -0.8) -- (2.107936, 0.8);
+    \draw (1.907936, 0) -- (1.007936, -0.6) -- (1.007936, 0.6) -- cycle;
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}\OR\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.9, -0.4) -- (-2.3, -0.4) (-0.6, 0.4) -- (-2.3, 0.4) (-2.3, -0.8) -- (-2.3, 0.8);
+    \draw (-2.1, 0) -- (-1.2, -0.6) -- (-1.2, 0.6) -- cycle;
+   }{
+    \draw (0.9, -0.4) -- (2.3, -0.4) (0.6, 0.4) -- (2.3, 0.4) (2.3, -0.8) -- (2.3, 0.8);
+    \draw (2.1, 0) -- (1.2, -0.6) -- (1.2, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{on}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (0, -0.4) -- (-1.55, -0.4) (0, 0.4) -- (-1.55, 0.4) (-1.55, -0.8) -- (-1.55, 0.8);
+    \draw (-1.35, 0) -- (-0.45, -0.6) -- (-0.45, 0.6) -- cycle;
+   }{
+    \draw (0, -0.4) -- (1.55, -0.4) (0, 0.4) -- (1.55, 0.4) (1.55, -0.8) -- (1.55, 0.8);
+    \draw (1.35, 0) -- (0.45, -0.6) -- (0.45, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.222956, -0.4) -- (-1.735797, -0.4) (-0.148637, 0.4) -- (-1.735797, 0.4) (-1.735797, -0.8) -- (-1.735797, 0.8);
+    \draw (-1.535797, 0) -- (-0.635797, -0.6) -- (-0.635797, 0.6) -- cycle;
+   }{
+    \draw (0.222956, -0.4) -- (1.735797, -0.4) (0.148637, 0.4) -- (1.735797, 0.4) (1.735797, -0.8) -- (1.735797, 0.8);
+    \draw (1.535797, 0) -- (0.635797, -0.6) -- (0.635797, 0.6) -- cycle;
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+   \ifthenelse{\equal{\cdsuborient}{L}}{
+    \draw (-0.669523, -0.4) -- (-2.107936, -0.4) (-0.446349, 0.4) -- (-2.107936, 0.4) (-2.107936, -0.8) -- (-2.107936, 0.8);
+    \draw (-1.907936, 0) -- (-1.007936, -0.6) -- (-1.007936, 0.6) -- cycle;
+   }{
+    \draw (0.669523, -0.4) -- (2.107936, -0.4) (0.446349, 0.4) -- (2.107936, 0.4) (2.107936, -0.8) -- (2.107936, 0.8);
+    \draw (1.907936, 0) -- (1.007936, -0.6) -- (1.007936, 0.6) -- cycle;
+   }
+  }{}
+ }{}
+}
+% Additional wires
+\let\wireelemSswitch=\wireelemS
+\renewcommand{\wireelemS}[2]{
+ \wireelemSswitch{#1}{#2}
+ \ifthenelse{\equal{#1}{L}}{
+  \ifthenelse{\equal{\cdorient}{H}}{\draw (-2, 0) -- ++(-#2, 0);}{}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \ifthenelse{\equal{\cdorient}{H}}{\draw (2, 0) -- ++(#2, 0);}{}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \ifthenelse{\equal{\cdorient}{V}}{\draw (0, 2) -- ++(0, #2);}{}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \ifthenelse{\equal{\cdorient}{V}}{\draw (0, -2) -- ++(0, -#2);}{}
+ }{}
+}
+% Voltage arrows
+\let\voltarswitch=\voltar
+\renewcommand{\voltar}[2]{
+ \ifthenelse{\equal{\cdelem}{S}\AND\equal{\cdtype}{relay}}{
+  \ifthenelse{\equal{#1}{UL}}{\cdbigarrow[4.2]{-2.1}{3.25}{180}\cdputtext{0}{4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{UR}}{\cdbigarrow[4.2]{2.1}{3.25}{0}\cdputtext{0}{4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{DL}}{\cdbigarrow[4.2]{-2.1}{-3.25}{180}\cdputtext{0}{-4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{DR}}{\cdbigarrow[4.2]{2.1}{-3.25}{0}\cdputtext{0}{-4.75}{c}{#2}}{}
+  \ifthenelse{\equal{#1}{LU}}{\cdbigarrow[4.2]{-3.25}{2.1}{90}\cdputtext{-3.75}{0}{r}{#2}}{}
+  \ifthenelse{\equal{#1}{LD}}{\cdbigarrow[4.2]{-3.25}{-2.1}{-90}\cdputtext{-3.75}{0}{r}{#2}}{}
+  \ifthenelse{\equal{#1}{RU}}{\cdbigarrow[4.2]{3.25}{2.1}{90}\cdputtext{3.75}{0}{l}{#2}}{}
+  \ifthenelse{\equal{#1}{RD}}{\cdbigarrow[4.2]{3.25}{-2.1}{-90}\cdputtext{3.75}{0}{l}{#2}}{}
+ }{
+  \voltarswitch{#1}{#2}
+ }
+}

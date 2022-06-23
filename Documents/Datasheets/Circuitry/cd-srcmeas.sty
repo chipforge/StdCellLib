@@ -1,0 +1,728 @@
+% cd-srcmeas.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 2.0a -- 2020/11/02.
+% Supports additional source and measurement symbols for circdia.sty.
+% Other grounds
+\newcommand{\othergnd}[5][]{
+ \prepareelement{P}{#2}{#5}{}{}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname othergnd\cdorient\endcsname{#1}
+ \end{scope}
+}
+\newcommand{\othergndL}[1]{
+ #1
+ \draw (0, 0) -- (1, 0);
+ \ifthenelse{\equal{\cdtype}{-}\OR\equal{\cdtype}{(-}\OR\equal{\cdtype}{(-)}}{
+  \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{---}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(---)}}{
+  \draw [cdmedlines] (0, -1.3) -- (0, 1.3) (-0.5, -0.8) -- (-0.5, 0.8) (-1, -0.3) -- (-1, 0.3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{///}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(///)}}{
+  \draw [cdmedlines] (0, -1.3) -- (0, 1.3);
+  \draw (-0.5, -1.3) -- (-1, -0.975) (0, -0.975) -- (-1, -0.325) (0, -0.325) -- (-1, 0.325) (0, 0.325) -- (-1, 0.975) (0, 0.975) -- (-0.5, 1.3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{tri}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(tri)}}{
+  \draw [cdmedlines] (-1.2, 0) -- (0, -1.2) -- (0, 1.2) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdtype}{triA}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triA)}}{
+  \draw [cdmedlines] (-1.2, 0) -- (0, -1.2) -- (0, 1.2) -- cycle;
+  \draw (-0.65, -0.3) -- (-0.4, 0.3) -- (-0.15, -0.3) (-0.575, -0.12) -- (-0.225, -0.12);
+ }{}
+ \ifthenelse{\equal{\cdtype}{triD}\OR\equal{\cdtype}{(triD}\OR\equal{\cdtype}{(triD)}}{
+  \draw [cdmedlines] (-1.2, 0) -- (0, -1.2) -- (0, 1.2) -- cycle;
+  \draw (-0.65, -0.3) -- (-0.45, -0.3) arc (-90 : 90 : 0.3) -- (-0.65, 0.3) (-0.575, -0.3) -- (-0.575, 0.3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triD}}{
+  \draw (-0.5, -1.5) arc (-90 : 90 : 1.5);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-)}\OR\equal{\cdtype}{(---)}\OR\equal{\cdtype}{(///)}\OR\equal{\cdtype}{(tri)}\OR\equal{\cdtype}{(triA)}\OR\equal{\cdtype}{(triD)}}{
+  \draw (-0.5, 0) circle (1.5);
+ }{}
+}
+\newcommand{\othergndR}[1]{
+ #1
+ \draw (0, 0) -- (-1, 0);
+ \ifthenelse{\equal{\cdtype}{-}\OR\equal{\cdtype}{(-}\OR\equal{\cdtype}{(-)}}{
+  \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{---}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(---)}}{
+  \draw [cdmedlines] (0, -1.3) -- (0, 1.3) (0.5, -0.8) -- (0.5, 0.8) (1, -0.3) -- (1, 0.3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{///}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(///)}}{
+  \draw [cdmedlines] (0, -1.3) -- (0, 1.3);
+  \draw (0, -0.975) -- (0.5, -1.3) (0, -0.325) -- (1, -0.975) (0, 0.325) -- (1, -0.325) (0, 0.975) -- (1, 0.325) (0.5, 1.3) -- (1, 0.975);
+ }{}
+ \ifthenelse{\equal{\cdtype}{tri}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(tri)}}{
+  \draw [cdmedlines] (1.2, 0) -- (0, 1.2) -- (0, -1.2) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdtype}{triA}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triA)}}{
+  \draw [cdmedlines] (1.2, 0) -- (0, 1.2) -- (0, -1.2) -- cycle;
+  \draw (0.15, -0.3) -- (0.4, 0.3) -- (0.65, -0.3) (0.225, -0.12) -- (0.575, -0.12);
+ }{}
+ \ifthenelse{\equal{\cdtype}{triD}\OR\equal{\cdtype}{(triD}\OR\equal{\cdtype}{(triD)}}{
+  \draw [cdmedlines] (1.2, 0) -- (0, 1.2) -- (0, -1.2) -- cycle;
+  \draw (0.15, -0.3) -- (0.35, -0.3) arc (-90 : 90 : 0.3) -- (0.15, 0.3) (0.225, -0.3) -- (0.225, 0.3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triD}}{
+  \draw (0.5, 1.5) arc (90 : 270 : 1.5);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-)}\OR\equal{\cdtype}{(---)}\OR\equal{\cdtype}{(///)}\OR\equal{\cdtype}{(tri)}\OR\equal{\cdtype}{(triA)}\OR\equal{\cdtype}{(triD)}}{
+  \draw (0.5, 0) circle (1.5);
+ }{}
+}
+\newcommand{\othergndU}[1]{
+ #1
+ \draw (0, 0) -- (0, -1);
+ \ifthenelse{\equal{\cdtype}{-}\OR\equal{\cdtype}{(-}\OR\equal{\cdtype}{(-)}}{
+  \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{---}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(---)}}{
+  \draw [cdmedlines] (-1.3, 0) -- (1.3, 0) (-0.8, 0.5) -- (0.8, 0.5) (-0.3, 1) -- (0.3, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{///}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(///)}}{
+  \draw [cdmedlines] (-1.3, 0) -- (1.3, 0);
+  \draw (-1.3, 0.5) -- (-0.975, 1) (-0.975, 0) -- (-0.325, 1) (-0.325, 0) -- (0.325, 1) (0.325, 0) -- (0.975, 1) (0.975, 0) -- (1.3, 0.5);
+ }{}
+ \ifthenelse{\equal{\cdtype}{tri}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(tri)}}{
+  \draw [cdmedlines] (0, 1.2) -- (-1.2, 0) -- (1.2, 0) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdtype}{triA}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triA)}}{
+  \draw [cdmedlines] (0, 1.2) -- (-1.2, 0) -- (1.2, 0) -- cycle;
+  \draw (-0.25, 0.15) -- (0, 0.75) -- (0.25, 0.15) (-0.175, 0.33) -- (0.175, 0.33);
+ }{}
+ \ifthenelse{\equal{\cdtype}{triD}\OR\equal{\cdtype}{(triD}\OR\equal{\cdtype}{(triD)}}{
+  \draw [cdmedlines] (0, 1.2) -- (-1.2, 0) -- (1.2, 0) -- cycle;
+  \draw (-0.25, 0.15) -- (-0.05, 0.15) arc (-90 : 90 : 0.3) -- (-0.25, 0.75) (-0.175, 0.15) -- (-0.175, 0.75);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triD}}{
+  \draw (-1.5, 0.5) arc (180 : 360 : 1.5);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-)}\OR\equal{\cdtype}{(---)}\OR\equal{\cdtype}{(///)}\OR\equal{\cdtype}{(tri)}\OR\equal{\cdtype}{(triA)}\OR\equal{\cdtype}{(triD)}}{
+  \draw (0, 0.5) circle (1.5);
+ }{}
+}
+\newcommand{\othergndD}[1]{
+ #1
+ \draw (0, 0) -- (0, 1);
+ \ifthenelse{\equal{\cdtype}{-}\OR\equal{\cdtype}{(-}\OR\equal{\cdtype}{(-)}}{
+  \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{---}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(---)}}{
+  \draw [cdmedlines] (-1.3, 0) -- (1.3, 0) (-0.8, -0.5) -- (0.8, -0.5) (-0.3, -1) -- (0.3, -1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{///}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(///)}}{
+  \draw [cdmedlines] (-1.3, 0) -- (1.3, 0);
+  \draw (-0.975, 0) -- (-1.3, -0.5) (-0.325, 0) -- (-0.975, -1) (0.325, 0) -- (-0.325, -1) (0.975, 0) -- (0.325, -1) (1.3, -0.5) -- (0.975, -1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{tri}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(tri)}}{
+  \draw [cdmedlines] (0, -1.2) -- (1.2, 0) -- (-1.2, 0) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdtype}{triA}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triA)}}{
+  \draw [cdmedlines] (0, -1.2) -- (1.2, 0) -- (-1.2, 0) -- cycle;
+  \draw (-0.25, -0.75) -- (0, -0.15) -- (0.25, -0.75) (-0.175, -0.57) -- (0.175, -0.57);
+ }{}
+ \ifthenelse{\equal{\cdtype}{triD}\OR\equal{\cdtype}{(triD}\OR\equal{\cdtype}{(triD)}}{
+  \draw [cdmedlines] (0, -1.2) -- (1.2, 0) -- (-1.2, 0) -- cycle;
+  \draw (-0.25, -0.75) -- (-0.05, -0.75) arc (-90 : 90 : 0.3) -- (-0.25, -0.15) (-0.175, -0.75) -- (-0.175, -0.15);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-}\OR\equal{\cdtype}{(---}\OR\equal{\cdtype}{(///}\OR\equal{\cdtype}{(tri}\OR\equal{\cdtype}{(triA}\OR\equal{\cdtype}{(triD}}{
+  \draw (1.5, -0.5) arc (0 : 180 : 1.5);
+ }{}
+ \ifthenelse{\equal{\cdtype}{(-)}\OR\equal{\cdtype}{(---)}\OR\equal{\cdtype}{(///)}\OR\equal{\cdtype}{(tri)}\OR\equal{\cdtype}{(triA)}\OR\equal{\cdtype}{(triD)}}{
+  \draw (0, -0.5) circle (1.5);
+ }{}
+}
+\newcommand{\setground}[1]{\def\ground{\othergnd{#1}}}
+% Other powers
+\newcommand{\otherpow}[6][]{
+ \prepareelement{P}{#2}{#5}{}{#6}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname otherpow\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\otherpowL}[1]{
+ \setstandardtextpos{l}
+ \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ \ifthenelse{\equal{\cdtype}{>}}{\placerefvalH{-0.75}{0}{0.75}{-1.75}{0}{1.75}}{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{\placerefvalH{-1.75}{0}{1.75}{-1.75}{0}{1.75}}{}
+ \ifthenelse{\equal{\cdtype}{-}}{\placerefvalH{-0.5}{0}{0.5}{-1.75}{0}{1.75}}{}
+ #1
+ \ifthenelse{\equal{\cdtype}{|>}}{
+  \cdbigarrow[1.9]{-0.9}{0}{180}
+ }{}
+ \ifthenelse{\equal{\cdtype}{>}}{
+  \draw (-0.4, 0) -- (1, 0);
+  \draw (0.4, -0.6) -- (-0.4, 0) -- (0.4, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>}}{
+  \draw (-0.4, 0) -- (1, 0);
+  \draw (0.4, -0.6) -- (-0.4, 0) -- (0.4, 0.6);
+  \draw (-0.1, -0.6) -- (-0.9, 0) -- (-0.1, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{
+  \draw (-0.4, 0) -- (1, 0);
+  \draw (0.4, -0.6) -- (-0.4, 0) -- (0.4, 0.6);
+  \draw (-0.1, -0.6) -- (-0.9, 0) -- (-0.1, 0.6);
+  \draw (-0.6, -0.6) -- (-1.4, 0) -- (-0.6, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{-}}{
+  \draw (-0.1, 0) -- (1, 0);
+  \draw (-0.1, -0.8) -- (-0.1, 0.8);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \draw (0.3, 0) -- (1, 0);
+  \draw (-0.3, 0) circle (0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o+}}{
+  \draw (0.3, 0) -- (1, 0);
+  \cdoplus{-0.3}{0}
+ }{}
+ \ifthenelse{\equal{\cdtype}{o-}}{
+  \draw (0.3, 0) -- (1, 0);
+  \cdominus{-0.3}{0}
+ }{}
+}
+\newcommand{\otherpowR}[1]{
+ \setstandardtextpos{r}
+ \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ \ifthenelse{\equal{\cdtype}{>}}{\placerefvalH{-0.75}{0}{0.75}{-1.75}{0}{1.75}}{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{\placerefvalH{-1.75}{0}{1.75}{-1.75}{0}{1.75}}{}
+ \ifthenelse{\equal{\cdtype}{-}}{\placerefvalH{-0.5}{0}{0.5}{-1.75}{0}{1.75}}{}
+ #1
+ \ifthenelse{\equal{\cdtype}{|>}}{
+  \cdbigarrow[1.9]{0.9}{0}{0}
+ }{}
+ \ifthenelse{\equal{\cdtype}{>}}{
+  \draw (0.4, 0) -- (-1, 0);
+  \draw (-0.4, -0.6) -- (0.4, 0) -- (-0.4, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>}}{
+  \draw (0.4, 0) -- (-1, 0);
+  \draw (-0.4, -0.6) -- (0.4, 0) -- (-0.4, 0.6);
+  \draw (0.1, -0.6) -- (0.9, 0) -- (0.1, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{
+  \draw (0.4, 0) -- (-1, 0);
+  \draw (-0.4, -0.6) -- (0.4, 0) -- (-0.4, 0.6);
+  \draw (0.1, -0.6) -- (0.9, 0) -- (0.1, 0.6);
+  \draw (0.6, -0.6) -- (1.4, 0) -- (0.6, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{-}}{
+  \draw (0.1, 0) -- (-1, 0);
+  \draw (0.1, -0.8) -- (0.1, 0.8);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \draw (-0.3, 0) -- (-1, 0);
+  \draw (0.3, 0) circle (0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o+}}{
+  \draw (-0.3, 0) -- (-1, 0);
+  \cdoplus{0.3}{0}
+ }{}
+ \ifthenelse{\equal{\cdtype}{o-}}{
+  \draw (-0.3, 0) -- (-1, 0);
+  \cdominus{0.3}{0}
+ }{}
+}
+\newcommand{\otherpowU}[1]{
+ \setstandardtextpos{u}
+ \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ \ifthenelse{\equal{\cdtype}{>}}{\placerefvalV{-0.75}{0}{0.75}{-1.5}{0}{1.5}}{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{\placerefvalV{-0.75}{0}{0.75}{-2.5}{0}{2.5}}{}
+ \ifthenelse{\equal{\cdtype}{-}}{\placerefvalV{-0.75}{0}{0.75}{-1.25}{0}{1.25}}{}
+ #1
+ \ifthenelse{\equal{\cdtype}{|>}}{
+  \cdbigarrow[1.9]{0}{0.9}{90}
+ }{}
+ \ifthenelse{\equal{\cdtype}{>}}{
+  \draw (0, 0.4) -- (0, -1);
+  \draw (-0.6, -0.4) -- (0, 0.4) -- (0.6, -0.4);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>}}{
+  \draw (0, 0.4) -- (0, -1);
+  \draw (-0.6, -0.4) -- (0, 0.4) -- (0.6, -0.4);
+  \draw (-0.6, 0.1) -- (0, 0.9) -- (0.6, 0.1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{
+  \draw (0, 0.4) -- (0, -1);
+  \draw (-0.6, -0.4) -- (0, 0.4) -- (0.6, -0.4);
+  \draw (-0.6, 0.1) -- (0, 0.9) -- (0.6, 0.1);
+  \draw (-0.6, 0.6) -- (0, 1.4) -- (0.6, 0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{-}}{
+  \draw (0, 0.1) -- (0, -1);
+  \draw (-0.8, 0.1) -- (0.8, 0.1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \draw (0, -0.3) -- (0, -1);
+  \draw (0, 0.3) circle (0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o+}}{
+  \draw (0, -0.3) -- (0, -1);
+  \cdoplus{0}{0.3}
+ }{}
+ \ifthenelse{\equal{\cdtype}{o-}}{
+  \draw (0, -0.3) -- (0, -1);
+  \cdominus{0}{0.3}
+ }{}
+}
+\newcommand{\otherpowD}[1]{
+ \setstandardtextpos{d}
+ \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ \ifthenelse{\equal{\cdtype}{>}}{\placerefvalV{-0.75}{0}{0.75}{-1.5}{0}{1.5}}{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{\placerefvalV{-0.75}{0}{0.75}{-2.5}{0}{2.5}}{}
+ \ifthenelse{\equal{\cdtype}{-}}{\placerefvalV{-0.75}{0}{0.75}{-1.25}{0}{1.25}}{}
+ #1
+ \ifthenelse{\equal{\cdtype}{|>}}{
+  \cdbigarrow[1.9]{0}{-0.9}{-90}
+ }{}
+ \ifthenelse{\equal{\cdtype}{>}}{
+  \draw (0, -0.4) -- (0, 1);
+  \draw (-0.6, 0.4) -- (0, -0.4) -- (0.6, 0.4);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>}}{
+  \draw (0, -0.4) -- (0, 1);
+  \draw (-0.6, 0.4) -- (0, -0.4) -- (0.6, 0.4);
+  \draw (-0.6, -0.1) -- (0, -0.9) -- (0.6, -0.1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{>>>}}{
+  \draw (0, -0.4) -- (0, 1);
+  \draw (-0.6, 0.4) -- (0, -0.4) -- (0.6, 0.4);
+  \draw (-0.6, -0.1) -- (0, -0.9) -- (0.6, -0.1);
+  \draw (-0.6, -0.6) -- (0, -1.4) -- (0.6, -0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{-}}{
+  \draw (0, -0.1) -- (0, 1);
+  \draw (-0.8, -0.1) -- (0.8, -0.1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \draw (0, 0.3) -- (0, 1);
+  \draw (0, -0.3) circle (0.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{o+}}{
+  \draw (0, 0.3) -- (0, 1);
+  \cdoplus{0}{-0.3}
+ }{}
+ \ifthenelse{\equal{\cdtype}{o-}}{
+  \draw (0, 0.3) -- (0, 1);
+  \cdominus{0}{-0.3}
+ }{}
+}
+\newcommand{\setpower}[1]{\def\power{\otherpow{#1}}}
+% Other sources
+\newcommand{\othersrc}[7][]{
+ \prepareelement{UI}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname othersrc\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\othersrcH}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{oo}}{
+  \placerefvalH{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] (-0.8, 0) circle (1.6) (0.8, 0) circle (1.6);
+  \draw (-2.4, 0) -- (-3, 0) (2.4, 0) -- (3, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{()}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (-0.4, 1.8) arc (90 : 270 : 1.8) (0.4, -1.8) arc (-90 : 90 : 1.8);
+  \draw (-2.2, 0) -- (-3, 0) (2.2, 0) -- (3, 0);
+ }{}
+}
+\newcommand{\othersrcL}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{batt}}{
+  \placerefvalH{-1.25}{0}{1.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (-0.45, -2) -- (-0.45, 2);
+  \draw [cdthicklines] (0.45, -1) -- (0.45, 1);
+  \draw (-0.45, 0) -- (-1, 0) (0.45, 0) -- (1, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{batt2}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (-1.35, -2) -- (-1.35, 2) (0.45, -2) -- (0.45, 2);
+  \draw [cdthicklines] (-0.45, -1) -- (-0.45, 1) (1.35, -1) -- (1.35, 1);
+  \draw (-1.35, 0) -- (-2, 0) (-0.45, 0) -- (0.45, 0) (1.35, 0) -- (2, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{battn}}{
+  \placerefvalH{-2.75}{0}{2.75}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (-1.9, -2) -- (-1.9, 2) (1, -2) -- (1, 2);
+  \draw [cdthicklines] (-1, -1) -- (-1, 1) (1.9, -1) -- (1.9, 1);
+  \draw (-1.9, 0) -- (-3, 0) (-1, 0) -- (-0.6, 0) (-0.2, 0) -- (0.2, 0) (0.6, 0) -- (1, 0) (1.9, 0) -- (3, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{+-}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+  \cdplus{-1.1}{0}
+  \cdminus{1.1}{0}
+ }{}
+ \ifthenelse{\equal{\cdtype}{->}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+  \cdbigarrow[3]{-1.5}{0}{180}
+ }{}
+}
+\newcommand{\othersrcR}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{batt}}{
+  \placerefvalH{-1.25}{0}{1.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdthicklines] (-0.45, -1) -- (-0.45, 1);
+  \draw [cdmedlines] (0.45, -2) -- (0.45, 2);
+  \draw (-0.45, 0) -- (-1, 0) (0.45, 0) -- (1, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{batt2}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdthicklines] (-1.35, -1) -- (-1.35, 1) (0.45, -1) -- (0.45, 1);
+  \draw [cdmedlines] (-0.45, -2) -- (-0.45, 2) (1.35, -2) -- (1.35, 2);
+  \draw (-1.35, 0) -- (-2, 0) (-0.45, 0) -- (0.45, 0) (1.35, 0) -- (2, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{battn}}{
+  \placerefvalH{-2.75}{0}{2.75}{-3.25}{0}{3.25}
+  #1
+  \draw [cdthicklines] (-1.9, -1) -- (-1.9, 1) (1, -1) -- (1, 1);
+  \draw [cdmedlines] (-1, -2) -- (-1, 2) (1.9, -2) -- (1.9, 2);
+  \draw (-1.9, 0) -- (-3, 0) (-1, 0) -- (-0.6, 0) (-0.2, 0) -- (0.2, 0) (0.6, 0) -- (1, 0) (1.9, 0) -- (3, 0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{+-}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+  \cdminus{-1.1}{0}
+  \cdplus{1.1}{0}
+ }{}
+ \ifthenelse{\equal{\cdtype}{->}}{
+  \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+  \cdbigarrow[3]{1.5}{0}{0}
+ }{}
+}
+\newcommand{\othersrcV}[1]{
+ \setstandardtextpos{r}
+ \ifthenelse{\equal{\cdtype}{o}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{oo}}{
+  \placerefvalV{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (0, -0.8) circle (1.6) (0, 0.8) circle (1.6);
+  \draw (0, -2.4) -- (0, -3) (0, 2.4) -- (0, 3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{()}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] (-1.8, -0.4) arc (-180 : 0 : 1.8) (1.8, 0.4) arc (0 : 180 : 1.8);
+  \draw (0, -2.2) -- (0, -3) (0, 2.2) -- (0, 3);
+ }{}
+}
+\newcommand{\othersrcU}[1]{
+ \setstandardtextpos{r}
+ \ifthenelse{\equal{\cdtype}{batt}}{
+  \placerefvalV{-2.5}{0}{2.5}{-1.75}{0}{1.75}
+  #1
+  \draw [cdthicklines] (-1, -0.45) -- (1, -0.45);
+  \draw [cdmedlines] (-2, 0.45) -- (2, 0.45);
+  \draw (0, -0.45) -- (0, -1) (0, 0.45) -- (0, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{batt2}}{
+  \placerefvalV{-2.5}{0}{2.5}{-2.75}{0}{2.75}
+  #1
+  \draw [cdthicklines] (-1, -1.35) -- (1, -1.35) (-1, 0.45) -- (1, 0.45);
+  \draw [cdmedlines] (-2, -0.45) -- (2, -0.45) (-2, 1.35) -- (2, 1.35);
+  \draw (0, -1.35) -- (0, -2) (0, -0.45) -- (0, 0.45) (0, 1.35) -- (0, 2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{battn}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3.25}{0}{3.25}
+  #1
+  \draw [cdthicklines] (-1, -1.9) -- (1, -1.9) (-1, 1) -- (1, 1);
+  \draw [cdmedlines] (-2, -1) -- (2, -1) (-2, 1.9) -- (2, 1.9);
+  \draw (0, -1.9) -- (0, -3) (0, -1) -- (0, -0.6) (0, -0.2) -- (0, 0.2) (0, 0.6) -- (0, 1) (0, 1.9) -- (0, 3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{+-}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+  \cdminus{0}{-1.1}
+  \cdplus{0}{1.1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{->}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+  \cdbigarrow[3]{0}{1.5}{90}
+ }{}
+}
+\newcommand{\othersrcD}[1]{
+ \setstandardtextpos{r}
+ \ifthenelse{\equal{\cdtype}{batt}}{
+  \placerefvalV{-2.5}{0}{2.5}{-1.75}{0}{1.75}
+  #1
+  \draw [cdmedlines] (-2, -0.45) -- (2, -0.45);
+  \draw [cdthicklines] (-1, 0.45) -- (1, 0.45);
+  \draw (0, -0.45) -- (0, -1) (0, 0.45) -- (0, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{batt2}}{
+  \placerefvalV{-2.5}{0}{2.5}{-2.75}{0}{2.75}
+  #1
+  \draw [cdmedlines] (-2, -1.35) -- (2, -1.35) (-2, 0.45) -- (2, 0.45);
+  \draw [cdthicklines] (-1, -0.45) -- (1, -0.45) (-1, 1.35) -- (1, 1.35);
+  \draw (0, -1.35) -- (0, -2) (0, -0.45) -- (0, 0.45) (0, 1.35) -- (0, 2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{battn}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3.25}{0}{3.25}
+  #1
+  \draw [cdmedlines] (-2, -1.9) -- (2, -1.9) (-2, 1) -- (2, 1);
+  \draw [cdthicklines] (-1, -1) -- (1, -1) (-1, 1.9) -- (1, 1.9);
+  \draw (0, -1.9) -- (0, -3) (0, -1) -- (0, -0.6) (0, -0.2) -- (0, 0.2) (0, 0.6) -- (0, 1) (0, 1.9) -- (0, 3);
+ }{}
+ \ifthenelse{\equal{\cdtype}{+-}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+  \cdplus{0}{-1.1}
+  \cdminus{0}{1.1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{->}}{
+  \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+  #1
+  \draw [cdmedlines] circle (2);
+  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+  \cdbigarrow[3]{0}{-1.5}{-90}
+ }{}
+}
+% Measurement device
+\newcommand{\measdev}[6][]{
+ \prepareelement{UI}{}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname measdev\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\measdevH}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+}
+\newcommand{\measdevV}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+}
+% Additional wires
+\let\wireelemUIsrcmeas=\wireelemUI
+\renewcommand{\wireelemUI}[2]{
+ \ifthenelse{\equal{#1}{L}}{
+  \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(2, 0)}]}{}
+  \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(1, 0)}]}{}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(-2, 0)}]}{}
+  \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(-1, 0)}]}{}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(0, -2)}]}{}
+  \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(0, -1)}]}{}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(0, 2)}]}{}
+  \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(0, 1)}]}{}
+ }{}
+ \wireelemUIsrcmeas{#1}{#2}
+ \ifthenelse{\equal{\cdtype}{batt}\OR\equal{\cdtype}{batt2}}{\end{scope}}{}
+}
+% Signal symbols
+\newcommand{\sigsymsin}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw plot [smooth, tension = 0.75] coordinates {(-0.8, 0) (-0.6, 0.15) (-0.4, 0.212132) (-0.2, 0.15) (0, 0)
+   (0.2, -0.15) (0.4, -0.212132) (0.6, -0.15) (0.8, 0)};
+ \end{scope}
+}
+\newcommand{\sigsym}[1]{
+ \ifthenelse{\equal{#1}{sin}}{
+  \draw plot [smooth, tension = 0.75] coordinates {(-1, 0) (-0.75, 0.494975) (-0.5, 0.7) (-0.25, 0.494975) (0, 0)
+   (0.25, -0.494975) (0.5, -0.7) (0.75, -0.494975) ((1, 0)};
+ }{}
+ \ifthenelse{\equal{#1}{rec}}{
+  \draw (-1, -0.65) -- (-0.5, -0.65) -- (-0.5, 0.65) -- (0.5, 0.65) -- (0.5, -0.65) -- (1, -0.65);
+ }{}
+ \ifthenelse{\equal{#1}{tri}}{
+  \draw (-1, 0) -- (-0.5, 0.8) -- (0.5, -0.8) -- (1, 0);
+ }{}
+ \ifthenelse{\equal{#1}{saw}}{
+  \draw (-1, 0) -- (0, 0.8) -- (0, -0.8) -- (1, 0);
+ }{}
+ \ifthenelse{\equal{#1}{-}}{
+  \draw (-0.8, 0) -- (0.8, 0);
+ }{}
+ \ifthenelse{\equal{#1}{--}}{
+  \draw (-0.8, -0.35) -- (0.8, -0.35) (-0.8, 0.35) -- (0.8, 0.35);
+ }{}
+ \ifthenelse{\equal{#1}{---}}{
+  \draw (-0.8, -0.6) -- (0.8, -0.6) (-0.8, 0) -- (0.8, 0) (-0.8, 0.6) -- (0.8, 0.6);
+ }{}
+ \ifthenelse{\equal{#1}{~}}{
+  \sigsymsin{0}{0}
+ }{}
+ \ifthenelse{\equal{#1}{~~}}{
+  \sigsymsin{0}{-0.35}\sigsymsin{0}{0.35}
+ }{}
+ \ifthenelse{\equal{#1}{~~~}}{
+  \sigsymsin{0}{-0.6}\sigsymsin{0}{0}\sigsymsin{0}{0.6}
+ }{}
+ \ifthenelse{\equal{#1}{~/}}{
+  \sigsymsin{0}{-0.35}\sigsymsin{0}{0.35}
+  \draw (-0.1, 0.1) -- (0.1, 0.6);
+ }{}
+ \ifthenelse{\equal{#1}{/~}}{
+  \sigsymsin{0}{-0.35}\sigsymsin{0}{0.35}
+  \draw (-0.1, -0.6) -- (0.1, -0.1);
+ }{}
+ \ifthenelse{\equal{#1}{~//}}{
+  \sigsymsin{0}{-0.6}\sigsymsin{0}{0}\sigsymsin{0}{0.6}
+  \draw (-0.1, -0.25) -- (0.1, 0.25) (-0.1, 0.35) -- (0.1, 0.85);
+ }{}
+ \ifthenelse{\equal{#1}{/~/}}{
+  \sigsymsin{0}{-0.6}\sigsymsin{0}{0}\sigsymsin{0}{0.6}
+  \draw (-0.1, -0.85) -- (0.1, -0.35) (-0.1, 0.35) -- (0.1, 0.85);
+ }{}
+ \ifthenelse{\equal{#1}{//~}}{
+  \sigsymsin{0}{-0.6}\sigsymsin{0}{0}\sigsymsin{0}{0.6}
+  \draw (-0.1, -0.85) -- (0.1, -0.35) (-0.1, -0.25) -- (0.1, 0.25);
+ }{}
+ \ifthenelse{\equal{#1}{~/~}}{
+  \sigsymsin{0}{-0.6}\sigsymsin{0}{0}\sigsymsin{0}{0.6}
+  \draw (-0.1, -0.25) -- (0.1, 0.25);
+ }{}
+ % Deprecated symbols
+ \ifthenelse{\equal{#1}{cos}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol 'cos' is deprecated; use 'sin' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-cos}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-cos' is deprecated; use 'sin' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{cos>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol 'cos>' is deprecated; use 'sin' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-cos>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-cos>' is deprecated; use 'sin' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-rec}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-rec' is deprecated; use 'rec' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{rec>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol 'rec>' is deprecated; use 'rec' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-rec>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-rec>' is deprecated; use 'rec' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-tri}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-tri' is deprecated; use 'tri' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{tri>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol 'tri>' is deprecated; use 'tri' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-tri>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-tri>' is deprecated; use 'tri' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-saw}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-saw' is deprecated; use 'saw' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{saw>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol 'saw>' is deprecated; use 'saw' instead.}
+ }{}
+ \ifthenelse{\equal{#1}{-saw>}}{
+  \PackageWarning{circdia/srcmeas}{Signal symbol '-saw>' is deprecated; use 'saw' instead.}
+ }{}
+}
+% Noisy sources, resistors, and transistors
+\newcommand{\noisy}{
+ \ifthenelse{\equal{\cdelem}{UI}}{
+  \begin{scope}
+   \clip circle (2);
+   \foreach \i in {-3, ..., 3} { \draw (0.78*\i-2, -2) -- ++(4, 4); }
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{\cdelem}{R}}{
+  \ifthenelse{\equal{\cdorient}{H}}{
+   \begin{scope}
+    \clip (-2.5, -0.94) rectangle (2.5, 0.94);
+    \foreach \i in {-4, ..., 4} { \draw (0.78*\i-1, -1) -- ++(2, 2); }
+   \end{scope}
+  }{
+   \begin{scope}
+    \clip (-0.94, -2.5) rectangle (0.94, 2.5);
+    \foreach \i in {-4, ..., 4} { \draw (-1, 0.78*\i-1) -- ++(2, 2); }
+   \end{scope}
+  }
+ }{}
+ \ifthenelse{\equal{\cdelem}{T}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \begin{scope}
+    \clip (0.2, 0) circle (2.662705);
+    \foreach \i in {-4, ..., 4} { \draw (0.78*\i-2.8, -3) -- ++(6, 6); }
+   \end{scope}
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \begin{scope}
+    \clip (-0.2, 0) circle (2.662705);
+    \foreach \i in {-4, ..., 4} { \draw (0.78*\i-3.2, -3) -- ++(6, 6); }
+   \end{scope}
+  }{}
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \begin{scope}
+    \clip (0, -0.2) circle (2.662705);
+    \foreach \i in {-4, ..., 4} { \draw (0.78*\i-3, -3.2) -- ++(6, 6); }
+   \end{scope}
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \begin{scope}
+    \clip (0, 0.2) circle (2.662705);
+    \foreach \i in {-4, ..., 4} { \draw (0.78*\i-3, -2.8) -- ++(6, 6); }
+   \end{scope}
+  }{}
+ }{}
+}
+% Polarity
+\newcommand{\polarity}[1]{
+ \ifthenelse{\equal{#1}{UL}}{\cdoplus{-2.75}{1.25}\cdominus{2.75}{1.25}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdoplus{2.75}{1.25}\cdominus{-2.75}{1.25}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdoplus{-2.75}{-1.25}\cdominus{2.75}{-1.25}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdoplus{2.75}{-1.25}\cdominus{-2.75}{-1.25}}{}
+ \ifthenelse{\equal{#1}{LU}}{\cdoplus{-1.25}{2.75}\cdominus{-1.25}{-2.75}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdoplus{-1.25}{-2.75}\cdominus{-1.25}{2.75}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdoplus{1.25}{2.75}\cdominus{1.25}{-2.75}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdoplus{1.25}{-2.75}\cdominus{1.25}{2.75}}{}
+}
+% Measurement unit
+\newcommand{\measunit}[1]{{\sffamily\cdputtext{0}{0}{c}{#1}}}

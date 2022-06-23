@@ -1,0 +1,202 @@
+\documentclass[a4paper,twoside,openany,headsepline,footsepline,draft]{scrbook}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[style=authoryear]{biblatex}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{gensymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[digital,srcmeas,semicon]{circdia}
+% \usepackage[dvipsnames]{xcolor}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{pdflscape}
+\usepackage{svg}
+\pagestyle{myheadings}
+\markboth{LibreSilicon's Standard Cell Library - Reference Manual -\hfill}{\hfill - Reference Manual - LibreSilicon's Standard Cell Library}
+
+\usepackage[colorlinks=true,linkcolor=blue,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
+
+\title{LibreSilicon's Standard Cell Library}
+\subtitle{- Reference Manual -}
+\author{chipforge \texttt{<stdcelllib@nospam.chipforge.org>}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+%\setlength{\parindent}{0pt} % get rid of annoying indents
+
+%\input{NAND2} \input{AND2}
+%\input{NOR2} \input{OR2}
+%\input{AOI21} \input{AO21}
+%\input{OAI21} \input{OA21}
+%\input{AAOI22} \input{AAO22}
+%\input{OOAI22} \input{OOA22}
+
+%\input{NAND3} \input{AND3}
+%\input{NOR3} \input{OR3}
+%\input{AOAI211} \input{AOA211}
+%\input{AOI31} \input{AO31}
+%\input{OAOI211} \input{OAO211}
+%\input{OAI22} \input{OA22}
+%\input{OAI31} \input{OA31}
+%\input{AOAOI2111} \input{AOAO2111}
+%\input{AOOAI212} \input{AOOA212}
+%\input{AAOI221} \input{AAO221}
+%\input{AOI22} \input{AO22}
+%\input{AAOAI221} \input{AAOA221}
+%\input{AOAI221} \input{AOA221}
+%\input{AAOI32} \input{AAO32}
+%\input{AOI32} \input{AO32}
+%\input{OAOAI2111} \input{OAOA2111}
+%\input{OAAOI212} \input{OAAO212}
+%\input{OOAI221} \input{OOA221}
+%\input{OOAOI221} \input{OOAO221}
+%\input{OAI32} \input{OA32}
+%\input{OOAI32} \input{OOA32}
+%\input{AOAAOI2112} \input{AOAAO2112}
+%\input{AOOAOI2121} \input{AOOAO2121}
+%\input{AOOAI213} \input{AOOA213}
+%\input{AAOAI2211} \input{AAOA2211}
+%\input{AAAOI222} \input{AAAO222}
+%\input{AAOAOI2211} \input{AAOAO2211}
+%\input{AAOOAI222} \input{AAOOA222}
+%\input{AAOI321} \input{AAO321}
+%\input{AAOI33} \input{AAO33}
+%\input{OAOOAI2112} \input{OAOOA2112}
+%\input{OAAOAI2121} \input{OAAOA2121}
+%\input{OAAOI213} \input{OAAO213}
+%\input{OAAOI222} \input{OAAO222}
+%\input{OOAOI2211} \input{OOAO2211}
+%\input{OOOAI222} \input{OOOA222}
+%\input{OOAOAI2211} \input{OOAOA2211}
+%\input{OOAAOI222} \input{OOAAO222}
+%\input{OOAI321} \input{OOA321}
+%\input{OOAI33} \input{OOA33}
+%\input{AOAAOI2113} \input{AOAAO2113}
+%\input{AOOAAOI2122} \input{AOOAAO2122}
+%\input{AAOOAI2212} \input{AAOOA2212}
+%\input{AAAOAI2221} \input{AAAOA2221}
+%\input{AAOAAOI2212} \input{AAOAAO2212}
+%\input{AAOOAOI2221} \input{AAOOAO2221}
+%\input{AAOOAI223} \input{AAOOA223}
+%\input{AAAOI322} \input{AAAO322}
+%\input{AAOI331} \input{AAO331}
+%\input{OAOOAI2113} \input{OAOOA2113}
+%\input{OAAOOAI2122} \input{OAAOOA2122}
+%\input{OAAOI223} \input{OAAO223}
+%\input{OOAAOI2212} \input{OOAAO2212}
+%\input{OOOAOI2221} \input{OOOAO2221}
+%\input{OOAOOAI2212} \input{OOAOOA2212}
+%\input{OOAAOAI2221} \input{OOAAOA2221}
+%\input{OOAAOI223} \input{OOAAO223}
+%\input{OOOAI322} \input{OOOA322}
+%\input{OOAI331} \input{OOA331}
+%\input{AOOAAOI2123} \input{AOOAAO2123}
+%\input{AAOOAI2213} \input{AAOOA2213}
+%\input{AAAOOAI2222} \input{AAAOOA2222}
+%\input{AAOAAOI2213} \input{AAOAAO2213}
+%\input{AAOOAAOI2222} \input{AAOOAAO2222}
+%\input{AAAOI332} \input{AAAO332}
+%\input{OAAOOAI2123} \input{OAAOOA2123}
+%\input{OOAAOI2213} \input{OOAAO2213}
+%\input{OOOAAOI2222} \input{OOOAAO2222}
+%\input{OOAOOAI2213} \input{OOAOOA2213}
+%\input{OOAAOOAI2222} \input{OOAAOOA2222}
+%\input{OOOAI332} \input{OOOA332}
+%\input{AAOOAAOI2223} \input{AAOOAAO2223}
+%\input{AAAOI333} \input{AAAO333}
+%\input{OOOAAOI2223} \input{OOOAAO2223}
+%\input{OOAAOOAI2223} \input{OOAAOOA2223}
+%\input{OOOAI333} \input{OOOA333}
+%\input{AOOAI222} \input{AOOA222}
+%\input{AOOAI223} \input{AOOA223}
+%
+%\input{NAND4} \input{AND4}
+%\input{NOR4} \input{OR4}
+%\input{AOAI212} \input{AOA212}
+%\input{AOI23} \input{AO23}
+%\input{AOAI311} \input{AOA311}
+%\input{AOI41} \input{AO41}
+%\input{OAOI212} \input{OAO212}
+%\input{OAI23} \input{OA23}
+%\input{OAOI311} \input{OAO311}
+%\input{OAI41} \input{OA41}
+%\input{AOAOAI21111} \input{AOAOA21111}
+%\input{AOAOI2112} \input{AOAO2112}
+%\input{AOAOI2121} \input{AOAO2121}
+%\input{AOOAI2121} \input{AOOA2121}
+%\input{AAOI222} \input{AAO222}
+%\input{AAOAI222} \input{AAOA222}
+%\input{AOAI231} \input{AOA231}
+%\input{AOAOI3111} \input{AOAO3111}
+%\input{AOOAI312} \input{AOOA312}
+%\input{AAOAI321} \input{AAOA321}
+%\input{AOAI321} \input{AOA321}
+%\input{AOI33} \input{AO33}
+%\input{OAOAOI21111} \input{OAOAO21111}
+%\input{OAOAI2112} \input{OAOA2112}
+%\input{OAAOI2121} \input{OAAO2121}
+%\input{OAOAI2121} \input{OAOA2121}
+%\input{OAOAI2211} \input{OAOA2211}
+%\input{OAOI221} \input{OAO221}
+%\input{OAOI222} \input{OAO222}
+%\input{OAOI231} \input{OAO231}
+%\input{OOAI222} \input{OOA222}
+%\input{OOAOI222} \input{OOAO222}
+%\input{OAOAI3111} \input{OAOA3111}
+%\input{OAAOI312} \input{OAAO312}
+%\input{OAOI321} \input{OAO321}
+%\input{OAI33} \input{OA33}
+%\input{OOAOI321} \input{OOAO321}
+%\input{OAI42} \input{OA42}
+%\input{OOAI42} \input{OOA42}
+%\input{AOAOAOI211111} \input{AOAOAO211111}
+%\input{AOAOOAI21112} \input{AOAOOA21112}
+%\input{AOAAOAI21121} \input{AOAAOA21121}
+%\input{AOAAOI21121} \input{AOAAO21121}
+%\input{AOI42} \input{AO42}
+%\input{AOAOAI21121} \input{AOAOA21121}
+%\input{AOAAOI2122} \input{AOAAO2122}
+%\input{AOAOI2122} \input{AOAO2122}
+%\input{AOOAOI21211} \input{AOOAO21211}
+%\input{AOOOAI2122} \input{AOOOA2122}
+%\input{AOOAOAI21211} \input{AOOAOA21211}
+%\input{AOOAOI2122} \input{AOOAO2122}
+%\input{AOOAI2131} \input{AOOA2131}
+%\input{AOOAOI2131} \input{AOOAO2131}
+%\input{AOOAI214} \input{AOOA214}
+%\input{AAOAOI22111} \input{AAOAO22111}
+%\input{AAOAI2212} \input{AAOA2212}
+%\input{AAAOI2221} \input{AAAO2221}
+%\input{AAOAI2221} \input{AAOA2221}
+%\input{AAOAOAI22111} \input{AAOAOA22111}
+%\input{AAOAOI2212} \input{AAOAO2212}
+%\input{AAOAOI2221} \input{AAOAO2221}
+%\input{AAOOAI2221} \input{AAOOA2221}
+%\input{AOAI232} \input{AOA232}
+%\input{AOOAI232} \input{AOOA232}
+%\input{AOAAOI3112} \input{AOAAO3112}
+%\input{AOAOI3112} \input{AOAO3112}
+%\input{AOOAOI3121} \input{AOOAO3121}
+%\input{AOOAI313} \input{AOOA313}
+%\input{AAOAOI3211} \input{AAOAO3211}
+%\input{AAOOAI322} \input{AAOOA322}
+%\input{AAOAI3211} \input{AAOA3211}
+%\input{AAOI322} \input{AAO322}
+%\input{AAOAI331} \input{AAOA331}
+%\input{AOAOI3211} \input{AOAO3211}
+%\input{AOOAI322} \input{AOOA322}
+%\input{AOAI331} \input{AOA331}
+%\input{AAOI42} \input{AAO42}
+%\input{OAOAOAI211111} \input{OAOAOA211111}
+%\input{OAOAAOI21112} \input{OAOAAO21112}
+%\input{OAOAOI21121} \input{OAOAO21121}
+%\input{OAOOAI21121} \input{OAOOA21121}
+%\input{OAOOAOI21121} \input{OAOOAO21121}
+%\input{OAAOAOI21211} \input{OAAOAO21211}
+\input{OAAOAI2122} \input{OAAOA2122}
+
+\end{document}

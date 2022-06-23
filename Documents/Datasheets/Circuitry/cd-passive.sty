@@ -1,0 +1,182 @@
+% cd-passive.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.3 -- 2019/12/15.
+% Supports additional passive symbols for circdia.sty.
+% Stand-alone modify and trim
+\newcommand{\Modify}[3]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \ifthenelse{\equal{#3}{LU}}{
+   \draw (-3.6, 3.6) -- (3.8, -3.8);
+   \cdbigarrow{-4}{4}{135}
+  }{}
+  \ifthenelse{\equal{#3}{LD}}{
+   \draw (-3.6, -3.6) -- (3.8, 3.8);
+   \cdbigarrow{-4}{-4}{-135}
+  }{}
+  \ifthenelse{\equal{#3}{RU}}{
+   \draw (3.6, 3.6) -- (-3.8, -3.8);
+   \cdbigarrow{4}{4}{45}
+  }{}
+  \ifthenelse{\equal{#3}{RD}}{
+   \draw (3.6, -3.6) -- (-3.8, 3.8);
+   \cdbigarrow{4}{-4}{-45}
+  }{}
+ \end{scope}
+}
+\newcommand{\Trim}[3]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \ifthenelse{\equal{#3}{LU}}{
+   \draw (-3.6, 3.6) -- (3.8, -3.8) (-4, 3.2) -- (-3.2, 4);
+  }{}
+  \ifthenelse{\equal{#3}{LD}}{
+   \draw (-3.6, -3.6) -- (3.8, 3.8) (-4, -3.2) -- (-3.2, -4);
+  }{}
+  \ifthenelse{\equal{#3}{RU}}{
+   \draw (3.6, 3.6) -- (-3.8, -3.8) (4, 3.2) -- (3.2, 4);
+  }{}
+  \ifthenelse{\equal{#3}{RD}}{
+   \draw (3.6, -3.6) -- (-3.8, 3.8) (4, -3.2) -- (3.2, -4);
+  }{}
+ \end{scope}
+}
+% Stand-alone iron cores
+\newcommand{\Ironcore}[4]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \ifthenelse{\equal{#3}{H}}{
+   \draw (-0.75*#4, -0.22) -- (0.75*#4, -0.22) (-0.75*#4, 0.22) -- (0.75*#4, 0.22);
+  }{
+   \draw (-0.22, -0.75*#4) -- (-0.22, 0.75*#4) (0.22, -0.75*#4) -- (0.22, 0.75*#4);
+  }
+ \end{scope}
+}
+% RCL and RCL
+\newcommand{\rclandrcl}[3][]{
+ #2
+ \edef\cdelemxfirst{\cdelemx}
+ \edef\cdelemyfirst{\cdelemy}
+ \edef\cdorientfirst{\cdorient}
+ #3
+ \ifthenelse{\equal{#1}{}}{
+  \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) -- (\cdelemx, \cdelemy);
+ }{}
+ \ifthenelse{\equal{#1}{H}}{
+  \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+ }{}
+ \ifthenelse{\equal{#1}{V}}{
+  \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) |- (\cdelemx, \cdelemy);
+ }{}
+ \ifthenelse{\equal{#1}{HV}}{
+  \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) -| (0.5*\cdelemxfirst + 0.5*\cdelemx, \cdelemy) -- (\cdelemx, \cdelemy);
+ }{}
+ \ifthenelse{\equal{#1}{VH}}{
+  \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst) |- (\cdelemx, 0.5*\cdelemyfirst + 0.5*\cdelemy) -- (\cdelemx, \cdelemy);
+ }{}
+}
+% PTC and NTC
+\newcommand{\ptc}[1]{\ptcntc{#1}{\uparrow}}
+\newcommand{\ntc}[1]{\ptcntc{#1}{\downarrow}}
+\newcommand{\ptcntc}[2]{
+ \ifthenelse{\equal{#1}{LU}}{
+  \ifthenelse{\equal{\cdorient}{H}}{
+   \draw (-2.8, 2) -- (-2, 2);\cdputtext{-1}{2.25}{c}{$\vartheta$}\cdputtext{1.5}{2.25}{c}{$\uparrow#2$}
+  }{
+   \draw (-2, 2.8) -- (-2, 2);\cdputtext{-1.5}{0.75}{r}{$\vartheta$}\cdputtext{-1.5}{-1.5}{r}{$\uparrow#2$}
+  }
+  \draw (2, -2) -- (-2, 2);
+ }{}
+ \ifthenelse{\equal{#1}{LD}}{
+  \ifthenelse{\equal{\cdorient}{H}}{
+   \draw (-2.8, -2) -- (-2, -2);\cdputtext{-1}{-2.25}{c}{$\vartheta$}\cdputtext{1.5}{-2.25}{c}{$\uparrow#2$}
+  }{
+   \draw (-2, -2.8) -- (-2, -2);\cdputtext{-1.5}{-0.75}{r}{$\vartheta$}\cdputtext{-1.5}{1.5}{r}{$\uparrow#2$}
+  }
+  \draw (-2, -2) -- (2, 2);
+ }{}
+ \ifthenelse{\equal{#1}{RU}}{
+  \ifthenelse{\equal{\cdorient}{H}}{
+   \draw (2.8, 2) -- (2, 2);\cdputtext{1}{2.25}{c}{$\vartheta$}\cdputtext{-1.5}{2.25}{c}{$\uparrow#2$}
+  }{
+   \draw (2, 2.8) -- (2, 2);\cdputtext{1.5}{0.75}{l}{$\vartheta$}\cdputtext{1.5}{-1.5}{l}{$\uparrow#2$}
+  }
+  \draw (2, 2) -- (-2, -2);
+ }{}
+ \ifthenelse{\equal{#1}{RD}}{
+  \ifthenelse{\equal{\cdorient}{H}}{
+   \draw (2.8, -2) -- (2, -2);\cdputtext{1}{-2.25}{c}{$\vartheta$}\cdputtext{-1.5}{-2.25}{c}{$\uparrow#2$}
+  }{
+   \draw (2, -2.8) -- (2, -2);\cdputtext{1.5}{-0.75}{l}{$\vartheta$}\cdputtext{1.5}{1.5}{l}{$\uparrow#2$}
+  }
+  \draw (-2, 2) -- (2, -2);
+ }{}
+}
+% Sense of winding
+\newcommand{\winddot}[1]{
+ \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
+ \FPsub\cdfloat\cdfloat{0.4}
+ \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
+ \ifthenelse{\equal{\cdorient}{H}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \ifthenelse{\equal{#1}{L}}{
+    \iffilledinduc\junct{-\FPprint\cdfloat}{-1.5}\else\junct{-\FPprint\cdfloat}{-0.5}\fi
+   }{
+    \iffilledinduc\junct{\FPprint\cdfloat}{-1.5}\else\junct{\FPprint\cdfloat}{-0.5}\fi
+   }
+  }{
+   \ifthenelse{\equal{#1}{L}}{
+    \iffilledinduc\junct{-\FPprint\cdfloat}{1.5}\else\junct{-\FPprint\cdfloat}{0.5}\fi
+   }{
+    \iffilledinduc\junct{\FPprint\cdfloat}{1.5}\else\junct{\FPprint\cdfloat}{0.5}\fi
+   }
+  }
+ }{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \ifthenelse{\equal{#1}{U}}{
+    \iffilledinduc\junct{1.5}{\FPprint\cdfloat}\else\junct{0.5}{\FPprint\cdfloat}\fi
+   }{
+    \iffilledinduc\junct{1.5}{-\FPprint\cdfloat}\else\junct{0.5}{-\FPprint\cdfloat}\fi
+   }
+  }{
+   \ifthenelse{\equal{#1}{U}}{
+    \iffilledinduc\junct{-1.5}{\FPprint\cdfloat}\else\junct{-0.5}{\FPprint\cdfloat}\fi
+   }{
+    \iffilledinduc\junct{-1.5}{-\FPprint\cdfloat}\else\junct{-0.5}{-\FPprint\cdfloat}\fi
+   }
+  }
+ }
+}
+% Iron cores
+\newcommand{\ironcore}{
+ \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
+ \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
+ \ifthenelse{\equal{\cdorient}{H}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw (-\FPprint\cdfloat, 1.28) -- (\FPprint\cdfloat, 1.28);
+  }{
+   \draw (-\FPprint\cdfloat, -1.28) -- (\FPprint\cdfloat, -1.28);
+  }
+ }{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw (-1.28, -\FPprint\cdfloat) -- (-1.28, \FPprint\cdfloat);
+  }{
+   \draw (1.28, -\FPprint\cdfloat) -- (1.28, \FPprint\cdfloat);
+  }
+ }
+}
+% Ferrite cores
+\newcommand{\ferrcore}{
+ \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
+ \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
+ \ifthenelse{\equal{\cdorient}{H}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cddashedlines] (0.5, 1.28) -- (-\FPprint\cdfloat, 1.28) (0.5, 1.28) -- (\FPprint\cdfloat, 1.28);
+  }{
+   \draw [cddashedlines] (0.5, -1.28) -- (-\FPprint\cdfloat, -1.28) (0.5, -1.28) --  (\FPprint\cdfloat, -1.28);
+  }
+ }{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cddashedlines] (-1.28, 0.5) -- (-1.28, -\FPprint\cdfloat) (-1.28, 0.5) -- (-1.28, \FPprint\cdfloat);
+  }{
+   \draw [cddashedlines] (1.28, 0.5) -- (1.28, -\FPprint\cdfloat) (1.28, 0.5) -- (1.28, \FPprint\cdfloat);
+  }
+ }
+}

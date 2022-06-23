@@ -1,0 +1,976 @@
+% cd-digital.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 2.2b -- 2021/06/16.
+% Supports digital symbols for circdia.sty.
+% Options
+\newif\ifeugate
+\newcommand{\usgate}{\eugatefalse}
+\newcommand{\eugate}{\eugatetrue}
+\DeclareOption{usgate}{\usgate}
+\DeclareOption{eugate}{\eugate}
+% Gates
+\newcommand{\gate}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname gate\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\gateH}[1]{
+ \setstandardsuborient{U}
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{trans1}}{
+  \placerefvalH{-3}{0}{3}{-3.25}{0}{3.25}
+ }{
+  \placerefvalH{-3}{0}{3}{-4.25}{0}{4.25}
+ }
+ #1
+ \draw (-2.3, 0) -- (-3, 0) (2.3, 0) -- (3, 0);
+ \ifthenelse{\equal{\cdtype}{trans1}}{
+  \draw [cdmedlines] (-2.3, 1.2) -- (-2.3, -1.2) -- (2.3, 1.2) -- (2.3, -1.2) -- cycle;
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw (0, 0.394773) circle (0.35);
+   \draw (0, 0.744773) -- (0, 2) (0, 0) -- (0, -2);
+  }{
+   \draw (0, -0.394773) circle (0.35);
+   \draw (0, -0.744773) -- (0, -2) (0, 0) -- (0, 2);
+  }
+ }{
+  \draw [cdmedlines] (-2.3, 2.4) -- (-2.3, -2.4) -- (2.3, 0) -- cycle (2.3, -2.4) -- (2.3, 2.4) -- (-2.3, 0) -- cycle;
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw (0, 1.594773) circle (0.35);
+   \draw (0, 1.944773) -- (0, 3) (0, -1.2) -- (0, -3);
+  }{
+   \draw (0, -1.594773) circle (0.35);
+   \draw (0, -1.944773) -- (0, -3) (0, 1.2) -- (0, 3);
+  }
+ }
+}
+\newcommand{\gateL}[1]{
+ \setstandardtextpos{ud}
+ \ifeugate
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \placerefvalH{-3}{0}{3}{-3.5}{0}{3.5}
+  }{
+   \placerefvalH{-3.75}{-0.5}{2.75}{-3.75}{0}{3.75}
+  }
+  #1
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \cdputtext{-0.5}{0}{c}{$\&$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}}{
+   \cdputtext{-0.5}{0}{c}{${\geq}1$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \cdputtext{-0.5}{0}{c}{${=}1$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \cdputtext{0}{0}{c}{$1$}
+   \draw [cdmedlines] (-2.3, -2.3) rectangle (2.3, 2.3);
+   \draw (2.3, 0) -- (3, 0);
+   \ifthenelse{\equal{\cdtype}{buf}}{\draw (-2.3, 0) -- (-3, 0);}{\draw (-2.65, 0) circle (0.35);}
+  }{
+   \ifthenelse{\equal{\cdtype}{nand}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xnor}}{
+    \draw (-3.4, 0) circle (0.35) (-3.75, 0) -- (-4, 0);
+   }{
+    \draw (-3.05, 0) -- (-4, 0);
+   }
+   \ifthenelse{\equal{\cdinfo}{}}{\inputs{2}}{}
+  }
+ \else
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \placerefvalH{-2}{0.5}{3}{-3.75}{0}{3.75}
+  }{
+   \placerefvalH{-3.5}{-0.5}{3}{-3.75}{0}{3.75}
+  }
+  #1
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \draw [cdmedlines] (2.1, -2.4) |- (-0.9, 2.4) arc (90 : 270 : 2.4) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}}{
+   \draw [cdmedlines] (2.3, -2.4) arc (203.537 : 156.463 : 6.01) -- (0.2, 2.4) arc (90 : 158.878 : 3.752083)
+    arc (-158.878 : -90 : 3.752083) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \draw [cdmedlines] (2.3, -2.4) arc (203.537 : 156.463 : 6.01);
+   \draw [cdmedlines] (1.9, -2.4) arc (203.537 : 156.463 : 6.01) -- (0.2, 2.4) arc (90 : 158.878 : 3.752083)
+    arc (-158.878 : -90 : 3.752083) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \draw [cdmedlines] (2.3, -2.4) -- (2.3, 2.4) -- (-2.3, 0) -- cycle;
+   \ifthenelse{\equal{\cdtype}{buf}}{\draw (-2.3, 0) -- (-3, 0);}{\draw (-2.65, 0) circle (0.35);}
+   \draw (2.3, 0) -- (3, 0);
+  }{
+   \ifthenelse{\equal{\cdtype}{nand}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xnor}}{
+    \draw (-3.65, 0) circle (0.35);
+   }{
+    \draw (-3.3, 0) -- (-4, 0);
+   }
+   \ifthenelse{\equal{\cdinfo}{}}{\inputs{2}}{}
+  }
+ \fi
+}
+\newcommand{\gateR}[1]{
+ \setstandardtextpos{ud}
+ \ifeugate
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \placerefvalH{-3}{0}{3}{-3.5}{0}{3.5}
+  }{
+   \placerefvalH{-2.75}{0.5}{3.75}{-3.75}{0}{3.75}
+  }
+  #1
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \cdputtext{0.5}{0}{c}{$\&$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}}{
+   \cdputtext{0.5}{0}{c}{${\geq}1$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \cdputtext{0.5}{0}{c}{${=}1$}
+  }{}
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \cdputtext{0}{0}{c}{$1$}
+   \draw [cdmedlines] (-2.3, -2.3) rectangle (2.3, 2.3);
+   \draw (-2.3, 0) -- (-3, 0);
+   \ifthenelse{\equal{\cdtype}{buf}}{\draw (2.3, 0) -- (3, 0);}{\draw (2.65, 0) circle (0.35);}
+  }{
+   \ifthenelse{\equal{\cdtype}{nand}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xnor}}{
+    \draw (3.4, 0) circle (0.35) (3.75, 0) -- (4, 0);
+   }{
+    \draw (3.05, 0) -- (4, 0);
+   }
+   \ifthenelse{\equal{\cdinfo}{}}{\inputs{2}}{}
+  }
+ \else
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \placerefvalH{-3}{-0.5}{2}{-3.75}{0}{3.75}
+  }{
+   \placerefvalH{-3}{0.5}{3.5}{-3.75}{0}{3.75}
+  }
+  #1
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \draw [cdmedlines] (-2.1, 2.4) |- (0.9, -2.4) arc (-90 : 90 : 2.4) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}}{
+   \draw [cdmedlines] (-2.3, 2.4) arc (23.537 : -23.537 : 6.01) -- (-0.2, -2.4) arc (-90 : -21.122 : 3.752083)
+    arc (21.122 : 90 : 3.752083) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \draw [cdmedlines] (-2.3, 2.4) arc (23.537 : -23.537 : 6.01);
+   \draw [cdmedlines] (-1.9, 2.4) arc (23.537 : -23.537 : 6.01) -- (-0.2, -2.4) arc (-90 : -21.122 : 3.752083)
+    arc (21.122 : 90 : 3.752083) -- cycle;
+  }{}
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \draw [cdmedlines] (-2.3, 2.4) -- (-2.3, -2.4) -- (2.3, 0) -- cycle;
+   \draw (-2.3, 0) -- (-3, 0);
+   \ifthenelse{\equal{\cdtype}{buf}}{\draw (2.3, 0) -- (3, 0);}{\draw (2.65, 0) circle (0.35);}
+  }{
+   \ifthenelse{\equal{\cdtype}{nand}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xnor}}{
+    \draw (3.65, 0) circle (0.35);
+   }{
+    \draw (3.3, 0) -- (4, 0);
+   }
+   \ifthenelse{\equal{\cdinfo}{}}{\inputs{2}}{}
+  }
+ \fi
+}
+% Decoders
+\newcommand{\decoder}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \decoderLR{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\decoderLR}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{mux21}}{
+  \digitalborder{#1}{3}
+  \digitalin{-2}{A}\digitalin{0}{D0}\digitalin{2}{D1}\digitalout[\cdinfo]{0}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux21e}\OR\equal{\cdtype}{mux21ne}}{
+  \digitalborder{#1}{4}
+  \digitalin{-1}{A}\digitalin{1}{D0}\digitalin{3}{D1}\digitalout[\cdinfo]{0}{Q}
+  \ifthenelse{\equal{\cdtype}{mux21e}}{\digitalin{-3}{E}}{\digitalin[n]{-3}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux41}}{
+  \digitalborder{#1}{6}
+  \digitalin{-5}{A0}\digitalin{-3}{A1}\digitalin{-1}{D0}\digitalin{1}{D1}\digitalin{3}{D2}\digitalin{5}{D3}
+  \digitalout[\cdinfo]{0}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux41e}\OR\equal{\cdtype}{mux41ne}}{
+  \digitalborder{#1}{7}
+  \digitalin{-4}{A0}\digitalin{-2}{A1}\digitalin{0}{D0}\digitalin{2}{D1}\digitalin{4}{D2}\digitalin{6}{D3}
+  \digitalout[\cdinfo]{0}{Q}
+  \ifthenelse{\equal{\cdtype}{mux41e}}{\digitalin{-6}{E}}{\digitalin[n]{-6}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux81}}{
+  \digitalborder{#1}{11}
+  \digitalin{-10}{A0}\digitalin{-8}{A1}\digitalin{-6}{A2}\digitalin{-4}{D0}\digitalin{-2}{D1}\digitalin{0}{D2}
+  \digitalin{2}{D3}\digitalin{4}{D4}\digitalin{6}{D5}\digitalin{8}{D6}\digitalin{10}{D7}\digitalout[\cdinfo]{0}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux81e}\OR\equal{\cdtype}{mux81ne}}{
+  \digitalborder{#1}{12}
+  \digitalin{-9}{A0}\digitalin{-7}{A1}\digitalin{-5}{A2}\digitalin{-3}{D0}\digitalin{-1}{D1}\digitalin{1}{D2}
+  \digitalin{3}{D3}\digitalin{5}{D4}\digitalin{7}{D5}\digitalin{9}{D6}\digitalin{11}{D7}\digitalout[\cdinfo]{0}{Q}
+  \ifthenelse{\equal{\cdtype}{mux81e}}{\digitalin{-11}{E}}{\digitalin[n]{-11}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux101}}{
+  \digitalborder{#1}{14}
+  \digitalin{-13}{A0}\digitalin{-11}{A1}\digitalin{-9}{A2}\digitalin{-7}{A3}\digitalin{-5}{D0}\digitalin{-3}{D1}
+  \digitalin{-1}{D2}\digitalin{1}{D3}\digitalin{3}{D4}\digitalin{5}{D5}\digitalin{7}{D6}\digitalin{9}{D7}
+  \digitalin{11}{D8}\digitalin{13}{D9}\digitalout[\cdinfo]{0}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mux101e}\OR\equal{\cdtype}{mux101ne}}{
+  \digitalborder{#1}{15}
+  \digitalin{-12}{A0}\digitalin{-10}{A1}\digitalin{-8}{A2}\digitalin{-6}{A3}\digitalin{-4}{D0}\digitalin{-2}{D1}
+  \digitalin{0}{D2}\digitalin{2}{D3}\digitalin{4}{D4}\digitalin{6}{D5}\digitalin{8}{D6}\digitalin{10}{D7}
+  \digitalin{12}{D8}\digitalin{14}{D9}\digitalout[\cdinfo]{0}{Q}
+  \ifthenelse{\equal{\cdtype}{mux101e}}{\digitalin{-14}{E}}{\digitalin[n]{-14}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux12}}{
+  \digitalborder{#1}{3}
+  \digitalin{0}{A}\digitalout[\cdinfo]{-2}{Q0}\digitalout[\cdinfo]{2}{Q1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux12d}\OR\equal{\cdtype}{demux12nd}}{
+  \digitalborder{#1}{3}
+  \digitalin{-2}{A}\digitalout[\cdinfo]{-2}{Q0}\digitalout[\cdinfo]{2}{Q1}
+  \ifthenelse{\equal{\cdtype}{demux12d}}{\digitalin{2}{D}}{\digitalin[n]{2}{D}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux12e}\OR\equal{\cdtype}{demux12ne}}{
+  \digitalborder{#1}{3}
+  \digitalin{2}{A}\digitalout[\cdinfo]{-2}{Q0}\digitalout[\cdinfo]{2}{Q1}
+  \ifthenelse{\equal{\cdtype}{demux12e}}{\digitalin{-2}{E}}{\digitalin[n]{-2}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux12de}\OR\equal{\cdtype}{demux12dne}\OR\equal{\cdtype}{demux12nde}
+ \OR\equal{\cdtype}{demux12ndne}}{
+  \digitalborder{#1}{3}
+  \digitalin{0}{A}\digitalout[\cdinfo]{-2}{Q0}\digitalout[\cdinfo]{2}{Q1}
+  \ifthenelse{\equal{\cdtype}{demux12de}\OR\equal{\cdtype}{demux12dne}}{\digitalin{2}{D}}{\digitalin[n]{2}{D}}
+  \ifthenelse{\equal{\cdtype}{demux12de}\OR\equal{\cdtype}{demux12nde}}{\digitalin{-2}{E}}{\digitalin[n]{-2}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux14}}{
+  \digitalborder{#1}{4}
+  \digitalin{-2}{A0}\digitalin{2}{A1}\digitalout[\cdinfo]{-3}{Q0}\digitalout[\cdinfo]{-1}{Q1}\digitalout[\cdinfo]{1}{Q2}
+  \digitalout[\cdinfo]{3}{Q3}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux14d}\OR\equal{\cdtype}{demux14nd}}{
+  \digitalborder{#1}{4}
+  \digitalin{-2}{A0}\digitalin{0}{A1}\digitalout[\cdinfo]{-3}{Q0}\digitalout[\cdinfo]{-1}{Q1}\digitalout[\cdinfo]{1}{Q2}
+  \digitalout[\cdinfo]{3}{Q3}
+  \ifthenelse{\equal{\cdtype}{demux14d}}{\digitalin{2}{D}}{\digitalin[n]{2}{D}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux14e}\OR\equal{\cdtype}{demux14ne}}{
+  \digitalborder{#1}{4}
+  \digitalin{0}{A0}\digitalin{2}{A1}\digitalout[\cdinfo]{-3}{Q0}\digitalout[\cdinfo]{-1}{Q1}\digitalout[\cdinfo]{1}{Q2}
+  \digitalout[\cdinfo]{3}{Q3}
+  \ifthenelse{\equal{\cdtype}{demux14e}}{\digitalin{-2}{E}}{\digitalin[n]{-2}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux14de}\OR\equal{\cdtype}{demux14dne}\OR\equal{\cdtype}{demux14nde}
+ \OR\equal{\cdtype}{demux14ndne}}{
+  \digitalborder{#1}{4}
+  \digitalin{-1}{A0}\digitalin{1}{A1}\digitalout[\cdinfo]{-3}{Q0}\digitalout[\cdinfo]{-1}{Q1}
+  \digitalout[\cdinfo]{1}{Q2}\digitalout[\cdinfo]{3}{Q3}
+  \ifthenelse{\equal{\cdtype}{demux14de}\OR\equal{\cdtype}{demux14dne}}{\digitalin{3}{D}}{\digitalin[n]{3}{D}}
+  \ifthenelse{\equal{\cdtype}{demux14de}\OR\equal{\cdtype}{demux14nde}}{\digitalin{-3}{E}}{\digitalin[n]{-3}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux18}}{
+  \digitalborder{#1}{8}
+  \digitalin{-2}{A0}\digitalin{0}{A1}\digitalin{2}{A2}\digitalout[\cdinfo]{-7}{Q0}\digitalout[\cdinfo]{-5}{Q1}
+  \digitalout[\cdinfo]{-3}{Q2}\digitalout[\cdinfo]{-1}{Q3}\digitalout[\cdinfo]{1}{Q4}\digitalout[\cdinfo]{3}{Q5}
+  \digitalout[\cdinfo]{5}{Q6}\digitalout[\cdinfo]{7}{Q7}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux18d}\OR\equal{\cdtype}{demux18nd}}{
+  \digitalborder{#1}{8}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{A2}\digitalout[\cdinfo]{-7}{Q0}\digitalout[\cdinfo]{-5}{Q1}
+  \digitalout[\cdinfo]{-3}{Q2}\digitalout[\cdinfo]{-1}{Q3}\digitalout[\cdinfo]{1}{Q4}\digitalout[\cdinfo]{3}{Q5}
+  \digitalout[\cdinfo]{5}{Q6}\digitalout[\cdinfo]{7}{Q7}
+  \ifthenelse{\equal{\cdtype}{demux18d}}{\digitalin{3}{D}}{\digitalin[n]{3}{D}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux18e}\OR\equal{\cdtype}{demux18ne}}{
+  \digitalborder{#1}{8}
+  \digitalin{-1}{A0}\digitalin{1}{A1}\digitalin{3}{A2}\digitalout[\cdinfo]{-7}{Q0}\digitalout[\cdinfo]{-5}{Q1}
+  \digitalout[\cdinfo]{-3}{Q2}\digitalout[\cdinfo]{-1}{Q3}\digitalout[\cdinfo]{1}{Q4}\digitalout[\cdinfo]{3}{Q5}
+  \digitalout[\cdinfo]{5}{Q6}\digitalout[\cdinfo]{7}{Q7}
+  \ifthenelse{\equal{\cdtype}{demux18e}}{\digitalin{-3}{E}}{\digitalin[n]{-3}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux18de}\OR\equal{\cdtype}{demux18dne}\OR\equal{\cdtype}{demux18nde}
+ \OR\equal{\cdtype}{demux18ndne}}{
+  \digitalborder{#1}{8}
+  \digitalin{-2}{A0}\digitalin{0}{A1}\digitalin{2}{A2}\digitalout[\cdinfo]{-7}{Q0}\digitalout[\cdinfo]{-5}{Q1}
+  \digitalout[\cdinfo]{-3}{Q2}\digitalout[\cdinfo]{-1}{Q3}\digitalout[\cdinfo]{1}{Q4}\digitalout[\cdinfo]{3}{Q5}
+  \digitalout[\cdinfo]{5}{Q6}\digitalout[\cdinfo]{7}{Q7}
+  \ifthenelse{\equal{\cdtype}{demux18de}\OR\equal{\cdtype}{demux18dne}}{\digitalin{4}{D}}{\digitalin[n]{4}{D}}
+  \ifthenelse{\equal{\cdtype}{demux18de}\OR\equal{\cdtype}{demux18nde}}{\digitalin{-4}{E}}{\digitalin[n]{-4}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux110}}{
+  \digitalborder{#1}{10}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{A2}\digitalin{3}{A3}\digitalout[\cdinfo]{-9}{Q0}
+  \digitalout[\cdinfo]{-7}{Q1}\digitalout[\cdinfo]{-5}{Q2}\digitalout[\cdinfo]{-3}{Q3}\digitalout[\cdinfo]{-1}{Q4}
+  \digitalout[\cdinfo]{1}{Q5}\digitalout[\cdinfo]{3}{Q6}\digitalout[\cdinfo]{5}{Q7}\digitalout[\cdinfo]{7}{Q8}
+  \digitalout[\cdinfo]{9}{Q9}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux110d}\OR\equal{\cdtype}{demux110nd}}{
+  \digitalborder{#1}{10}
+  \digitalin{-4}{A0}\digitalin{-2}{A1}\digitalin{0}{A2}\digitalin{2}{A3}\digitalout[\cdinfo]{-9}{Q0}
+  \digitalout[\cdinfo]{-7}{Q1}\digitalout[\cdinfo]{-5}{Q2}\digitalout[\cdinfo]{-3}{Q3}\digitalout[\cdinfo]{-1}{Q4}
+  \digitalout[\cdinfo]{1}{Q5}\digitalout[\cdinfo]{3}{Q6}\digitalout[\cdinfo]{5}{Q7}\digitalout[\cdinfo]{7}{Q8}
+  \digitalout[\cdinfo]{9}{Q9}
+  \ifthenelse{\equal{\cdtype}{demux110d}}{\digitalin{4}{D}}{\digitalin[n]{4}{D}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux110e}\OR\equal{\cdtype}{demux110ne}}{
+  \digitalborder{#1}{10}
+  \digitalin{-2}{A0}\digitalin{0}{A1}\digitalin{2}{A2}\digitalin{4}{A3}\digitalout[\cdinfo]{-9}{Q0}
+  \digitalout[\cdinfo]{-7}{Q1}\digitalout[\cdinfo]{-5}{Q2}\digitalout[\cdinfo]{-3}{Q3}\digitalout[\cdinfo]{-1}{Q4}
+  \digitalout[\cdinfo]{1}{Q5}\digitalout[\cdinfo]{3}{Q6}\digitalout[\cdinfo]{5}{Q7}\digitalout[\cdinfo]{7}{Q8}
+  \digitalout[\cdinfo]{9}{Q9}
+  \ifthenelse{\equal{\cdtype}{demux110e}}{\digitalin{-4}{E}}{\digitalin[n]{-4}{E}}
+ }{}
+ \ifthenelse{\equal{\cdtype}{demux110de}\OR\equal{\cdtype}{demux110dne}\OR\equal{\cdtype}{demux110nde}
+ \OR\equal{\cdtype}{demux110ndne}}{
+  \digitalborder{#1}{10}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{A2}\digitalin{3}{A3}\digitalout[\cdinfo]{-9}{Q0}
+  \digitalout[\cdinfo]{-7}{Q1}\digitalout[\cdinfo]{-5}{Q2}\digitalout[\cdinfo]{-3}{Q3}\digitalout[\cdinfo]{-1}{Q4}
+  \digitalout[\cdinfo]{1}{Q5}\digitalout[\cdinfo]{3}{Q6}\digitalout[\cdinfo]{5}{Q7}\digitalout[\cdinfo]{7}{Q8}
+  \digitalout[\cdinfo]{9}{Q9}
+  \ifthenelse{\equal{\cdtype}{demux110de}\OR\equal{\cdtype}{demux110dne}}{\digitalin{5}{D}}{\digitalin[n]{5}{D}}
+  \ifthenelse{\equal{\cdtype}{demux110de}\OR\equal{\cdtype}{demux110nde}}{\digitalin{-5}{E}}{\digitalin[n]{-5}{E}}
+ }{}
+}
+% Arithmetical operations
+\newcommand{\arithm}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \arithmLR{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\arithmLR}[1]{
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{halfadd}}{
+  \digitalborder{#1}{3}
+  \digitalin{-2}{A}\digitalin{2}{B}\digitalout{-2}{$\Sigma$}\digitalout{2}{CO}
+ }{}
+ \ifthenelse{\equal{\cdtype}{fulladd}}{
+  \digitalborder{#1}{3}
+  \digitalin{-2}{CI}\digitalin{0}{A}\digitalin{2}{B}\digitalout{-2}{$\Sigma$}\digitalout{2}{CO}
+ }{}
+ \ifthenelse{\equal{\cdtype}{add2}}{
+  \digitalborder{#1}{5}
+  \digitalin{-4}{CI}\digitalin{-2}{A0}\digitalin{0}{A1}\digitalin{2}{B0}\digitalin{4}{B1}
+  \digitalout{-2}{$\Sigma$0}\digitalout{0}{$\Sigma$1}\digitalout{2}{CO}
+ }{}
+ \ifthenelse{\equal{\cdtype}{add3}}{
+  \digitalborder{#1}{7}
+  \digitalin{-6}{CI}\digitalin{-4}{A0}\digitalin{-2}{A1}\digitalin{0}{A2}\digitalin{2}{B0}\digitalin{4}{B1}
+  \digitalin{6}{B2}\digitalout{-3}{$\Sigma$0}\digitalout{-1}{$\Sigma$1}\digitalout{1}{$\Sigma$2}\digitalout{3}{CO}
+ }{}
+ \ifthenelse{\equal{\cdtype}{add4}}{
+  \digitalborder{#1}{9}
+  \digitalin{-8}{CI}\digitalin{-6}{A0}\digitalin{-4}{A1}\digitalin{-2}{A2}\digitalin{0}{A3}\digitalin{2}{B0}
+  \digitalin{4}{B1}\digitalin{6}{B2}\digitalin{8}{B3}\digitalout{-4}{$\Sigma$0}\digitalout{-2}{$\Sigma$1}
+  \digitalout{0}{$\Sigma$2}\digitalout{2}{$\Sigma$3}\digitalout{4}{CO}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mul1}}{
+  \digitalborder{#1}{3}
+  \digitalin{-2}{A}\digitalin{2}{B}\digitalout{0}{$\Pi$}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mul2}}{
+  \digitalborder{#1}{4}
+  \digitalin{-3}{A0}\digitalin{-1}{A1}\digitalin{1}{B0}\digitalin{3}{B1}
+  \digitalout{-3}{$\Pi$0}\digitalout{-1}{$\Pi$1}\digitalout{1}{$\Pi$2}\digitalout{3}{$\Pi$3}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mul3}}{
+  \digitalborder{#1}{6}
+  \digitalin{-5}{A0}\digitalin{-3}{A1}\digitalin{-1}{A2}\digitalin{1}{B0}\digitalin{3}{B1}\digitalin{5}{B2}
+  \digitalout{-5}{$\Pi$0}\digitalout{-3}{$\Pi$1}\digitalout{-1}{$\Pi$2}\digitalout{1}{$\Pi$3}\digitalout{3}{$\Pi$4}
+  \digitalout{5}{$\Pi$5}
+ }{}
+ \ifthenelse{\equal{\cdtype}{mul4}}{
+  \digitalborder{#1}{8}
+  \digitalin{-7}{A0}\digitalin{-5}{A1}\digitalin{-3}{A2}\digitalin{-1}{A3}\digitalin{1}{B0}\digitalin{3}{B1}
+  \digitalin{5}{B2}\digitalin{7}{B3}\digitalout{-7}{$\Pi$0}\digitalout{-5}{$\Pi$1}\digitalout{-3}{$\Pi$2}
+  \digitalout{-1}{$\Pi$3}\digitalout{1}{$\Pi$4}\digitalout{3}{$\Pi$5}\digitalout{5}{$\Pi$6}\digitalout{7}{$\Pi$7}
+ }{}
+}
+% Flipflops
+\newcommand{\flipflop}[7][]{
+ \prepareelement{IC}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \flipflopLR{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\flipflopLR}[1]{
+ \setstandardtextpos{ud}
+ \digitalborder{#1}{3}
+ \ifthenelse{\equal{\cdtype}{sr}}{
+  \digitalin{2}{S}\digitalin{-2}{R}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{nsr}}{
+  \digitalin[n]{2}{S}\digitalin[n]{-2}{R}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{srms}}{
+  \digitalin{2}{S}\digitalin{-2}{R}
+  \digitalout[ms]{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{nsrms}}{
+  \digitalin[n]{2}{S}\digitalin[n]{-2}{R}
+  \digitalout[ms]{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{d}}{
+  \digitalin{2}{D}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[d]{0}{C}}{}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{nd}}{
+  \digitalin[n]{2}{D}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[d]{0}{C}}{}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{dms}}{
+  \digitalin{2}{D}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[d]{0}{C}}{}
+  \digitalout[ms]{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{ndms}}{
+  \digitalin[n]{2}{D}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[d]{0}{C}}{}
+  \digitalout[ms]{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{jk}}{
+  \digitalin{2}{J}\digitalin{-2}{K}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[nd]{0}{C}}{}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{njk}}{
+  \digitalin[n]{2}{J}\digitalin[n]{-2}{K}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[nd]{0}{C}}{}
+  \digitalout{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{jkms}}{
+  \digitalin{2}{J}\digitalin{-2}{K}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[nd]{0}{C}}{}
+  \digitalout[ms]{2}{Q}
+ }{}
+ \ifthenelse{\equal{\cdtype}{njkms}}{
+  \digitalin[n]{2}{J}\digitalin[n]{-2}{K}\ifthenelse{\equal{\cdinfo}{}}{\digitalin[nd]{0}{C}}{}
+  \digitalout[ms]{2}{Q}
+ }{}
+}
+% Inputs for gates
+\newcommand{\inputs}[1]{
+ \setcounter{cdcounter}{#1}
+ \ifeugate\else\ifthenelse{#1>3}{
+  \addtocounter{cdcounter}{-1}
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \draw [cdmedlines] (2.3, -\thecdcounter) -- (2.3, -2.6) -- (2.1, -2.4)
+     (2.3, \thecdcounter) -- (2.3, 2.6) -- (2.1, 2.4);
+   }{
+    \draw [cdmedlines] (-2.3, -\thecdcounter) -- (-2.3, -2.6) -- (-2.1, -2.4)
+     (-2.3, \thecdcounter) -- (-2.3, 2.6) -- (-2.1, 2.4);
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \draw [cdmedlines] (2.3, -\thecdcounter) -- (2.3, -2.4) (2.3, \thecdcounter) -- (2.3, 2.4);
+   }{
+    \draw [cdmedlines] (-2.3, -\thecdcounter) -- (-2.3, -2.4) (-2.3, \thecdcounter) -- (-2.3, 2.4);
+   }
+  }{}
+ }{}\fi
+ \ifthenelse{\equal{#1}{2}}{\oneinput{-2}\oneinput{2}}{}
+ \ifthenelse{\equal{#1}{3}\OR\equal{#1}{5}\OR\equal{#1}{7}}{
+  \oneinput{0}\oneinput{-2}\oneinput{2}
+  \ifthenelse{#1>4}{\oneinput{-4}\oneinput{4}}{}
+  \ifthenelse{#1>6}{\oneinput{-6}\oneinput{6}}{}
+ }{}
+ \ifthenelse{\equal{#1}{4}\OR\equal{#1}{6}\OR\equal{#1}{8}}{
+  \oneinput{-1}\oneinput{1}\oneinput{-3}\oneinput{3}
+  \ifthenelse{#1>5}{\oneinput{-5}\oneinput{5}}{}
+  \ifthenelse{#1>7}{\oneinput{-7}\oneinput{7}}{}
+ }{}
+ \ifeugate
+  \ifthenelse{\equal{\thecdcounter}{2}}{}{\addtocounter{cdcounter}{-1}}
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \draw [cdmedlines] (-3.05, -0.55-\thecdcounter) rectangle (2.05, 0.55+\thecdcounter);
+  }{
+   \draw [cdmedlines] (-2.05, -0.55-\thecdcounter) rectangle (3.05, 0.55+\thecdcounter);
+  }
+ \fi
+ \renewcommand{\cdinfo}{#1}
+}
+\newcommand{\oneinput}[1]{
+ \ifeugate
+  \ifthenelse{\equal{\cdorient}{L}}{\draw (3, #1) -- (2.05, #1);}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\draw (-3, #1) -- (-2.05, #1);}{}
+ \else
+  \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \ifthenelse{#1=0}{\draw (3, #1) -- (2.1, #1);}{}
+    \ifthenelse{#1=-1\OR#1=1}{\draw (3, #1) -- (2.1, #1);}{}
+    \ifthenelse{#1=-2\OR#1=2}{\draw (3, #1) -- (2.1, #1);}{}
+    \ifthenelse{#1<-2\OR#1>2}{\draw (3, #1) -- (2.3, #1);}{}
+   }{
+    \ifthenelse{#1=0}{\draw (-3, #1) -- (-2.1, #1);}{}
+    \ifthenelse{#1=-1\OR#1=1}{\draw (-3, #1) -- (-2.1, #1);}{}
+    \ifthenelse{#1=-2\OR#1=2}{\draw (-3, #1) -- (-2.1, #1);}{}
+    \ifthenelse{#1<-2\OR#1>2}{\draw (-3, #1) -- (-2.3, #1);}{}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \ifthenelse{#1=0}{\draw (3, #1) -- (1.8, #1);}{}
+    \ifthenelse{#1=-1\OR#1=1}{\draw (3, #1) -- (1.883779, #1);}{}
+    \ifthenelse{#1=-2\OR#1=2}{\draw (3, #1) -- (2.142540, #1);}{}
+    \ifthenelse{#1<-2\OR#1>2}{\draw (3, #1) -- (2.3, #1);}{}
+   }{
+    \ifthenelse{#1=0}{\draw (-3, #1) -- (-1.8, #1);}{}
+    \ifthenelse{#1=-1\OR#1=1}{\draw (-3, #1) -- (-1.883779, #1);}{}
+    \ifthenelse{#1=-2\OR#1=2}{\draw (-3, #1) -- (-2.142540, #1);}{}
+    \ifthenelse{#1<-2\OR#1>2}{\draw (-3, #1) -- (-2.3, #1);}{}
+   }
+  }{}
+ \fi
+}
+% Schmitt trigger symbols
+\newcommand{\schmitt}{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \schmittL{1.25}{0}
+  }{
+   \ifeugate\schmittL{1.25}{0}\else\schmittL{0.5}{0}\fi
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \schmittR{-1.25}{0}
+  }{
+   \ifeugate\schmittR{-1.25}{0}\else\schmittR{-0.5}{0}\fi
+  }
+ }{}
+}
+\newcommand{\schmittL}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (0.7, -0.75) -- (-0.4, -0.75) (-0.7, 0.75) -- (0.4, 0.75);
+  \cdsmallarrow[1.5]{-0.4}{0.75}{90}
+  \cdsmallarrow[1.5]{0.4}{-0.75}{-90}
+ \end{scope}
+}
+\newcommand{\schmittR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.7, -0.75) -- (0.4, -0.75) (0.7, 0.75) -- (-0.4, 0.75);
+  \cdsmallarrow[1.5]{0.4}{0.75}{90}
+  \cdsmallarrow[1.5]{-0.4}{-0.75}{-90}
+ \end{scope}
+}
+% Open collector symbols
+\newcommand{\opencoll}{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \ifeugate\opencollLR{-1.25}{0}\else\opencollLR{-0.25}{0}\fi
+  }{
+   \ifeugate\opencollLR{-2.25}{0}\else\opencollLR{-1.5}{0}\fi
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \ifeugate\opencollLR{1.25}{0}\else\opencollLR{0.25}{0}\fi
+  }{
+   \ifeugate\opencollLR{2.25}{0}\else\opencollLR{1.5}{0}\fi
+  }
+ }{}
+}
+\newcommand{\opencollLR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.65, 0) -- (0, 0.65) -- (0.65, 0) -- (0, -0.65) -- cycle;
+  \draw (-0.65, -0.65) -- (0.65, -0.65);
+ \end{scope}
+}
+% Tristate symbols
+\newcommand{\tristate}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \ifeugate\tristateLR{-1.25}{0}\else\tristateLR{-0.25}{0}\fi
+  }{
+   \ifeugate\tristateLR{-2.25}{0}\else\tristateLR{-1.5}{0}\fi
+  }
+  \ifeugate
+   \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (0, 2.3) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (0, 2.65) circle (0.35);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (0, -2.3) -- (0, -3);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (0, -2.65) circle (0.35);}{}
+   }{
+    \ifthenelse{\equal{#1}{Up}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (-1, 2.55) -- (-1, 4);
+     }{
+      \draw (-1, -0.45+\cdinfo) -- (-1, 1+\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Un}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (-1, 2.9) circle (0.35) (-1, 3.25) -- (-1, 4);
+     }{
+      \draw (-1, -0.1+\cdinfo) circle (0.35) (-1, 0.25+\cdinfo) -- (-1, 1+\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Dp}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (-1, -2.55) -- (-1, -4);
+     }{
+      \draw (-1, 0.45-\cdinfo) -- (-1, -1-\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Dn}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (-1, -2.9) circle (0.35) (-1, -3.25) -- (-1, -4);
+     }{
+      \draw (-1, 0.1-\cdinfo) circle (0.35) (-1, -0.25-\cdinfo) -- (-1, -1-\cdinfo);
+     }
+    }{}
+   }
+  \else
+   \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (0, 1.2) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (0, 1.594773) circle (0.35) (0, 1.944773) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (0, -1.2) -- (0, -3);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (0, -1.594773) circle (0.35) (0, -1.944773) -- (0, -3);}{}
+   }{}
+   \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (-1, 2.397916) -- (-1, 4);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (-1, 2.748181) circle (0.35) (-1, 3.092718) -- (-1, 4);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (-1, -2.397916) -- (-1, -4);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (-1, -2.748181) circle (0.35) (-1, -3.092718) -- (-1, -4);}{}
+   }{}
+   \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (-1, 2.202931) -- (-1, 4);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (-1, 2.570555) circle (0.35) (-1, 2.920555) -- (-1, 4);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (-1, -2.202931) -- (-1, -4);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (-1, -2.570555) circle (0.35) (-1, -2.920555) -- (-1, -4);}{}
+   }{}
+  \fi
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+   \ifeugate\tristateLR{1.25}{0}\else\tristateLR{0.25}{0}\fi
+  }{
+   \ifeugate\tristateLR{2.25}{0}\else\tristateLR{1.5}{0}\fi
+  }
+  \ifeugate
+   \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (0, 2.3) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (0, 2.65) circle (0.35);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (0, -2.3) -- (0, -3);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (0, -2.65) circle (0.35);}{}
+   }{
+    \ifthenelse{\equal{#1}{Up}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (1, 2.55) -- (1, 4);
+     }{
+      \draw (1, -0.45+\cdinfo) -- (1, 1+\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Un}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (1, 2.9) circle (0.35) (1, 3.25) -- (1, 4);
+     }{
+      \draw (1, -0.1+\cdinfo) circle (0.35) (1, 0.25+\cdinfo) -- (1, 1+\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Dp}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (1, -2.55) -- (1, -4);
+     }{
+      \draw (1, 0.45-\cdinfo) -- (1, -1-\cdinfo);
+     }
+    }{}
+    \ifthenelse{\equal{#1}{Dn}}{
+     \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+      \draw (1, -2.9) circle (0.35) (1, -3.25) -- (1, -4);
+     }{
+      \draw (1, 0.1-\cdinfo) circle (0.35) (1, -0.25-\cdinfo) -- (1, -1-\cdinfo);
+     }
+    }{}
+   }
+  \else
+   \ifthenelse{\equal{\cdtype}{buf}\OR\equal{\cdtype}{not}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (0, 1.2) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (0, 1.594773) circle (0.35) (0, 1.944773) -- (0, 3);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (0, -1.2) -- (0, -3);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (0, -1.594773) circle (0.35) (0, -1.944773) -- (0, -3);}{}
+   }{}
+   \ifthenelse{\equal{\cdtype}{and}\OR\equal{\cdtype}{nand}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (1, 2.397916) -- (1, 4);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (1, 2.748181) circle (0.35) (1, 3.092718) -- (1, 4);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (1, -2.397916) -- (1, -4);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (1, -2.748181) circle (0.35) (1, -3.092718) -- (1, -4);}{}
+   }{}
+   \ifthenelse{\equal{\cdtype}{or}\OR\equal{\cdtype}{nor}\OR\equal{\cdtype}{xor}\OR\equal{\cdtype}{xnor}}{
+    \ifthenelse{\equal{#1}{Up}}{\draw (1, 2.202931) -- (1, 4);}{}
+    \ifthenelse{\equal{#1}{Un}}{\draw (1, 2.570555) circle (0.35) (1, 2.920555) -- (1, 4);}{}
+    \ifthenelse{\equal{#1}{Dp}}{\draw (1, -2.202931) -- (1, -4);}{}
+    \ifthenelse{\equal{#1}{Dn}}{\draw (1, -2.570555) circle (0.35) (1, -2.920555) -- (1, -4);}{}
+   }{}
+  \fi
+ }{}
+}
+\newcommand{\tristateLR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.65, 0.562916) -- (0.65, 0.562916) -- (0, -0.562916) -- cycle;
+ \end{scope}
+}
+% Decoder and flipflop outputs
+\newcommand{\invout}{
+ \ifthenelse{\equal{\cdtype}{sr}\OR\equal{\cdtype}{nsr}\OR\equal{\cdtype}{d}\OR\equal{\cdtype}{nd}%
+  \OR\equal{\cdtype}{jk}\OR\equal{\cdtype}{njk}}{
+  \digitalout[n]{-2}{Q}
+ }{
+  \ifthenelse{\equal{\cdtype}{srms}\OR\equal{\cdtype}{nsrms}\OR\equal{\cdtype}{dms}\OR\equal{\cdtype}{ndms}%
+   \OR\equal{\cdtype}{jkms}\OR\equal{\cdtype}{njkms}}{
+   \digitalout[nms]{-2}{Q}
+  }{
+   \renewcommand{\cdinfo}{n}
+  }
+ }
+}
+% Flipflop inputs
+\newcommand{\clockin}[1]{
+ \renewcommand{\cdinfo}{c}
+ \ifthenelse{\equal{#1}{p}}{\digitalin{0}{C}}{}
+ \ifthenelse{\equal{#1}{n}}{\digitalin[n]{0}{C}}{}
+ \ifthenelse{\equal{#1}{pd}}{\digitalin[d]{0}{C}}{}
+ \ifthenelse{\equal{#1}{nd}}{\digitalin[nd]{0}{C}}{}
+}
+\newcommand{\setin}[1]{\ifthenelse{\equal{#1}{p}}{\digitalup{3}{S}}{\digitalup[n]{3}{S}}}
+\newcommand{\resetin}[1]{\ifthenelse{\equal{#1}{p}}{\digitaldown{3}{R}}{\digitaldown[n]{3}{R}}}
+% Internal digital border and pins
+\newcommand{\digitalborder}[2]{
+ \FPadd\cdfloat{#2}{1.5}
+ \placerefvalH{-4}{0}{4}{-\FPprint\cdfloat}{0}{\FPprint\cdfloat}
+ #1
+ \draw [cdmedlines] (-3.3, -#2.3) rectangle (3.3, #2.3);
+}
+\newcommand{\digitalin}[3][]{
+ \ifthenelse{\equal{\cdorient}{L}}{\digitalpin[#1]{R}{#2}{#3}}{}
+ \ifthenelse{\equal{\cdorient}{R}}{\digitalpin[#1]{L}{#2}{#3}}{}
+}
+\newcommand{\digitalout}[3][]{
+ \ifthenelse{\equal{\cdorient}{L}}{\digitalpin[#1]{L}{#2}{#3}}{}
+ \ifthenelse{\equal{\cdorient}{R}}{\digitalpin[#1]{R}{#2}{#3}}{}
+}
+\newcommand{\digitalup}[3][]{
+ \digitalpin[#1]{U}{#2}{#3}
+}
+\newcommand{\digitaldown}[3][]{
+ \digitalpin[#1]{D}{#2}{#3}
+}
+\newcommand{\digitalpin}[4][]{
+ \ifthenelse{\equal{#2}{L}}{
+  \begin{scope}[shift = {(-3.3, #3)}]
+   \ifthenelse{\equal{#1}{}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \cdputtext{0.3}{-0.1}{l}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{3}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \smalltristate{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{d}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \smalldynamicR{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{ms}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \smallmstslvL{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{n}}{
+    \draw (-0.35, 0) circle (0.35);
+    \cdputtext{0.3}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{n3}}{
+    \draw (-0.35, 0) circle (0.35);
+    \smalltristate{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nd}}{
+    \draw (-0.35, 0) circle (0.35);
+    \smalldynamicR{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nms}}{
+    \draw (-0.35, 0) circle (0.35);
+    \smallmstslvL{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{noc}}{
+    \draw (-0.35, 0) circle (0.35);
+    \smallopencoll{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nst}}{
+    \draw (-0.35, 0) circle (0.35);
+    \smallschmittR{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{oc}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \smallopencoll{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{st}}{
+    \draw (0, 0) -- (-0.7, 0);
+    \smallschmittR{0.5}{0}
+    \cdputtext{0.9}{-0.1}{l}{#4}
+   }{}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#2}{R}}{
+  \begin{scope}[shift = {(3.3, #3)}]
+   \ifthenelse{\equal{#1}{}}{
+    \draw (0, 0) -- (0.7, 0);
+    \cdputtext{-0.3}{-0.1}{r}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{3}}{
+    \draw (0, 0) -- (0.7, 0);
+    \smalltristate{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{d}}{
+    \draw (0, 0) -- (0.7, 0);
+    \smalldynamicL{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{ms}}{
+    \draw (0, 0) -- (0.7, 0);
+    \smallmstslvR{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{n}}{
+    \draw (0.35, 0) circle (0.35);
+    \cdputtext{-0.3}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{n3}}{
+    \draw (0.35, 0) circle (0.35);
+    \smalltristate{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nd}}{
+    \draw (0.35, 0) circle (0.35);
+    \smalldynamicL{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nms}}{
+    \draw (0.35, 0) circle (0.35);
+    \smallmstslvR{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{noc}}{
+    \draw (0.35, 0) circle (0.35);
+    \smallopencoll{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{nst}}{
+    \draw (0.35, 0) circle (0.35);
+    \smallschmittL{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{\negbar{#4}}
+   }{}
+   \ifthenelse{\equal{#1}{oc}}{
+    \draw (0, 0) -- (0.7, 0);
+    \smallopencoll{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{st}}{
+    \draw (0, 0) -- (0.7, 0);
+    \smallschmittL{-0.5}{0}
+    \cdputtext{-0.9}{-0.1}{r}{#4}
+   }{}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#2}{U}}{
+  \begin{scope}[shift = {(0, #3.3)}]
+   \ifthenelse{\equal{#1}{}}{
+    \draw (0, 0) -- (0, 0.7);
+    \cdputtext{0}{-1.4}{c}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{n}}{
+    \draw (0, 0.35) circle (0.35);
+    \cdputtext{0}{-1.4}{c}{\negbar{#4}}
+   }{}
+  \end{scope}
+ }{}
+ \ifthenelse{\equal{#2}{D}}{
+  \begin{scope}[shift = {(0, -#3.3)}]
+   \ifthenelse{\equal{#1}{}}{
+    \draw (0, 0) -- (0, -0.7);
+    \cdputtext{0}{1.2}{c}{#4}
+   }{}
+   \ifthenelse{\equal{#1}{n}}{
+    \draw (0, -0.35) circle (0.35);
+    \cdputtext{0}{1.2}{c}{\negbar{#4}}
+   }{}
+  \end{scope}
+ }{}
+}
+\newcommand{\smalldynamicL}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (0.5, -0.35) -- (-0.4, 0) -- (0.5, 0.35);
+ \end{scope}
+}
+\newcommand{\smalldynamicR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.5, -0.35) -- (0.4, 0) -- (-0.5, 0.35);
+ \end{scope}
+}
+\newcommand{\smallschmittL}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (0.4, -0.45) -- (-0.1, -0.45) -- (-0.2, 0.45) (-0.4, 0.45) -- (0.1, 0.45) -- (0.2, -0.45);
+ \end{scope}
+}
+\newcommand{\smallschmittR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.4, -0.45) -- (0.1, -0.45) -- (0.2, 0.45) (0.4, 0.45) -- (-0.1, 0.45) -- (-0.2, -0.45);
+ \end{scope}
+}
+\newcommand{\smallopencoll}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.45, 0) -- (0, 0.45) -- (0.45, 0) -- (0, -0.45) -- cycle;
+  \draw (-0.45, -0.45) -- (0.45, -0.45);
+ \end{scope}
+}
+\newcommand{\smalltristate}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.45, 0.41) -- (0.45, 0.41) -- (0, -0.41) -- cycle;
+ \end{scope}
+}
+\newcommand{\smallmstslvL}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (0.45, 0.4) -| (-0.25, -0.4);
+ \end{scope}
+}
+\newcommand{\smallmstslvR}[2]{
+ \begin{scope}[shift = {(#1, #2)}]
+  \draw (-0.45, 0.4) -| (0.25, -0.4);
+ \end{scope}
+}
+% Deprecated commands
+\newcommand{\actlowout}{
+ \PackageWarning{circdia/digital}{Command 'actlowout' is deprecated; use 'invout' instead.}
+ \invout
+}
+\newcommand{\showclock}{
+ \PackageWarning{circdia/digital}{Command 'showclock' is deprecated; use 'clockin' instead.}
+ \clockin
+}
+\newcommand{\showsetin}{
+ \PackageWarning{circdia/digital}{Command 'showsetin' is deprecated; use 'setin' instead.}
+ \setin
+}
+\newcommand{\showresetin}{
+ \PackageWarning{circdia/digital}{Command 'showresetin' is deprecated; use 'resetin' instead.}
+ \resetin
+}
+\newcommand{\showinvout}{
+ \PackageWarning{circdia/digital}{Command 'showinvout' is deprecated; use 'invout' instead.}
+ \invout
+}

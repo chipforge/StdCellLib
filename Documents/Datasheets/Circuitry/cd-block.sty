@@ -1,0 +1,294 @@
+% cd-block.sty (formerly known as cd-control.sty)
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 3.1.
+% Supports control or telecommunication engineering block symbols for circdia.sty.
+% Low-level commands
+\newcommand{\cdBigarrow}[4][]{
+ \begin{scope}[shift = {(#2, #3)}, rotate = #4]
+  \cdBigarrowhead
+  \ifthenelse{\equal{#1}{}}{}{\cdBigarrowline{#1}}
+ \end{scope}
+}
+\newcommand{\cdBigarrowhead}{\draw (-1.23, -0.45) -- (0, 0) -- (-1.23, 0.45);}
+\newcommand{\cdBigarrowline}[1]{\draw (-0.546667, -0.2) -- (-#1, -0.2);\draw (-0.546667, 0.2) -- (-#1, 0.2);}
+% Wires
+\newcommand{\Wire}[5]{
+ \ifthenelse{\equal{#1}{L}}{
+  \draw (#2, #3 + 0.2) -- (#4, #5 + 0.2) (#2, #3 - 0.2) -- (#4, #5 - 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{UL}}{
+  \draw (#2 - 0.2, #3) |- (#4, #5 - 0.2) (#2 + 0.2, #3) |- (#4, #5 + 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{DL}}{
+  \draw (#2 - 0.2, #3) |- (#4, #5 + 0.2) (#2 + 0.2, #3) |- (#4, #5 - 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \draw (#2, #3 - 0.2) -- (#4, #5 - 0.2) (#2, #3 + 0.2) -- (#4, #5 + 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{UR}}{
+  \draw (#2 + 0.2, #3) |- (#4, #5 - 0.2) (#2 - 0.2, #3) |- (#4, #5 + 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{DR}}{
+  \draw (#2 + 0.2, #3) |- (#4, #5 + 0.2) (#2 - 0.2, #3) |- (#4, #5 - 0.2);
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \draw (#2 + 0.2, #3) -- (#4 + 0.2, #5) (#2 - 0.2, #3) -- (#4 - 0.2, #5);
+ }{}
+ \ifthenelse{\equal{#1}{LU}}{
+  \draw (#2, #3 + 0.2) -| (#4 + 0.2, #5) (#2, #3 - 0.2) -| (#4 - 0.2, #5);
+ }{}
+ \ifthenelse{\equal{#1}{RU}}{
+  \draw (#2, #3 + 0.2) -| (#4 - 0.2, #5) (#2, #3 - 0.2) -| (#4 + 0.2, #5);
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \draw (#2 - 0.2, #3) -- (#4 - 0.2, #5) (#2 + 0.2, #3) -- (#4 + 0.2, #5);
+ }{}
+ \ifthenelse{\equal{#1}{LD}}{
+  \draw (#2, #3 - 0.2) -| (#4 + 0.2, #5) (#2, #3 + 0.2) -| (#4 - 0.2, #5);
+ }{}
+ \ifthenelse{\equal{#1}{RD}}{
+  \draw (#2, #3 - 0.2) -| (#4 - 0.2, #5) (#2, #3 + 0.2) -| (#4 + 0.2, #5);
+ }{}
+}
+% Wires with arrows
+\newcommand{\wirear}[5]{
+ \ifthenelse{\equal{#1}{L}\OR\equal{#1}{UL}\OR\equal{#1}{DL}}{
+  \draw (#2, #3) |- (#4, #5);
+  \cdbigarrow{#4}{#5}{180}
+ }{}
+ \ifthenelse{\equal{#1}{R}\OR\equal{#1}{UR}\OR\equal{#1}{DR}}{
+  \draw (#2, #3) |- (#4, #5);
+  \cdbigarrow{#4}{#5}{0}
+ }{}
+ \ifthenelse{\equal{#1}{U}\OR\equal{#1}{LU}\OR\equal{#1}{RU}}{
+  \draw (#2, #3) -| (#4, #5);
+  \cdbigarrow{#4}{#5}{90}
+ }{}
+ \ifthenelse{\equal{#1}{D}\OR\equal{#1}{LD}\OR\equal{#1}{RD}}{
+  \draw (#2, #3) -| (#4, #5);
+  \cdbigarrow{#4}{#5}{-90}
+ }{}
+}
+\newcommand{\Wirear}[5]{
+ \ifthenelse{\equal{#1}{L}}{
+  \draw (#2, #3 - 0.2) -- (#4 + 1, #5 - 0.2) (#2, #3 + 0.2) -- (#4 + 1, #5 + 0.2);
+  \cdBigarrow[1]{#4}{#5}{180}
+ }{}
+ \ifthenelse{\equal{#1}{UL}}{
+  \draw (#2 - 0.2, #3) |- (#4 + 1, #5 - 0.2) (#2 + 0.2, #3) |- (#4 + 1, #5 + 0.2);
+  \cdBigarrow[1]{#4}{#5}{180}
+ }{}
+ \ifthenelse{\equal{#1}{DL}}{
+  \draw (#2 - 0.2, #3) |- (#4 + 1, #5 + 0.2) (#2 + 0.2, #3) |- (#4 + 1, #5 - 0.2);
+  \cdBigarrow[1]{#4}{#5}{180}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \draw (#2, #3 + 0.2) -- (#4 - 1, #5 + 0.2) (#2, #3 - 0.2) -- (#4 - 1, #5 - 0.2);
+  \cdBigarrow[1]{#4}{#5}{0}
+ }{}
+ \ifthenelse{\equal{#1}{UR}}{
+  \draw (#2 + 0.2, #3) |- (#4 - 1, #5 - 0.2) (#2 - 0.2, #3) |- (#4 - 1, #5 + 0.2);
+  \cdBigarrow[1]{#4}{#5}{0}
+ }{}
+ \ifthenelse{\equal{#1}{DR}}{
+  \draw (#2 + 0.2, #3) |- (#4 - 1, #5 + 0.2) (#2 - 0.2, #3) |- (#4 - 1, #5 - 0.2);
+  \cdBigarrow[1]{#4}{#5}{0}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \draw (#2 - 0.2, #3) -- (#4 - 0.2, #5 - 1) (#2 + 0.2, #3) -- (#4 + 0.2, #5 - 1);
+  \cdBigarrow[1]{#4}{#5}{90}
+ }{}
+ \ifthenelse{\equal{#1}{LU}}{
+  \draw (#2, #3 + 0.2) -| (#4 + 0.2, #5 - 1) (#2, #3 - 0.2) -| (#4 - 0.2, #5 - 1);
+  \cdBigarrow[1]{#4}{#5}{90}
+ }{}
+ \ifthenelse{\equal{#1}{RU}}{
+  \draw (#2, #3 + 0.2) -| (#4 - 0.2, #5 - 1) (#2, #3 - 0.2) -| (#4 + 0.2, #5 - 1);
+  \cdBigarrow[1]{#4}{#5}{90}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \draw (#2 + 0.2, #3) -- (#4 + 0.2, #5 + 1) (#2 - 0.2, #3) -- (#4 - 0.2, #5 + 1);
+  \cdBigarrow[1]{#4}{#5}{-90}
+ }{}
+ \ifthenelse{\equal{#1}{LD}}{
+  \draw (#2, #3 - 0.2) -| (#4 + 0.2, #5 + 1) (#2, #3 + 0.2) -| (#4 - 0.2, #5 + 1);
+  \cdBigarrow[1]{#4}{#5}{-90}
+ }{}
+ \ifthenelse{\equal{#1}{RD}}{
+  \draw (#2, #3 - 0.2) -| (#4 - 0.2, #5 + 1) (#2, #3 + 0.2) -| (#4 + 0.2, #5 + 1);
+  \cdBigarrow[1]{#4}{#5}{-90}
+ }{}
+}
+% Junctions
+\newcommand{\Junct}[2]{\filldraw (#1, #2) circle (0.35);}
+% Transfer function blocks
+\newcommand{\trfctg}[4][]{
+ \prepareelement{G}{#4}{R}{}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  \trfctgA{#1}
+ \end{scope}
+}
+\newcommand{\trfctgA}[1]{
+ #1
+ \draw [cdmedlines] (-4.5, -3) rectangle (4.5, 3);
+ \begin{scope}[shift = {(-4, -2.5)}]
+  \draw (0, 5) |- (8, 0);
+  \ifthenelse{\equal{\cdtype}{D}}{
+   \draw (0.5, 0) -- (0.5, 5.25);
+  }{}
+  \ifthenelse{\equal{\cdtype}{DT1}}{
+   \draw plot [smooth] coordinates {(0, 4) (0.25, 3.529988) (0.5, 3.115203) (0.75, 2.749157) (1, 2.426123) (1.25, 2.141046) (1.5, 1.889466) (1.75, 1.667448) (2, 1.471518) (2.25, 1.29861) (2.5, 1.146019) (2.75, 1.011358) (3, 0.892521) (3.25, 0.787647) (3.5, 0.695096) (3.75, 0.61342) (4, 0.541341) (4.25, 0.477732) (4.5, 0.421597) (4.75, 0.372058) (5, 0.32834) (5.25, 0.289759) (5.5, 0.255711) (5.75, 0.225665) (6, 0.199148) (6.25, 0.175748) (6.5, 0.155097) (6.75, 0.136872) (7, 0.12079) (7.25, 0.106596) (7.5, 0.094071) (7.75, 0.083017) (8, 0.073263)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{I}}{
+   \draw (0, 0) -- (8, 5);
+  }{}
+  \ifthenelse{\equal{\cdtype}{I2}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.004883) (0.5, 0.019531) (0.75, 0.043945) (1, 0.078125) (1.25, 0.12207) (1.5, 0.175781) (1.75, 0.239258) (2, 0.3125) (2.25, 0.395508) (2.5, 0.488281) (2.75, 0.59082) (3, 0.703125) (3.25, 0.825195) (3.5, 0.957031) (3.75, 1.098633) (4, 1.25) (4.25, 1.411133) (4.5, 1.582031) (4.75, 1.762695) (5, 1.953125) (5.25, 2.15332) (5.5, 2.363281) (5.75, 2.583008) (6, 2.8125) (6.25, 3.051758) (6.5, 3.300781) (6.75, 3.55957) (7, 3.828125) (7.25, 4.106445) (7.5, 4.394531) (7.75, 4.692383) (8, 5)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{IT1}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.012419) (0.5, 0.04771) (0.75, 0.103185) (1, 0.176474) (1.25, 0.265482) (1.5, 0.368362) (1.75, 0.483485) (2, 0.609412) (2.25, 0.744873) (2.5, 0.888749) (2.75, 1.04005) (3, 1.197903) (3.25, 1.36154) (3.5, 1.530281) (3.75, 1.703525) (4, 1.880743) (4.25, 2.061469) (4.5, 2.245291) (4.75, 2.431844) (5, 2.620808) (5.25, 2.811899) (5.5, 3.004868) (5.75, 3.199493) (6, 3.395581) (6.25, 3.592959) (6.5, 3.791476) (6.75, 3.990998) (7, 4.191406) (7.25, 4.392597) (7.5, 4.594479) (7.75, 4.796971) (8, 5)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{P}}{
+   \draw (0, 3) -- (8, 3);
+  }{}
+  \ifthenelse{\equal{\cdtype}{PD}}{
+   \draw (0.5, 5.25) |- (8, 2);
+  }{}
+  \ifthenelse{\equal{\cdtype}{PDT1}}{
+   \draw plot [smooth] coordinates {(0, 4) (0.25, 3.764994) (0.5, 3.557602) (0.75, 3.374579) (1, 3.213061) (1.25, 3.070523) (1.5, 2.944733) (1.75, 2.833724) (2, 2.735759) (2.25, 2.649305) (2.5, 2.57301) (2.75, 2.505679) (3, 2.44626) (3.25, 2.393823) (3.5, 2.347548) (3.75, 2.30671) (4, 2.270671) (4.25, 2.238866) (4.5, 2.210798) (4.75, 2.186029) (5, 2.16417) (5.25, 2.14488) (5.5, 2.127856) (5.75, 2.112832) (6, 2.099574) (6.25, 2.087874) (6.5, 2.077548) (6.75, 2.068436) (7, 2.060395) (7.25, 2.053298) (7.5, 2.047035) (7.75, 2.041509) (8, 2.036631)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PI}}{
+   \draw (0, 2) -- (8, 5);
+  }{}
+  \ifthenelse{\equal{\cdtype}{PID}}{
+   \draw (0.5, 5.25) -- (0.5, 2) -- (8, 5);
+  }{}
+  \ifthenelse{\equal{\cdtype}{PIDT1}}{
+   \draw plot [smooth] coordinates {(0, 3) (0.25, 2.630029) (0.5, 2.367102) (0.75, 2.188648) (1, 2.076856) (1.25, 2.017671) (1.5, 2) (1.75, 2.01509) (2, 2.056033) (2.25, 2.117378) (2.5, 2.194823) (2.75, 2.284974) (3, 2.385151) (3.25, 2.493241) (3.5, 2.607575) (3.75, 2.726836) (4, 2.849986) (4.25, 2.976204) (4.5, 3.104844) (4.75, 3.235395) (5, 3.367454) (5.25, 3.500703) (5.5, 3.634891) (5.75, 3.769821) (6, 3.905335) (6.25, 4.041311) (6.5, 4.177651) (6.75, 4.314278) (7, 4.451132) (7.25, 4.588166) (7.5, 4.72534) (7.75, 4.862626) (8, 5)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PPT1}}{
+   \draw plot [smooth] coordinates {(0, 2) (0.25, 2.235006) (0.5, 2.442398) (0.75, 2.625421) (1, 2.786939) (1.25, 2.929477) (1.5, 3.055267) (1.75, 3.166276) (2, 3.264241) (2.25, 3.350695) (2.5, 3.42699) (2.75, 3.494321) (3, 3.55374) (3.25, 3.606177) (3.5, 3.652452) (3.75, 3.69329) (4, 3.729329) (4.25, 3.761134) (4.5, 3.789202) (4.75, 3.813971) (5, 3.83583) (5.25, 3.85512) (5.5, 3.872144) (5.75, 3.887168) (6, 3.900426) (6.25, 3.912126) (6.5, 3.922452) (6.75, 3.931564) (7, 3.939605) (7.25, 3.946702) (7.5, 3.952965) (7.75, 3.958491) (8, 3.963369)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PT1}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.470012) (0.5, 0.884797) (0.75, 1.250843) (1, 1.573877) (1.25, 1.858954) (1.5, 2.110534) (1.75, 2.332552) (2, 2.528482) (2.25, 2.70139) (2.5, 2.853981) (2.75, 2.988642) (3, 3.107479) (3.25, 3.212353) (3.5, 3.304904) (3.75, 3.38658) (4, 3.458659) (4.25, 3.522268) (4.5, 3.578403) (4.75, 3.627942) (5, 3.67166) (5.25, 3.710241) (5.5, 3.744289) (5.75, 3.774335) (6, 3.800852) (6.25, 3.824252) (6.5, 3.844903) (6.75, 3.863128) (7, 3.87921) (7.25, 3.893404) (7.5, 3.905929) (7.75, 3.916983) (8, 3.926737)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PT2un}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.21733) (0.5, 0.770327) (0.75, 1.504358) (1, 2.275557) (1.25, 2.96829) (1.5, 3.504649) (1.75, 3.846505) (2, 3.991564) (2.25, 3.965374) (2.5, 3.811312) (2.75, 3.580433) (3, 3.322601) (3.25, 3.079845) (3.5, 2.882351) (3.75, 2.747017) (4, 2.678195) (4.25, 2.669997) (4.5, 2.709491) (4.75, 2.780128) (5, 2.864879) (5.25, 2.94871) (5.5, 3.020201) (5.75, 3.072297) (6, 3.102271) (6.25, 3.111098) (6.5, 3.102461) (6.75, 3.081611) (7, 3.054277) (7.25, 3.025755) (7.5, 3.000279) (7.75, 2.980678) (8, 2.968306)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PT2cr}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.055600) (0.5, 0.198201) (0.75, 0.398150) (1, 0.633116) (1.25, 0.886504) (1.5, 1.146174) (1.75, 1.403438) (2, 1.652257) (2.25, 1.888615) (2.5, 2.110016) (2.75, 2.315103) (3, 2.503349) (3.25, 2.674827) (3.5, 2.830029) (3.75, 2.969728) (4, 3.094872) (4.25, 3.206510) (4.5, 3.305735) (4.75, 3.393637) (5, 3.471280) (5.25, 3.539682) (5.5, 3.599799) (5.75, 3.652519) (6, 3.698661) (6.25, 3.738974) (6.5, 3.774134) (6.75, 3.804753) (7, 3.831379) (7.25, 3.854503) (7.5, 3.874561) (7.75, 3.891938) (8, 3.906977)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PT2ov}}{
+   \draw plot [smooth] coordinates {(0, 0) (0.25, 0.049920) (0.50, 0.162801) (0.75, 0.304204) (1, 0.456510) (1.25, 0.610789) (1.5, 0.762593) (1.75, 0.909784) (2, 1.051413) (2.25, 1.187133) (2.5, 1.316908) (2.75, 1.440851) (3, 1.559149) (3.25, 1.672021) (3.5, 1.779694) (3.75, 1.882399) (4, 1.980358) (4.25, 2.073789) (4.5, 2.162899) (4.75, 2.247888) (5, 2.328945) (5.25, 2.406253) (5.5, 2.479984) (5.75, 2.550304) (6, 2.617371) (6.25, 2.681335) (6.5, 2.742341) (6.75, 2.800523) (7, 2.856015) (7.25, 2.908939) (7.5, 2.959414) (7.75, 3.007555) (8, 3.053468)};
+  }{}
+  \ifthenelse{\equal{\cdtype}{PTt}}{
+   \draw (3, 0) |- (8, 3);
+  }{}
+  \ifthenelse{\equal{\cdtype}{PT2}}{
+   \PackageWarning{circdia}{Type 'PT2' in command 'trfctg' is deprecated; use 'PT2un', 'PT2cr', or 'PT2ov' instead.}
+  }{}
+ \end{scope}
+}
+\newcommand{\trfctt}[6][]{
+ \prepareelement{G}{T}{R}{}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  #1
+  \draw [cdmedlines] (-#4, -#5) rectangle (#4, #5);
+  \cdputtext{0}{0}{c}{#6}
+ \end{scope}
+}
+\newcommand{\trfctm}[6][]{
+ \prepareelement{G}{M}{R}{}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  #1
+  \draw [cdmedlines] (-#4, -#5) rectangle (#4, #5);
+  \cdputtext{0}{0}{c}{$\displaystyle#6$}
+ \end{scope}
+}
+% Addition symbol
+\newcommand{\addsym}[3][]{
+ \prepareelement{}{}{R}{}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  #1
+  \draw circle (1);
+ \end{scope}
+}
+% Block text
+\newcommand{\blktext}[2]{
+ \ifthenelse{\equal{#1}{lu}}{\cdputtext{-4.5}{4.25}{l}{#2}}{}
+ \ifthenelse{\equal{#1}{cu}}{\cdputtext{0}{4.25}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{ru}}{\cdputtext{4.5}{4.25}{r}{#2}}{}
+ \ifthenelse{\equal{#1}{ld}}{\cdputtext{-4.5}{-4.25}{l}{#2}}{}
+ \ifthenelse{\equal{#1}{cd}}{\cdputtext{0}{-4.25}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{rd}}{\cdputtext{4.5}{-4.25}{r}{#2}}{}
+}
+% Addition symbol + and -
+\newcommand{\addplus}[1]{
+ \ifthenelse{\equal{#1}{LU}}{\cdplus{-1.75}{1}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdplus{-1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdplus{1.75}{1}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdplus{1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{UL}}{\cdplus{-1}{1.75}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdplus{1}{1.75}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdplus{-1}{-1.75}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdplus{1}{-1.75}}{}
+}
+\newcommand{\addminus}[1]{
+ \ifthenelse{\equal{#1}{LU}}{\cdminus{-1.75}{1}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdminus{-1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdminus{1.75}{1}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdminus{1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{UL}}{\cdminus{-1}{1.75}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdminus{1}{1.75}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdminus{-1}{-1.75}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdminus{1}{-1.75}}{}
+}
+\newcommand{\addplmi}[1]{
+ \ifthenelse{\equal{#1}{LU}}{\cdplmi{-1.75}{1}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdplmi{-1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdplmi{1.75}{1}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdplmi{1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{UL}}{\cdplmi{-1}{1.75}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdplmi{1}{1.75}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdplmi{-1}{-1.75}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdplmi{1}{-1.75}}{}
+}
+\newcommand{\addmipl}[1]{
+ \ifthenelse{\equal{#1}{LU}}{\cdmipl{-1.75}{1}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdmipl{-1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdmipl{1.75}{1}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdmipl{1.75}{-1}}{}
+ \ifthenelse{\equal{#1}{UL}}{\cdmipl{-1}{1.75}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdmipl{1}{1.75}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdmipl{-1}{-1.75}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdmipl{1}{-1.75}}{}
+}
+% Deprecated commands
+\newcommand{\ctrlsym}[4][]{
+ \PackageWarning{circdia/block}{Command 'ctrlsym' is deprecated; use 'trfctg' instead.}
+ \trfctg[#1]{#3}{#4}{#2}
+}
+\newcommand{\ctrlfct}[4][]{
+ \PackageWarning{circdia/block}{Command 'ctrlfct' is deprecated; use 'trfctt' or 'trfctm' instead.}
+ \trfctt[#1]{#3}{#4}{4.5}{3}{#2}
+}
+\newcommand{\ctrlsmall}[4][]{
+ \PackageWarning{circdia/block}{Command 'ctrlsmall' is deprecated; use 'trfctt' or 'trfctm' instead.}
+ \trfctt[#1]{#3}{#4}{3.5}{2.5}{#2}
+}
+\newcommand{\ctrltext}{
+ \PackageWarning{circdia/block}{Command 'ctrltext' is deprecated; use 'blktext' instead.}
+ \blktext
+}
+\newcommand{\ctrlunion}[4][]{
+ \PackageWarning{circdia/block}{Command 'ctrlunion' is deprecated; use 'addsym' instead.}
+ \addsym[#1]{#3}{#4}
+}
+\newcommand{\ctrlplus}{
+ \PackageWarning{circdia/block}{Command 'ctrlplus' is deprecated; use 'addplus' instead.}
+ \addplus
+}
+\newcommand{\ctrlminus}{
+ \PackageWarning{circdia/block}{Command 'ctrlminus' is deprecated; use 'addminus' instead.}
+ \addminus
+}

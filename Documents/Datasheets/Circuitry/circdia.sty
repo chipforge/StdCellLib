@@ -1,0 +1,2194 @@
+% circdia.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 8.2 -- 2021/03/01
+% Draws circuit diagrams.
+% Acknowledgements to:
+% T. Bertel, N. Johnson, A. Körner, G. Lasser, H. Sankowski, O. Scholz, F. Xaver
+% ----------
+% Package options:
+%  normalinduc
+%  curlyinduc
+%  filledinduc
+%  lineddiode
+%  emptydiode
+%  filleddiode
+%  nocircledtrans
+%  circledtrans
+%  usgate
+%  eugate
+%  autoref
+%  block
+%  color
+%  diag
+%  digital
+%  graph
+%  ic
+%  mech
+%  passive
+%  semicon
+%  srcmeas
+%  switch
+% You may access
+%  \begin{circuitdiagram}[]{}{} \end{circuitdiagram}
+%  \cdraisebox{}{}{}
+%  \wire[]{}{}{}{}
+%  \junct{}{}
+%  \pin[]{}{}{}{}
+%  \ground[]{}{}{}
+%  \power[]{}{}{}{}
+%  \Voltar[]{}{}{}{}{}{}
+%  \currar[]{}{}{}{}
+%  \voltsrc[]{}{}{}{}{}
+%  \currsrc[]{}{}{}{}{}
+%  \switch[]{}{}{}{}{}{}
+%  \resis[]{}{}{}{}{}
+%  \capac[]{}{}{}{}{}
+%  \induc[]{}{}{}{}{}
+%  \diode[]{}{}{}{}{}
+%  \trans[]{}{}{}{}{}{}
+%  \opamp[]{}{}{}{}{}
+%  \wireL{}
+%  \wireR{}
+%  \wireLR{}
+%  \wireU{}
+%  \wireD{}
+%  \wireUD{}
+%  \male
+%  \female
+%  \voltar{}{}
+%  \modify{}
+%  \trim{}
+%  \slider{}
+%  \photo{}
+%  \photo
+%  \emit{}
+%  \elcap{}
+%  \windings{}
+%  \zener{}
+%  \supply{}
+%  \putrefer{}{}{}
+%  \putvalue{}{}{}
+%  \putrefval{}{}{}
+%  \moverefer{}{}
+%  \movevalue{}{}
+%  \moverefval{}{}
+%  \normalinduc
+%  \curlyinduc
+%  \filledinduc
+%  \lineddiode
+%  \emptydiode
+%  \filleddiode
+%  \circledtrans
+%  \nocircledtrans
+%  \usgate
+%  \eugate
+%  \negbar
+%  \savelastelem
+%  \loadlastelem
+% and redefine
+%  \atbegincd
+%  \atendcd
+%  \cdrefvalsep
+%  cdgridstyle
+%  cdvthinlines
+%  cdthinlines
+%  cdmedlines
+%  cdthicklines
+%  cddashedlines
+% from this document.
+% You may access
+%  \newautoref
+%  \cdlabel{}
+% and redefine
+%  \autorefsymbol
+%  \cdswitchname
+%  \cdresisname
+%  \cdcapacname
+%  \cdinducname
+%  \cddiodename
+%  \cdtransname
+%  \cdicname
+% from the autoref subpackage.
+% You may access
+%  \Wire{}{}{}{}{}
+%  \wirear{}{}{}{}{}
+%  \Wirear{}{}{}{}{}
+%  \Junct{}{}
+%  \trfctg[]{}{}{}
+%  \trfctt[]{}{}{}{}{}
+%  \trfctm[]{}{}{}{}{}
+%  \addsym[]{}{}
+%  \blktext{}{}
+%  \addplus{}
+%  \addminus{}
+%  \addplmi{}
+%  \addmipl{}
+% from the block subpackage.
+% You may access
+%  cdblack
+%  cdbrown
+%  cdred
+%  cdorange
+%  cdyellow
+%  cdgreen
+%  cdblue
+%  cdpurple
+%  cdgray
+%  cdwhite
+%  cdgold
+%  cdsilver
+%  \textcolorelec{}{}
+%  \coloredpn{}{}
+%  \colorstripes{}
+% from the color subpackage.
+% You may access
+%  \bridgeform[]{}{}{}{}{}{}
+%  \bridgewire{}
+%  \deltaform[]{}{}{}{}{}{}
+%  \deltawire{}
+%  \starform[]{}{}{}{}{}{}
+%  \starwire{}
+% from the diag subpackage.
+% You may access
+%  \usgate
+%  \eugate
+%  \gate[]{}{}{}{}{}{}
+%  \decoder[]{}{}{}{}{}{}
+%  \arithm[]{}{}{}{}{}{}
+%  \flipflop[]{}{}{}{}{}{}
+%  \inputs{}
+%  \schmitt
+%  \opencoll
+%  \tristate{}
+%  \invout
+%  \clockin{}
+%  \setin{}
+%  \resetin{}
+% from the digital subpackage.
+% You may access
+%  \begin{bodedia}{}{}{}{}
+%   \horizgrid{}{}{}{}
+%   \vertgrid{}{}{}{}{}
+%   \horizaxis[]{}{}{}
+%   \vertaxis[]{}{}{}{}
+%   \horiztick[]{}{}
+%   \verttick[]{}{}{}
+%   \coordcurve[]{}
+%   \scaledscope[]{}
+%  \end{bodedia}
+%  \begin{cartdia}{}{}{}{}
+%   \horizgrid{}{}{}{}{}
+%   \vertgrid{}{}{}{}{}
+%   \horizaxis[]{}{}{}
+%   \vertaxis[]{}{}{}
+%   \horiztick[]{}{}
+%   \verttick[]{}{}
+%   \coordcurve[]{}
+%   \scaledscope[]{}
+%  \end{cartdia}
+%  \begin{polezerodia}{}{}{}{}
+%   \horizgrid{}{}{}{}{}
+%   \vertgrid{}{}{}{}{}
+%   \horizaxis[]{}{}{}
+%   \vertaxis[]{}{}{}
+%   \horiztick[]{}{}
+%   \verttick[]{}{}
+%   \coordcurve[]{}
+%   \drawpole{}{}
+%   \drawzero{}{}
+%  \end{polezerodia}
+% from the graph subpackage.
+% You may access
+%  \linic[]{}{}{}{}{}{}
+%  \ttlic[]{}{}{}{}{}{}
+%  \optext{}
+%  \pinnos{}...
+% from the ic subpackage.
+% You may access
+%  \wiredot{}{}
+%  \wirecross{}{}
+%  \techdim[]{}{}{}{}{}
+%  \dimhelpL{}
+%  \dimhelpR{}
+%  \dimhelpU{}
+%  \dimhelpD{}
+% from the mech subpackage.
+% You may access
+%  \Modify{}{}{}
+%  \Trim{}{}{}
+%  \Ironcore{}{}{}{}
+%  \rclandrcl[]{}{}
+%  \ptc{}
+%  \ntc{}
+%  \winddot{}
+%  \ironcore
+%  \ferrcore
+% from the passive subpackage.
+% You may access
+%  \diac[]{}{}{}{}{}
+%  \schottky
+%  \tunnel
+%  \capdio
+%  \thyr{}
+%  \triac{}
+%  \multemit{}
+% from the semicon subpackage.
+% You may access
+%  \othergnd[]{}{}{}{}
+%  \setground{}
+%  \otherpow[]{}{}{}{}{}
+%  \setpower{}
+%  \othersrc[]{}{}{}{}{}{}
+%  \measdev[]{}{}{}{}{}
+%  \sigsym{}
+%  \noisy
+%  \polarity{}
+%  \measunit{}
+% from the srcmeas subpackage.
+% You may access
+%  \relay[]{}{}{}{}{}
+%  \swiandswi{}{}
+%  \relandswi{}{}
+%  \pushswi
+% from the switch subpackage.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{circdia}[2021/03/01]
+\RequirePackage[nomessages]{fp}
+\RequirePackage{amsmath,ifthen,relsize,tikz}
+% User redefinable
+\newcommand{\atbegincd}{}
+\newcommand{\atendcd}{}
+\newcommand{\cdrefvalsep}{~~}
+\tikzset{cdgridstyle/.style = {very thin, gray}}
+\tikzset{cdvthinlines/.style = {line width = 0.05ex}}
+\tikzset{cdthinlines/.style = {line width = 0.1ex}}
+\tikzset{cdmedlines/.style = {line width = 0.17ex}}
+\tikzset{cdthicklines/.style = {line width = 0.4ex}}
+\tikzset{cddashedlines/.style = {dash pattern = on 0.31692ex off 0.63384ex on 0.31692ex off 0ex}}
+% Options
+\newif\ifnormalinduc
+\newif\ifcurlyinduc
+\newif\iffilledinduc
+\newif\iflineddiode
+\newif\ifemptydiode
+\newif\iffilleddiode
+\newif\ifcircledtrans
+\newcommand{\normalinduc}{\normalinductrue\curlyinducfalse\filledinducfalse}
+\newcommand{\curlyinduc}{\normalinducfalse\curlyinductrue\filledinducfalse}
+\newcommand{\filledinduc}{\normalinducfalse\curlyinducfalse\filledinductrue}
+\newcommand{\lineddiode}{\lineddiodetrue\emptydiodefalse\filleddiodefalse}
+\newcommand{\emptydiode}{\lineddiodefalse\emptydiodetrue\filleddiodefalse}
+\newcommand{\filleddiode}{\lineddiodefalse\emptydiodefalse\filleddiodetrue}
+\newcommand{\nocircledtrans}{\circledtransfalse}
+\newcommand{\circledtrans}{\circledtranstrue}
+\DeclareOption{normalinduc}{\normalinduc}
+\DeclareOption{curlyinduc}{\curlyinduc}
+\DeclareOption{filledinduc}{\filledinduc}
+\DeclareOption{lineddiode}{\lineddiode}
+\DeclareOption{emptydiode}{\emptydiode}
+\DeclareOption{filleddiode}{\filleddiode}
+\DeclareOption{nocircledtrans}{\nocircledtrans}
+\DeclareOption{circledtrans}{\circledtrans}
+% Controlling variables
+\newcounter{cdcounter}
+\newlength{\cdlength}
+\newcommand{\cdelem}{}
+\newcommand{\cdtype}{}
+\newcommand{\cdelemx}{}
+\newcommand{\cdelemy}{}
+\newcommand{\cdinfo}{}
+\newcommand{\cdorient}{}
+\newcommand{\cdsuborient}{}
+\newcommand{\cdtextpos}{}
+\newcommand{\cdrefer}{}
+\newcommand{\cdvalue}{}
+\newcommand{\cdrefval}{}
+\newcommand{\cdrefvaltog}{}
+\newcommand{\cdreferx}{}
+\newcommand{\cdrefery}{}
+\newcommand{\cdreferalign}{}
+\newcommand{\cdvaluex}{}
+\newcommand{\cdvaluey}{}
+\newcommand{\cdvaluealign}{}
+\newcommand{\cdrefvalx}{}
+\newcommand{\cdrefvaly}{}
+\newcommand{\cdrefvalalign}{}
+% Low-level commands
+\newcommand{\negbar}[1]{%
+ \hspace*{0.06em}%
+ $\overline{\text{\vphantom{\raisebox{-0.11ex}{#1}}\smash{\hspace*{-0.06em}#1\hspace*{-0.06em}}}}$%
+ \hspace*{0.06em}%
+}
+\newcommand{\cdputtext}[4]{
+ \ifthenelse{\equal{#3}{l}}{\node at (#1, #2) {\rlap{\vphantom{/}\smash{#4}}};}{}
+ \ifthenelse{\equal{#3}{c}}{\node at (#1, #2) {\vphantom{/}\smash{#4}};}{}
+ \ifthenelse{\equal{#3}{r}}{\node at (#1, #2) {\llap{\vphantom{/}\smash{#4}}};}{}
+}
+\newcommand{\cdplus}[2]{\draw (#1, #2) ++(-0.4, 0) -- ++(0.8, 0) ++(-0.4, -0.4) -- ++(0, 0.8);}
+\newcommand{\cdminus}[2]{\draw (#1, #2) ++(-0.4, 0) -- ++(0.8, 0);}
+\newcommand{\cdplmi}[2]{
+ \draw (#1, #2) ++(-0.4, 0.05) -- ++(0.8, 0) ++(-0.4, -0.4) -- ++(0, 0.8) ++(-0.4, -0.9) -- ++(0.8, 0);
+}
+\newcommand{\cdmipl}[2]{
+ \draw (#1, #2) ++(-0.4, 0.45) -- ++(0.8, 0) ++(-0.8, -0.5) -- ++(0.8, 0) ++(-0.4, -0.4) -- ++(0, 0.8);
+}
+\newcommand{\cdoplus}[2]{\draw (#1, #2) circle (0.6) ++(-0.4, 0) -- ++(0.8, 0) ++(-0.4, -0.4) -- ++(0, 0.8);}
+\newcommand{\cdominus}[2]{\draw (#1, #2) circle (0.6) ++(-0.4, 0) -- ++(0.8, 0);}
+\newcommand{\cdcircle}[4]{
+ \draw (#1, #2) circle (0.27);
+ \ifthenelse{\equal{#3}{L}}{\draw [shift = {(#1, #2)}] (-0.27, 0) -- (-#4, 0);}{}
+ \ifthenelse{\equal{#3}{R}}{\draw [shift = {(#1, #2)}] (0.27, 0) -- (#4, 0);}{}
+ \ifthenelse{\equal{#3}{U}}{\draw [shift = {(#1, #2)}] (0, 0.27) -- (0, #4);}{}
+ \ifthenelse{\equal{#3}{D}}{\draw [shift = {(#1, #2)}] (0, -0.27) -- (0, -#4);}{}
+}
+\newcommand{\cdsmallarrow}[4][]{
+ \filldraw [rotate around = {#4 : (#2, #3)}] (#2, #3) -- ++(-0.82, 0.2) -- ++(0, -0.4) -- cycle;
+ \ifthenelse{\equal{#1}{}}{}{\draw [rotate around = {#4 : (#2, #3)}] (#2, #3) -- ++(-#1, 0);}
+}
+\newcommand{\cdsmallarrows}[5][]{
+ \filldraw [rotate around = {#4 : (#2, #3)}] (#2, #3) ++(0, -#5) -- ++(-0.82, 0.2) -- ++(0, -0.4) -- cycle;
+ \filldraw [rotate around = {#4 : (#2, #3)}] (#2, #3) ++(0, #5) -- ++(-0.82, 0.2) -- ++(0, -0.4) -- cycle;
+ \ifthenelse{\equal{#1}{}}{}{
+  \draw [rotate around = {#4 : (#2, #3)}] (#2, #3) ++(0, -#5) -- ++(-#1, 0);
+  \draw [rotate around = {#4 : (#2, #3)}] (#2, #3) ++(0, #5) -- ++(-#1, 0);
+ }
+}
+\newcommand{\cdbigarrow}[4][]{
+ \begin{scope}[shift = {(#2, #3)}, rotate = #4]
+  \cdbigarrowhead
+  \ifthenelse{\equal{#1}{}}{}{\cdbigarrowline{#1}}
+ \end{scope}
+}
+\newcommand{\cdbigarrowhead}{\filldraw (0, 0) -- (-1.23, 0.3) -- (-1.23, -0.3) -- cycle;}
+\newcommand{\cdbigarrowline}[1]{\draw (0, 0) -- (-#1, 0);}
+% Environment
+\newenvironment{circuitdiagram}[3][]{%
+ \begin{tikzpicture}[x = 1.26768ex, y = 1.26768ex, line cap = round, line join = round, cdthinlines]
+ \atbegincd
+ \useasboundingbox (0, 0) rectangle (#2, #3);
+ \begin{scope}[cdgridstyle]
+  \ifthenelse{\equal{#1}{draft}\OR\equal{#1}{draft*}}{
+   \foreach \x in {0, 5, ..., #2} { \cdputtext{\x}{-1}{c}{\x} }
+   \foreach \y in {0, 5, ..., #3} { \cdputtext{-0.2}{\y}{r}{\y} }
+  }{}
+  \ifthenelse{\equal{#1}{draft}}{
+   \draw [step = 5] (0, 0) grid (#2, #3);
+   \draw (0, #3) -- (#2, #3) -- (#2, 0);
+  }{}
+  \ifthenelse{\equal{#1}{draft*}}{\draw [step = 1] (0, 0) grid (#2, #3);}{}
+ \end{scope}
+}{
+ \atendcd
+ \end{tikzpicture}
+}
+\newcommand{\cdraisebox}[3]{%
+ \settodepth{\cdlength}{/}%
+ \ifthenelse{\equal{#2}{t}}{%
+  \addtolength{\cdlength}{-1.26768ex*(#1-1)}%
+  \raisebox{\cdlength}{#3}%
+ }{}%
+ \ifthenelse{\equal{#2}{c}}{%
+  \addtolength{\cdlength}{-1.26768ex*#1/2}%
+  \raisebox{\cdlength}{#3}%
+ }{}%
+ \ifthenelse{\equal{#2}{b}}{%
+  \addtolength{\cdlength}{-1.26768ex}%
+  \raisebox{\cdlength}{#3}%
+ }{}%
+}
+% Wires
+\newcommand{\wire}[5][]{
+ \ifthenelse{\equal{#1}{}}{\draw (#2, #3) -- (#4, #5);}{}
+ \ifthenelse{\equal{#1}{H}}{\draw (#2, #3) -| (#4, #5);}{}
+ \ifthenelse{\equal{#1}{V}}{\draw (#2, #3) |- (#4, #5);}{}
+}
+% Junctions
+\newcommand{\junct}[2]{\filldraw (#1, #2) circle (0.25);}
+% Pins
+\newcommand{\pin}[5][]{
+ \prepareelement{P}{}{#4}{#5}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname pin\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\pinL}[1]{
+ \setstandardtextpos{l}
+ \placerefvalH{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (\cdinfo, 0) -- (1, 0);
+}
+\newcommand{\pinR}[1]{
+ \setstandardtextpos{r}
+ \placerefvalH{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (-\cdinfo, 0) -- (-1, 0);
+}
+\newcommand{\pinLR}[1]{
+ \setstandardtextpos{u}
+ \placerefvalH{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (-\cdinfo, 0) -- (-1, 0) (\cdinfo, 0) -- (1, 0);
+}
+\newcommand{\pinU}[1]{
+ \setstandardtextpos{u}
+ \placerefvalV{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (0, -\cdinfo) -- (0, -1);
+}
+\newcommand{\pinD}[1]{
+ \setstandardtextpos{d}
+ \placerefvalV{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (0, \cdinfo) -- (0, 1);
+}
+\newcommand{\pinUD}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1}{0}{1}{-1.75}{0}{1.75}
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \draw circle (0.4);
+  \renewcommand{\cdinfo}{0.4}
+ }{}
+ \draw (0, -\cdinfo) -- (0, -1) (0, \cdinfo) -- (0, 1);
+}
+% Grounds
+\newcommand{\ground}[4][]{
+ \prepareelement{P}{}{#4}{}{}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname ground\cdorient\endcsname{#1}
+ \end{scope}
+}
+\newcommand{\groundL}[1]{
+ #1
+ \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ \draw (0, 0) -- (1, 0);
+}
+\newcommand{\groundR}[1]{
+ #1
+ \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ \draw (0, 0) -- (-1, 0);
+}
+\newcommand{\groundU}[1]{
+ #1
+ \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ \draw (0, 0) -- (0, -1);
+}
+\newcommand{\groundD}[1]{
+ #1
+ \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ \draw (0, 0) -- (0, 1);
+}
+% Powers
+\newcommand{\power}[5][]{
+ \prepareelement{P}{}{#4}{}{#5}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname power\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\powerL}[1]{
+ \setstandardtextpos{l}
+ \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ #1
+ \cdbigarrow[1.9]{-0.9}{0}{180}
+}
+\newcommand{\powerR}[1]{
+ \setstandardtextpos{r}
+ \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ #1
+ \cdbigarrow[1.9]{0.9}{0}{0}
+}
+\newcommand{\powerU}[1]{
+ \setstandardtextpos{u}
+ \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ #1
+ \cdbigarrow[1.9]{0}{0.9}{90}
+}
+\newcommand{\powerD}[1]{
+ \setstandardtextpos{d}
+ \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ #1
+ \cdbigarrow[1.9]{0}{-0.9}{-90}
+}
+% Stand-alone voltage arrows
+\newcommand{\Voltar}[7][]{
+ \FPadd\cdfloat{#4}{#2}\FPdiv\cdfloat\cdfloat2\edef\cdreferx{\FPprint\cdfloat}
+ \FPadd\cdfloat{#5}{#3}\FPdiv\cdfloat\cdfloat2\edef\cdrefery{\FPprint\cdfloat}
+ \begin{scope}[shift = {(\cdreferx, \cdrefery)}]
+  \FPsub\cdfloat{#4}{#2}\FPdiv\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat\cdfloat\edef\cdreferx{\FPprint\cdfloat}
+  \FPsub\cdfloat{#5}{#3}\FPdiv\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat\cdfloat\FPadd\cdfloat\cdfloat\cdreferx
+  \FProot\cdfloat\cdfloat2\FPdiv\cdfloat{0.9}\cdfloat\FPsub\cdfloat1\cdfloat\edef\cdrefery{\FPprint\cdfloat}
+  \FPsub\cdfloat{#4}{#2}\FPdiv\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat\cdrefery\edef\cdreferx{\FPprint\cdfloat}
+  \FPsub\cdfloat{#5}{#3}\FPdiv\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat\cdrefery\edef\cdrefery{\FPprint\cdfloat}
+  \draw (-\cdreferx, -\cdrefery) -- (\cdreferx, \cdrefery);
+  \FPround\cdfloat\cdreferx6\FPifeq\cdfloat0
+   \FPabs\cdfloat\cdrefery\FPdiv\cdfloat\cdfloat\cdrefery\FPmul\cdfloat\cdfloat{90}
+  \else
+   \FPdiv\cdfloat\cdrefery\cdreferx\FParctan\cdfloat\cdfloat\FPmul\cdfloat\cdfloat{180}\FPdiv\cdfloat\cdfloat\FPpi
+  \fi
+  \edef\cdorient{\FPprint\cdfloat}
+  \FPround\cdfloat\cdreferx6\FPiflt\cdfloat0\FPadd\cdfloat\cdorient{180}\edef\cdorient{\FPprint\cdfloat}\fi
+  \cdbigarrow{\cdreferx}{\cdrefery}{\cdorient}
+  \ifthenelse{\equal{#6}{l}\OR\equal{#6}{r}}{
+   \prepareelement{UA}{}{V#6}{}{#7}
+   \placerefvalV{-0.75}{0}{0.75}{0}{0}{0}
+  }{
+   \prepareelement{UA}{}{H#6}{}{#7}
+   \placerefvalH{0}{0}{0}{-1.5}{0}{1.5}
+  }
+  #1
+  \drawrefval
+ \end{scope}
+}
+% Current arrows
+\newcommand{\currar}[5][]{
+ \prepareelement{IA}{}{#4}{}{#5}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname currar\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\currarL}[1]{
+ \setstandardtextpos{u}
+ \placerefvalH{0}{0}{0}{-1.75}{0}{1.75}
+ #1
+ \cdbigarrow{-0.65}{0}{180}
+}
+\newcommand{\currarR}[1]{
+ \setstandardtextpos{u}
+ \placerefvalH{0}{0}{0}{-1.75}{0}{1.75}
+ #1
+ \cdbigarrow{0.65}{0}{0}
+}
+\newcommand{\currarU}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-0.75}{0}{0.75}{0}{0}{0}
+ #1
+ \cdbigarrow{0}{0.65}{90}
+}
+\newcommand{\currarD}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-0.75}{0}{0.75}{0}{0}{0}
+ #1
+ \cdbigarrow{0}{-0.65}{-90}
+}
+% Voltage sources
+\newcommand{\voltsrc}[6][]{
+ \prepareelement{UI}{}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname voltsrc\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\voltsrcH}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw [cdmedlines] (-2, 0) -- (2, 0);
+ \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+}
+\newcommand{\voltsrcV}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw [cdmedlines] (0, -2) -- (0, 2);
+ \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+}
+% Current sources
+\newcommand{\currsrc}[6][]{
+ \prepareelement{UI}{}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname currsrc\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\currsrcH}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-2.25}{0}{2.25}{-3.25}{0}{3.25}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw [cdmedlines] (0, -2) -- (0, 2);
+ \draw (-2, 0) -- (-3, 0) (2, 0) -- (3, 0);
+}
+\newcommand{\currsrcV}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-2.5}{0}{2.5}{-3}{0}{3}
+ #1
+ \draw [cdmedlines] circle (2);
+ \draw [cdmedlines] (-2, 0) -- (2, 0);
+ \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
+}
+% Switches
+\newcommand{\switch}[7][]{
+ \prepareelement{S}{#2}{#5}{#6}{#7}
+ \renewcommand{\cdelemx}{#3}
+ \renewcommand{\cdelemy}{#4}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname switch\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\switchL}[1]{
+ \setstandardsuborient{U}
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \placerefvalH{-2.75}{0}{2.75}{-1.75}{0}{2.75}
+  }{
+   \placerefvalH{-2.75}{0}{2.75}{-2.75}{0}{1.75}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \placerefvalH{-2.75}{0}{2.75}{-1.75}{0}{1.75}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline*}}{
+  \placerefvalH{-2.75}{0}{2.75}{-2.75}{0}{2.75}
+ }{}
+ #1
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (1.747191, 0.094803) -- (-1.871721, 1.451895);
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (1.747191, -0.094803) -- (-1.871721, -1.451895);
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (1.73, 0) -- (-1.73, 0);}{}
+ \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (1.731158, 0.024975) -- (-2.117272, 0.382488);
+   \FPadd\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (1.731158, -0.024975) -- (-2.117272, -0.382488);
+   \FPsub\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (1.747191, 0.094803) -- (-1.747191, 1.405197);
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (1.747191, -0.094803) -- (-1.747191, -1.405197);
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (1.739930, 0.072551) -- (-2.244920, 1.184197);
+   \FPadd\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (1.739930, -0.072551) -- (-2.244920, -1.184197);
+   \FPsub\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \cdcircle{2}{0}{R}{1}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}}{
+  \cdcircle{-2}{0}{L}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{offline}\OR\equal{\cdtype}{online}}{
+  \draw (-3, 0) -- (-2, 0);
+  \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-2, 0) -- (-2, 0.5);}{\draw (-2, 0) -- (-2, -0.5);}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}}{
+  \cdcircle{-2}{-1.5}{L}{1}\cdcircle{-2}{1.5}{L}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}}{
+  \cdcircle{-2}{-1.5}{D}{0.5}\cdcircle{-2}{1.5}{U}{0.5}
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline}}{
+  \draw (-3, -1.5) -- (-2, -1.5) -- (-2, -1);
+  \draw (-3, 1.5) -- (-2, 1.5) -- (-2, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline*}}{
+  \draw (-2, -1) -- (-2, -2);
+  \draw (-2, 1) -- (-2, 2);
+ }{}
+}
+\newcommand{\switchR}[1]{
+ \setstandardsuborient{U}
+ \setstandardtextpos{ud}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \placerefvalH{-2.75}{0}{2.75}{-1.75}{0}{2.75}
+  }{
+   \placerefvalH{-2.75}{0}{2.75}{-2.75}{0}{1.75}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \placerefvalH{-2.75}{0}{2.75}{-1.75}{0}{1.75}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline*}}{
+  \placerefvalH{-2.75}{0}{2.75}{-2.75}{0}{2.75}
+ }{}
+ #1
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (-1.747191, 0.094803) -- (1.871721, 1.451895);
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (-1.747191, -0.094803) -- (1.871721, -1.451895);
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (-1.73, 0) -- (1.73, 0);}{}
+ \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (-1.731158, 0.024975) -- (2.117272, 0.382488);
+   \FPadd\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (-1.731158, -0.024975) -- (2.117272, -0.382488);
+   \FPsub\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (-1.747191, 0.094803) -- (1.747191, 1.405197);
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (-1.747191, -0.094803) -- (1.747191, -1.405197);
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines] (-1.739930, 0.072551) -- (2.244920, 1.184197);
+   \FPadd\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (-1.739930, -0.072551) -- (2.244920, -1.184197);
+   \FPsub\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
+  }
+ }{}
+ \cdcircle{-2}{0}{L}{1}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}}{
+  \cdcircle{2}{0}{R}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{offline}\OR\equal{\cdtype}{online}}{
+  \draw (3, 0) -- (2, 0);
+  \ifthenelse{\equal{\cdsuborient}{U}}{\draw (2, 0) -- (2, 0.5);}{\draw (2, 0) -- (2, -0.5);}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}}{
+  \cdcircle{2}{-1.5}{R}{1}\cdcircle{2}{1.5}{R}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}}{
+  \cdcircle{2}{-1.5}{D}{0.5}\cdcircle{2}{1.5}{U}{0.5}
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline}}{
+  \draw (3, -1.5) -- (2, -1.5) -- (2, -1);
+  \draw (3, 1.5) -- (2, 1.5) -- (2, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline*}}{
+  \draw (2, -1) -- (2, -2);
+  \draw (2, 1) -- (2, 2);
+ }{}
+}
+\newcommand{\switchU}[1]{
+ \setstandardsuborient{L}
+ \setstandardtextpos{r}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \placerefvalV{-2.25}{0}{1.25}{-3.75}{0}{3.75}
+  }{
+   \placerefvalV{-1.25}{0}{2.25}{-3.75}{0}{3.75}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \placerefvalV{-1.25}{0}{1.25}{-3.75}{0}{3.75}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline*}}{
+  \placerefvalV{-2.25}{0}{2.25}{-3.75}{0}{3.75}
+ }{}
+ #1
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.094803, -1.747191) -- (-1.451895, 1.871721);
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.094803, -1.747191) -- (1.451895, 1.871721);
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (0, -1.73) -- (0, 1.73);}{}
+ \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.024975, -1.731158) -- (-0.382488, 2.117272);
+   \FPsub\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.024975, -1.731158) -- (0.382488, 2.117272);
+   \FPadd\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.094803, -1.747191) -- (-1.405197, 1.747191);
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.094803, -1.747191) -- (1.405197, 1.747191);
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.072551, -1.739930) -- (-1.184197, 2.244920);
+   \FPsub\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.072551, -1.739930) -- (1.184197, 2.244920);
+   \FPadd\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \cdcircle{0}{-2}{D}{1}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}}{
+  \cdcircle{0}{2}{U}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{offline}\OR\equal{\cdtype}{online}}{
+  \draw (0, 3) -- (0, 2);
+  \ifthenelse{\equal{\cdsuborient}{L}}{\draw (0, 2) -- (-0.5, 2);}{\draw (0, 2) -- (0.5, 2);}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}}{
+  \cdcircle{-1.5}{2}{U}{1}\cdcircle{1.5}{2}{U}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}}{
+  \cdcircle{-1.5}{2}{L}{0.5}\cdcircle{1.5}{2}{R}{0.5}
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline}}{
+  \draw (-1.5, 3) -- (-1.5, 2) -- (-1, 2);
+  \draw (1.5, 3) -- (1.5, 2) -- (1, 2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline*}}{
+  \draw (-1, 2) -- (-2, 2);
+  \draw (1, 2) -- (2, 2);
+ }{}
+}
+\newcommand{\switchD}[1]{
+ \setstandardsuborient{L}
+ \setstandardtextpos{r}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \placerefvalV{-2.25}{0}{1.25}{-3.75}{0}{3.75}
+  }{
+   \placerefvalV{-1.25}{0}{2.25}{-3.75}{0}{3.75}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \placerefvalV{-1.25}{0}{1.25}{-3.75}{0}{3.75}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline*}}{
+  \placerefvalV{-2.25}{0}{2.25}{-3.75}{0}{3.75}
+ }{}
+ #1
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{offline}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.094803, 1.747191) -- (-1.451895, -1.871721);
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.094803, 1.747191) -- (1.451895, -1.871721);
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (0, 1.73) -- (0, -1.73);}{}
+ \ifthenelse{\equal{\cdtype}{ontouch}\OR\equal{\cdtype}{online}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.024975, 1.731158) -- (-0.382488, -2.117272);
+   \FPsub\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.024975, 1.731158) -- (0.382488, -2.117272);
+   \FPadd\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{tog*}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.094803, 1.747191) -- (-1.405197, -1.747191);
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.094803, 1.747191) -- (1.405197, -1.747191);
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togtouch*}\OR\equal{\cdtype}{togline}\OR\equal{\cdtype}{togline*}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines] (-0.072551, 1.739930) -- (-1.184197, -2.244920);
+   \FPsub\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
+  }{
+   \draw [cdmedlines] (0.072551, 1.739930) -- (1.184197, -2.244920);
+   \FPadd\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
+  }
+ }{}
+ \cdcircle{0}{2}{U}{1}
+ \ifthenelse{\equal{\cdtype}{off}\OR\equal{\cdtype}{on}\OR\equal{\cdtype}{ontouch}}{
+  \cdcircle{0}{-2}{D}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{offline}\OR\equal{\cdtype}{online}}{
+  \draw (0, -3) -- (0, -2);
+  \ifthenelse{\equal{\cdsuborient}{L}}{\draw (0, -2) -- (-0.5, -2);}{\draw (0, -2) -- (0.5, -2);}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}}{
+  \cdcircle{-1.5}{-2}{D}{1}\cdcircle{1.5}{-2}{D}{1}
+ }{}
+ \ifthenelse{\equal{\cdtype}{tog*}\OR\equal{\cdtype}{togtouch*}}{
+  \cdcircle{-1.5}{-2}{L}{0.5}\cdcircle{1.5}{-2}{R}{0.5}
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline}}{
+  \draw (-1.5, -3) -- (-1.5, -2) -- (-1, -2);
+  \draw (1.5, -3) -- (1.5, -2) -- (1, -2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{togline*}}{
+  \draw (-1, -2) -- (-2, -2);
+  \draw (1, -2) -- (2, -2);
+ }{}
+}
+% Resistors
+\newcommand{\resis}[6][]{
+ \prepareelement{R}{}{#4}{#5}{#6}
+ \renewcommand{\cdelemx}{#2}
+ \renewcommand{\cdelemy}{#3}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname resis\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\resisH}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-3}{0}{3}{-2.25}{0}{2.25}
+ #1
+ \draw [cdmedlines] (-2.5, -0.94) rectangle (2.5, 0.94);
+ \draw (-2.5, 0) -- (-3, 0) (2.5, 0) -- (3, 0);
+}
+\newcommand{\resisV}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1.5}{0}{1.5}{-3.75}{0}{3.75}
+ #1
+ \draw [cdmedlines] (-0.94, -2.5) rectangle (0.94, 2.5);
+ \draw (0, -2.5) -- (0, -3) (0, 2.5) -- (0, 3);
+}
+% Capacitors
+\newcommand{\capac}[6][]{
+ \prepareelement{C}{}{#4}{#5}{#6}
+ \renewcommand{\cdelemx}{#2}
+ \renewcommand{\cdelemy}{#3}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname capac\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\capacH}[1]{
+ \setstandardtextpos{r}
+ \placerefvalH{-1.25}{0}{1.25}{-3}{0}{3}
+ #1
+ \draw [cdmedlines] (-0.45, -1.7) -- (-0.45, 1.7) (0.45, -1.7) -- (0.45, 1.7);
+ \draw (-0.45, 0) -- (-1, 0) (0.45, 0) -- (1, 0);
+}
+\newcommand{\capacV}[1]{
+ \setstandardtextpos{hr}
+ \placerefvalV{-2.25}{0}{2.25}{-1.75}{0}{1.75}
+ #1
+ \draw [cdmedlines] (-1.7, -0.45) -- (1.7, -0.45) (-1.7, 0.45) -- (1.7, 0.45);
+ \draw (0, -0.45) -- (0, -1) (0, 0.45) -- (0, 1);
+}
+% Inductors
+\newcommand{\induc}[6][]{
+ \prepareelement{L}{}{#4}{#5}{#6}
+ \renewcommand{\cdelemx}{#2}
+ \renewcommand{\cdelemy}{#3}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname induc\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\inducH}[1]{
+ \setstandardsuborient{U}
+ \setstandardtextpos{ud}
+ \iffilledinduc
+  \placerefvalH{-3}{0}{3}{-2.25}{0}{2.25}
+ \else\ifcurlyinduc
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \placerefvalH{-3.25}{0}{3.25}{-2}{0}{2.5}
+  }{
+   \placerefvalH{-3.25}{0}{3.25}{-2.5}{0}{2}
+  }
+ \else
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \placerefvalH{-3.25}{0}{3.25}{-1.5}{0}{2.5}
+  }{
+   \placerefvalH{-3.25}{0}{3.25}{-2.5}{0}{1.5}
+  }
+ \fi\fi
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{\windings{4}}{}
+}
+\newcommand{\inducV}[1]{
+ \setstandardsuborient{L}
+ \setstandardtextpos{r}
+ \iffilledinduc
+  \placerefvalV{-1.5}{0}{1.5}{-3.75}{0}{3.75}
+ \else\ifcurlyinduc
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \placerefvalV{-1.5}{0}{1}{-4}{0}{4}
+  }{
+   \placerefvalV{-1}{0}{1.5}{-4}{0}{4}
+  }
+ \else
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \placerefvalV{-1.5}{0}{0.5}{-4}{0}{4}
+  }{
+   \placerefvalV{-0.5}{0}{1.5}{-4}{0}{4}
+  }
+ \fi\fi
+ #1
+ \ifthenelse{\equal{\cdinfo}{}}{\windings{4}}{}
+}
+% Diodes
+\newcommand{\diode}[6][]{
+ \prepareelement{D}{}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname diode\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\diodeL}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \iffilleddiode
+  \filldraw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, -1.25) -- (-1.25, 1.25);
+ \iflineddiode
+  \draw (-2, 0) -- (2, 0);
+ \else
+  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
+ \fi
+}
+\newcommand{\diodeR}[1]{
+ \setstandardtextpos{ud}
+ \placerefvalH{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \iffilleddiode
+  \filldraw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (1.25, -1.25) -- (1.25, 1.25);
+ \iflineddiode
+  \draw (-2, 0) -- (2, 0);
+ \else
+  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
+ \fi
+}
+\newcommand{\diodeU}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \iffilleddiode
+  \filldraw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, 1.25) -- (1.25, 1.25);
+ \iflineddiode
+  \draw (0, -2) -- (0, 2);
+ \else
+  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
+ \fi
+}
+\newcommand{\diodeD}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-1.75}{0}{1.75}{-2.75}{0}{2.75}
+ #1
+ \iffilleddiode
+  \filldraw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
+ \else
+  \draw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
+ \fi
+ \draw [cdmedlines] (-1.25, -1.25) -- (1.25, -1.25);
+ \iflineddiode
+  \draw (0, -2) -- (0, 2);
+ \else
+  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
+ \fi
+}
+% Transistors
+\newcommand{\trans}[7][]{
+ \prepareelement{T}{#2}{#5}{#6}{#7}
+ \begin{scope}[shift = {(#3, #4)}]
+  \expandafter\csname trans\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\transL}[1]{
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{nj}\OR\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+  \setstandardsuborient{D}
+ }{
+  \setstandardsuborient{U}
+ }
+ \setstandardtextpos{l}
+ \placerefvalTL
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \newcommand{\transbase}{\draw (1.1, 0) -- (3, 0);}
+  \newcommand{\transthick}{\draw [cdthicklines] (1.1, -1.75) -- (1.1, 1.75);}
+  \newcommand{\transceconn}{\draw (-1, -2.376973) -- (-1, -3) (-1, 2.376973) -- (-1, 3);}
+ }{}
+ #1
+ \ifcircledtrans\draw [cdmedlines] (0.2, 0) circle (2.662705);\fi
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \transbase\transthick\transceconn
+  \draw (1.1, -0.7) -- (-1, -2.376973) (1.1, 0.7) -- (-1, 2.376973);
+  \ifthenelse{\equal{\cdtype}{npn}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{-0.79}{2.209276}{141.391}}{\cdbigarrow{-0.79}{-2.209276}{-141.391}}
+  }{
+   \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{0.68}{1.035395}{-38.609}}{\cdbigarrow{0.68}{-1.035395}{38.609}}
+  }
+ }{
+  \draw (0.2, -1.5) -| (-2, -2.5) (0.2, 1.5) -| (-2, 2.5);
+  \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+   \draw [cdthicklines] (0.2, -1.9) -- (0.2, 1.9);
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (0.2, 1.5) -- (3, 1.5);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{0.4}{1.5}{180}}{\cdbigarrow{2.2}{1.5}{0}}
+   }{
+    \draw (0.2, -1.5) -- (3, -1.5);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{0.4}{-1.5}{180}}{\cdbigarrow{2.2}{-1.5}{0}}
+   }
+  }{
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{penh*}}{
+    \draw [cdthicklines] (0.2, -1.9) -- (0.2, -1.1) (0.2, -0.4) -- (0.2, 0.4) (0.2, 1.1) -- (0.2, 1.9);
+   }{
+    \draw [cdthicklines] (0.2, -1.9) -- (0.2, 1.9);
+   }
+   \ifthenelse{\equal{\cdsuborient}{U}}{\draw (1.1, -1.5) |- (3, 1.5);}{\draw (1.1, 1.5) |- (3, -1.5);}
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{pdep}}{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (0.2, 0) -| (-2, 1.5);}{\draw (0.2, 0) -| (-2, -1.5);}
+   }{
+    \draw (0.2, 0) -- (-3, 0);
+   }
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+    \cdbigarrow{0}{0}{0}
+   }{
+    \cdbigarrow{-1.8}{0}{180}
+   }
+  }
+ }
+}
+\newcommand{\transR}[1]{
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{nj}\OR\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+  \setstandardsuborient{D}
+ }{
+  \setstandardsuborient{U}
+ }
+ \setstandardtextpos{r}
+ \placerefvalTR
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \newcommand{\transbase}{\draw (-1.1, 0) -- (-3, 0);}
+  \newcommand{\transthick}{\draw [cdthicklines] (-1.1, -1.75) -- (-1.1, 1.75);}
+  \newcommand{\transceconn}{\draw (1, -2.376973) -- (1, -3) (1, 2.376973) -- (1, 3);}
+ }{}
+ #1
+ \ifcircledtrans\draw [cdmedlines] (-0.2, 0) circle (2.662705);\fi
+ \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+  \transbase\transthick\transceconn
+  \draw (-1.1, -0.7) -- (1, -2.376973) (-1.1, 0.7) -- (1, 2.376973);
+  \ifthenelse{\equal{\cdtype}{npn}}{
+   \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{0.79}{2.209276}{38.609}}{\cdbigarrow{0.79}{-2.209276}{-38.609}}
+  }{
+   \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{-0.68}{1.035395}{-141.391}}{\cdbigarrow{-0.68}{-1.035395}{141.391}}
+  }
+ }{
+  \draw (-0.2, -1.5) -| (2, -2.5) (-0.2, 1.5) -| (2, 2.5);
+  \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+   \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, 1.9);
+   \ifthenelse{\equal{\cdsuborient}{U}}{
+    \draw (-0.2, 1.5) -- (-3, 1.5);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{-0.4}{1.5}{0}}{\cdbigarrow{-2.2}{1.5}{180}}
+   }{
+    \draw (-0.2, -1.5) -- (-3, -1.5);
+    \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{-0.4}{-1.5}{0}}{\cdbigarrow{-2.2}{-1.5}{180}}
+   }
+  }{
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{penh*}}{
+    \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, -1.1) (-0.2, -0.4) -- (-0.2, 0.4) (-0.2, 1.1) -- (-0.2, 1.9);
+   }{
+    \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, 1.9);
+   }
+   \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-1.1, -1.5) |- (-3, 1.5);}{\draw (-1.1, 1.5) |- (-3, -1.5);}
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{penh}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{pdep}}{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-0.2, 0) -| (2, 1.5);}{\draw (-0.2, 0) -| (2, -1.5);}
+   }{
+    \draw (-0.2, 0) -- (3, 0);
+   }
+   \ifthenelse{\equal{\cdtype}{nenh}\OR\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{ndep}\OR\equal{\cdtype}{ndep*}}{
+    \cdbigarrow{0}{0}{180}
+   }{
+    \cdbigarrow{1.8}{0}{0}
+   }
+  }
+ }
+}
+% Operational amplifiers
+\newcommand{\opamp}[6][]{
+ \prepareelement{IC}{op}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname opamp\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\opampL}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hl}
+ \placerefvalH{-3}{0}{4}{-4.5}{0}{4.5}
+ #1
+ \draw [cdmedlines] (3.3, -3.4) -- (-3.3, 0) -- (3.3, 3.4) -- cycle;
+ \ifthenelse{\equal{\cdsuborient}{U}}{\cdminus{2.4}{-2}\cdplus{2.4}{2}}{\cdplus{2.4}{-2}\cdminus{2.4}{2}}
+ \draw (3.3, -2) -- (4, -2) (3.3, 2) -- (4, 2) (-3.3, 0) -- (-4, 0);
+}
+\newcommand{\opampR}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hr}
+ \placerefvalH{-4}{0}{3}{-4.5}{0}{4.5}
+ #1
+ \draw [cdmedlines] (-3.3, -3.4) -- (3.3, 0) -- (-3.3, 3.4) -- cycle;
+ \ifthenelse{\equal{\cdsuborient}{U}}{\cdminus{-2.4}{-2}\cdplus{-2.4}{2}}{\cdplus{-2.4}{-2}\cdminus{-2.4}{2}}
+ \draw (-3.3, -2) -- (-4, -2) (-3.3, 2) -- (-4, 2) (3.3, 0) -- (4, 0);
+}
+% Additional wires
+\newcommand{\wireL}[1]{\wireX{L}{#1}}
+\newcommand{\wireR}[1]{\wireX{R}{#1}}
+\newcommand{\wireLR}[1]{\wireX{L}{#1}\wireX{R}{#1}}
+\newcommand{\wireU}[1]{\wireX{U}{#1}}
+\newcommand{\wireD}[1]{\wireX{D}{#1}}
+\newcommand{\wireUD}[1]{\wireX{U}{#1}\wireX{D}{#1}}
+\newcommand{\wireX}[2]{\expandafter\csname wireelem\cdelem\endcsname{#1}{#2}}
+\newcommand{\wireelemP}[2]{
+ \ifthenelse{\equal{#1}{L}}{\draw (-1, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (1, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, 1) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -1) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemUI}[2]{
+ \ifthenelse{\equal{#1}{L}}{\draw (-3, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (3, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, 3) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -3) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemS}[2]{
+ \ifthenelse{\equal{#1}{L}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}}{
+    \draw (-3, -1.5) -- ++(-#2, 0) (-3, 1.5) -- ++(-#2, 0);
+   }{
+    \draw (-3, 0) -- ++(-#2, 0);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{\draw (-3, 0) -- ++(-#2, 0);}{}
+  \ifthenelse{\equal{\cdorient}{U}}{\draw (-2, 2) -- ++(-#2, 0);}{}
+  \ifthenelse{\equal{\cdorient}{D}}{\draw (-2, -2) -- ++(-#2, 0);}{}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \ifthenelse{\equal{\cdorient}{L}}{\draw (3, 0) -- ++(#2, 0);}{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}}{
+    \draw (3, -1.5) -- ++(#2, 0) (3, 1.5) -- ++(2, 0);
+   }{
+    \draw (3, 0) -- ++(#2, 0);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{U}}{\draw (2, 2) -- ++(#2, 0);}{}
+  \ifthenelse{\equal{\cdorient}{D}}{\draw (2, -2) -- ++(#2, 0);}{}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \ifthenelse{\equal{\cdorient}{L}}{\draw (-2, 2) -- ++(0, #2);}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\draw (2, 2) -- ++(0, #2);}{}
+  \ifthenelse{\equal{\cdorient}{U}}{
+   \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}}{
+    \draw (-1.5, 3) -- ++(0, #2) (1.5, 3) -- ++(0, #2);
+   }{
+    \draw (0, 3) -- ++(0, #2);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{D}}{\draw (0, 3) -- ++(0, #2);}{}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \ifthenelse{\equal{\cdorient}{L}}{\draw (-2, -2) -- ++(0, -#2);}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\draw (2, -2) -- ++(0, -#2);}{}
+  \ifthenelse{\equal{\cdorient}{U}}{\draw (0, -3) -- ++(0, -#2);}{}
+  \ifthenelse{\equal{\cdorient}{D}}{
+   \ifthenelse{\equal{\cdtype}{tog}\OR\equal{\cdtype}{togtouch}\OR\equal{\cdtype}{togline}}{
+    \draw (-1.5, -3) -- ++(0, -#2) (1.5, -3) -- ++(0, -#2);
+   }{
+    \draw (0, -3) -- ++(0, -#2);
+   }
+  }{}
+ }{}
+}
+\newcommand{\wireelemR}[2]{
+ \ifthenelse{\equal{#1}{L}}{\draw (-3, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (3, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, 3) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -3) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemC}[2]{
+ \ifthenelse{\equal{#1}{L}}{\draw (-1, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (1, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, 1) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -1) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemL}[2]{
+ \setinduccounter
+ \ifthenelse{\equal{#1}{L}}{\draw (-\thecdcounter, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (\thecdcounter, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, \thecdcounter) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -\thecdcounter) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemD}[2]{
+ \ifthenelse{\equal{#1}{L}}{\draw (-2, 0) -- ++(-#2, 0);}{}
+ \ifthenelse{\equal{#1}{R}}{\draw (2, 0) -- ++(#2, 0);}{}
+ \ifthenelse{\equal{#1}{U}}{\draw (0, 2) -- ++(0, #2);}{}
+ \ifthenelse{\equal{#1}{D}}{\draw (0, -2) -- ++(0, -#2);}{}
+}
+\newcommand{\wireelemT}[2]{
+ \ifthenelse{\equal{#1}{L}}{
+  \ifthenelse{\equal{\cdorient}{L}}{\draw (-3, 0) -- ++(-#2, 0);}{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (-3, 0) -- ++(-#2, 0);
+   }{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-3, 1.5) -- ++(-#2, 0);}{\draw (-3, -1.5) -- ++(-#2, 0);}
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{#1}{R}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (3, 0) -- ++(#2, 0);
+   }{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (3, 1.5) -- ++(#2, 0);}{\draw (3, -1.5) -- ++(#2, 0);}
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{\draw (3, 0) -- ++(#2, 0);}{}
+ }{}
+ \ifthenelse{\equal{#1}{U}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (-1, 3) -- ++(0, #2);
+   }{
+    \draw (-2, 2.5) -- ++(0, #2);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (1, 3) -- ++(0, #2);
+   }{
+    \draw (2, 2.5) -- ++(0, #2);
+   }
+  }{}
+ }{}
+ \ifthenelse{\equal{#1}{D}}{
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (-1, -3) -- ++(0, -#2);
+   }{
+    \draw (-2, -2.5) -- ++(0, -#2);
+   }
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \draw (1, -3) -- ++(0, -#2);
+   }{
+    \draw (2, -2.5) -- ++(0, -#2);
+   }
+  }{}
+ }{}
+}
+% Male and female pins
+\newcommand{\male}{
+ \renewcommand{\cdinfo}{0.6}
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \filldraw (-0.2, -0.3) -- (0.6, -0.3) -- (0.6, 0.3) -- (-0.2, 0.3) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \filldraw (0.2, 0.3) -- (-0.6, 0.3) -- (-0.6, -0.3) -- (0.2, -0.3) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \filldraw (-0.3, 0.2) -- (-0.3, -0.6) -- (0.3, -0.6) -- (0.3, 0.2) -- cycle;
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \filldraw (0.3, -0.2) -- (0.3, 0.6) -- (-0.3, 0.6) -- (-0.3, -0.2) -- cycle;
+ }{}
+}
+\newcommand{\female}{
+ \renewcommand{\cdinfo}{0.6}
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \draw (-0.3, -0.5) -- (0.1, -0.5) arc (-90 : 90 : 0.5) -- (-0.3, 0.5);
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \draw (0.3, 0.5) -- (-0.1, 0.5) arc (90 : 270 : 0.5) -- (0.3, -0.5);
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \draw (-0.5, 0.3) -- (-0.5, -0.1) arc (-180 : 0 : 0.5) -- (0.5, 0.3);
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \draw (0.5, -0.3) -- (0.5, 0.1) arc (0 : 180 : 0.5) -- (-0.5, -0.3);
+ }{}
+}
+% Voltage arrows
+\newcommand{\voltar}[2]{
+ \ifthenelse{\equal{#1}{UL}}{\cdbigarrow[4.2]{-2.1}{2.5}{180}\cdputtext{0}{4}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{UR}}{\cdbigarrow[4.2]{2.1}{2.5}{0}\cdputtext{0}{4}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{DL}}{\cdbigarrow[4.2]{-2.1}{-2.5}{180}\cdputtext{0}{-4}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{DR}}{\cdbigarrow[4.2]{2.1}{-2.5}{0}\cdputtext{0}{-4}{c}{#2}}{}
+ \ifthenelse{\equal{#1}{LU}}{\cdbigarrow[4.2]{-2.5}{2.1}{90}\cdputtext{-3}{0}{r}{#2}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdbigarrow[4.2]{-2.5}{-2.1}{-90}\cdputtext{-3}{0}{r}{#2}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdbigarrow[4.2]{2.5}{2.1}{90}\cdputtext{3}{0}{l}{#2}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdbigarrow[4.2]{2.5}{-2.1}{-90}\cdputtext{3}{0}{l}{#2}}{}
+}
+% Modify, trim, and slider
+\newcommand{\modify}[1]{\modifytrim{M}{#1}}
+\newcommand{\trim}[1]{\modifytrim{T}{#1}}
+\newcommand{\modifytrim}[2]{
+ \ifthenelse{\equal{#2}{LU}\OR\equal{#2}{LU*}}{
+  \ifthenelse{\equal{\cdelem}{UI}\OR\equal{\cdelem}{R}\OR\equal{\cdelem}{L}}{
+   \draw (-2.3, 2.3) -- (2.5, -2.5);
+   \FPadd\cdfloat\cdelemx{2.5}\xdef\cdelemx{\FPprint\cdfloat}\FPsub\cdfloat\cdelemy{2.5}\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{-2.8}{2.8}{135}}{\draw (-2.7, 1.9) -- (-1.9, 2.7);}
+   \ifthenelse{\equal{#2}{LU*}}{
+    \ifthenelse{\equal{\cdorient}{H}}{\draw (2.5, -2.5) -| (4, 0);}{\draw (2.5, -2.5) |- (0, -4);}
+   }{}
+  }{}
+  \ifthenelse{\equal{\cdelem}{C}}{
+   \draw (-1.8, 1.8) -- (2, -2);
+   \FPadd\cdfloat\cdelemx2\xdef\cdelemx{\FPprint\cdfloat}\FPsub\cdfloat\cdelemy2\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{-2.3}{2.3}{135}}{\draw (-2.2, 1.4) -- (-1.4, 2.2);}
+  }{}
+ }{}
+ \ifthenelse{\equal{#2}{LD}\OR\equal{#2}{LD*}}{
+  \ifthenelse{\equal{\cdelem}{UI}\OR\equal{\cdelem}{R}\OR\equal{\cdelem}{L}}{
+   \draw (-2.3, -2.3) -- (2.5, 2.5);
+   \FPadd\cdfloat\cdelemx{2.5}\xdef\cdelemx{\FPprint\cdfloat}\FPadd\cdfloat\cdelemy{2.5}\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{-2.8}{-2.8}{-135}}{\draw (-2.7, -1.9) -- (-1.9, -2.7);}
+   \ifthenelse{\equal{#2}{LD*}}{
+    \ifthenelse{\equal{\cdorient}{H}}{\draw (2.5, 2.5) -| (4, 0);}{\draw (2.5, 2.5) |- (0, 4);}
+   }{}
+  }{}
+  \ifthenelse{\equal{\cdelem}{C}}{
+   \draw (-1.8, -1.8) -- (2, 2);
+   \FPadd\cdfloat\cdelemx2\xdef\cdelemx{\FPprint\cdfloat}\FPadd\cdfloat\cdelemy2\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{-2.3}{-2.3}{-135}}{\draw (-2.2, -1.4) -- (-1.4, -2.2);}
+  }{}
+ }{}
+ \ifthenelse{\equal{#2}{RU}\OR\equal{#2}{RU*}}{
+  \ifthenelse{\equal{\cdelem}{UI}\OR\equal{\cdelem}{R}\OR\equal{\cdelem}{L}}{
+   \draw (2.3, 2.3) -- (-2.5, -2.5);
+   \FPsub\cdfloat\cdelemx{2.5}\xdef\cdelemx{\FPprint\cdfloat}\FPsub\cdfloat\cdelemy{2.5}\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{2.8}{2.8}{45}}{\draw (2.7, 1.9) -- (1.9, 2.7);}
+   \ifthenelse{\equal{#2}{RU*}}{
+    \ifthenelse{\equal{\cdorient}{H}}{\draw (-2.5, -2.5) -| (-4, 0);}{\draw (-2.5, -2.5) |- (0, -4);}
+   }{}
+  }{}
+  \ifthenelse{\equal{\cdelem}{C}}{
+   \draw (1.8, 1.8) -- (-2, -2);
+   \FPsub\cdfloat\cdelemx2\xdef\cdelemx{\FPprint\cdfloat}\FPsub\cdfloat\cdelemy2\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{2.3}{2.3}{45}}{\draw (2.2, 1.4) -- (1.4, 2.2);}
+  }{}
+ }{}
+ \ifthenelse{\equal{#2}{RD}\OR\equal{#2}{RD*}}{
+  \ifthenelse{\equal{\cdelem}{UI}\OR\equal{\cdelem}{R}\OR\equal{\cdelem}{L}}{
+   \draw (2.3, -2.3) -- (-2.5, 2.5);
+   \FPsub\cdfloat\cdelemx{2.5}\xdef\cdelemx{\FPprint\cdfloat}\FPadd\cdfloat\cdelemy{2.5}\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{2.8}{-2.8}{-45}}{\draw (2.7, -1.9) -- (1.9, -2.7);}
+   \ifthenelse{\equal{#2}{RD*}}{
+    \ifthenelse{\equal{\cdorient}{H}}{\draw (-2.5, 2.5) -| (-4, 0);}{\draw (-2.5, 2.5) |- (0, 4);}
+   }{}
+  }{}
+  \ifthenelse{\equal{\cdelem}{C}}{
+   \draw (1.8, -1.8) -- (-2, 2);
+   \FPsub\cdfloat\cdelemx2\xdef\cdelemx{\FPprint\cdfloat}\FPadd\cdfloat\cdelemy2\xdef\cdelemy{\FPprint\cdfloat}
+   \ifthenelse{\equal{#1}{M}}{\cdbigarrow{2.3}{-2.3}{-45}}{\draw (2.2, -1.4) -- (1.4, -2.2);}
+  }{}
+ }{}
+}
+\newcommand{\slider}[1]{
+ \ifthenelse{\equal{#1}{L}}{\cdbigarrow[2.06]{-0.94}{0}{0}}{}
+ \ifthenelse{\equal{#1}{R}}{\cdbigarrow[2.06]{0.94}{0}{180}}{}
+ \ifthenelse{\equal{#1}{U}}{\cdbigarrow[2.06]{0}{0.94}{-90}}{}
+ \ifthenelse{\equal{#1}{D}}{\cdbigarrow[2.06]{0}{-0.94}{90}}{}
+}
+% Photo and emitting
+\newcommand{\photo}{
+ \ifthenelse{\equal{\cdelem}{T}}{\photoT}{\photoRD}
+}
+\newcommand{\photoRD}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{#1}{U}}{\cdsmallarrows[2]{0}{1.5}{-75}{0.5}}{\cdsmallarrows[2]{0}{-1.5}{75}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{H}\OR\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{#1}{U}}{\cdsmallarrows[2]{0}{1.5}{-105}{0.5}}{\cdsmallarrows[2]{0}{-1.5}{105}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{#1}{L}}{\cdsmallarrows[2]{-1.5}{0}{-15}{0.5}}{\cdsmallarrows[2]{1.5}{0}{-165}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{V}\OR\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{#1}{L}}{\cdsmallarrows[2]{-1.5}{0}{15}{0.5}}{\cdsmallarrows[2]{1.5}{0}{165}{0.5}}
+ }{}
+}
+\newcommand{\photoT}{
+ \renewcommand{\transbase}{}
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{\cdsmallarrows[2]{2.1}{0.3}{165}{0.5}}{\cdsmallarrows[2]{2.1}{-0.3}{-165}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{\cdsmallarrows[2]{-2.1}{0.3}{15}{0.5}}{\cdsmallarrows[2]{-2.1}{-0.3}{-15}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{\cdsmallarrows[2]{-0.3}{-2.1}{105}{0.5}}{\cdsmallarrows[2]{0.3}{-2.1}{75}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{\cdsuborient}{L}}{\cdsmallarrows[2]{-0.3}{2.1}{-105}{0.5}}{\cdsmallarrows[2]{0.3}{2.1}{-75}{0.5}}
+ }{}
+}
+\newcommand{\emit}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{#1}{U}}{\cdsmallarrows[2]{-0.518}{3.432}{105}{0.5}}{\cdsmallarrows[2]{-0.518}{-3.432}{-105}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{#1}{U}}{\cdsmallarrows[2]{0.518}{3.432}{75}{0.5}}{\cdsmallarrows[2]{0.518}{-3.432}{-75}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{#1}{L}}{\cdsmallarrows[2]{-3.432}{0.518}{165}{0.5}}{\cdsmallarrows[2]{3.432}{0.518}{15}{0.5}}
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{#1}{L}}{\cdsmallarrows[2]{-3.432}{-0.518}{-165}{0.5}}{\cdsmallarrows[2]{3.432}{-0.518}{-15}{0.5}}
+ }{}
+}
+% Electrolytic capacitors
+\newcommand{\elcap}[1]{
+ \ifthenelse{\equal{#1}{LU}}{\cdplus{-1.2}{1.2}}{}
+ \ifthenelse{\equal{#1}{RU}}{\cdplus{1.2}{1.2}}{}
+ \ifthenelse{\equal{#1}{LD}}{\cdplus{-1.2}{-1.2}}{}
+ \ifthenelse{\equal{#1}{RD}}{\cdplus{1.2}{-1.2}}{}
+}
+% Windings
+\newcommand{\windings}[1]{
+ \renewcommand{\cdinfo}{#1}
+ \expandafter\csname windings\cdorient\cdsuborient\endcsname
+}
+\newcommand{\windingsHU}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.75*\cdinfo+0.5, -0.94) rectangle (0.75*\cdinfo-0.5, 0.94);
+  \setinduccounter
+  \draw (-0.75*\cdinfo+0.5, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo-0.5, 0) -- (\thecdcounter, 0);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, 0.85) arc (90 : 0 : 0.95) arc (0 : -180 : 0.2)
+     arc (180 : 90 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-\FPprint\cdfloat, 0.85) arc (90 : 180 : 0.75);
+   \draw [cdmedlines] (\FPprint\cdfloat, 0.85) arc (90 : 0 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0.1) ++(-0.75, 0) arc (180 : 0 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (-0.75*\cdinfo, 0) -- ++(0, 0.1) (0.75*\cdinfo, 0) -- ++(0, 0.1);
+  \setinduccounter
+  \draw (-0.75*\cdinfo, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo, 0) -- (\thecdcounter, 0);
+ \fi
+}
+\newcommand{\windingsHD}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.75*\cdinfo+0.5, -0.94) rectangle (0.75*\cdinfo-0.5, 0.94);
+  \setinduccounter
+  \draw (-0.75*\cdinfo+0.5, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo-0.5, 0) -- (\thecdcounter, 0);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, -0.85) arc (-90 : 0 : 0.95) arc (0 : 180 : 0.2)
+     arc (-180 : -90 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-\FPprint\cdfloat, -0.85) arc (-90 : -180 : 0.75);
+   \draw [cdmedlines] (\FPprint\cdfloat, -0.85) arc (-90 : 0 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, -0.1) ++(-0.75, 0) arc (-180 : 0 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (-0.75*\cdinfo, 0) -- ++(0, -0.1) (0.75*\cdinfo, 0) -- ++(0, -0.1);
+  \setinduccounter
+  \draw (-0.75*\cdinfo, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo, 0) -- (\thecdcounter, 0);
+ \fi
+}
+\newcommand{\windingsVL}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.94, -0.75*\cdinfo+0.5) rectangle (0.94, 0.75*\cdinfo-0.5);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo+0.5) -- (0, -\thecdcounter) (0, 0.75*\cdinfo-0.5) -- (0, \thecdcounter);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0, \FPprint\cdfloat) ++(-0.85, -0.75) arc (180 : 90 : 0.95) arc (90 : -90 : 0.2)
+     arc (-90 : -180 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-0.85, -\FPprint\cdfloat) arc (-180 : -90 : 0.75);
+   \draw [cdmedlines] (-0.85, \FPprint\cdfloat) arc (180 : 90 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (-0.1, \FPprint\cdfloat) ++(0, -0.75) arc (270 : 90 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (0, -0.75*\cdinfo) -- ++(-0.1, 0) (0, 0.75*\cdinfo) -- ++(-0.1, 0);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo) -- (0, -\thecdcounter) (0, 0.75*\cdinfo) -- (0, \thecdcounter);
+ \fi
+}
+\newcommand{\windingsVR}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.94, -0.75*\cdinfo+0.5) rectangle (0.94, 0.75*\cdinfo-0.5);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo+0.5) -- (0, -\thecdcounter) (0, 0.75*\cdinfo-0.5) -- (0, \thecdcounter);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0, \FPprint\cdfloat) ++(0.85, -0.75) arc (0 : 90 : 0.95) arc (90 : 270 : 0.2)
+     arc (-90 : 0 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (0.85, -\FPprint\cdfloat) arc (0 : -90 : 0.75);
+   \draw [cdmedlines] (0.85, \FPprint\cdfloat) arc (0 : 90 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0.1, \FPprint\cdfloat) ++(0, -0.75) arc (-90 : 90 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (0, -0.75*\cdinfo) -- ++(0.1, 0) (0, 0.75*\cdinfo) -- ++(0.1, 0);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo) -- (0, -\thecdcounter) (0, 0.75*\cdinfo) -- (0, \thecdcounter);
+ \fi
+}
+\newcommand{\setinduccounter}{
+ \ifthenelse{\equal{\cdinfo}{}}{
+  \setcounter{cdcounter}{3}
+ }{
+  \FPmul\cdfloat{0.75}\cdinfo\FPadd\cdfloat\cdfloat{0.999}\FPtrunc\cdfloat\cdfloat0
+  \setcounter{cdcounter}{\FPprint\cdfloat}
+ }
+}
+% Zener diodes
+\newcommand{\zener}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{
+  \ifthenelse{\equal{#1}{U}}{
+   \draw [cdmedlines] (-1.25, 1.25) -- (-0.5, 1.25);
+  }{
+   \draw [cdmedlines] (-1.25, -1.25) -- (-0.5, -1.25);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{R}}{
+  \ifthenelse{\equal{#1}{U}}{
+   \draw [cdmedlines] (1.25, 1.25) -- (0.5, 1.25);
+  }{
+   \draw [cdmedlines] (1.25, -1.25) -- (0.5, -1.25);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{U}}{
+  \ifthenelse{\equal{#1}{L}}{
+   \draw [cdmedlines] (-1.25, 1.25) -- (-1.25, 0.5);
+   }{
+   \draw [cdmedlines] (1.25, 1.25) -- (1.25, 0.5);
+  }
+ }{}
+ \ifthenelse{\equal{\cdorient}{D}}{
+  \ifthenelse{\equal{#1}{L}}{
+   \draw [cdmedlines] (-1.25, -1.25) -- (-1.25, -0.5);
+  }{
+   \draw [cdmedlines] (1.25, -1.25) -- (1.25, -0.5);
+  }
+ }{}
+}
+% Supply voltages
+\newcommand{\supply}[1]{
+ \ifthenelse{\equal{#1}{U}\OR\equal{#1}{UD}}{\draw (0, 1.7) -- (0, 3);}{}
+ \ifthenelse{\equal{#1}{D}\OR\equal{#1}{UD}}{\draw (0, -1.7) -- (0, -3);}{}
+}
+% Manual reference and value placing
+\newcommand{\putrefer}[3]{
+ \edef\cdreferx{#1}\edef\cdrefery{#2}\renewcommand{\cdreferalign}{#3}
+}
+\newcommand{\putvalue}[3]{
+ \edef\cdvaluex{#1}\edef\cdvaluey{#2}\renewcommand{\cdvaluealign}{#3}
+}
+\newcommand{\putrefval}[3]{
+ \edef\cdrefvalx{#1}\edef\cdrefvaly{#2}\renewcommand{\cdrefvalalign}{#3}
+}
+\newcommand{\moverefer}[2]{
+ \FPadd\cdfloat\cdreferx{#1}\edef\cdreferx{\FPprint\cdfloat}
+ \FPadd\cdfloat\cdrefery{#2}\edef\cdrefery{\FPprint\cdfloat}
+}
+\newcommand{\movevalue}[2]{
+ \FPadd\cdfloat\cdvaluex{#1}\edef\cdvaluex{\FPprint\cdfloat}
+ \FPadd\cdfloat\cdvaluey{#2}\edef\cdvaluey{\FPprint\cdfloat}
+}
+\newcommand{\moverefval}[2]{
+ \FPadd\cdfloat\cdrefvalx{#1}\edef\cdrefvalx{\FPprint\cdfloat}
+ \FPadd\cdfloat\cdrefvaly{#2}\edef\cdrefvaly{\FPprint\cdfloat}
+}
+% Element preparation
+\newcommand{\prepareelement}[5]{
+ \renewcommand{\cdelem}{#1}
+ \renewcommand{\cdtype}{#2}
+ \renewcommand{\cdinfo}{}
+ \renewcommand{\cdrefer}{#4}
+ \renewcommand{\cdvalue}{#5}
+ \ifthenelse{\equal{\cdrefer}{}}{
+  \ifthenelse{\equal{\cdvalue}{}}{
+   \renewcommand{\cdrefval}{}
+  }{
+   \renewcommand{\cdrefval}{\formatvalue{\cdvalue}}
+  }
+ }{
+  \ifthenelse{\equal{\cdvalue}{}}{
+   \renewcommand{\cdrefval}{\formatrefer{\cdrefer}}
+  }{
+   \renewcommand{\cdrefval}{\formatrefer{\cdrefer}\cdrefvalsep\formatvalue{\cdvalue}}
+  }
+ }
+ \expandafter\splitorient#3{}{}{}
+}
+\newcommand{\splitorient}[4]{
+ \ifthenelse{\equal{#1#2}{LR}\OR\equal{#1#2}{UD}}{
+  \renewcommand{\cdorient}{#1#2}
+  \renewcommand{\cdsuborient}{}
+  \renewcommand{\cdtextpos}{#3#4}
+ }{
+  \renewcommand{\cdorient}{#1}
+  \ifthenelse{\equal{#2}{L}\OR\equal{#2}{R}\OR\equal{#2}{U}\OR\equal{#2}{D}\OR\equal{#2}{O}}{
+   \renewcommand{\cdsuborient}{#2}
+   \renewcommand{\cdtextpos}{#3#4}
+  }{
+   \renewcommand{\cdsuborient}{}
+   \renewcommand{\cdtextpos}{#2#3}
+  }
+ }
+}
+\newcommand{\setstandardsuborient}[1]{
+ \ifthenelse{\equal{\cdsuborient}{}}{\renewcommand{\cdsuborient}{#1}}{}
+}
+\newcommand{\setstandardtextpos}[1]{
+ \ifthenelse{\equal{\cdtextpos}{}}{\renewcommand{\cdtextpos}{#1}}{}
+}
+% Place reference and value
+\newcommand{\placerefvalH}[6]{
+ \ifthenelse{\equal{\cdtextpos}{uu}}{\placerefvaltwoline{#2}{#6}{c}{u}}{}
+ \ifthenelse{\equal{\cdtextpos}{u}}{
+  \renewcommand{\cdrefvaltog}{1}
+  \edef\cdrefvalx{#2}\edef\cdrefvaly{#6}\renewcommand{\cdrefvalalign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{hu}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#1}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluex{#3}\edef\cdvaluey{1.5}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{uc}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#2}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{c}
+  \edef\cdvaluex{#2}\edef\cdvaluey{#5}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{ud}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#2}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{c}
+  \edef\cdvaluex{#2}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{c}}{
+  \renewcommand{\cdrefvaltog}{1}
+  \edef\cdrefvalx{#2}\edef\cdrefvaly{#5}\renewcommand{\cdrefvalalign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{cc}}{\placerefvaltwoline{#2}{#5}{c}{c}}{}
+ \ifthenelse{\equal{\cdtextpos}{cd}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#2}\edef\cdrefery{#5}\renewcommand{\cdreferalign}{c}
+  \edef\cdvaluex{#2}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{hd}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#1}\edef\cdrefery{-1.5}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluex{#3}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{d}}{
+  \renewcommand{\cdrefvaltog}{1}
+  \edef\cdrefvalx{#2}\edef\cdrefvaly{#4}\renewcommand{\cdrefvalalign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{dd}}{\placerefvaltwoline{#2}{#4}{c}{d}}{}
+ \ifthenelse{\equal{\cdtextpos}{l}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \ifthenelse{\equal{\cdelem}{P}}{
+   \edef\cdreferx{#1}\edef\cdrefery{0}\renewcommand{\cdreferalign}{r}
+   \edef\cdvaluex{#1}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdreferx{#1}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+   \edef\cdvaluex{#1}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{hl}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdrefery{#6}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{r}
+  \ifthenelse{\equal{\cdelem}{IC}\AND\equal{\cdtype}{op}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \FPsub\cdfloat{#6}{2}\edef\cdrefery{\FPprint\cdfloat}\FPadd\cdfloat{#4}{2}\edef\cdvaluey{\FPprint\cdfloat}
+   }{
+    \FPadd\cdfloat{#6}{0.25}\edef\cdrefery{\FPprint\cdfloat}\FPsub\cdfloat{#4}{0.25}\edef\cdvaluey{\FPprint\cdfloat}
+   }
+  }{}
+  \FPsub\cdfloat{#2}{0.75}\edef\cdreferx{\FPprint\cdfloat}\edef\cdvaluex{\FPprint\cdfloat}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{lc}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#1}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluex{#2}\edef\cdvaluey{#5}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{cl}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#2}\edef\cdrefery{#5}\renewcommand{\cdreferalign}{c}
+  \edef\cdvaluex{#1}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{rc}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#3}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+  \edef\cdvaluex{#2}\edef\cdvaluey{#5}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{cr}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#2}\edef\cdrefery{#5}\renewcommand{\cdreferalign}{c}
+  \edef\cdvaluex{#3}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{hr}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdrefery{#6}\renewcommand{\cdreferalign}{l}
+  \edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{l}
+  \ifthenelse{\equal{\cdelem}{IC}\AND\equal{\cdtype}{op}}{
+   \ifthenelse{\equal{\cdorient}{L}}{
+    \FPadd\cdfloat{#6}{0.25}\edef\cdrefery{\FPprint\cdfloat}\FPsub\cdfloat{#4}{0.25}\edef\cdvaluey{\FPprint\cdfloat}
+   }{
+    \FPsub\cdfloat{#6}{2}\edef\cdrefery{\FPprint\cdfloat}\FPadd\cdfloat{#4}{2}\edef\cdvaluey{\FPprint\cdfloat}
+   }
+  }{}
+  \FPadd\cdfloat{#2}{0.75}\edef\cdreferx{\FPprint\cdfloat}\edef\cdvaluex{\FPprint\cdfloat}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{r}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \ifthenelse{\equal{\cdelem}{P}}{
+   \edef\cdreferx{#3}\edef\cdrefery{0}\renewcommand{\cdreferalign}{l}
+   \edef\cdvaluex{#3}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdreferx{#3}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+   \edef\cdvaluex{#3}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+}
+\newcommand{\placerefvalV}[6]{
+ \ifthenelse{\equal{\cdtextpos}{l}}{\placerefvaltwoline{#1}{#5}{r}{c}}{}
+ \ifthenelse{\equal{\cdtextpos}{hl}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{-0.5}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluex{-0.5}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{r}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{lr}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{#1}\edef\cdrefery{#5}\renewcommand{\cdreferalign}{r}
+  \edef\cdvaluex{#3}\edef\cdvaluey{#5}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{hr}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \edef\cdreferx{0.5}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{l}
+  \edef\cdvaluex{0.5}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{r}}{\placerefvaltwoline{#3}{#5}{l}{c}}{}
+ \ifthenelse{\equal{\cdtextpos}{u}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \ifthenelse{\equal{\cdelem}{P}}{
+   \edef\cdreferx{0}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{c}
+   \edef\cdvaluex{0}\edef\cdvaluey{#6}\renewcommand{\cdvaluealign}{c}
+  }{
+   \edef\cdreferx{-0.5}\edef\cdrefery{#6}\renewcommand{\cdreferalign}{r}
+   \edef\cdvaluex{0.5}\edef\cdvaluey{#6}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{d}}{
+  \renewcommand{\cdrefvaltog}{0}
+  \ifthenelse{\equal{\cdelem}{P}}{
+   \edef\cdreferx{0}\edef\cdrefery{#4}\renewcommand{\cdreferalign}{c}
+   \edef\cdvaluex{0}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{c}
+  }{
+   \edef\cdreferx{-0.5}\edef\cdrefery{#4}\renewcommand{\cdreferalign}{r}
+   \edef\cdvaluex{0.5}\edef\cdvaluey{#4}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+}
+\newcommand{\placerefvaltwoline}[4]{
+ \edef\cdreferx{#1}\edef\cdvaluex{#1}
+ \ifthenelse{\equal{\cdrefer}{}\OR\equal{\cdvalue}{}}{
+  \edef\cdrefery{#2}\edef\cdvaluey{#2}
+ }{
+  \ifthenelse{\equal{#4}{u}}{
+   \edef\cdvaluey{#2}
+   \FPadd\cdfloat{#2}2\edef\cdrefery{\FPprint\cdfloat}
+  }{}
+  \ifthenelse{\equal{#4}{c}}{
+   \FPadd\cdfloat{#2}1\edef\cdrefery{\FPprint\cdfloat}
+   \FPsub\cdfloat{#2}1\edef\cdvaluey{\FPprint\cdfloat}
+  }{}
+  \ifthenelse{\equal{#4}{d}}{
+   \edef\cdrefery{#2}
+   \FPsub\cdfloat{#2}2\edef\cdvaluey{\FPprint\cdfloat}
+  }{}
+ }
+ \renewcommand{\cdreferalign}{#3}\renewcommand{\cdvaluealign}{#3}
+}
+\newcommand{\placerefvalTL}{
+ \ifthenelse{\boolean{circledtrans}}{
+  \ifthenelse{\equal{\cdtextpos}{l}}{
+   \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+    \equal{\cdtype}{pdep*}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-2.75}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{-2.75}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+   }{
+    \placerefvaltwoline{-2.75}{0}{r}{c}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{ud}}{
+   \renewcommand{\cdrefvaltog}{0}
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \edef\cdreferx{-0.25}\edef\cdrefery{3.75}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{-0.25}\edef\cdvaluey{-3.75}\renewcommand{\cdvaluealign}{l}
+   }{
+    \edef\cdreferx{-1.25}\edef\cdrefery{3.75}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{-1.25}\edef\cdvaluey{-3.75}\renewcommand{\cdvaluealign}{l}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{r}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{3}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{3}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{3.25}{0}{l}{d}}{\placerefvaltwoline{3.25}{0}{l}{u}}
+   }
+  }{}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{l}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{-1.25}{0}{r}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{-2.5}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+     \edef\cdvaluex{-2.5}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+    }{
+     \placerefvaltwoline{-2.5}{0}{r}{c}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{ud}}{
+   \renewcommand{\cdrefvaltog}{0}
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \edef\cdreferx{-0.25}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{-0.25}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{l}
+   }{
+    \edef\cdreferx{-1.25}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{-1.25}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{l}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{r}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{1.75}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{1.75}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+   }{
+    \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+     \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{1}{-0.5}{l}{d}}{\placerefvaltwoline{1}{0.5}{l}{u}}
+    }{
+     \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{1.75}{0}{l}{d}}{\placerefvaltwoline{1.75}{0}{l}{u}}
+    }
+   }
+  }{}
+ }
+}
+\newcommand{\placerefvalTR}{
+ \ifthenelse{\boolean{circledtrans}}{
+  \ifthenelse{\equal{\cdtextpos}{l}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-3}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{-3}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+   }{
+    \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{-3.25}{0}{r}{d}}{\placerefvaltwoline{-3.25}{0}{r}{u}}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{ud}}{
+   \renewcommand{\cdrefvaltog}{0}
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \edef\cdreferx{0.25}\edef\cdrefery{3.75}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.25}\edef\cdvaluey{-3.75}\renewcommand{\cdvaluealign}{r}
+   }{
+    \edef\cdreferx{1.25}\edef\cdrefery{3.75}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{1.25}\edef\cdvaluey{-3.75}\renewcommand{\cdvaluealign}{r}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{r}}{
+   \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+    \equal{\cdtype}{pdep*}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{2.75}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+    \edef\cdvaluex{2.75}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+   }{
+    \placerefvaltwoline{2.75}{0}{l}{c}
+   }
+  }{}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{l}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \renewcommand{\cdrefvaltog}{0}
+    \edef\cdreferx{-1.75}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{-1.75}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{r}
+   }{
+    \ifthenelse{\equal{\cdtype}{nj}\OR\equal{\cdtype}{pj}}{
+     \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{-1}{-0.5}{r}{d}}{\placerefvaltwoline{-1}{0.5}{r}{u}}
+    }{
+     \ifthenelse{\equal{\cdsuborient}{U}}{\placerefvaltwoline{-1.75}{0}{r}{d}}{\placerefvaltwoline{-1.75}{0}{r}{u}}
+    }
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{ud}}{
+   \renewcommand{\cdrefvaltog}{0}
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \edef\cdreferx{0.25}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{0.25}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{r}
+   }{
+    \edef\cdreferx{1.25}\edef\cdrefery{3.5}\renewcommand{\cdreferalign}{r}
+    \edef\cdvaluex{1.25}\edef\cdvaluey{-3.5}\renewcommand{\cdvaluealign}{r}
+   }
+  }{}
+  \ifthenelse{\equal{\cdtextpos}{r}}{
+   \ifthenelse{\equal{\cdtype}{npn}\OR\equal{\cdtype}{pnp}}{
+    \placerefvaltwoline{1.25}{0}{l}{c}
+   }{
+    \ifthenelse{\equal{\cdtype}{nenh*}\OR\equal{\cdtype}{penh*}\OR\equal{\cdtype}{ndep*}\OR
+     \equal{\cdtype}{pdep*}}{
+     \renewcommand{\cdrefvaltog}{0}
+     \edef\cdreferx{2.5}\edef\cdrefery{1.5}\renewcommand{\cdreferalign}{l}
+     \edef\cdvaluex{2.5}\edef\cdvaluey{-1.5}\renewcommand{\cdvaluealign}{l}
+    }{
+     \placerefvaltwoline{2.5}{0}{l}{c}
+    }
+   }
+  }{}
+ }
+}
+% Draw reference and value
+\newcommand{\formatrefer}[1]{#1}
+\newcommand{\formatvalue}[1]{#1}
+\newcommand{\drawrefval}{
+ \ifthenelse{\equal{\cdrefvaltog}{1}}{
+  \cdputtext{\cdrefvalx}{\cdrefvaly}{\cdrefvalalign}{\cdrefval}
+ }{
+  \cdputtext{\cdreferx}{\cdrefery}{\cdreferalign}{\formatrefer{\cdrefer}}
+  \cdputtext{\cdvaluex}{\cdvaluey}{\cdvaluealign}{\formatvalue{\cdvalue}}
+ }
+}
+% Save and load
+\newcommand{\savelastelem}{
+ \edef\cdelemxsaved{\cdelemx}
+ \edef\cdelemysaved{\cdelemy}
+ \edef\cdorientsaved{\cdorient}
+}
+\newcommand{\loadlastelem}{
+ \edef\cdelemx{\cdelemxsaved}
+ \edef\cdelemy{\cdelemysaved}
+ \edef\cdorient{\cdorientsaved}
+}
+% Further options
+\DeclareOption{autoref}{\input{cd-autoref.sty}}
+\DeclareOption{block}{\input{cd-block.sty}}
+\DeclareOption{color}{\input{cd-color.sty}}
+\DeclareOption{control}{
+ \PackageWarning{circdia}{Package option 'control' is deprecated; use 'block' instead.}
+ \input{cd-block.sty}
+}
+\DeclareOption{diag}{\input{cd-diag.sty}}
+\DeclareOption{digital}{\input{cd-digital.sty}}
+\DeclareOption{graph}{\input{cd-graph.sty}}
+\DeclareOption{ic}{\input{cd-ic.sty}}
+\DeclareOption{mech}{\input{cd-mech.sty}}
+\DeclareOption{passive}{\input{cd-passive.sty}}
+\DeclareOption{semicon}{\input{cd-semicon.sty}}
+\DeclareOption{srcmeas}{\input{cd-srcmeas.sty}}
+\DeclareOption{switch}{\input{cd-switch.sty}}
+\ExecuteOptions{normalinduc,lineddiode,nocircledtrans}
+\ProcessOptions
+% Deprecated commands
+\newcommand{\Voltarrow}{
+ \PackageWarning{circdia}{Command 'Voltarrow' is deprecated; use 'Voltar' instead.}
+ \Voltar
+}
+\newcommand{\currarrow}{
+ \PackageWarning{circdia}{Command 'currarrow' is deprecated; use 'currar' instead.}
+ \currar
+}
+\newcommand{\voltarrow}{
+ \PackageWarning{circdia}{Command 'voltarrow' is deprecated; use 'voltar' instead.}
+ \voltar
+}

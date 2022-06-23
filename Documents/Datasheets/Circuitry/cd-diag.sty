@@ -1,0 +1,93 @@
+% cd-diag.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.0.
+% Supports diagonally placed elements for circdia.sty.
+% WARNING: This subpackage is in beta and subject to change.
+\newcommand{\cddiaginfo}{}
+% Bridge form
+\newcommand{\bridgeform}[7][8]{
+ \edef\cddiaginfo{0.707106781*#1}
+ \begin{scope}[shift = {(#2, #3)}]
+  \begin{scope}[shift = {(0.5*#1, 0.5*#1)}, rotate = 135]
+   \renewcommand{\cdelem}{}#4\autobridgewire
+  \end{scope}
+  \begin{scope}[shift = {(-0.5*#1, 0.5*#1)}, rotate = -135]
+   \renewcommand{\cdelem}{}#5\autobridgewire
+  \end{scope}
+  \begin{scope}[shift = {(-0.5*#1, -0.5*#1)}, rotate = -45]
+   \renewcommand{\cdelem}{}#6\autobridgewire
+  \end{scope}
+  \begin{scope}[shift = {(0.5*#1, -0.5*#1)}, rotate = 45]
+   \renewcommand{\cdelem}{}#7\autobridgewire
+  \end{scope}
+ \end{scope}
+}
+\newcommand{\autobridgewire}{
+ \ifthenelse{\equal{\cdelem}{UI}}{\bridgewire{2}}{}
+ \ifthenelse{\equal{\cdelem}{S}}{\bridgewire{3}}{}
+ \ifthenelse{\equal{\cdelem}{R}}{\bridgewire{3}}{}
+ \ifthenelse{\equal{\cdelem}{C}}{\bridgewire{1}}{}
+ \ifthenelse{\equal{\cdelem}{L}}{\bridgewire{3}}{}
+ \ifthenelse{\equal{\cdelem}{D}}{\bridgewire{2}}{}
+}
+\newcommand{\bridgewire}[1]{
+ \wire{-#1}{0}{-\cddiaginfo}{0}
+ \wire{#1}{0}{\cddiaginfo}{0}
+ \renewcommand{\cdelem}{}
+}
+% Delta form
+\newcommand{\deltaform}[7][4]{
+ \edef\cddiaginfo{1.732050807*#1}
+ \begin{scope}[shift = {(#2, #3)}, rotate = #4]
+  \begin{scope}[shift = {(0.866025404*#1, 0.5*#1)}, rotate = 120]
+   \renewcommand{\cdelem}{}#5\autodeltawire
+  \end{scope}
+  \begin{scope}[shift = {(-0.866025404*#1, 0.5*#1)}, rotate = -120]
+   \renewcommand{\cdelem}{}#6\autodeltawire
+  \end{scope}
+  \begin{scope}[shift = {(0, -#1)}]
+   \renewcommand{\cdelem}{}#7\autodeltawire
+  \end{scope}
+ \end{scope}
+}
+\newcommand{\autodeltawire}{
+ \ifthenelse{\equal{\cdelem}{UI}}{\deltawire{2}}{}
+ \ifthenelse{\equal{\cdelem}{S}}{\deltawire{3}}{}
+ \ifthenelse{\equal{\cdelem}{R}}{\deltawire{3}}{}
+ \ifthenelse{\equal{\cdelem}{C}}{\deltawire{1}}{}
+ \ifthenelse{\equal{\cdelem}{L}}{\deltawire{3}}{}
+ \ifthenelse{\equal{\cdelem}{D}}{\deltawire{2}}{}
+}
+\newcommand{\deltawire}[1]{
+ \wire{-#1}{0}{-\cddiaginfo}{0}
+ \wire{#1}{0}{\cddiaginfo}{0}
+ \renewcommand{\cdelem}{}
+}
+% Star form
+\newcommand{\starform}[7][4]{
+ \edef\cddiaginfo{#1}
+ \begin{scope}[shift = {(#2, #3)}, rotate = #4]
+  \begin{scope}[shift = {(#1, 0)}]
+   \renewcommand{\cdelem}{}#5\autostarwire
+  \end{scope}
+  \begin{scope}[shift = {(-0.5*#1, 0.866025404*#1)}, rotate = 120]
+   \renewcommand{\cdelem}{}#6\autostarwire
+  \end{scope}
+  \begin{scope}[shift = {(-0.5*#1, -0.866025404*#1)}, rotate = -120]
+   \renewcommand{\cdelem}{}#7\autostarwire
+  \end{scope}
+ \end{scope}
+}
+\newcommand{\autostarwire}{
+ \ifthenelse{\equal{\cdelem}{UI}}{\starwire{2}}{}
+ \ifthenelse{\equal{\cdelem}{S}}{\starwire{3}}{}
+ \ifthenelse{\equal{\cdelem}{R}}{\starwire{3}}{}
+ \ifthenelse{\equal{\cdelem}{C}}{\starwire{1}}{}
+ \ifthenelse{\equal{\cdelem}{L}}{\starwire{3}}{}
+ \ifthenelse{\equal{\cdelem}{D}}{\starwire{2}}{}
+}
+\newcommand{\starwire}[1]{
+ \wire{-#1}{0}{-\cddiaginfo}{0}
+ \wire{#1}{0}{\cddiaginfo}{0}
+ \renewcommand{\cdelem}{}
+}

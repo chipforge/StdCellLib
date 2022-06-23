@@ -1,0 +1,198 @@
+% cd-mech.sty
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.3.
+% Supports mechanical symbols for circdia.sty.
+% Wires coming out of or going into the paper
+\newcommand{\wiredot}[2]{
+ \draw (#1, #2) circle (0.915);
+ \junct{#1}{#2}
+}
+\newcommand{\wirecross}[2]{
+ \draw (#1, #2) circle (0.915);
+ \draw [shift = {(#1, #2)}] (-0.642, -0.642) -- (0.642, 0.642) (-0.642, 0.642) -- (0.642, -0.642);
+}
+% Technical dimensioning
+\newcommand{\techdim}[6][]{
+ \prepareelement{M}{}{#5}{}{#6}
+ \renewcommand{\cdinfo}{#4}
+ \begin{scope}[shift = {(#2, #3)}]
+  \expandafter\csname techdim\cdorient\endcsname{#1}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\techdimH}[1]{
+ \setstandardtextpos{u}
+ \renewcommand{\cdrefvaltog}{0}
+ \ifthenelse{\equal{\cdtextpos}{c}}{
+  \edef\cdvaluex{\cdinfo/2}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{d}}{
+  \edef\cdvaluex{\cdinfo/2}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{l}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{-2.75}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdvaluex{-0.75}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{ld}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{-2}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdvaluex{-0.75}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{lu}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{-2}\edef\cdvaluey{1.25}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdvaluex{-0.75}\edef\cdvaluey{1.25}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{r}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{\cdinfo+2.75}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdvaluex{\cdinfo+0.75}\edef\cdvaluey{0}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{rd}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{\cdinfo+2}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdvaluex{\cdinfo+0.75}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{ru}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{\cdinfo+2}\edef\cdvaluey{1.25}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdvaluex{\cdinfo+0.75}\edef\cdvaluey{1.25}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{u}}{
+  \edef\cdvaluex{\cdinfo/2}\edef\cdvaluey{1.25}\renewcommand{\cdvaluealign}{c}
+ }{}
+ #1
+ \ifthenelse{\equal{\cdsuborient}{O}}{
+  \cdbigarrow[2]{0}{0}{0}
+  \cdbigarrow[2]{\cdinfo}{0}{180}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{c}}{
+   %%% TO DO!
+   \draw (1, 0) -- (\cdinfo/2-1, 0);
+   \draw (\cdinfo/2+1, 0) -- (\cdinfo-1, 0);
+  }{
+   \draw (1, 0) -- (\cdinfo-1, 0);
+  }
+  \cdbigarrow{0}{0}{180}
+  \cdbigarrow{\cdinfo}{0}{0}
+ }
+}
+\newcommand{\techdimV}[1]{
+ \setstandardtextpos{l}
+ \renewcommand{\cdrefvaltog}{0}
+ \ifthenelse{\equal{\cdtextpos}{c}}{
+  \edef\cdvaluex{0}\edef\cdvaluey{\cdinfo/2}\renewcommand{\cdvaluealign}{c}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{d}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{0}\edef\cdvaluey{-3.25}\renewcommand{\cdvaluealign}{c}
+  }{
+   \edef\cdvaluex{0}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{c}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{l}}{
+  \edef\cdvaluex{-0.5}\edef\cdvaluey{\cdinfo/2}\renewcommand{\cdvaluealign}{r}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{ld}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{-0.5}\edef\cdvaluey{-2.5}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdvaluex{-0.5}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{lu}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{-0.5}\edef\cdvaluey{\cdinfo+2.5}\renewcommand{\cdvaluealign}{r}
+  }{
+   \edef\cdvaluex{-0.5}\edef\cdvaluey{\cdinfo+1.25}\renewcommand{\cdvaluealign}{r}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{r}}{
+  \edef\cdvaluex{0.5}\edef\cdvaluey{\cdinfo/2}\renewcommand{\cdvaluealign}{l}
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{rd}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{0.5}\edef\cdvaluey{-2.5}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdvaluex{0.5}\edef\cdvaluey{-1.25}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{ru}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{0.5}\edef\cdvaluey{\cdinfo+2.5}\renewcommand{\cdvaluealign}{l}
+  }{
+   \edef\cdvaluex{0.5}\edef\cdvaluey{\cdinfo+1.25}\renewcommand{\cdvaluealign}{l}
+  }
+ }{}
+ \ifthenelse{\equal{\cdtextpos}{u}}{
+  \ifthenelse{\equal{\cdsuborient}{O}}{
+   \edef\cdvaluex{0}\edef\cdvaluey{\cdinfo+3.25}\renewcommand{\cdvaluealign}{c}
+  }{
+   \edef\cdvaluex{0}\edef\cdvaluey{\cdinfo+1.25}\renewcommand{\cdvaluealign}{c}
+  }
+ }{}
+ #1
+ \ifthenelse{\equal{\cdsuborient}{O}}{
+  \cdbigarrow[2]{0}{0}{90}
+  \cdbigarrow[2]{0}{\cdinfo}{-90}
+ }{
+  \ifthenelse{\equal{\cdtextpos}{c}}{
+   \draw (0, 1) -- (0, \cdinfo/2-1.25);
+   \draw (0, \cdinfo/2+1.25) -- (0, \cdinfo-1);
+  }{
+   \draw (0, 1) -- (0, \cdinfo-1);
+  }
+  \cdbigarrow{0}{0}{-90}
+  \cdbigarrow{0}{\cdinfo}{90}
+ }
+}
+% Helper lines for dimensioning
+\newcommand{\dimhelpL}[1]{
+ \ifthenelse{\equal{#1}{}}{
+  \draw (0, -0.75) -- (0, 0.75);
+ }{\ifthenelse{#1>0}{
+  \draw (0, -0.75) -- (0, #1);
+ }{
+  \draw (0, #1) -- (0, 0.75);
+ }}
+}
+\newcommand{\dimhelpR}[1]{
+ \ifthenelse{\equal{#1}{}}{
+  \draw (\cdinfo, -0.75) -- (\cdinfo, 0.75);
+ }{\ifthenelse{#1>0}{
+  \draw (\cdinfo, -0.75) -- (\cdinfo, #1);
+ }{
+  \draw (\cdinfo, #1) -- (\cdinfo, 0.75);
+ }}
+}
+\newcommand{\dimhelpU}[1]{
+ \ifthenelse{\equal{#1}{}}{
+  \draw (-0.75, \cdinfo) -- (0.75, \cdinfo);
+ }{\ifthenelse{#1>0}{
+  \draw (-0.75, \cdinfo) -- (#1, \cdinfo);
+ }{
+  \draw (#1, \cdinfo) -- (0.75, \cdinfo);
+ }}
+}
+\newcommand{\dimhelpD}[1]{
+ \ifthenelse{\equal{#1}{}}{
+  \draw (-0.75, 0) -- (0.75, 0);
+ }{\ifthenelse{#1>0}{
+  \draw (-0.75, 0) -- (#1, 0);
+ }{
+  \draw (#1, 0) -- (0.75, 0);
+ }}
+}
