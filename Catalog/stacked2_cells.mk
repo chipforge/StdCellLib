@@ -50,22 +50,22 @@ ifeq ($(BUFFER),2)
 
 #   --------    now buffered    ------------------------------------
 
-CELLS +=        AAO22 \
-                AND2 \
-                AO21 \
-                OA21 \
-                OOA22 \
-                OR2
-
-AAO22:          DESCR = "2-2-input AND-AND-OR gate"
-AAO22:          AO21
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(STACKED2)
+                # one phase
+CELLS +=        AND2 OR2
 
 AND2:           DESCR = "2-input AND gate"
 AND2:           INV
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED2)
+
+OR2:            DESCR = "2-input OR gate"
+OR2:            INV
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(STACKED2)
+
+                # two phases
+CELLS +=        AO21 OA21 \
+                AAO22 OOA22
 
 AO21:           DESCR = "2-1-input AND-OR gate"
 AO21:           AND2
@@ -77,13 +77,13 @@ OA21:           OR2
 	$(POPCORN) -m pu -c $@ $< > $@
 	$(STACKED2)
 
-OOA22:          DESCR = "2-2-input OR-OR-AND gate"
-OOA22:          OA21
-	$(POPCORN) -m nor -c $@ $< > $@
+AAO22:          DESCR = "2-2-input AND-AND-OR gate"
+AAO22:          AO21
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED2)
 
-OR2:            DESCR = "2-input OR gate"
-OR2:            INV
+OOA22:          DESCR = "2-2-input OR-OR-AND gate"
+OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED2)
 
@@ -93,22 +93,8 @@ else
 
 #   --------    not buffered    ------------------------------------
 
-CELLS +=        AAOI22 \
-                AOI21 \
-                NAND2 \
-                NOR2 \
-                OAI21 \
-                OOAI22
-
-AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
-AAOI22:         AOI21
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(STACKED2)
-
-AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
-AOI21:          NAND2
-	$(POPCORN) -m pd -c $@ $< > $@
-	$(STACKED2)
+                # one phase
+CELLS +=        NAND2 NOR2
 
 NAND2:          DESCR = "2-input Not-AND (or NAND) gate"
 NAND2:          INV
@@ -120,9 +106,23 @@ NOR2:           INV
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED2)
 
+                # two phases
+CELLS +=        AOI21 OAI21 \
+                AAOI22 OOAI22
+
+AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
+AOI21:          NAND2
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(STACKED2)
+
 OAI21:          DESCR = "2-1-input OR-AND-Invert gate"
 OAI21:          NOR2
 	$(POPCORN) -m pu -c $@ $< > $@
+	$(STACKED2)
+
+AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
+AAOI22:         AOI21
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED2)
 
 OOAI22:         DESCR = "2-2-input OR-OR-AND-Invert gate"
