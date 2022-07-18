@@ -36,4 +36,4 @@
 *.tgz
 *.zip
 *.sty
-_*
+_test*
