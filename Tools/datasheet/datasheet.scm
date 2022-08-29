@@ -74,7 +74,7 @@
     (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a - Version 2022-VII-04 'FSiC 2022' "~a - Version 2022-VII-04 'FSiC 2022'
+"~a - Version 2022-VII-04 'FSiC 2022'
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -8,15 +8,6 @@ Please stay tuned.
 Do not hesitate to contact the Authors of Popcorn for Patches, Feature additions or Questions.
 Any feedback welcome under [Email](mailto://popcorn@nospam.chipforge.org "popcorn@nospam.chipforge.org").
 
-The tool functionality is divided into a couple of files:
-
-- *popcorn-lib.scm*     ; library with essential functionality
-- *popcorn-cell.scm*    ; functions regarding cell read-in/write-out
-- *popcorn-verilog.scm* ; functions regarding verilog generation
-- *popcorn-sch.scm*     ; functions regarding schematic generations
-- *popcorn.scm*         ; Popcorn itself
-- *README.md*           ; this file
-
 The most basic features are:
 
 1. reading in simplified cell netlists,
@@ -30,17 +21,4 @@ With reaching the threshold (regarding the maximum number of stacked transistors
 
 E.g. with **-l 4** and **-b 4** gets an *ADD4* cell into the catalog, but no *NAND4* cell.
 
-Of course, every single cell needs different representations for different purposes (like Simulation, Layout and Documentation).
-
-Hence, Popcorn also:
-
-- generates accurate Simulation Models (as Spice and Verilog)
-- generates optimized Cell Layouts (in ALF, Magic and others)
-- generates LaTeX documention views, e.g. Schematics, Truth Tables, Formulas and Data Sheets
-- etc.
-
-on *STDOUT* by request.
-While Popcorn generates one export file format per call, the tool has to be called many times with **-e format** command line option.
-
 For the correct Usage, please make yourself familiar with the command line interface by reading the *Manual Page* and studying the local *GNUmakefile*.
-

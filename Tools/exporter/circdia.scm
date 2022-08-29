@@ -17,7 +17,7 @@
 ;;
 ;;  ///////////////////////////////////////////////////////////////////
 ;;
-;;  Copyright (c)   2021 by
+;;  Copyright (c) 2021 - 2022 by
 ;;                  chipforge <popcorn@nospam.chipforge.org>
 ;;
 ;;  This source file may be used and distributed without restriction
@@ -63,7 +63,7 @@
 ;;                  BASICS
 ;;  -------------------------------------------------------------------
 
-    ; place circuits on a grid, every circuit takes a piece of space
+    ; place circuits on a grid, every circuit takes square
 
     ; ^ yabs
     ; |

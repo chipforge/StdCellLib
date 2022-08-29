@@ -66,7 +66,7 @@
         Returns list for (map display (list ..))"
         (list
             ; start with subsection header
-            "\n\\subsection{" (id cell) " - " (description cell) "} \\label{cell:" (id cell) "}"
+            "\n\\subsection{" (id cell) "} \\label{cell:" (id cell) "}"
             "\n"))
 
 ;;  ------------    synopsys    ---------------------------------------

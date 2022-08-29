@@ -45,6 +45,7 @@
 
 (define-library (popcorn expander)
   (import (scheme base)
+          (scheme list)
           (srfi 78)             ; test suite
           ; r7rs modules for StdCellLib also
           (common cell)
@@ -102,6 +103,30 @@
                                         (+ (y-axis record) 1)))
             new-record))
 
+;;  ------------    method reset <location> on x-axis   ---------------
+
+    (define (method-reset-location-x record)
+        "Reset the coodinatates for a <location> on x-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (stacked record))
+            (set-x-axis!  new-record (1))
+            (set-y-axis!  new-record (y-axis record))
+            new-record))
+
+;;  ------------    method reset <location> on y-axis   ---------------
+
+    (define (method-reset-location-y record)
+        "Reset the coodinatates for a <location> on y-axis.
+        Returns (cloned) <location>."
+        (let* ([new-record (method-generate-location+)])
+            (set-stacked! new-record (+ (stacked record) 1))
+            (set-x-axis!  new-record (x-axis record))
+            (set-y-axis!  new-record (if (< (y-axis record) 0)
+                                        (-1)
+                                        (+1)))
+            new-record))
+
 ;;  ------------    method nmos <location> on y-axis    ---------------
 
     (define (method-nmos-location-y record)
@@ -133,6 +158,8 @@
             [(stacked++) (method-rise-location-stacked record)]
             [(x++)       (method-rise-location-x record)]
             [(y++)       (method-rise-location-y record)]
+            [(x1st)      (method-reset-location-x record)]
+            [(y1st)      (method-reset-location-y record)]
             [(nmos)      (method-nmos-location-y record)]
             [(pmos)      (method-pmos-location-y record)]
             [(pretty-print) (method-pretty-print-location record)]
@@ -144,6 +171,8 @@
     (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
     (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
     (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
+    (check (%circuit-location-object 'x1st (location 0 0 0)) => (location 0 1 0))
+    (check (%circuit-location-object 'y1st (location 0 0 0)) => (location 0 0 1))
     (check (%circuit-location-object 'nmos (location 0 1 0)) => (location 1 0 -1))
     (check (%circuit-location-object 'pmos (location 0 1 0)) => (location 1 0 +1))
 
@@ -200,6 +229,20 @@
             (set-place!  transistor (%circuit-location-object 'y++ (place anchor)))
             transistor))
 
+;;  ------------    method-expand-mosfet-contra     -------------------
+
+    (define (method-expand-mosfet-contra anchor nodes)
+        "Clone a given mosfet transistor and change the gate and drain nodes.
+        Returns a <mosfet> structure."
+        (let* ([new-gate   (car nodes)]
+               [new-node   (cadr nodes)]
+               [transistor (method-clone-mosfet anchor)])
+            (set-gate!   transistor new-gate)
+            (set-source! anchor     new-node)
+            (set-drain!  transistor new-node)
+            (set-place!  transistor (%circuit-location-object 'y++ (%circuit-location-object 'x1st (place anchor))))
+            transistor))
+
 ;;  ------------    method-expand-mosfet-1pu    -----------------------
 
     (define (method-expand-mosfet-1pu anchor nodes)
@@ -251,18 +294,22 @@
         "Just add all mosfet to the netlist.  Returns a netlist."
         (append transistors netlist))
 
-;;  ------------    method-delete-mosfet-from-netlist   ---------------
-
-    (define (method-delete-mosfet-from transistors netlist)
-        "Go thrue netlist and remove *all* items identical to transistor.
-        Returns a netlist."
-        (cond
-            [(null? netlist) netlist]
-            [(equal? (car transistors) (car netlist))
-                (method-delete-mosfet-from (car transistors) (cdr netlist))]
-            [else
-                (cons (car netlist)
-                      (method-delete-mosfet-from (car transistors) (cdr netlist)))]))
+;;;  ------------    remove-duplicates   -------------------------------
+;
+;    (define (method-remove-duplicates netlist)
+;        "Just go thrue netlist and remove all duplicates.  Returns a netlist."
+;        (cond [(null? netlist) '()]
+;              [(member (car netlist) (cdr netlist))
+;                    (method-remove-duplicates (cdr netlist))]
+;              [(list? (car netlist)) ; or pair?
+;                    (cons (method-remove-duplicates (car netlist))
+;                        (method-remove-duplicates (cdr netlist)))]
+;              [else
+;                    (cons (car netlist)
+;                        (method-remove-duplicates (cdr netlist)))]))
+;
+;;   Checks:
+;    (check (method-remove-duplicates '((a b b a) (a b b a))) => '((b a))) ;
 
 ;;  ------------    %netlist-object     -------------------------------
 
@@ -272,12 +319,13 @@
         (case method
             [(empty?) (null? netlist)]
             [(add)    (method-add-mosfets-to-netlist transistors netlist)]
-            [(delete) (method-delete-mosfet-from transistors netlist)]
+;           [(delete) (method-remove-duplicates (method-add-mosfets-to-netlist transistors netlist))]
+            [(delete) (delete-duplicates (method-add-mosfets-to-netlist transistors netlist))] ; R7RS-large scheme.list
             [else =>  (list? netlist)]))
 
 ;   Checks:
-;   (check (%netlist-object 'empty? '()) => #t) ; !!
-;   (check (%netlist-object 'valid? '()) => #t) ; !!
+    (check (%netlist-object 'empty? '() '()) => #t) ; !!
+    (check (%netlist-object 'valid? '() '()) => #t) ; !!
 
 ;;  -------------------------------------------------------------------
 ;;                       FUNCTIONALITY

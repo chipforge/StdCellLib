@@ -50,7 +50,7 @@
             (srfi 28)                   ; format
             (srfi 78)                   ; test suite
             ; r7rs modules for StdCellLib also
-            (common cell)
+            (common table)
             (exporter generic)
             (exporter table)
     )
@@ -75,7 +75,7 @@
     (define (+version+ @port)
         "Formats program name, version and license header @port."
         (format (@port)
-"~a - Version 2021-X-31 'Halloween'
+"~a - Version 2022-VII-04 'FSiC 2022'
 
 This source is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
+Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
         eigen-name)
         (newline (@port))
     )
@@ -112,6 +112,7 @@ Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
         (format (@port)
 "Usage: ~a [options] table-file
    -C cmos             equation for CMOS 'pullup' or 'pulldown' network
+   -e latex            export table or equation in LaTeX
    -h | --help         print help screen and exit
    -m | --cdnf         minterm generation / canonical disjunctive normal form
    -M | --ccnf         maxterm generation / canonical conjunctive normal form
@@ -126,7 +127,10 @@ Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
 ;;  ------------    command line options    ---------------------------
 
 ;   -C cmos
-    (define cmos-network "")
+    (define cmos-network "unknown")
+
+;   -e format
+    (define file-format "table")
 
 ;   -o
     (define simplify-all #f)
@@ -177,6 +181,13 @@ Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
                 (let* ([value (cadr arguments)]
                        [tail (cddr arguments)])
                     (set! cmos-network value)
+                    (set-parameters-with-args! tail))]
+
+            ; -e format
+            [(equal? (car arguments) "-e")
+                (let* ([value (cadr arguments)]
+                       [tail (cddr arguments)])
+                    (set! file-format value)
                     (set-parameters-with-args! tail))]
 
             ; --ccnf
@@ -278,6 +289,12 @@ Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
     (define (print-parameters @port)
         "Formats all options by value @port."
         (begin
+            ; -e format
+            (format (@port)
+"Export Format: ~a"
+             file-format)
+            (newline (@port))
+
             ; -C cmos
             (format (@port)
 "CMOS Network: ~a"
@@ -339,8 +356,8 @@ Copyright (c) 2019 - 2021 by chipforge <scarbata@nospam.chipforge.org>"
 ;                 (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method buffer-limit cell-name cell-descr)])
 ;                    ; beautify annotation with schematic here !!
 ;                    (rdisplay (exporter:dataset-cell cell))
-;                    0))   ; exit value
+                    0))   ; exit value
 ;        (else => (begin
 ;                    (+usage+ current-error-port)
 ;                    2)))))  ; exit value - wrong usage
-))
+
