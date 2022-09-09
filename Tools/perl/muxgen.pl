@@ -9,7 +9,7 @@ foreach my $n(2 .. 10)
   push @ins,"IN$_" foreach(0 .. $n-1);
   push @ins,"S$_" foreach(0 .. $n-1);
   print OUT ".inputs ".join(" ",@ins)."\n";
-  print OUT ".outputs OUT\n";
+  print OUT ".outputs Z\n";
   print OUT ".ORDER \"MOSFET Gate Drain Source\"\n";
   foreach(0 .. $n-1)
   {
