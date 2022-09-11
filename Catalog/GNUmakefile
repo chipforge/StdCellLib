@@ -54,10 +54,10 @@ CELLS =
 #       Hence, strongly recommended, that you know what you're doing.
 #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# global; max number of stacked mosfets
-LIMIT ?=            5
-# buffering recommended, but free to reduce
-BUFFER ?=           $(LIMIT)
+# global; max number of stacked mosfets - reasonable less or equal 5
+LIMIT ?=            4
+# buffering recommended, but free to reduce - usually $(LIMIT)
+BUFFER ?=           5
 # textual description for cell functionality
 DESCR ?=            '?'
 
@@ -68,9 +68,7 @@ NETLIST ?=          lepton-netlist -g geda # FIXME!! backend target still does n
 #   tool variables
 
 TRACE.DOT ?=        trace.dot
-TRACE.PDF ?=        trace.pdf
 TRACE.SVG ?=        trace.svg
-#DOT ?=              dot -Tpdf $(TRACE.DOT) -o $(TRACE.PDF)
 DOT ?=              dot -Tsvg $(TRACE.DOT) -o $(TRACE.SVG)
 
 STACKED2 ?=         -@echo "    $< -> $@ [color=blueviolet]" >> $(TRACE.DOT)
@@ -97,7 +95,7 @@ help:
 	#
 	#   catalog    - compile *all* catalog cells (see list below)
 	#   cell CELL=<cell> - compile up to dedicated catalog cell
-	#   trace      - generate catalog's cell generation tree
+	#   trace      - generate cell derivative tree (as SVG)
 	#
 	#   ----------------------------------------------------------
 	#       available cells [LIMIT=$(LIMIT) + BUFFER=$(BUFFER)]:
@@ -108,7 +106,7 @@ help:
 .PHONY: clean
 clean:
 	-$(RM) $(CELLS)
-	-$(RM) $(TRACE.DOT) $(TRACE.PDF)
+	-$(RM) $(TRACE.DOT) $(TRACE.SVG)
 
 .PHONY: header
 header:
