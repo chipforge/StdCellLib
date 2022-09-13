@@ -50,8 +50,8 @@ C {lab_wire.sym} 530 -50 0 0 {name=l3 lab=qn}
 C {ipin.sym} 40 -320 0 0 {name=p3 lab=E0}
 C {ipin.sym} 40 -280 0 0 {name=p4 lab=E1}
 C {ipin.sym} 210 -30 0 0 {name=p5 lab=SN}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/OAI21.sym} 110 -300 0 0 {name=x1 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/INV.sym} 360 -280 0 0 {name=x2 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/TRI.sym} 120 -70 0 0 {name=x3 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/TRI.sym} 450 -50 0 0 {name=x5 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/NAND2.sym} 310 -50 0 0 {name=x4 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {../Symbols/OAI21.sym} 110 -300 0 0 {name=x1 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {../Symbols/INV.sym} 360 -280 0 0 {name=x2 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {../Symbols/TRI.sym} 120 -70 0 0 {name=x3 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {../Symbols/TRI.sym} 450 -50 0 0 {name=x5 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {../Symbols/NAND2.sym} 310 -50 0 0 {name=x4 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
