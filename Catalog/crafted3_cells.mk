@@ -17,7 +17,7 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c)   2021 by
+#   Copyright (c)   2021, 2022 by
 #                   chipforge - <stdcelllib@nospam.chipforge.org>
 #   All rights reserved.
 #
@@ -44,12 +44,6 @@
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
-#   --------    (skewed) buffers    --------------------------------
-
-#   --------    D-flip-flops    ------------------------------------
-
-#   --------    D-latches   ----------------------------------------
-
 #   --------    neat cells  ----------------------------------------
 
 CELLS +=        # MAJ23
@@ -59,4 +53,12 @@ CELLS +=        # MAJ23
 CELLS +=        MUXI41 \
                 MUXIE41 \
                 MUXIEN41
+
+MUXI41:         DESCR = "inverting 4-to-1 Multiplexor"
+
+MUXIE41:        DESCR = "inverting 4-to-1 Multiplexor with high-active Enable"
+MUXIE41:        NAND2
+
+MUXIEN41:       DESCR = "inverting 4-to-1 Multiplexor with low-active Enable"
+MUXIEN41:       NOR2
 
