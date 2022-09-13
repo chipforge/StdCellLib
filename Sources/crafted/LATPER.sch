@@ -31,15 +31,12 @@ N 30 -260 70 -260 {lab=E}
 N 380 -70 380 -50 { lab=Q}
 N 210 -160 550 -160 { lab=qn}
 N 550 -160 550 -50 { lab=qn}
-N 180 -70 250 -70 {}
-N 210 -30 250 -30 {}
-N 360 -50 430 -50 {}
+N 180 -70 250 -70 { lab=qn}
+N 210 -30 250 -30 { lab=R}
+N 360 -50 430 -50 { lab=Q}
 C {ipin.sym} 40 -300 0 0 {name=p1 lab=X}
-C {inv.sym} 280 -280 0 0 {name=x2 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
 C {lab_wire.sym} 230 -280 0 0 {name=l1 lab=clk180}
 C {lab_wire.sym} 400 -280 0 0 {name=l0 lab=clk360}
-C {tri.sym} 120 -70 0 0 {name=x3 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {tri.sym} 470 -50 0 0 {name=x5 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
 C {ipin.sym} 40 -70 0 0 {name=p0 lab=D}
 C {lab_wire.sym} 110 -130 0 0 {name=l2 lab=clk180}
 C {lab_wire.sym} 460 10 0 0 {name=l4 lab=clk180}
@@ -49,5 +46,8 @@ C {opin.sym} 380 -70 3 0 {name=p2 lab=Q}
 C {lab_wire.sym} 550 -50 0 0 {name=l3 lab=qn}
 C {ipin.sym} 40 -260 0 0 {name=p3 lab=E}
 C {ipin.sym} 210 -30 0 0 {name=p4 lab=R}
-C {nor2.sym} 300 -50 0 0 {name=x4 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
-C {/home/kubrick/Projects/github.com/StdCellLib/Sources/crafted/nand2.sym} 120 -280 0 0 {name=x1 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/NAND2.sym} 130 -280 0 0 {name=x1 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/INV.sym} 280 -280 0 0 {name=x2 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/TRI.sym} 120 -70 0 0 {name=x3 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/TRI.sym} 470 -50 0 0 {name=x5 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
+C {/home/kubrick/Projects/github.com/StdCellLib/Sources/Symbols/NOR2.sym} 310 -50 0 0 {name=x4 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1}
