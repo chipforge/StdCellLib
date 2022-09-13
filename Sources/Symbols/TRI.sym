@@ -1,0 +1,37 @@
+v {xschem version=3.0.0 file_version=1.2 }
+G {}
+K {type=subcircuit
+   vhdl_stop=true verilog_stop=true
+   format="@name @pinlist @VDD @GND @symname Wmin=@Wmin Lmin=@Lmin g=@g m=@m"
+   template="name=x1 VDD=VDD GND=GND Wmin=1.5u Lmin=1u g=2 m=1"
+   generic_type="VDD=string GND=string"
+   extra="VDD GND"}
+V {}
+S {}
+E {}
+T {@name} -20 -31 2 1 0.2 0.2 {}
+T {@symname} -20 43 2 1 0.2 0.2 {}
+
+# ----  1st column  ----
+L 4 -40 0 -20 0 {}
+B 5 -42.5 -2.5 -37.5 2.5 {dir=in name=A}
+T {A} -35 -5 0 0 0.2 0.2 {layer=4 vcenter=true}
+
+L 4 -20 -30 -20 30 {}
+L 4 -20 30 30 0 {}
+L 4 -20 -30 30 0 {}
+A 4 35 0 5 0 360 {}
+
+B 5 -2.5 -62.5 2.5 -57.5 {dir=in name=EN}
+B 5 -2.5 57.5 2.5 62.5 {dir=in name=E}
+L 4 -5 -5 5 -5 {}
+L 4 -5 -5 0 5 {}
+L 4 0 5 5 -5 {}
+L 4 0 -60 0 -30 {}
+L 4 -0 20 0 60 {}
+A 4 0 -25 5 0 360 {}
+
+# ----  result ----
+L 4 40 0 60 0 {}
+B 5 57.5 -2.5 62.5 2.5 {dir=out name=Y}
+T {Y} 45 -5 0 0 0.2 0.2 {layer=4 vcenter=true}
