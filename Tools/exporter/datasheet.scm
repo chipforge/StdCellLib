@@ -1,47 +1,47 @@
-;;  ************    LibreSilicon's StdCellLibrary   *******************
-;;
-;;  Organisation:   Chipforge
-;;                  Germany / European Union
-;;
-;;  Profile:        Chipforge focus on fine System-on-Chip Cores in
-;;                  Verilog HDL Code which are easy understandable and
-;;                  adjustable. For further information see
-;;                          www.chipforge.org
-;;                  there are projects from small cores up to PCBs, too.
-;;
-;;  File:           StdCellLib/Tools/exporter/datasheet.scm
-;;
-;;  Purpose:        Scheme Module - export datasheet as library
-;;
-;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
-;;
-;;  ///////////////////////////////////////////////////////////////////
-;;
-;;  Copyright (c) 2021 - 2022by
-;;                  chipforge <popcorn@nospam.chipforge.org>
-;;
-;;  This source file may be used and distributed without restriction
-;;  provided that this copyright statement is not removed from the
-;;  file and that any derivative work contains the original copyright
-;;  notice and the associated disclaimer.
-;;
-;;  This source is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License as published by
-;;  the Free Software Foundation; either version 3 of the License, or
-;;  (at your option) any later version.
-;;
-;;  This source is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;
-;;   (__)  You should have received a copy of the GNU General Public
-;;   oo )  License along with this program; if not, write to the
-;;   /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
-;;         Boston, MA 02110-1301, USA
-;;
-;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
-;;  ///////////////////////////////////////////////////////////////////
+;;;;    ************    LibreSilicon's StdCellLibrary   *******************
+;;;;
+;;;;    Organisation:   Chipforge
+;;;;                    Germany / European Union
+;;;;
+;;;;    Profile:        Chipforge focus on fine System-on-Chip Cores in
+;;;;                    Verilog HDL Code which are easy understandable and
+;;;;                    adjustable. For further information see
+;;;;                            www.chipforge.org
+;;;;                    there are projects from small cores up to PCBs, too.
+;;;;
+;;;;    File:           StdCellLib/Tools/exporter/datasheet.scm
+;;;;
+;;;;    Purpose:        Scheme Module - export datasheet as library
+;;;;
+;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
+;;;;
+;;;;    ///////////////////////////////////////////////////////////////////
+;;;;
+;;;;    Copyright (c) 2021 - 2022 by
+;;;;                    chipforge <popcorn@nospam.chipforge.org>
+;;;;
+;;;;    This source file may be used and distributed without restriction
+;;;;    provided that this copyright statement is not removed from the
+;;;;    file and that any derivative work contains the original copyright
+;;;;    notice and the associated disclaimer.
+;;;;
+;;;;    This source is free software; you can redistribute it and/or modify
+;;;;    it under the terms of the GNU General Public License as published by
+;;;;    the Free Software Foundation; either version 3 of the License, or
+;;;;    (at your option) any later version.
+;;;;
+;;;;    This source is distributed in the hope that it will be useful,
+;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;;;;    GNU General Public License for more details.
+;;;;
+;;;;     (__)  You should have received a copy of the GNU General Public
+;;;;     oo )  License along with this program; if not, write to the
+;;;;     /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+;;;;           Boston, MA 02110-1301, USA
+;;;;
+;;;;    GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+;;;;    ///////////////////////////////////////////////////////////////////
 
 (define-library (exporter datasheet)
   (import (scheme base)
@@ -53,23 +53,23 @@
           exporter:latex-datasheet
 ) (begin
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;;     ------------    srfi-78 test suite  -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
+    ;; change this switch during development only
+    ;; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
 
-;;  ------------    naming      ---------------------------------------
+;;;     ------------    naming      ---------------------------------------
 
     (define (naming cell)
         "Generates cell naming information.
         Returns list for (map display (list ..))"
         (list
-            ; start with subsection header
+            ;; start with subsection header
             "\n\\subsection{" (id cell) "} \\label{cell:" (id cell) "}"
             "\n"))
 
-;;  ------------    synopsys    ---------------------------------------
+;;;     ------------    synopsys    ---------------------------------------
 
     (define (synopsys cell)
         "Generates synopsys information.
@@ -83,7 +83,7 @@
             "\n\\end{quote}"
             "\n"))
 
-;;  ------------    circuit diagram -----------------------------------
+;;;     ------------    circuit diagram -----------------------------------
 
     (define (circuit cell)
         "Include circuit diagram.
@@ -98,7 +98,7 @@
             "\n\\end{figure}"
             "\n"))
 
-;;  ------------    truth table ---------------------------------------
+;;;     ------------    truth table ---------------------------------------
 
     (define (truthtable cell)
         "Include truth table.
@@ -113,7 +113,7 @@
             "\n\\end{table}"
             "\n"))
 
-;;  ------------    schematic   ---------------------------------------
+;;;     ------------    schematic   ---------------------------------------
 
     (define (schematic cell)
         "Include schematic diagram if available.
@@ -132,7 +132,7 @@
             "\n\\end{landscape}"
             "\n"))
 
-;;  ------------    layout  -------------------------------------------
+;;;     ------------    layout  -------------------------------------------
 
     (define (layout cell)
         "Include layout picture.
@@ -151,7 +151,7 @@
             "\n\\end{landscape}"
             "\n"))
 
-;;  ------------    loading     ---------------------------------------
+;;;     ------------    loading     ---------------------------------------
 
     (define (loading cell)
         "Include loading table.
@@ -166,7 +166,7 @@
             "\n\\end{figure}"
             "\n"))
 
-;;  ------------    file list   ---------------------------------------
+;;;     ------------    file list   ---------------------------------------
 
     (define (files cell filelist)
         "Generates file list.
@@ -175,10 +175,10 @@
             "\n"
             "\n\\subsubsection*{File List:}"
             "\n"
-            ; generate topics !!
+            ;; generate topics !!
         ))
 
-;;  ------------    see also    ---------------------------------------
+;;;     ------------    see also    ---------------------------------------
 
     (define (see-also cell)
         "Generates see-also information.
@@ -187,10 +187,10 @@
             "\n"
             "\n\\subsubsection*{See also:}" (origin cell)
             "\n"
-            ; generate topics !!
+            ;; generate topics !!
         ))
 
-;;  ------------    page frame  ---------------------------------------
+;;;     ------------    page frame  ---------------------------------------
 
     (define (outer-page-frame cell filelist)
         "Generates datasheet frame.
@@ -209,7 +209,7 @@
             (files cell filelist)
             (see-also cell)))
 
-;;  ------------    exporter datasheet in latex -----------------------
+;;;     ------------    exporter datasheet in latex -----------------------
 
     (define (exporter:latex-datasheet cell filelist)
         "Display datasheet template structure.
@@ -222,8 +222,8 @@
                 (outer-page-frame cell filelist)
                 (generic-filefooter "%%" (id cell) "Data Sheet"))))
 
-;;  ===================================================================
-;;                  END OF R7RS LIBRARY
-;;  ===================================================================
+;;;     ===================================================================
+;;;                     END OF R7RS LIBRARY
+;;;     ===================================================================
   )
 )

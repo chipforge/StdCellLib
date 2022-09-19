@@ -1,74 +1,74 @@
-;;  ************    LibreSilicon's StdCellLibrary   *******************
-;;
-;;  Organisation:   Chipforge
-;;                  Germany / European Union
-;;
-;;  Profile:        Chipforge focus on fine System-on-Chip Cores in
-;;                  Verilog HDL Code which are easy understandable and
-;;                  adjustable. For further information see
-;;                          www.chipforge.org
-;;                  there are projects from small cores up to PCBs, too.
-;;
-;;  File:           StdCellLib/Tools/popcorn/expander.scm
-;;
-;;  Purpose:        Popcorn Expander functionality
-;;
-;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
-;;
-;;  ///////////////////////////////////////////////////////////////////
-;;
-;;  Copyright (c) 2019 - 2021 by
-;;                  chipforge <popcorn@nospam.chipforge.org>
-;;
-;;  This source file may be used and distributed without restriction
-;;  provided that this copyright statement is not removed from the
-;;  file and that any derivative work contains the original copyright
-;;  notice and the associated disclaimer.
-;;
-;;  This source is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License as published by
-;;  the Free Software Foundation; either version 3 of the License, or
-;;  (at your option) any later version.
-;;
-;;  This source is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;
-;;   (__)  You should have received a copy of the GNU General Public
-;;   oo )  License along with this program; if not, write to the
-;;   /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
-;;         Boston, MA 02110-1301, USA
-;;
-;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
-;;  ///////////////////////////////////////////////////////////////////
+;;;;    ************    LibreSilicon's StdCellLibrary   *******************
+;;;;
+;;;;    Organisation:   Chipforge
+;;;;                    Germany / European Union
+;;;;
+;;;;    Profile:        Chipforge focus on fine System-on-Chip Cores in
+;;;;                    Verilog HDL Code which are easy understandable and
+;;;;                    adjustable. For further information see
+;;;;                            www.chipforge.org
+;;;;                    there are projects from small cores up to PCBs, too.
+;;;;
+;;;;    File:           StdCellLib/Tools/popcorn/expander.scm
+;;;;
+;;;;    Purpose:        Popcorn Expander functionality
+;;;;
+;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
+;;;;
+;;;;    ///////////////////////////////////////////////////////////////////
+;;;;
+;;;;    Copyright (c) 2019 - 2022 by
+;;;;                    chipforge <popcorn@nospam.chipforge.org>
+;;;;
+;;;;    This source file may be used and distributed without restriction
+;;;;    provided that this copyright statement is not removed from the
+;;;;    file and that any derivative work contains the original copyright
+;;;;    notice and the associated disclaimer.
+;;;;
+;;;;    This source is free software; you can redistribute it and/or modify
+;;;;    it under the terms of the GNU General Public License as published by
+;;;;    the Free Software Foundation; either version 3 of the License, or
+;;;;    (at your option) any later version.
+;;;;
+;;;;    This source is distributed in the hope that it will be useful,
+;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;;;;    GNU General Public License for more details.
+;;;;
+;;;;     (__)  You should have received a copy of the GNU General Public
+;;;;     oo )  License along with this program; if not, write to the
+;;;;     /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+;;;;           Boston, MA 02110-1301, USA
+;;;;
+;;;;    GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+;;;;    ///////////////////////////////////////////////////////////////////
 
 (define-library (popcorn expander)
   (import (scheme base)
           (scheme list)
           (srfi 78)             ; test suite
-          ; r7rs modules for StdCellLib also
+          ;; r7rs modules for StdCellLib also
           (common cell)
 ) (export ; expander methods
           expand-cell
 ) (begin
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;;     ------------    srfi-78 test suite  -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
+    ;; change this switch during development only
+    ;; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
-    ;(check-set-mode! 'report)
+    ;;(check-set-mode! 'report)
 
-;;  -------------------------------------------------------------------
-;;                  LOCATION RECORD STRUCTURE
-;;              see (import (common cell)) library
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     LOCATION RECORD STRUCTURE
+;;;                 see (import (common cell)) library
+;;;     -------------------------------------------------------------------
 
-;   handle <location> as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with <location>
+    ;; handle <location> as 'object' and encapsulate their functionality, so
+    ;; provide a couple of methods for dealing with <location>
 
-;;  ------------    method rise <location> stacked-number   -----------
+;;;     ------------    method rise <location> stacked-number   -----------
 
     (define (method-rise-location-stacked record)
         "Rise the coodinatates for a <location> on stacked-number.
@@ -79,7 +79,7 @@
             (set-y-axis!  new-record (y-axis record))
             new-record))
 
-;;  ------------    method rise <location> on x-axis    ---------------
+;;;     ------------    method rise <location> on x-axis    ---------------
 
     (define (method-rise-location-x record)
         "Rise the coodinatates for a <location> on x-axis.
@@ -90,7 +90,7 @@
             (set-y-axis!  new-record (y-axis record))
             new-record))
 
-;;  ------------    method rise <location> on y-axis    ---------------
+;;;     ------------    method rise <location> on y-axis    ---------------
 
     (define (method-rise-location-y record)
         "Rise the coodinatates for a <location> on y-axis.
@@ -103,7 +103,7 @@
                                         (+ (y-axis record) 1)))
             new-record))
 
-;;  ------------    method reset <location> on x-axis   ---------------
+;;;     ------------    method reset <location> on x-axis   ---------------
 
     (define (method-reset-location-x record)
         "Reset the coodinatates for a <location> on x-axis.
@@ -114,7 +114,7 @@
             (set-y-axis!  new-record (y-axis record))
             new-record))
 
-;;  ------------    method reset <location> on y-axis   ---------------
+;;;     ------------    method reset <location> on y-axis   ---------------
 
     (define (method-reset-location-y record)
         "Reset the coodinatates for a <location> on y-axis.
@@ -127,7 +127,7 @@
                                         (+1)))
             new-record))
 
-;;  ------------    method nmos <location> on y-axis    ---------------
+;;;     ------------    method nmos <location> on y-axis    ---------------
 
     (define (method-nmos-location-y record)
         "Rebase the coodinatates for a nmos <location> on y-axis.
@@ -138,7 +138,7 @@
             (set-y-axis!  new-record -1)
             new-record))
 
-;;  ------------    method pmos <location> on y-axis    ---------------
+;;;     ------------    method pmos <location> on y-axis    ---------------
 
     (define (method-pmos-location-y record)
         "Rebase the coodinatates for a pmos <location> on y-axis.
@@ -149,7 +149,7 @@
             (set-y-axis!  new-record 1)
             new-record))
 
-;;  ------------    %circuit-location-object    -----------------------
+;;;     ------------    %circuit-location-object    -----------------------
 
     (define (%circuit-location-object method record)
         "Provide object with a couple of methods for dealing with
@@ -165,9 +165,9 @@
             [(pretty-print) (method-pretty-print-location record)]
             [else =>     (location? record)]))
 
-;   Checks:
-;   (check (%circuit-location-object 'valid? (location 1 1 1)) => #t) ; !!
-;   (check (%circuit-location-object 'valid? '(1 1 1)) => #f)
+    ;; Checks:
+    ;; (check (%circuit-location-object 'valid? (location 1 1 1)) => #t) ; !!
+    ;; (check (%circuit-location-object 'valid? '(1 1 1)) => #f)
     (check (%circuit-location-object 'stacked++ (location 0 0 0)) => (location 1 0 0))
     (check (%circuit-location-object 'x++ (location 0 0 0)) => (location 0 1 0))
     (check (%circuit-location-object 'y++ (location 0 0 0)) => (location 0 0 1))
@@ -176,15 +176,15 @@
     (check (%circuit-location-object 'nmos (location 0 1 0)) => (location 1 0 -1))
     (check (%circuit-location-object 'pmos (location 0 1 0)) => (location 1 0 +1))
 
-;;  -------------------------------------------------------------------
-;;                  TRANSISTOR DATA STRUCTURE
-;;              see (import (common cell)) library
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     TRANSISTOR DATA STRUCTURE
+;;;                 see (import (common cell)) library
+;;;     -------------------------------------------------------------------
 
-;   handle <mosfet> as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with <mosfet>
+    ;; handle <mosfet> as 'object' and encapsulate their functionality, so
+    ;; provide a couple of methods for dealing with <mosfet>
 
-;;  ------------    %mosfet-object  -----------------------------------
+;;;     ------------    %mosfet-object  -----------------------------------
 
     (define (%mosfet-object method record)
         "Provide object with a couple of methods for dealing with
@@ -197,14 +197,14 @@
             [(pretty-print) (method-pretty-print-mosfet record)]
             [else => (mosfet? record)]))
 
-;   Checks:
+    ;; Checks:
     (check (%mosfet-object 'nmos! '()) => (method-generate-nmos)) ; !!
     (check (%mosfet-object 'pmos! '()) => (method-generate-pmos)) ; !!
     (check (%mosfet-object 'nmos? (method-generate-pmos)) => #f)
     (check (%mosfet-object 'pmos? (method-generate-nmos)) => #f)
-;   (check (%mosfet-object 'valid? (method-generate-nmos)) => #t) ; !!
+    ;; (check (%mosfet-object 'valid? (method-generate-nmos)) => #t) ; !!
 
-;;  ------------    method-expand-mosfet-parallel   -------------------
+;;;     ------------    method-expand-mosfet-parallel   -------------------
 
     (define (method-expand-mosfet-parallel anchor nodes)
         "Clone a given mosfet transistor and change the gate node.
@@ -215,7 +215,7 @@
             (set-place!  transistor (%circuit-location-object 'x++ (place anchor)))
             transistor))
 
-;;  ------------    method-expand-mosfet-serial     -------------------
+;;;     ------------    method-expand-mosfet-serial     -------------------
 
     (define (method-expand-mosfet-serial anchor nodes)
         "Clone a given mosfet transistor and change the gate and drain nodes.
@@ -229,7 +229,7 @@
             (set-place!  transistor (%circuit-location-object 'y++ (place anchor)))
             transistor))
 
-;;  ------------    method-expand-mosfet-contra     -------------------
+;;;     ------------    method-expand-mosfet-contra     -------------------
 
     (define (method-expand-mosfet-contra anchor nodes)
         "Clone a given mosfet transistor and change the gate and drain nodes.
@@ -243,7 +243,7 @@
             (set-place!  transistor (%circuit-location-object 'y++ (%circuit-location-object 'x1st (place anchor))))
             transistor))
 
-;;  ------------    method-expand-mosfet-1pu    -----------------------
+;;;     ------------    method-expand-mosfet-1pu    -----------------------
 
     (define (method-expand-mosfet-1pu anchor nodes)
         "Given a mosfet transistor generate a single pmos as pullup.
@@ -262,7 +262,7 @@
 
     (check (method-expand-mosfet-1pu (method-generate-pmos) '(A Y)) => (method-generate-pmos))
 
-;;  ------------    method-expand-mosfet-1pd    -----------------------
+;;;     ------------    method-expand-mosfet-1pd    -----------------------
 
     (define (method-expand-mosfet-1pd anchor nodes)
         "Given a mosfet transistor generate a single nmos as pulldown.
@@ -281,20 +281,20 @@
 
     (check (method-expand-mosfet-1pd (method-generate-nmos) '(A Y)) => (method-generate-nmos))
 
-;;  -------------------------------------------------------------------
-;;                  NETLIST OPERATIONS
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     NETLIST OPERATIONS
+;;;     -------------------------------------------------------------------
 
-;   handle netlists as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with netlists
+    ;; handle netlists as 'object' and encapsulate their functionality, so
+    ;; provide a couple of methods for dealing with netlists
 
-;;  ------------    method-add-mosfets-to-netlist   -------------------
+;;;     ------------    method-add-mosfets-to-netlist   -------------------
 
     (define (method-add-mosfets-to-netlist transistors netlist)
         "Just add all mosfet to the netlist.  Returns a netlist."
         (append transistors netlist))
 
-;;;  ------------    remove-duplicates   -------------------------------
+;;;     ------------    remove-duplicates   -------------------------------
 ;
 ;    (define (method-remove-duplicates netlist)
 ;        "Just go thrue netlist and remove all duplicates.  Returns a netlist."
@@ -308,10 +308,10 @@
 ;                    (cons (car netlist)
 ;                        (method-remove-duplicates (cdr netlist)))]))
 ;
-;;   Checks:
-;    (check (method-remove-duplicates '((a b b a) (a b b a))) => '((b a))) ;
+    ;; Checks:
+    ;; (check (method-remove-duplicates '((a b b a) (a b b a))) => '((b a))) ;
 
-;;  ------------    %netlist-object     -------------------------------
+;;;     ------------    %netlist-object     -------------------------------
 
     (define (%netlist-object method transistors netlist)
         "Provide object with a couple of methods for dealing with
@@ -319,31 +319,31 @@
         (case method
             [(empty?) (null? netlist)]
             [(add)    (method-add-mosfets-to-netlist transistors netlist)]
-;           [(delete) (method-remove-duplicates (method-add-mosfets-to-netlist transistors netlist))]
+            ;; [(delete) (method-remove-duplicates (method-add-mosfets-to-netlist transistors netlist))]
             [(delete) (delete-duplicates (method-add-mosfets-to-netlist transistors netlist))] ; R7RS-large scheme.list
             [else =>  (list? netlist)]))
 
-;   Checks:
+    ;; Checks:
     (check (%netlist-object 'empty? '() '()) => #t) ; !!
     (check (%netlist-object 'valid? '() '()) => #t) ; !!
 
-;;  -------------------------------------------------------------------
-;;                       FUNCTIONALITY
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     FUNCTIONALITY
+;;;     -------------------------------------------------------------------
 
-;;  ------------    grep highest pmos anchor    -----------------------
+;;;     ------------    grep highest pmos anchor    -----------------------
 
     (define (grep-highest-pmos-anchor netlist)
         "Just grep the pmos with the hightest gate name.  Returns a <mosfet> structure."
         (car (sort-netlist-descending netlist)))
 
-;;  ------------    grep highest nmos anchor    -----------------------
+;;;     ------------    grep highest nmos anchor    -----------------------
 
     (define (grep-highest-nmos-anchor netlist)
         "Just grep the nmos with the hightest gate name.  Returns a <mosfet> structure."
         (car (reverse (sort-netlist-ascending netlist))))
 
-;;  ------------    grep most right anchor  ---------------------------
+;;;     ------------    grep most right anchor  ---------------------------
 
     (define (grep-most-right-anchor netlist)
         "Just grep the transistor with the hightest x-position.
@@ -356,7 +356,7 @@
                     current
                     others))))
 
-;;  ------------    mosfet-rename-drain     ---------------------------
+;;;     ------------    mosfet-rename-drain     ---------------------------
 
     (define (mosfet-rename-drain netlist mosfet nodes)
         "Grep through netlist and rename just one given mosfet drain node by another.
@@ -370,7 +370,7 @@ netlist;            '()
 ;                (cons candidate (mosfet-rename-drain netlist mosfet nodes)))))
     )
 
-;;  ------------    netlist-rename-node     ---------------------------
+;;;     ------------    netlist-rename-node     ---------------------------
 
     (define (netlist-rename-node netlist nodes)
         "Grep through netlist and rename all occurence of one node name by anothers.
@@ -383,36 +383,36 @@ netlist;            '()
                 (if (equal? (gate transistor)   old-node) (set-gate!   transistor new-node))
                 (if (equal? (source transistor) old-node) (set-source! transistor new-node))
                 (if (equal? (drain transistor)  old-node) (set-drain!  transistor new-node))
-                ;(if (equal? (bulk transistor)   old-node) (set-bulk!   transistor new-node))
+                ;;(if (equal? (bulk transistor)   old-node) (set-bulk!   transistor new-node))
                 (method-add-mosfets-to-netlist (list transistor) (netlist-rename-node (cdr netlist) nodes)))))
 
-;;  ------------    remove-netlist-buffer   ---------------------------
+;;;     ------------    remove-netlist-buffer   ---------------------------
 
     (define (remove-netlist-buffer netlist)
         "Check wether netlist has output buffer and remove them.
         Returns a netlist"
         (let* ([buffer (method-netlist-buffered? netlist)])
             (if (pair? buffer)  ; already buffered?
-                ; yes, remove
+                ;; yes, remove
                 (%netlist-object 'delete buffer netlist)
-                ; no, fine
+                ;; no, fine
                 netlist)))
 
-;;  ------------    expand-netlist-w-buffer     -----------------------
+;;;     ------------    expand-netlist-w-buffer     -----------------------
 
     (define (expand-netlist-w-buffer netlist buffer-limit)
         "Expand netlist with buffer, when the highest stacked transistor already
         reaches the buffer-limit.  Returns a netlist."
         (if (> buffer-limit (grep-highest-stacked-transistor netlist))
-            ; buffer-limit still not reached, do not touch netlist
+            ;; buffer-limit still not reached, do not touch netlist
             netlist
-            ; buffer-limit already reached, has to be buffered
+            ;; buffer-limit already reached, has to be buffered
             (let* ([anchor   (grep-most-right-anchor netlist)]
                    [new-nmos (method-expand-mosfet-1pd anchor (list "O" "Z"))]
                    [new-pmos (method-expand-mosfet-1pu anchor (list "O" "Z"))])
                 (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "Y" "O"))))))
 
-;;  ------------    expand-netlist-nand     ---------------------------
+;;;     ------------    expand-netlist-nand     ---------------------------
 
     (define (expand-netlist-nand netlist)
         "Expand netlist with two transistores, one pmos parallel and one nmos serial to the
@@ -420,18 +420,18 @@ netlist;            '()
         (let* (; check which mosfets are the highest
                [highest-pmos (grep-highest-pmos-anchor netlist)]
                [highest-nmos (grep-highest-nmos-anchor netlist)]
-               ; get highest node name and calculate new one
+               ;; get highest node name and calculate new one
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
-               ; same with gate name
+               ;; same with gate name
                [new-gate     (%input-node-object 'next-number (gate highest-pmos))]
-               ; generate new mosfet additions
+               ;; generate new mosfet additions
                [new-pmos     (method-expand-mosfet-parallel highest-pmos (list new-gate new-node))]
                [new-nmos     (method-expand-mosfet-serial   highest-nmos (list new-gate new-node))])
-            ; enlarge netlist
+            ;; enlarge netlist
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) netlist)))
 
-;;  ------------    expand-netlist-nor      ---------------------------
+;;;     ------------    expand-netlist-nor      ---------------------------
 
     (define (expand-netlist-nor netlist)
         "Expand netlist with two transistores, one pmos serial and one nmos parallel to the
@@ -439,18 +439,18 @@ netlist;            '()
         (let* (; check which mosfets are the highest
                [highest-pmos (grep-highest-pmos-anchor netlist)]
                [highest-nmos (grep-highest-nmos-anchor netlist)]
-               ; get highest node name and calculate new one
+               ;; get highest node name and calculate new one
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
-               ; same with gate name
+               ;; same with gate name
                [new-gate     (%input-node-object 'next-number (gate highest-pmos))]
-               ; generate new mosfet additions
+               ;; generate new mosfet additions
                [new-pmos     (method-expand-mosfet-serial   highest-pmos (list new-gate new-node))]
                [new-nmos     (method-expand-mosfet-parallel highest-nmos (list new-gate new-node))])
-            ; enlarge netlist
+            ;; enlarge netlist
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) netlist)))
 
-;;  ------------    expand-netlist-pu       ---------------------------
+;;;     ------------    expand-netlist-pu       ---------------------------
 
     (define (expand-netlist-pu netlist)
         "Expand netlist with two transistores, one pmos parallel and one pmos serial to all
@@ -458,17 +458,17 @@ netlist;            '()
         (let* (; check which mosfets are the highest
                [highest-pmos (grep-highest-pmos-anchor netlist)]
                [highest-nmos (grep-highest-nmos-anchor netlist)]
-               ; get highest node name and calculate new one
+               ;; get highest node name and calculate new one
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
-               ; same with gate name
+               ;; same with gate name
                [new-gate     (%input-node-object 'next-char (gate highest-pmos))]
-               ; generate new mosfet additions
+               ;; generate new mosfet additions
                [new-nmos     (method-expand-mosfet-serial highest-nmos (list new-gate new-node))]
                [new-pmos     (method-expand-mosfet-1pu    highest-pmos (list new-gate new-node))])
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "gnd" new-node)))))
 
-;;  ------------    expand-netlist-pd       ---------------------------
+;;;     ------------    expand-netlist-pd       ---------------------------
 
     (define (expand-netlist-pd netlist)
         "Expand netlist with two transistores, one pmos serial and one pmos parallel to all
@@ -476,17 +476,17 @@ netlist;            '()
         (let* (; check which mosfets are the highest
                [highest-pmos (grep-highest-pmos-anchor netlist)]
                [highest-nmos (grep-highest-nmos-anchor netlist)]
-               ; get highest node name and calculate new one
+               ;; get highest node name and calculate new one
                [highest-node (grep-highest-internal-node netlist)]
                [new-node     (%internal-node-object 'next-number highest-node)]
-               ; same with gate name
+               ;; same with gate name
                [new-gate     (%input-node-object 'next-char (gate highest-nmos))]
-               ; generate new mosfet additions
+               ;; generate new mosfet additions
                [new-nmos     (method-expand-mosfet-1pd    highest-nmos (list new-gate new-node))]
                [new-pmos     (method-expand-mosfet-serial highest-pmos (list new-gate new-node))])
             (method-add-mosfets-to-netlist (list new-pmos new-nmos) (netlist-rename-node netlist (list "vdd" new-node)))))
 
-;;  ------------    expand-cell     -----------------------------------
+;;;     ------------    expand-cell     -----------------------------------
 
     (define (expand-cell cell method buffer-limit cell-name cell-descr)
         "Expand cell description according parameters to new cell description.
@@ -499,15 +499,15 @@ netlist;            '()
                                          [(pu)   (expand-netlist-pu   current-netlist)]
                                          [(pd)   (expand-netlist-pd   current-netlist)])])
             (begin
-                ; set origin + name + description
+                ;; set origin + name + description
                 (set-origin! new-cell (id cell))
                 (set-id! new-cell cell-name)
                 (set-description! new-cell cell-descr)
 
-                ; write back netlist into <cell> structure
+                ;; write back netlist into <cell> structure
                 (set-netlist! new-cell (sort-netlist-descending (expand-netlist-w-buffer new-netlist buffer-limit)))
 
-                ; netlist dependencies
+                ;; netlist dependencies
                 (set-inputs!  new-cell (remove-doubled-nodes (sort-nodes-descending (grep-input-nodes new-netlist))))
                 (set-outputs! new-cell (remove-doubled-nodes (sort-nodes-descending (grep-output-nodes new-netlist))))
                 (let ([clock-gates (remove-doubled-nodes (sort-nodes-descending (grep-clock-nodes new-netlist)))])
@@ -515,9 +515,9 @@ netlist;            '()
                 (set-ascii-art! new-cell (ascii-art cell))) ; !! fixme
             new-cell))
 
-;;  ===================================================================
-;;                  END OF R7RS LIBRARY
-;;  ===================================================================
+;;;     ===================================================================
+;;;                     END OF R7RS LIBRARY
+;;;     ===================================================================
   )
 )
 

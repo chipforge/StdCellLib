@@ -1,47 +1,47 @@
-;;  ************    LibreSilicon's StdCellLibrary   *******************
-;;
-;;  Organisation:   Chipforge
-;;                  Germany / European Union
-;;
-;;  Profile:        Chipforge focus on fine System-on-Chip Cores in
-;;                  Verilog HDL Code which are easy understandable and
-;;                  adjustable. For further information see
-;;                          www.chipforge.org
-;;                  there are projects from small cores up to PCBs, too.
-;;
-;;  File:           StdCellLib/Tools/common/cell.scm
-;;
-;;  Purpose:        Scheme Module - common cell functionality as library
-;;
-;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
-;;
-;;  ///////////////////////////////////////////////////////////////////
-;;
-;;  Copyright (c) 2019 - 2022 by
-;;                  chipforge <popcorn@nospam.chipforge.org>
-;;
-;;  This source file may be used and distributed without restriction
-;;  provided that this copyright statement is not removed from the
-;;  file and that any derivative work contains the original copyright
-;;  notice and the associated disclaimer.
-;;
-;;  This source is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License as published by
-;;  the Free Software Foundation; either version 3 of the License, or
-;;  (at your option) any later version.
-;;
-;;  This source is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;
-;;   (__)  You should have received a copy of the GNU General Public
-;;   oo )  License along with this program; if not, write to the
-;;   /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
-;;         Boston, MA 02110-1301, USA
-;;
-;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
-;;  ///////////////////////////////////////////////////////////////////
+;;;;    ************    LibreSilicon's StdCellLibrary   *******************
+;;;;
+;;;;    Organisation:   Chipforge
+;;;;                    Germany / European Union
+;;;;
+;;;;    Profile:        Chipforge focus on fine System-on-Chip Cores in
+;;;;                    Verilog HDL Code which are easy understandable and
+;;;;                    adjustable. For further information see
+;;;;                            www.chipforge.org
+;;;;                    there are projects from small cores up to PCBs, too.
+;;;;
+;;;;    File:           StdCellLib/Tools/common/cell.scm
+;;;;
+;;;;    Purpose:        Scheme Module - common cell functionality as library
+;;;;
+;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
+;;;;
+;;;;    ///////////////////////////////////////////////////////////////////
+;;;;
+;;;;    Copyright (c) 2019 - 2022 by
+;;;;                    chipforge <popcorn@nospam.chipforge.org>
+;;;;
+;;;;    This source file may be used and distributed without restriction
+;;;;    provided that this copyright statement is not removed from the
+;;;;    file and that any derivative work contains the original copyright
+;;;;    notice and the associated disclaimer.
+;;;;
+;;;;    This source is free software; you can redistribute it and/or modify
+;;;;    it under the terms of the GNU General Public License as published by
+;;;;    the Free Software Foundation; either version 3 of the License, or
+;;;;    (at your option) any later version.
+;;;;
+;;;;    This source is distributed in the hope that it will be useful,
+;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;;;;    GNU General Public License for more details.
+;;;;
+;;;;     (__)  You should have received a copy of the GNU General Public
+;;;;     oo )  License along with this program; if not, write to the
+;;;;     /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+;;;;           Boston, MA 02110-1301, USA
+;;;;
+;;;;    GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+;;;;    ///////////////////////////////////////////////////////////////////
 
 (define-library (common cell)
   (import (scheme base)
@@ -63,7 +63,7 @@
           sort-nodes-descending
           remove-doubled-nodes
           method-pretty-print-nodes
-          ; location representations
+          ;; location representations
           location location?
           stacked set-stacked!
           x-axis set-x-axis!
@@ -72,7 +72,7 @@
           method-generate-location-
           method-clone-location
           method-pretty-print-location
-          ; mosfet representations
+          ;; mosfet representations
           mosfet mosfet?
           type set-type!
           gate set-gate!
@@ -87,7 +87,7 @@
           method-generate-pmos
           method-clone-mosfet
           method-pretty-print-mosfet
-          ; netlist operations
+          ;; netlist operations
           method-netlist-buffered?
           method-netlist-pullup?
           method-netlist-pulldown?
@@ -103,7 +103,7 @@
           grep-ground-planes
           grep-highest-internal-node
           grep-highest-stacked-transistor
-          ; cell representations
+          ;; cell representations
           cell cell?
           id set-id!
           origin set-origin!
@@ -115,26 +115,26 @@
           ascii-art set-ascii-art!
           method-generate-cell
           method-pretty-print-cell
-          ; cell read file
+          ;; cell read file
           common:dataset-cell
 ) (begin
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;;     ------------    srfi-78 test suite  -------------------------------
 
-;   change this switch during development only
-;   mode must be a symbol in '(off summary report-failed report)
+    ;; change this switch during development only
+    ;; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
     ;(check-set-mode! 'report)
     ;(check-set-mode! 'summary)
 
-;;  -------------------------------------------------------------------
-;;                  NODE OBJECT SPACES
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     NODE OBJECT SPACES
+;;;     -------------------------------------------------------------------
 
-;   handle nodes as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with nodes
+    ;; handle nodes as 'object' and encapsulate their functionality, so
+    ;; provide a couple of methods for dealing with nodes
 
-;;  ------------    method-next-char-node   ---------------------------
+;;;     ------------    method-next-char-node   ---------------------------
 
     (define (method-next-char-node node name-space)
         "Increments the next node character. Returns a string."
@@ -143,7 +143,7 @@
             [else
                 (string (cadr (memq (string-ref node 0) name-space)))]))
 
-;;  ------------    method-next-number-node ---------------------------
+;;;     ------------    method-next-number-node ---------------------------
 
     (define (method-next-number-node node name-space)
         "Increments the next node number. Returns a string."
@@ -156,22 +156,22 @@
                     (string (string-ref node 0))
                     (number->string (+ 1 (string->number (string-copy node 1)))))]))
 
-;;  ------------    method-node-valid?  -------------------------------
+;;;     ------------    method-node-valid?  -------------------------------
 
     (define (method-node-valid? node name-space)
         "Checks, wether node seems to be valid. Returns boolean."
         (pair? (memq (string-ref node 0) name-space)))
 
-;;  ------------    method-node-listed? -------------------------------
+;;;     ------------    method-node-listed? -------------------------------
 
-;   Usually, SCHEME is case-insensitive but some implementations (and
-;   R7RS) are not. Hence, the member compare has a string-ci=? option.
+    ;; Usually, SCHEME is case-insensitive but some implementations (and
+    ;; R7RS) are not. Hence, the member compare has a string-ci=? option.
 
     (define (method-node-listed? node name-space)
         "Checks, wether node occures in name space. Returns boolean."
         (pair? (member node name-space string-ci=?)))
 
-;;  ------------    %input-node-object  -------------------------------
+;;;     ------------    %input-node-object  -------------------------------
 
     (define (%input-node-object method node)
         "Deals with input nodes. Returns next or validity"
@@ -182,7 +182,7 @@
                 [(next-number) (method-next-number-node node name-space)]
                 [else (method-node-valid? node name-space)])))
 
-;   Checks:
+    ;; Checks:
     (check (%input-node-object 'valid? "A0") => #t) ; !!
     (check (%input-node-object 'valid? "GND") => #f)
     (check (%input-node-object 'valid? "N1") => #f)
@@ -197,7 +197,7 @@
     (check (%input-node-object 'next-number "A") => "A1")
     (check (%input-node-object 'next-number "A1") => "A2")
 
-;;  ------------    %clock-node-object  -------------------------------
+;;;     ------------    %clock-node-object  -------------------------------
 
     (define (%clock-node-object method node)
         "Deals with clock nodes. Returns next node or validity"
@@ -206,7 +206,7 @@
                 [(next-number) (method-next-number-node node name-space)]
                 [else  (method-node-valid? node name-space)])))
 
-;   Checks:
+    ;; Checks:
     (check (%clock-node-object 'valid? "A0") => #f)
     (check (%clock-node-object 'valid? "GND") => #f)
     (check (%clock-node-object 'valid? "N1") => #f)
@@ -218,7 +218,7 @@
     (check (%clock-node-object 'next-number "X") => "X1")
     (check (%clock-node-object 'next-number "X1") => "X2")
 
-;;  ------------    %output-node-object -------------------------------
+;;;     ------------    %output-node-object -------------------------------
 
     (define (%output-node-object method node)
         "Deals with output nodes. Returns next node or validity"
@@ -227,7 +227,7 @@
                 [(next-char) (method-next-char-node node name-space)]
                 [else (method-node-valid? node name-space)])))
 
-;   Checks:
+    ;; Checks:
     (check (%output-node-object 'valid? "Y") => #t) ; !!
     (check (%output-node-object 'valid? "Z") => #t) ; !!
     (check (%output-node-object 'valid? "Q") => #t) ; !!
@@ -239,9 +239,10 @@
     (check (%output-node-object 'next-char "") => "Y")
     (check (%output-node-object 'next-char "Y") => "Z")
 
-;;  ------------    %internal-node-object   ----------------------------
+;;;     ------------    %internal-node-object   ----------------------------
 
-;   provide object with a couple of methods for dealing with nodes, see functions above
+    ;; provide object with a couple of methods for dealing with nodes, see
+    ;; functions above
 
     (define (%internal-node-object method node)
         "Deals with internal nodes. Returns next node or validity"
@@ -251,7 +252,7 @@
                 [(next-number) (method-next-number-node node name-space)]
                 [else (method-node-valid? node name-space)])))
 
-;   Checks:
+    ;; Checks:
     (check (%internal-node-object 'valid? "Y") => #f)
     (check (%internal-node-object 'valid? "Z") => #f)
     (check (%internal-node-object 'valid? "Q") => #f)
@@ -265,16 +266,17 @@
     (check (%internal-node-object 'next-number "N2") => "N3")
     (check (%internal-node-object 'next-char "N99") => "O")
 
-;;  ------------    %supply-node-object -------------------------------
+;;;     ------------    %supply-node-object -------------------------------
 
-;   provide object with a couple of methods for dealing with nodes, see functions above
+    ;; provide object with a couple of methods for dealing with nodes, see
+    ;; functions above
 
     (define (%supply-node-object method node)
         "Deals with supply nodes. Returns still validity"
         (let* ((name-space (list "VDD" "VCC")))
             (method-node-listed? node name-space)))
 
-;   Checks:
+    ;; Checks:
     (check (%supply-node-object 'valid? "VDD") => #t) ; !!
     (check (%supply-node-object 'valid? "Vdd") => #t) ; !!
     (check (%supply-node-object 'valid? "VCC") => #t) ; !!
@@ -286,16 +288,17 @@
     (check (%supply-node-object 'valid? "N1") => #f)
     (check (%supply-node-object 'valid? "X") => #f)
 
-;;  ------------    %ground-plane-object    ---------------------------
+;;;     ------------    %ground-plane-object    ---------------------------
 
-;   provide object with a couple of methods for dealing with nodes, see functions above
+    ;; provide object with a couple of methods for dealing with nodes, see
+    ;; functions above
 
     (define (%ground-plane-object method node)
         "Deals with ground planes. Returns still validity"
         (let* ((name-space (list "GND" "VSS")))
             (method-node-listed? node name-space)))
 
-;   Checks:
+    ;; Checks:
     (check (%ground-plane-object 'valid? "VDD") => #f)
     (check (%ground-plane-object 'valid? "Vdd") => #f)
     (check (%ground-plane-object 'valid? "VCC") => #f)
@@ -307,17 +310,17 @@
     (check (%ground-plane-object 'valid? "N1") => #f)
     (check (%ground-plane-object 'valid? "X") => #f)
 
-;;  ------------    sort-nodes-descending   ---------------------------
+;;;     ------------    sort-nodes-descending   ---------------------------
 
     (define (sort-nodes-descending nodes)
         "Sort list of nodes into descending order.  Returns a list."
         (list-sort string>? nodes))
 
-;   Checks:
+    ;; Checks:
     (check (sort-nodes-descending (list "A" "A1" "B")) => (list "B" "A1" "A")) ; !!
     (check (sort-nodes-descending (list "C" "A1" "B")) => (list "C" "B" "A1")) ; !!
 
-;;  ------------    remove doubled nodes    ---------------------------
+;;;     ------------    remove doubled nodes    ---------------------------
 
     (define (remove-doubled-nodes nodes)
         "Remove doublicates from list of nodes.  Returns a list."
@@ -329,11 +332,11 @@
                     (remove-doubled-nodes tail)
                     (cons node (remove-doubled-nodes tail))))))
 
-;   Checks:
+    ;; Checks:
     (check (remove-doubled-nodes (list "A1" "A1" "B")) => (list "A1" "B")) ; !!
     (check (remove-doubled-nodes (list "A1" "A1" "B" "B")) => (list "A1" "B")) ; !!
 
-;;  ------------    pretty print nodes  -------------------------------
+;;;     ------------    pretty print nodes  -------------------------------
 
     (define (method-pretty-print-nodes nodes)
         "Pretty-Print a list of nodes.  Returns a list."
@@ -341,46 +344,46 @@
             ""
             (list (car nodes) " " (method-pretty-print-nodes (cdr nodes)))))
 
-;;  -------------------------------------------------------------------
-;;                  LOCATION RECORD STRUCTURE
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     LOCATION RECORD STRUCTURE
+;;;     -------------------------------------------------------------------
 
-;   define a <location> as record
+    ;; define a <location> as record
 
-;       +---------------+       e.g.:
-;       | annotation    | ->    1
-;       +---------------+
-;       | x-axis point  | ->    1
-;       +---------------+
-;       | y-axis point  | ->    +1
-;       +---------------+
+    ;;      +---------------+       e.g.:
+    ;;      | annotation    | ->    1
+    ;;      +---------------+
+    ;;      | x-axis point  | ->    1
+    ;;      +---------------+
+    ;;      | y-axis point  | ->    +1
+    ;;      +---------------+
 
     (define-record-type <location>
-        ; constructor
+        ;; constructor
         (location stack-annotation x-location y-location)
-        ; predicate
+        ;; predicate
         location?
-        ; getters & setters (omit the setters from immutable fields)
+        ;; getters & setters (omit the setters from immutable fields)
         (stack-annotation stacked set-stacked!)
         (x-location x-axis set-x-axis!)
         (y-location y-axis set-y-axis!))
 
-;   handle <location> as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with <location>
+    ;; handle <location> as 'object' and encapsulate their functionality,
+    ;; so provide a couple of methods for dealing with <location>
 
-;;  ------------    method generate positive <location>     -----------
+;;;     ------------    method generate positive <location>     -----------
 
     (define (method-generate-location+)
         "Generate empty positive <location> structure.  Returns <location>."
         (location 1 1 1))
 
-;;  ------------    method generate negative <location>     -----------
+;;;     ------------    method generate negative <location>     -----------
 
     (define (method-generate-location-)
         "Generate empty negative <location> structure.  Returns <location>."
         (location 1 1 1))
 
-;;  ------------    clone an <location> complete    -------------------
+;;;     ------------    clone an <location> complete    -------------------
 
     (define (method-clone-location original)
         "Clone a <location> record structure.  Returns <location>."
@@ -390,7 +393,7 @@
             (set-y-axis!  clone (y-axis  original))
             clone))
 
-;;  ------------    pretty print <location>     -----------------------
+;;;     ------------    pretty print <location>     -----------------------
 
     (define (method-pretty-print-location record)
         "Pretty-Print a <location> structure.  Returns a list."
@@ -399,34 +402,34 @@
             (x-axis record) " "
             (y-axis record)))
 
-;;  -------------------------------------------------------------------
-;;                  TRANSISTOR DATA STRUCTURE
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     TRANSISTOR DATA STRUCTURE
+;;;     -------------------------------------------------------------------
 
-;   define a transistor as record
+        ;; define a transistor as record
 
-;       +---------------+       e.g.:
-;       | circuit type  | ->    "pmos"
-;       +---------------+
-;       | gate node     | ->    "A"
-;       +---------------+
-;       | drain node    | ->    "X"
-;       +---------------+
-;       | source node   | ->    "VDD"
-;       +---------------+
-;       | bulk node     | ->    "VDD"
-;       +---------------+
-;       | size          | ->    "g"
-;       +---------------+       +---------------+---------------+---------------+
-;       | place         | ->    |  annotation   |  x-location   |  y-location   |
-;       +---------------+       +---------------+---------------+---------------+
+        ;;      +---------------+       e.g.:
+        ;;      | circuit type  | ->    "pmos"
+        ;;      +---------------+
+        ;;      | gate node     | ->    "A"
+        ;;      +---------------+
+        ;;      | drain node    | ->    "X"
+        ;;      +---------------+
+        ;;      | source node   | ->    "VDD"
+        ;;      +---------------+
+        ;;      | bulk node     | ->    "VDD"
+        ;;      +---------------+
+        ;;      | size          | ->    "g"
+        ;;      +---------------+       +---------------+---------------+---------------+
+        ;;      | place         | ->    |  annotation   |  x-location   |  y-location   |
+        ;;      +---------------+       +---------------+---------------+---------------+
 
     (define-record-type <mosfet>
-        ; constructor
+        ;; constructor
         (mosfet circuit-type gate-node drain-node source-node bulk-node circuit-size circuit-place)
-        ; predicate
+        ;; predicate
         mosfet?
-        ; getters & setters (omit the setters from immutable fields)
+        ;; getters & setters (omit the setters from immutable fields)
         (circuit-type type set-type!)
         (gate-node gate set-gate!)
         (drain-node drain set-drain!)
@@ -436,22 +439,22 @@
         (circuit-place place set-place!))
 
 
-;   handle <mosfet> as 'object' and encapsulate their functionality, so
-;   provide a couple of methods for dealing with <mosfet>
+        ;; handle <mosfet> as 'object' and encapsulate their functionality,
+        ;; so provide a couple of methods for dealing with <mosfet>
 
-;;  ------------    generate empty nmos <mosfet>    -------------------
+;;;     ------------    generate empty nmos <mosfet>    -------------------
 
     (define (method-generate-nmos)
         "Generate empty nmos <mosfet> record structure.  Returns <mosfet>."
         (mosfet "nmos" "" "" "" "" "" (method-generate-location-)))
 
-;;  ------------    generate empty pmos <mosfet>    -------------------
+;;;     ------------    generate empty pmos <mosfet>    -------------------
 
     (define (method-generate-pmos)
         "Generate empty pmos <mosfet> record structure.  Returns <mosfet>."
         (mosfet "pmos" "" "" "" "" "" (method-generate-location+)))
 
-;;  ------------    clone <mosfet> complete     -----------------------
+;;;     ------------    clone <mosfet> complete     -----------------------
 
     (define (method-clone-mosfet original)
         "Clone a <mosfet> record structure.  Returns <mosfet>."
@@ -465,51 +468,51 @@
             (set-place!  clone (method-clone-location (place original)))
             clone))
 
-;;  ------------    pmos? predicate     -------------------------------
+;;;     ------------    pmos? predicate     -------------------------------
 
     (define (pmos? record)
         "Check record for pmos transistor.  As every predicate returns boolean."
         (and (mosfet? record)
              (equal? (type record) "pmos")))
 
-;   Checks:
+    ;; Checks:
     (check (pmos? (method-generate-pmos)) => #t) ; !!
     (check (pmos? (method-generate-nmos)) => #f)
 
-;;  ------------    nmos? predicate     -------------------------------
+;;;     ------------    nmos? predicate     -------------------------------
 
     (define (nmos? record)
         "Check record for nmos transistor.  As every predicate returns boolean."
         (and (mosfet? record)
              (equal? (type record) "nmos")))
 
-;   Checks:
+    ;; Checks:
     (check (nmos? (method-generate-pmos)) => #f)
     (check (nmos? (method-generate-nmos)) => #t) ; !!
 
-;;  ------------    grounded? predicate     ---------------------------
+;;;     ------------    grounded? predicate     ---------------------------
 
     (define (grounded? record)
         "Check record for grounded transistor.  As every predicate returns boolean."
         (and (mosfet? record)
              (%ground-plane-object 'valid? (source record))))
 
-;   Checks:
+    ;; Checks:
     (check (grounded? (method-generate-pmos)) => #f)
     (check (grounded? (method-generate-nmos)) => #f)
 
-;;  ------------    powered? predicate  -------------------------------
+;;;     ------------    powered? predicate  -------------------------------
 
     (define (powered? record)
         "Check record for powered transistor.  As every predicate returns boolean."
         (and (mosfet? record)
              (%supply-node-object 'valid? (source record))))
 
-;   Checks:
+    ;; Checks:
     (check (powered? (method-generate-pmos)) => #f)
     (check (powered? (method-generate-nmos)) => #f)
 
-;;  ------------    pretty print <mosfet>   ---------------------------
+;;;     ------------    pretty print <mosfet>   ---------------------------
 
     (define (method-pretty-print-mosfet record)
         "Pretty-Print a <mosfet> record structure.  Returns a list."
@@ -523,11 +526,11 @@
             (size record) " "
             (method-pretty-print-location (place record))))
 
-;;  -------------------------------------------------------------------
-;;                  NETLIST OPERATIONS
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     NETLIST OPERATIONS
+;;;     -------------------------------------------------------------------
 
-;;  ------------    netlist already buffered?   -----------------------
+;;;     ------------    netlist already buffered?   -----------------------
 
     (define (method-netlist-buffered? netlist)
         "Guess which transistores form a output buffer and collect them.
@@ -538,12 +541,12 @@
                    [others (cdr netlist)])
                 (if (and ; 1st indicator: transistor drain is an output node
                         (%output-node-object 'valid? (drain candidate))
-                        ; 2nd indicator: transistor gate is an internal node
+                        ;; 2nd indicator: transistor gate is an internal node
                         (%internal-node-object 'valid? (gate candidate)))
                     (cons candidate (method-netlist-buffered? others ))
                     (method-netlist-buffered? others)))))
 
-;;  ------------    netlist pull-up network?    -----------------------
+;;;     ------------    netlist pull-up network?    -----------------------
 
     (define (method-netlist-pullup? netlist)
         "Guess which transistores form a pull-up network and collect them.
@@ -554,12 +557,12 @@
                    [others (cdr netlist)])
                 (if (and ; 1st indicator: transistors are pmos
                         (pmos? candidate)
-                        ; 2nd indicator: transistor gate is an input node
+                        ;; 2nd indicator: transistor gate is an input node
                         (%input-node-object 'valid? (gate candidate)))
                     (cons candidate (method-netlist-pullup? others))
                     (method-netlist-pullup? others)))))
 
-;;  ------------    netlist pull-down network?  -----------------------
+;;;     ------------    netlist pull-down network?  -----------------------
 
     (define (method-netlist-pulldown? netlist)
         "Guess which transistores form a pull-down network and collect them.
@@ -570,20 +573,20 @@
                    [others (cdr netlist)])
                 (if (and ; 1st indicator: transistors are nmos
                         (nmos? candidate)
-                        ; 2nd indicator: transistor gate is an input node
+                        ;; 2nd indicator: transistor gate is an input node
                         (%input-node-object 'valid? (gate candidate)))
                     (cons candidate (method-netlist-pulldown? others))
                     (method-netlist-pulldown? others)))))
 
-;;  ------------    sort netlist ascending  ---------------------------
+;;;     ------------    sort netlist ascending  ---------------------------
 
     (define (mosfet<? first second)
         "sort < operatator for sorting mosfets by gate names and types.
         nmos A, B, C; pmos A, B, C.  Returns boolean."
         (if (string-ci=? (type first) (type second))
-            ; both mosfet type are equal
+            ;; both mosfet type are equal
             (string-ci<? (gate first) (gate second))
-            ; both mosfet types differs, pmos first, nmos second
+            ;; both mosfet types differs, pmos first, nmos second
             (string-ci>? (type first) (type second))))
 
     (define (sort-netlist-ascending netlist)
@@ -591,15 +594,15 @@
         pmos A, B, C; nmos A, B, C.  Returns netlist."
         (list-sort mosfet<? netlist))
 
-;;  ------------    sort netlist descending     -----------------------
+;;;     ------------    sort netlist descending     -----------------------
 
     (define (mosfet>? first second)
         "sort > operatator for sorting mosfets by gate names and types.
         pmos C, B, A; nmos C, B, A.  Returns boolean."
         (if (string-ci=? (type first) (type second))
-            ; both mosfet type are equal
+            ;; both mosfet type are equal
             (string-ci>? (gate first) (gate second))
-            ; both mosfet types differs, nmos first, pmos second
+            ;; both mosfet types differs, nmos first, pmos second
             (string-ci>? (type first) (type second))))
 
     (define (sort-netlist-descending netlist)
@@ -607,7 +610,7 @@
         pmos C, B, A; nmos C, B, A.  Returns netlist."
         (list-sort mosfet>? netlist))
 
-;;  ------------    sort netlist normalized     -----------------------
+;;;     ------------    sort netlist normalized     -----------------------
 
     (define (mosfet><? first second)
         "sort >< operator for sorting mosfets by normalized order.
@@ -619,15 +622,15 @@
         pmos C, B, A, nmos A, B, C.  Returns netlist."
         (list-sort mosfet><? netlist))
 
-;;  ------------    sort netlist position   ---------------------------
+;;;     ------------    sort netlist position   ---------------------------
 
     (define (mosfet<>? first second)
         "sort <> operatator for sorting mosfets by position.
         From left -> right, from top -> buttom.  Returns boolean."
         (if (= (x-axis (place first)) (x-axis (place second)))
-            ; same position on x
+            ;; same position on x
             (> (y-axis (place first)) (y-axis (place second)))
-            ; different positions on x
+            ;; different positions on x
             (> (x-axis (place first)) (x-axis (place second)))))
 
     (define (sort-netlist-position netlist)
@@ -635,7 +638,7 @@
         from top -> buttom.  Returns netlist."
         (list-sort mosfet<>? netlist))
 
-;;  ------------    pretty print netlist    ---------------------------
+;;;     ------------    pretty print netlist    ---------------------------
 
     (define (method-pretty-print-netlist netlist)
         "Pretty-Print a netlist of <mosfet> record structures.  Returns a list."
@@ -645,7 +648,7 @@
                 (method-pretty-print-mosfet (car netlist))
                 (method-pretty-print-netlist (cdr netlist)))))
 
-;;  ------------    grep input nodes    -------------------------------
+;;;     ------------    grep input nodes    -------------------------------
 
     (define (grep-input-nodes netlist)
         "Just grep the netlist for input nodes.  Returns a list."
@@ -656,7 +659,7 @@
                     (cons gate-node (grep-input-nodes (cdr netlist)))
                     (grep-input-nodes (cdr netlist))))))
 
-;;  ------------    grep clock nodes    -------------------------------
+;;;     ------------    grep clock nodes    -------------------------------
 
     (define (grep-clock-nodes netlist)
         "Just grep the netlist for clock nodes.  Returns a list."
@@ -667,7 +670,7 @@
                     (cons gate-node (grep-clock-nodes (cdr netlist)))
                     (grep-clock-nodes (cdr netlist))))))
 
-;;  ------------    grep output nodes   -------------------------------
+;;;     ------------    grep output nodes   -------------------------------
 
     (define (grep-output-nodes netlist)
         "Just grep the netlist for output nodes.  Returns a list."
@@ -678,7 +681,7 @@
                     (cons drain-node (grep-output-nodes (cdr netlist)))
                     (grep-output-nodes (cdr netlist))))))
 
-;;  ------------    grep internal nodes     ---------------------------
+;;;     ------------    grep internal nodes     ---------------------------
 
     (define (grep-internal-nodes netlist)
         "Just grep the netlist for internal nodes.  Returns a list."
@@ -689,7 +692,7 @@
                     (cons drain-node (grep-internal-nodes (cdr netlist)))
                     (grep-internal-nodes (cdr netlist))))))
 
-;;  ------------    grep supply nodes   -------------------------------
+;;;     ------------    grep supply nodes   -------------------------------
 
     (define (grep-supply-nodes netlist)
         "Just grep the netlist for supply nodes.  Returns a list."
@@ -700,7 +703,7 @@
                     (cons source-node (grep-supply-nodes (cdr netlist)))
                     (grep-supply-nodes (cdr netlist))))))
 
-;;  ------------    grep ground planes  -------------------------------
+;;;     ------------    grep ground planes  -------------------------------
 
     (define (grep-ground-planes netlist)
         "Just grep the netlist for ground planes.  Returns a list."
@@ -711,7 +714,7 @@
                     (cons source-node (grep-ground-planes (cdr netlist)))
                     (grep-ground-planes (cdr netlist))))))
 
-;;  ------------    grep highest internal node  -----------------------
+;;;     ------------    grep highest internal node  -----------------------
 
     (define (grep-highest-internal-node netlist)
         "Just grep the netlist for the hightest internal node.  Returns a string."
@@ -722,7 +725,7 @@
                     ""
                     (car candidates)))))
 
-;;  ------------    grep highest stacked transistor -------------------
+;;;     ------------    grep highest stacked transistor -------------------
 
     (define (grep-highest-stacked-transistor netlist)
         "Just grep the netlist for the hightest stacked transistor.  Returns a integer."
@@ -730,36 +733,36 @@
             0
             (max (stacked (place (car netlist))) (grep-highest-stacked-transistor (cdr netlist)))))
 
-;;  -------------------------------------------------------------------
-;;                  CELL DATA STRUCTURE
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     CELL DATA STRUCTURE
+;;;     -------------------------------------------------------------------
 
-;   define a cell as record
+        ;; define a cell as record
 
-;       +---------------+       e.g.:
-;       | cell id       | ->    "INV"
-;       +---------------+
-;       | cell text     | ->    "a Not (or Inverter) gate"
-;       +---------------+
-;       | cell origin   | ->    '("")
-;       +---------------+
-;       | cell inputs   | ->    '("A")
-;       +---------------+
-;       | cell outputs  | ->    '("Y")
-;       +---------------+
-;       | cell clocks   | ->    '() ; usually for latches
-;       +---------------+
-;       | cell netlist  | ->    '(<list of mosfets>)
-;       +---------------+
-;       | cell ascii-art| ->    '(<list of output lines>) :-)
-;       +---------------+
+        ;;      +---------------+       e.g.:
+        ;;      | cell id       | ->    "INV"
+        ;;      +---------------+
+        ;;      | cell text     | ->    "a Not (or Inverter) gate"
+        ;;      +---------------+
+        ;;      | cell origin   | ->    '("")
+        ;;      +---------------+
+        ;;      | cell inputs   | ->    '("A")
+        ;;      +---------------+
+        ;;      | cell outputs  | ->    '("Y")
+        ;;      +---------------+
+        ;;      | cell clocks   | ->    '() ; usually for latches
+        ;;      +---------------+
+        ;;      | cell netlist  | ->    '(<list of mosfets>)
+        ;;      +---------------+
+        ;;      | cell ascii-art| ->    '(<list of output lines>) :-)
+        ;;      +---------------+
 
     (define-record-type <cell>
-        ; constructor
+        ;; constructor
         (cell cell-id cell-text cell-origin cell-inputs cell-outputs cell-clocks cell-netlist cell-ascii-art)
-        ; predicate
+        ;; predicate
         cell?
-        ; getters & setters (omit the setters from immutable fields)
+        ;; getters & setters (omit the setters from immutable fields)
         (cell-id id set-id!)
         (cell-text description set-description!)
         (cell-origin origin set-origin!)
@@ -769,13 +772,13 @@
         (cell-netlist netlist set-netlist!)
         (cell-ascii-art ascii-art set-ascii-art!))
 
-;;  ------------    generate empty <cell>   ---------------------------
+;;;     ------------    generate empty <cell>   ---------------------------
 
     (define (method-generate-cell)
         "Generate empty <cell> record structure.  Returns <cell>."
         (cell "" "" "" '() '() '() '() '()))
 
-;;  ------------    pretty print <cell>     ---------------------------
+;;;     ------------    pretty print <cell>     ---------------------------
 
     (define (method-pretty-print-cell record)
         "Pretty-Print a <cell> record structure.  Returns a list."
@@ -787,14 +790,14 @@
             (method-pretty-print-nodes (outputs record))
             (method-pretty-print-nodes (clocks record))
             (method-pretty-print-netlist (netlist record))
-;           (ascii-art record)
+            ;;(ascii-art record)
             ))
 
-;;  -------------------------------------------------------------------
-;;                  READ CELL STRUCTURE
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     READ CELL STRUCTURE
+;;;     -------------------------------------------------------------------
 
-;;  ------------    read location arguments ---------------------------
+;;;     ------------    read location arguments ---------------------------
 
     (define (read-location arguments)
         "Read arguments for circuits and feed the corresponding fields
@@ -805,7 +808,7 @@
             (set-y-axis! place (string->number (list-ref arguments 7)))
             place))
 
-;;  ------------    read one pmos line  -------------------------------
+;;;     ------------    read one pmos line  -------------------------------
 
     (define (read-pmos-line! arguments)
         "Read arguments for pmos circuits and feed the corresponding
@@ -819,7 +822,7 @@
             (set-place! pmos (read-location arguments))
             pmos))
 
-;;  ------------    read one nmos line  -------------------------------
+;;;     ------------    read one nmos line  -------------------------------
 
     (define (read-nmos-line! arguments)
         "Read arguments for nmos circuits and feed the corresponding
@@ -833,13 +836,13 @@
             (set-place! nmos (read-location arguments))
             nmos))
 
-;;  ------------    read one tagged line    ---------------------------
+;;;     ------------    read one tagged line    ---------------------------
 
     (define (read-tagged-line! current-cell textline)
         "Check the textline for known tags and feed the corresponding
         field inside the <cell> record.  Returns <cell> structure."
         (cond
-            ; emtpy list?
+            ;; emtpy list?
             [(null? textline) current-cell]
 
             [(equal? (string->symbol (car textline)) '|.cell|)
@@ -859,7 +862,7 @@
             [else ;(equal? (car textline) '|.end|)
                 current-cell]))
 
-;;  ------------    read in cell file   -------------------------------
+;;;     ------------    read in cell file   -------------------------------
 
     (define (common:dataset-cell file-name)
         "Read in cell-file.  Returns a <cell> structure."
@@ -877,8 +880,8 @@
                                     (function (read-line file))))))))
         current-cell))
 
-;;  ===================================================================
-;;                  END OF R7RS LIBRARY
-;;  ===================================================================
+;;;     ===================================================================
+;;;                     END OF R7RS LIBRARY
+;;;     ===================================================================
   )
 )

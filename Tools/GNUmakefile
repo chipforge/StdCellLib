@@ -89,7 +89,8 @@ MANPAGES    = cell.5.ps \
               datasheet.1.ps \
               konstruktivist.1.ps \
               scarbata.1.ps \
-              popcorn.1.ps
+              popcorn.1.ps \
+              vger.1.ps
 
 %.ps: %
 	$(TROFF) $< > $@

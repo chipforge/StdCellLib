@@ -1,76 +1,76 @@
-;;  ************    LibreSilicon's StdCellLibrary   *******************
-;;
-;;  Organisation:   Chipforge
-;;                  Germany / European Union
-;;
-;;  Profile:        Chipforge focus on fine System-on-Chip Cores in
-;;                  Verilog HDL Code which are easy understandable and
-;;                  adjustable. For further information see
-;;                          www.chipforge.org
-;;                  there are projects from small cores up to PCBs, too.
-;;
-;;  File:           StdCellLib/Tools/scarbata/scarbata.scm
-;;
-;;  Purpose:        Scarbata Main functionality
-;;
-;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
-;;
-;;  ///////////////////////////////////////////////////////////////////
-;;
-;;  Copyright (c) 2019 - 2021 by
-;;                  chipforge <scarbata@nospam.chipforge.org>
-;;
-;;  This source file may be used and distributed without restriction
-;;  provided that this copyright statement is not removed from the
-;;  file and that any derivative work contains the original copyright
-;;  notice and the associated disclaimer.
-;;
-;;  This source is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License as published by
-;;  the Free Software Foundation; either version 3 of the License, or
-;;  (at your option) any later version.
-;;
-;;  This source is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;
-;;   (__)  You should have received a copy of the GNU General Public
-;;   oo )  License along with this program; if not, write to the
-;;   /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
-;;         Boston, MA 02110-1301, USA
-;;
-;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
-;;  ///////////////////////////////////////////////////////////////////
+;;;;    ************    LibreSilicon's StdCellLibrary   *******************
+;;;;
+;;;;    Organisation:   Chipforge
+;;;;                    Germany / European Union
+;;;;
+;;;;    Profile:        Chipforge focus on fine System-on-Chip Cores in
+;;;;                    Verilog HDL Code which are easy understandable and
+;;;;                    adjustable. For further information see
+;;;;                            www.chipforge.org
+;;;;                    there are projects from small cores up to PCBs, too.
+;;;;
+;;;;    File:           StdCellLib/Tools/scarbata/scarbata.scm
+;;;;
+;;;;    Purpose:        Scarbata Main functionality
+;;;;
+;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
+;;;;
+;;;;    ///////////////////////////////////////////////////////////////////
+;;;;
+;;;;    Copyright (c) 2019 - 2021 by
+;;;;                    chipforge <scarbata@nospam.chipforge.org>
+;;;;
+;;;;    This source file may be used and distributed without restriction
+;;;;    provided that this copyright statement is not removed from the
+;;;;    file and that any derivative work contains the original copyright
+;;;;    notice and the associated disclaimer.
+;;;;
+;;;;    This source is free software; you can redistribute it and/or modify
+;;;;    it under the terms of the GNU General Public License as published by
+;;;;    the Free Software Foundation; either version 3 of the License, or
+;;;;    (at your option) any later version.
+;;;;
+;;;;    This source is distributed in the hope that it will be useful,
+;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;;;;    GNU General Public License for more details.
+;;;;
+;;;;     (__)  You should have received a copy of the GNU General Public
+;;;;     oo )  License along with this program; if not, write to the
+;;;;     /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+;;;;           Boston, MA 02110-1301, USA
+;;;;
+;;;;    GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+;;;;    ///////////////////////////////////////////////////////////////////
 
-;   R7RS-type library usage declaration
+    ;; R7RS-type library usage declaration
     (import (scheme base)
             (scheme write)              ; display
             (scheme process-context)    ; exit
             (srfi 28)                   ; format
             (srfi 78)                   ; test suite
-            ; r7rs modules for StdCellLib also
+            ;; r7rs modules for StdCellLib also
             (common table)
             (exporter generic)
             (exporter table)
     )
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;;     ------------    srfi-78 test suite  -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
+    ;; change this switch during development only
+    ;; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
 
-;;  -------------------------------------------------------------------
-;;                       PROGRAM
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     PROGRAM
+;;;     -------------------------------------------------------------------
 
-;;  ------------    Program Name    -----------------------------------
+;;;     ------------    Program Name    -----------------------------------
 
-    ; use this as default
-    (define eigen-name "scarbata")
+    ;; use this as default
+    (define +eigen-name+ "scarbata")
 
-;;  ------------    version "screen"    -------------------------------
+;;;     ------------    version "screen"    -------------------------------
 
     (define (+version+ @port)
         "Formats program name, version and license header @port."
@@ -88,11 +88,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
-        eigen-name)
+        +eigen-name+)
         (newline (@port))
     )
 
-;;  ------------    purpose "screen"    -------------------------------
+;;;     ------------    purpose "screen"    -------------------------------
 
     (define (+purpose+ @port)
         "Formats program purpose @port."
@@ -101,11 +101,11 @@ Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
 
 "   ))
 
-;;  -------------------------------------------------------------------
-;;                       GLOBAL OPTIONS
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     GLOBAL OPTIONS
+;;;     -------------------------------------------------------------------
 
-;;  ------------    usage "screen"  -----------------------------------
+;;;     ------------    usage "screen"  -----------------------------------
 
     (define (+usage+ @port)
         "Formats usage print-out @port."
@@ -120,39 +120,39 @@ Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
    -R | --rsnf | --anf ring sum, or algebraic normal form
    -v                  print verbose messages
    --version           print version and exit"
-         eigen-name)
+         +eigen-name+)
         (newline (@port))
         (exit 2))
 
-;;  ------------    command line options    ---------------------------
+;;;     ------------    command line options    ---------------------------
 
-;   -C cmos
-    (define cmos-network "unknown")
+    ;; -C cmos
+    (define +cmos-network+ "unknown")
 
-;   -e format
-    (define file-format "table")
+    ;; -e format
+    (define +file-format+ "table")
 
-;   -o
-    (define simplify-all #f)
+    ;; -o
+    (define +simplify-all+ #f)
 
-;   -m
-    (define dnf-equation #f)
+    ;; -m
+    (define +dnf-equation+ #f)
 
-;   -M
-    (define cnf-equation #f)
+    ;; -M
+    (define +cnf-equation+ #f)
 
-;   -R
-    (define anf-equation #f)
+    ;; -R
+    (define +anf-equation+ #f)
 
-;   -v
-    (define verbose-mode #f)
+    ;; -v
+    (define +verbose-mode+ #f)
 
-;   table file
-    (define table-file "")
+    ;; table file
+    (define +table-file+ "")
 
-;;  ------------    command line parsing    ---------------------------
+;;;     ------------    command line parsing    ---------------------------
 
-    ; auxiliary function
+    ;; auxiliary function
     (define (parsing-error)
         "Displays unknown command line option @current-error-port."
         (begin (display "command line parsing failed." (current-error-port))
@@ -162,68 +162,68 @@ Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
     (define (set-parameters-with-args! arguments)
         "Set options by command line arguments."
         (cond
-            ; empty list?
+            ;; empty list?
             [(null? arguments) 
                 (begin
                     (parsing-error)
                     (+usage+ current-error-port)
                     (exit 1))] ; done, do not parse further
 
-            ; --anf
+            ;; --anf
             [(equal? (car arguments) "--anf")
                 (let* ([tail (cdr arguments)])
-                    (set! anf-equation #t)
-                    (set! simplify-all #t)
+                    (set! +anf-equation+ #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -C cmos
+            ;; -C cmos
             [(equal? (car arguments) "-C")
                 (let* ([value (cadr arguments)]
                        [tail (cddr arguments)])
-                    (set! cmos-network value)
+                    (set! +cmos-network+ value)
                     (set-parameters-with-args! tail))]
 
-            ; -e format
+            ;; -e format
             [(equal? (car arguments) "-e")
                 (let* ([value (cadr arguments)]
                        [tail (cddr arguments)])
-                    (set! file-format value)
+                    (set! +file-format+ value)
                     (set-parameters-with-args! tail))]
 
-            ; --ccnf
+            ;; --ccnf
             [(equal? (car arguments) "--ccnf")
                 (let* ([tail (cdr arguments)])
-                    (set! cnf-equation #t)
+                    (set! +cnf-equation+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --cdnf
+            ;; --cdnf
             [(equal? (car arguments) "--cdnf")
                 (let* ([tail (cdr arguments)])
-                    (set! dnf-equation #t)
+                    (set! +dnf-equation+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --cnf
+            ;; --cnf
             [(equal? (car arguments) "--cnf")
                 (let* ([tail (cdr arguments)])
-                    (set! cnf-equation #t)
-                    (set! simplify-all #t)
+                    (set! +cnf-equation+ #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --dnf
+            ;; --dnf
             [(equal? (car arguments) "--dnf")
                 (let* ([tail (cdr arguments)])
-                    (set! dnf-equation #t)
-                    (set! simplify-all #t)
+                    (set! +dnf-equation+ #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -h
+            ;; -h
             [(equal? (car arguments) "-h")
                 (begin
                     (+purpose+ current-error-port)
                     (+usage+ current-error-port)
                     (exit 2))] ; done, do not parse further
 
-            ; --help
+            ;; --help
             [(equal? (car arguments) "--help")
                 (begin
                     (+purpose+ current-error-port)
@@ -231,55 +231,55 @@ Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
                     (exit 2))] ; done, do not parse further
 
 
-            ; -m
+            ;; -m
             [(equal? (car arguments) "-m")
                 (let* ([tail (cdr arguments)])
-                    (set! dnf-equation #t)
+                    (set! +dnf-equation+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -M
+            ;; -M
             [(equal? (car arguments) "-M")
                 (let* ([tail (cdr arguments)])
-                    (set! cnf-equation #t)
+                    (set! +cnf-equation+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -o
+            ;; -o
             [(equal? (car arguments) "-o")
                 (let* ([tail (cdr arguments)])
-                    (set! simplify-all #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -R
+            ;; -R
             [(equal? (car arguments) "-R")
                 (let* ([tail (cdr arguments)])
-                    (set! anf-equation #t)
-                    (set! simplify-all #t)
+                    (set! +anf-equation+ #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --rsnf
+            ;; --rsnf
             [(equal? (car arguments) "--rsnf")
                 (let* ([tail (cdr arguments)])
-                    (set! anf-equation #t)
-                    (set! simplify-all #t)
+                    (set! +anf-equation+ #t)
+                    (set! +simplify-all+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; -v
+            ;; -v
             [(equal? (car arguments) "-v")
                 (let* ([tail (cdr arguments)])
-                    (set! verbose-mode #t)
+                    (set! +verbose-mode+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --version
+            ;; --version
             [(equal? (car arguments) "--version")
                 (begin
                     (+version+ current-error-port)
                     (exit 3))]; done, do not parse further
 
-            ; table file name
+            ;; table file name
             [(null? (cdr arguments))
                 (set! table-file (car arguments))]
 
-            ; unkown arguments
+            ;; unkown arguments
             [else
                 (begin
                     (parsing-error)
@@ -289,68 +289,68 @@ Copyright (c) 2019 - 2022 by chipforge <scarbata@nospam.chipforge.org>"
     (define (print-parameters @port)
         "Formats all options by value @port."
         (begin
-            ; -e format
+            ;; -e format
             (format (@port)
 "Export Format: ~a"
-             file-format)
+             +file-format+)
             (newline (@port))
 
-            ; -C cmos
+            ;; -C cmos
             (format (@port)
 "CMOS Network: ~a"
-             cmos-network)
+             +cmos-network+)
             (newline (@port))
 
-            ; --cnf
+            ;; --cnf
             (format (@port)
 "CNF Equation: ~a"
-             cnf-equation)
+             +cnf-equation+)
             (newline (@port))
 
-            ; --dnf
+            ;; --dnf
             (format (@port)
 "DNF Equation: ~a"
-             dnf-equation)
+             +dnf-equation+)
             (newline (@port))
 
-            ; --anf
+            ;; --anf
             (format (@port)
 "ANF Equation: ~a"
-             anf-equation)
+             +anf-equation+)
             (newline (@port))
 
-            ; -o
+            ;; -o
             (format (@port)
 "Simplify All: ~a"
-             simplify-all)
+             +simplify-all+)
             (newline (@port))
 
-            ; -v
+            ;; -v
             (format (@port)
 "Verbose Mode: ~a"
-             verbose-mode)
+             +verbose-mode+)
             (newline (@port))
 
-            ; cell decription
+            ;; cell decription
             (format (@port)
 "Table File: ~a"
              table-file)
             (newline (@port))))
 
-;;  -------------------------------------------------------------------
-;;                       MAIN
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     MAIN
+;;;     -------------------------------------------------------------------
 
-;;  ------------    main function   -----------------------------------
+;;;     ------------    main function   -----------------------------------
 
 (define (main args)
     "Main program."
     (begin
-        ; parse command line and set values / modes
+        ;; parse command line and set values / modes
         (set-parameters-with-args! (cdr args))
-        (if verbose-mode (print-parameters current-error-port))
+        (if +verbose-mode+ (print-parameters current-error-port))
 
-        ; select work load
+        ;; select work load
 ;        (case expansion-method
 ;            ((none nand nor aoi oai pu pd)
 ;                 (let ([cell (expand-cell (common:dataset-cell cell-file) expansion-method buffer-limit cell-name cell-descr)])

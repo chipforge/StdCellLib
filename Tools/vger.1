@@ -9,16 +9,16 @@
 .\"                         www.chipforge.org
 .\"                 there are projects from small cores up to PCBs, too.
 .\"
-.\" File:           StdCellLib/Tools/konstruktivist.1
+.\" File:           StdCellLib/Tools/vger.1
 .\"
-.\" Purpose:        man 1 konstruktivist - classical Manual Page
+.\" Purpose:        man 1 vger - classical Manual Page
 .\"
 .\" ************    `groff -t -mdoc`    *******************************
 .\"
 .\" ///////////////////////////////////////////////////////////////////
 .\"
-.\" Copyright (c)   2021 - 2022 by
-.\"                 chipforge <konstruktivist@nospam.chipforge.org>
+.\" Copyright (c)   2022 by
+.\"                 chipforge <vger@nospam.chipforge.org>
 .\"
 .\" This source file may be used and distributed without restriction
 .\" provided that this copyright statement is not removed from the
@@ -43,14 +43,15 @@
 .\" GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
 .\" ///////////////////////////////////////////////////////////////////
 .Dd July 4, 2022
-.Dt KONSTRUKTIVIST 1 "Standard Cell Library"
+.Dt VGER 1 "Standard Cell Library"
 .Os LibreSilicon
 .Sh NAME
-.Nm konstruktivist
-.Nd generate schematics from cell description
+.Nm vger 
+.Nd generates files from cell descriptions
 .Sh SYNOPSIS
 .Nm
 .Op Fl v
+.Op Fl B
 .Op Fl e Ar format
 .Ar cell\-file
 .Nm
@@ -60,24 +61,23 @@
 .Sh DESCRIPTION
 The
 .Nm
-utility generates schematics in different file formats (
-.Em circdia ,
-.Em geda
-)  and writes out the schematics on
-.Dv STDOUT  .
-.Pp
-.Nm
-functionality is to take one cell description and generate the corresponding
-schematic information based on sufficient heuristics.
-.Pp
+utility reads a given cell descriptions and generates
+Test Benches or Models in
+.Em Verilog ,
+or
+.Em Spice
+on
+.Dv STDOUT .
 .Sh OPTIONS
-.Ss \-e Ar format
-Specify the file format in which the schematic should be generated.
+.Ss \-B
+Write out a Test Bench.
+.Ss \-e Ar language
+Specify the design language in which the file is generated.
 .Bl -ohang
-.It Em circdia
-LaTeX (CircDia Package) File
-.It Em xschem
-xschem (VLSI schematic capture and netlisting EDA tool) File
+.It Em spice
+Spice 3f.5 File
+.It Em verilog
+Verilog HDL File
 .El
 .Ss \-h, \-\-help
 Display help message and exit.
@@ -95,12 +95,12 @@ For the exact file format, see
 .Sh FILES
 .Pa *.cell
 .Sh AUTHORS
-.An chipforge Aq konstruktivist@nospam.chipforge.org
+.An chipforge Aq vger@nospam.chipforge.org
 .Sh BUGS
 Not yet known.
 Please do not hesitate to report your findings.
 .Sh COPYRIGHT
-Copyright (c) 2018-2022 Author and Contributors.
+Copyright (c) 2022 Author and Contributors.
 .Pp
 GNU General Public License v3.0
 .UR

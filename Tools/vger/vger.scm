@@ -9,16 +9,16 @@
 ;;;;                            www.chipforge.org
 ;;;;                    there are projects from small cores up to PCBs, too.
 ;;;;
-;;;;    File:           StdCellLib/Tools/konstruktivist/konstruktivist.scm
+;;;;    File:           StdCellLib/Tools/VGer/VGer.scm
 ;;;;
-;;;;    Purpose:        Schematic Main functionality
+;;;;    Purpose:        V'Ger cell export functionality
 ;;;;
 ;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
 ;;;;
 ;;;;    ///////////////////////////////////////////////////////////////////
 ;;;;
-;;;;    Copyright (c) 2021 - 2022 by
-;;;;                    chipforge <konstruktivist@nospam.chipforge.org>
+;;;;    Copyright (c) 2022 by
+;;;;                    chipforge <popcorn@nospam.chipforge.org>
 ;;;;
 ;;;;    This source file may be used and distributed without restriction
 ;;;;    provided that this copyright statement is not removed from the
@@ -51,7 +51,8 @@
             (srfi 78)                   ; test suite
             ;; r7rs modules for StdCellLib also
             (common cell)
-            (exporter circdia)
+            (exporter spice)
+            (exporter verilog)
     )
 
 ;;;     ------------    srfi-78 test suite  -------------------------------
@@ -67,7 +68,7 @@
 ;;;     ------------    Program Name    -----------------------------------
 
     ;; use this as default
-    (define +eigen-name+ "konstruktivist")
+    (define +eigen-name+ "vger")
 
 ;;;     ------------    version "screen"    -------------------------------
 
@@ -86,8 +87,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
-        eigen-name)
+Copyright (c) 2022 by chipforge <vger@nospam.chipforge.org>"
+        +eigen-name+)
         (newline (@port))
     )
 
@@ -96,7 +97,7 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
     (define (+purpose+ @port)
         "Formats program purpose @port."
         (format (@port)
-"Generate beautiful Schematics.
+"Export cell descriptions into models and test benches.
 
 "   ))
 
@@ -110,9 +111,9 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
         "Formats usage print-out @port."
         (format (@port)
 "Usage: ~a [options] cell-file
-   -e format           specify exporter format - CircDia (LaTeX), or XSchem
+   -B                  write out a Test Bench
+   -e format           specify the design format in which the file is generated
    -h | --help         print help screen and exit
-
    -v                  print verbose messages
    --version           print version and exit"
          +eigen-name+)
@@ -121,8 +122,11 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
 
 ;;;     ------------    command line options    ---------------------------
 
+    ;; -B
+    (define +test-bench+ #f)
+
     ;; -e format
-    (define +exporter-format+ 'circdia)
+    (define +exporter-format+ 'verilog)
 
     ;; -v
     (define +verbose-mode+ #f)
@@ -149,6 +153,12 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
                     (+usage+ current-error-port)
                     (exit 1))] ; done, do not parse further
 
+            ;; -B
+            [(equal? (car arguments) "-B")
+                (let* ([tail (cdr arguments)])
+                (set! +test-bench+ #t)
+                    (set-parameters-with-args! tail))]
+
             ;; -e format
             [(equal? (car arguments) "-e")
                 (let* ([value (cadr arguments)]
@@ -169,7 +179,6 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
                     (+purpose+ current-error-port)
                     (+usage+ current-error-port)
                     (exit 2))] ; done, do not parse further
-
 
             ;; -v
             [(equal? (car arguments) "-v")
@@ -197,6 +206,18 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
     (define (print-parameters @port)
         "Formats all options by value @port."
         (begin
+            ;; -B
+            (format (@port)
+"Test Bench: ~a"
+             +test-bench+)
+            (newline (@port))
+
+            ;; -e format 
+            (format (@port)
+"Exporter format: ~a"
+             +exporter-format+)
+            (newline (@port))
+
             ;; -v
             (format (@port)
 "Verbose Mode: ~a"
@@ -223,13 +244,13 @@ Copyright (c) 2021 - 2022 by chipforge <konstruktivist@nospam.chipforge.org>"
         (if +verbose-mode+ (print-parameters current-error-port))
 
         ;; select work load
-        (cond
-            ;; generate CircDia LaTeX schematic
-            [(equal? +exporter-format+ 'circdia)
-                (begin
-                    (exporter:schematic-circdia (common:dataset-cell +cell-file+))
-                    0)] ; exit value
-
-            ;; generate xschem schematic
-            [(equal? exporter-format 'xschem)
-                0])))
+;        (case expansion-method
+;            ((none nand nor pu pd)
+;                 (let ([cell (expand-cell (common:dataset-cell +cell-file+) expansion-method buffer-limit cell-name cell-descr)])
+;                    ;; beautify annotation with schematic here !!
+;                    (rdisplay (exporter:dataset-cell cell))
+;                    0))   ; exit value
+;        (else => 
+            (begin
+                    (+usage+ current-error-port)
+                    2)))  ; exit value - wrong usage

@@ -1,75 +1,75 @@
-;;  ************    LibreSilicon's StdCellLibrary   *******************
-;;
-;;  Organisation:   Chipforge
-;;                  Germany / European Union
-;;
-;;  Profile:        Chipforge focus on fine System-on-Chip Cores in
-;;                  Verilog HDL Code which are easy understandable and
-;;                  adjustable. For further information see
-;;                          www.chipforge.org
-;;                  there are projects from small cores up to PCBs, too.
-;;
-;;  File:           StdCellLib/Tools/datasheet/datasheet.scm
-;;
-;;  Purpose:        Datasheet Main functionality
-;;
-;;  ************    Revised^7 Report on Scheme (R7RS)   ***************
-;;
-;;  ///////////////////////////////////////////////////////////////////
-;;
-;;  Copyright (c) 2021 - 2022 by
-;;                  chipforge <datasheet@nospam.chipforge.org>
-;;
-;;  This source file may be used and distributed without restriction
-;;  provided that this copyright statement is not removed from the
-;;  file and that any derivative work contains the original copyright
-;;  notice and the associated disclaimer.
-;;
-;;  This source is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License as published by
-;;  the Free Software Foundation; either version 3 of the License, or
-;;  (at your option) any later version.
-;;
-;;  This source is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;
-;;   (__)  You should have received a copy of the GNU General Public
-;;   oo )  License along with this program; if not, write to the
-;;   /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
-;;         Boston, MA 02110-1301, USA
-;;
-;;  GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
-;;  ///////////////////////////////////////////////////////////////////
+;;;;    ************    LibreSilicon's StdCellLibrary   *******************
+;;;;
+;;;;    Organisation:   Chipforge
+;;;;                    Germany / European Union
+;;;;
+;;;;    Profile:        Chipforge focus on fine System-on-Chip Cores in
+;;;;                    Verilog HDL Code which are easy understandable and
+;;;;                    adjustable. For further information see
+;;;;                            www.chipforge.org
+;;;;                    there are projects from small cores up to PCBs, too.
+;;;;
+;;;;    File:           StdCellLib/Tools/datasheet/datasheet.scm
+;;;;
+;;;;    Purpose:        Datasheet Main functionality
+;;;;
+;;;;    ************    Revised^7 Report on Scheme (R7RS)   ***************
+;;;;
+;;;;    ///////////////////////////////////////////////////////////////////
+;;;;
+;;;;    Copyright (c) 2021 - 2022 by
+;;;;                    chipforge <datasheet@nospam.chipforge.org>
+;;;;
+;;;;    This source file may be used and distributed without restriction
+;;;;    provided that this copyright statement is not removed from the
+;;;;    file and that any derivative work contains the original copyright
+;;;;    notice and the associated disclaimer.
+;;;;
+;;;;    This source is free software; you can redistribute it and/or modify
+;;;;    it under the terms of the GNU General Public License as published by
+;;;;    the Free Software Foundation; either version 3 of the License, or
+;;;;    (at your option) any later version.
+;;;;
+;;;;    This source is distributed in the hope that it will be useful,
+;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;;;;    GNU General Public License for more details.
+;;;;
+;;;;     (__)  You should have received a copy of the GNU General Public
+;;;;     oo )  License along with this program; if not, write to the
+;;;;     /_/|  Free Software Foundation Inc., 51 Franklin St., 5th Floor,
+;;;;           Boston, MA 02110-1301, USA
+;;;;
+;;;;    GNU General Public License v3.0 - http://www.gnu.org/licenses/gpl-3.0.html
+;;;;    ///////////////////////////////////////////////////////////////////
 
-;   R7RS-type library usage declaration
+    ;; R7RS-type library usage declaration
     (import (scheme base)
             (scheme write)              ; display
             (scheme process-context)    ; exit
             (srfi 28)                   ; format
             (srfi 78)                   ; test suite
-            ; r7rs modules for StdCellLib also
+            ;; r7rs modules for StdCellLib also
             (common cell)
             (exporter datasheet)
     )
 
-;;  ------------    srfi-78 test suite  -------------------------------
+;;;     ------------    srfi-78 test suite  -------------------------------
 
-    ; change this switch during development only
-    ; mode must be a symbol in '(off summary report-failed report)
+    ;; change this switch during development only
+    ;; mode must be a symbol in '(off summary report-failed report)
     (check-set-mode! 'off)
 
-;;  -------------------------------------------------------------------
-;;                       PROGRAM
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     PROGRAM
+;;;     -------------------------------------------------------------------
 
-;;  ------------    Program Name    -----------------------------------
+;;;     ------------    Program Name    -----------------------------------
 
-    ; use this as default
-    (define eigen-name "datasheet")
+    ;; use this as default
+    (define +eigen-name+ "datasheet")
 
-;;  ------------    version "screen"    -------------------------------
+;;;     ------------    version "screen"    -------------------------------
 
     (define (+version+ @port)
         "Formats program name, version and license header @port."
@@ -87,11 +87,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
-        eigen-name)
+        +eigen-name+)
         (newline (@port))
     )
 
-;;  ------------    purpose "screen"    -------------------------------
+;;;     ------------    purpose "screen"    -------------------------------
 
     (define (+purpose+ @port)
         "Formats program purpose @port."
@@ -100,11 +100,11 @@ Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
 
 "   ))
 
-;;  -------------------------------------------------------------------
-;;                       GLOBAL OPTIONS
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     GLOBAL OPTIONS
+;;;     -------------------------------------------------------------------
 
-;;  ------------    usage "screen"  -----------------------------------
+;;;     ------------    usage "screen"  -----------------------------------
 
     (define (+usage+ @port)
         "Formats usage print-out @port."
@@ -114,21 +114,21 @@ Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
 
    -v                  print verbose messages
    --version           print version and exit"
-         eigen-name)
+         +eigen-name+)
         (newline (@port))
         (exit 2))
 
-;;  ------------    command line options    ---------------------------
+;;;     ------------    command line options    ---------------------------
 
-;   -v
-    (define verbose-mode #f)
+    ;; -v
+    (define +verbose-mode+ #f)
 
-;   cell file
-    (define cell-file "")
+    ;; cell file
+    (define +cell-file+ "")
 
-;;  ------------    command line parsing    ---------------------------
+;;;     ------------    command line parsing    ---------------------------
 
-    ; auxiliary function
+    ;; auxiliary function
     (define (parsing-error)
         "Displays unknown command line option @current-error-port."
         (begin (display "command line parsing failed." (current-error-port))
@@ -138,21 +138,21 @@ Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
     (define (set-parameters-with-args! arguments)
         "Set options by command line arguments."
         (cond
-            ; empty list?
+            ;; empty list?
             [(null? arguments) 
                 (begin
                     (parsing-error)
                     (+usage+ current-error-port)
                     (exit 1))] ; done, do not parse further
 
-            ; -h
+            ;; -h
             [(equal? (car arguments) "-h")
                 (begin
                     (+purpose+ current-error-port)
                     (+usage+ current-error-port)
                     (exit 2))] ; done, do not parse further
 
-            ; --help
+            ;; --help
             [(equal? (car arguments) "--help")
                 (begin
                     (+purpose+ current-error-port)
@@ -160,30 +160,30 @@ Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
                     (exit 2))] ; done, do not parse further
 
 
-            ; -H number
+            ;; -H number
             [(equal? (car arguments) "-H")
                 (let* ([value (cadr arguments)]
                        [tail (cddr arguments)])
-                    (set! track-high (string->number value))  ; !! value check missing)]
+                    (set! +track-high+ (string->number value))  ; !! value check missing)]
                     (set-parameters-with-args! tail))]
 
-            ; -v
+            ;; -v
             [(equal? (car arguments) "-v")
                 (let* ([tail (cdr arguments)])
-                    (set! verbose-mode #t)
+                    (set! +verbose-mode+ #t)
                     (set-parameters-with-args! tail))]
 
-            ; --version
+            ;; --version
             [(equal? (car arguments) "--version")
                 (begin
                     (+version+ current-error-port)
                     (exit 3))]; done, do not parse further
 
-            ; cell file name
+            ;; cell file name
             [(null? (cdr arguments))
-                (set! cell-file (car arguments))]
+                (set! +cell-file+ (car arguments))]
 
-            ; unkown arguments
+            ;; unkown arguments
             [else
                 (begin
                     (parsing-error)
@@ -193,32 +193,32 @@ Copyright (c) 2021 - 2022 by chipforge <datasheet@nospam.chipforge.org>"
     (define (print-parameters @port)
         "Formats all options by value @port."
         (begin
-            ; -v
+            ;; -v
             (format (@port)
 "Verbose Mode: ~a"
-             verbose-mode)
+             +verbose-mode+)
             (newline (@port))
 
-            ; cell decription
+            ;; cell decription
             (format (@port)
 "Cell File: ~a"
-             cell-file)
+             +cell-file+)
             (newline (@port))))
 
-;;  -------------------------------------------------------------------
-;;                       MAIN
-;;  -------------------------------------------------------------------
+;;;     -------------------------------------------------------------------
+;;;                     MAIN
+;;;     -------------------------------------------------------------------
 
-;;  ------------    main function   -----------------------------------
+;;;     ------------    main function   -----------------------------------
 
 (define (main args)
     "Main program."
     (begin
-        ; parse command line and set values / modes
+        ;; parse command line and set values / modes
         (set-parameters-with-args! (cdr args))
-        (if verbose-mode (print-parameters current-error-port))
+        (if +verbose-mode+ (print-parameters current-error-port))
 
-        ; select work load
+        ;; select work load
         (begin
-            (exporter:latex-datasheet (common:dataset-cell cell-file) '("../../Documents/LaTeX/INV_datasheet.tex"))
+            (exporter:latex-datasheet (common:dataset-cell +cell-file+) '("../../Documents/LaTeX/INV_datasheet.tex"))
             0 ))) ; exit value
