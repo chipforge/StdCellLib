@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AOAAO21141.tex
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AAOAAOA221211.tex
 %%
-%%  Purpose:        Circuit File for AOAAO21141
+%%  Purpose:        Circuit File for AAOAAOA221211
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,7 +33,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{circuitdiagram}[draft]{38}{19}
+\begin{circuitdiagram}[draft]{45}{20}
 
     \usgate
     % ----  1st column  ----
@@ -41,30 +41,36 @@
     \pin{1}{5}{L}{A1}
     \gate[\inputs{2}]{and}{5}{3}{R}{}{}
 
+    \pin{1}{7}{L}{B}
+    \pin{1}{11}{L}{B1}
+    \gate[\inputs{2}]{and}{5}{9}{R}{}{}
+
     % ----  2nd column  ----
-    \pin{8}{7}{L}{B}
-    \gate[\inputs{2}]{or}{12}{5}{R}{}{}
+    \wire{9}{3}{9}{5}
+    \gate[\inputs{2}]{or}{12}{7}{R}{}{}
 
     % ----  3rd column  ----
-    \pin{15}{9}{L}{C}
-    \gate[\inputs{2}]{and}{19}{7}{R}{}{}
+    \pin{15}{11}{L}{C}
+    \gate[\inputs{2}]{and}{19}{9}{R}{}{}
 
-    \pin{15}{11}{L}{D}
-    \pin{15}{13}{L}{D1}
-    \pin{15}{15}{L}{D2}
-    \pin{15}{17}{L}{D3}
-    \gate[\inputs{4}]{and}{19}{14}{R}{}{}
+    \pin{15}{13}{L}{D}
+    \pin{15}{17}{L}{D1}
+    \gate[\inputs{2}]{and}{19}{15}{R}{}{}
 
     % ----  4th column  ----
-    \wire{23}{7}{23}{12}
-    \pin{22}{18}{L}{E}
-    \wire{23}{16}{23}{18}
-    \gate[\inputs{3}]{nor}{26}{14}{R}{}{}
+    \wire{23}{9}{23}{13}
+    \pin{22}{19}{L}{E}
+    \wire{23}{17}{23}{19}
+    \gate[\inputs{3}]{or}{26}{15}{R}{}{}
+
+    % ----  5th column  ----
+    \pin{29}{19}{L}{F}
+    \gate[\inputs{2}]{nand}{33}{17}{R}{}{}
 
     % ----  last column ----
-    \gate{not}{33}{14}{R}{}{}
+    \gate{not}{40}{17}{R}{}{}
 
     % ----  result ----
-    \pin{37}{14}{R}{Z}
+    \pin{44}{17}{R}{Z}
 
 \end{circuitdiagram}
