@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Datasheets/Circuitry/OR5.tex
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/NAND5.tex
 %%
-%%  Purpose:        Circuit File for OR5
+%%  Purpose:        Circuit File for NAND5
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,7 +33,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{circuitdiagram}[draft]{17}{10}
+\begin{circuitdiagram}[draft]{11}{10}
 
     \usgate
     % ----  1st column  ----
@@ -42,12 +42,9 @@
     \pin{1}{5}{L}{A2}
     \pin{1}{7}{L}{A3}
     \pin{1}{9}{L}{A4}
-    \gate[\inputs{5}]{nor}{5}{5}{R}{}{}
-
-    % ----  last column ----
-    \gate{not}{12}{5}{R}{}{}
+    \gate[\inputs{5}]{nand}{5}{5}{R}{}{}
 
     % ----  result ----
-    \pin{16}{5}{R}{Z}
+    \pin{10}{5}{R}{Y}
 
 \end{circuitdiagram}
