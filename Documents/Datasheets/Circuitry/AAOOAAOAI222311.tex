@@ -1,0 +1,78 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AAOOAAOAI222311.tex
+%%
+%%  Purpose:        Circuit File for AAOOAAOAI222311
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2018 - 2022 by
+%%                  chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{circuitdiagram}[draft]{39}{26}
+
+    \usgate
+    % ----  1st column  ----
+    \pin{1}{1}{L}{A}
+    \pin{1}{5}{L}{A1}
+    \gate[\inputs{2}]{and}{5}{3}{R}{}{}
+
+    \pin{1}{7}{L}{B}
+    \pin{1}{11}{L}{B1}
+    \gate[\inputs{2}]{and}{5}{9}{R}{}{}
+
+    % ----  2nd column  ----
+    \wire{9}{3}{9}{5}
+    \gate[\inputs{2}]{or}{12}{7}{R}{}{}
+
+    \pin{8}{13}{L}{C}
+    \pin{8}{17}{L}{C1}
+    \gate[\inputs{2}]{or}{12}{15}{R}{}{}
+
+    % ----  3rd column  ----
+    \wire{16}{7}{16}{11}
+    \gate[\inputs{2}]{and}{19}{13}{R}{}{}
+
+    \pin{15}{19}{L}{D}
+    \pin{15}{21}{L}{D1}
+    \pin{15}{23}{L}{D2}
+    \gate[\inputs{3}]{and}{19}{21}{R}{}{}
+
+    % ----  4th column  ----
+    \wire{23}{13}{23}{19}
+    \wire{23}{23}{23}{25}
+    \pin{22}{25}{L}{E}
+    \gate[\inputs{3}]{or}{26}{21}{R}{}{}
+
+    % ----  5th column  ----
+    \pin{29}{25}{L}{F}
+    \gate[\inputs{2}]{nand}{33}{23}{R}{}{}
+
+    % ----  result ----
+    \pin{38}{23}{R}{Y}
+
+\end{circuitdiagram}
