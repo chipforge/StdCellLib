@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AOOOAOI21221.tex
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AAOAAO22221.tex
 %%
-%%  Purpose:        Circuit File for AOOOAOI21221
+%%  Purpose:        Circuit File for AAOAAO22221
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -33,7 +33,7 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\begin{circuitdiagram}[draft]{32}{20}
+\begin{circuitdiagram}[draft]{38}{22}
 
     \usgate
     % ----  1st column  ----
@@ -41,28 +41,34 @@
     \pin{1}{5}{L}{A1}
     \gate[\inputs{2}]{and}{5}{3}{R}{}{}
 
+    \pin{1}{7}{L}{B}
+    \pin{1}{11}{L}{B1}
+    \gate[\inputs{2}]{and}{5}{9}{R}{}{}
+
     % ----  2nd column  ----
-    \pin{8}{7}{L}{B}
-    \gate[\inputs{2}]{or}{12}{5}{R}{}{}
-
-    \pin{8}{9}{L}{C}
-    \pin{8}{13}{L}{C1}
-    \gate[\inputs{2}]{or}{12}{11}{R}{}{}
-
-    \pin{8}{15}{L}{D}
-    \pin{8}{19}{L}{D1}
-    \gate[\inputs{2}]{or}{12}{17}{R}{}{}
+    \wire{9}{3}{9}{5}
+    \gate[\inputs{2}]{or}{12}{7}{R}{}{}
 
     % ----  3rd column  ----
-    \wire{16}{5}{16}{9}
-    \wire{16}{13}{16}{17}
+    \wire{16}{7}{16}{9}
+    \pin{15}{11}{L}{C}
+    \pin{15}{13}{L}{C1}
     \gate[\inputs{3}]{and}{19}{11}{R}{}{}
 
+    \pin{15}{15}{L}{D}
+    \pin{15}{19}{L}{D1}
+    \gate[\inputs{2}]{and}{19}{17}{R}{}{}
+
     % ----  4th column  ----
-    \pin{22}{15}{L}{E}
-    \gate[\inputs{2}]{nor}{26}{13}{R}{}{}
+    \wire{23}{11}{23}{15}
+    \pin{22}{21}{L}{E}
+    \wire{23}{19}{23}{21}
+    \gate[\inputs{3}]{nor}{26}{17}{R}{}{}
+
+    % ----  last column ----
+    \gate{not}{33}{17}{R}{}{}
 
     % ----  result ----
-    \pin{31}{13}{R}{Y}
+    \pin{37}{17}{R}{Z}
 
 \end{circuitdiagram}

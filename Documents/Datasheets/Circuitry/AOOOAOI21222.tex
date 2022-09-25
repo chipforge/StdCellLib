@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AOOOAOI21221.tex
+%%  File:           StdCellLib/Documents/Datasheets/Circuitry/AOOOAOI21222.tex
 %%
-%%  Purpose:        Circuit File for AOOOAOI21221
+%%  Purpose:        Circuit File for AOOOAOI21222
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -59,10 +59,12 @@
     \gate[\inputs{3}]{and}{19}{11}{R}{}{}
 
     % ----  4th column  ----
+    \wire{23}{11}{23}{13}
     \pin{22}{15}{L}{E}
-    \gate[\inputs{2}]{nor}{26}{13}{R}{}{}
+    \pin{22}{17}{L}{E1}
+    \gate[\inputs{3}]{nor}{26}{15}{R}{}{}
 
     % ----  result ----
-    \pin{31}{13}{R}{Y}
+    \pin{31}{15}{R}{Y}
 
 \end{circuitdiagram}
