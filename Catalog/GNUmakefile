@@ -119,28 +119,149 @@ header:
 	-@echo "    node[shape=box]" >> $(TRACE.DOT)
 
 #   ----------------------------------------------------------------
+#               SETS
+#   ----------------------------------------------------------------
+
+#   include makefiles, regarding
+#   - number of (allowed) stacked transistors, and
+#   - minimum limit for output buffering
+
+ifeq ($(LIMIT),2)
+    #include crafted2_cells.mk
+    ifeq ($(BUFFER),2)
+        include stacked2_aphase_bufnow_cells.mk
+    else
+        include stacked2_aphase_unbuf_cells.mk
+    endif
+else
+ifeq ($(LIMIT),3)
+    #include crafted2_cells.mk
+    #include crafted3_cells.mk
+    ifeq ($(BUFFER),2)
+        include stacked2_aphase_bufnow_cells.mk
+        include stacked3_aphase_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),3)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_bufnow_cells.mk
+    else
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+    endif
+    endif
+else
+ifeq ($(LIMIT),4)
+    #include crafted2_cells.mk
+    #include crafted3_cells.mk
+    #include crafted4_cells.mk
+    ifeq ($(BUFFER),2)
+        include stacked2_aphase_bufnow_cells.mk
+        include stacked3_aphase_allbuf_cells.mk
+        include stacked4_phase2_allbuf_cells.mk
+        include stacked4_phase3_allbuf_cells.mk
+        include stacked4_phase4_allbuf_cells.mk
+        include stacked4_phase5_allbuf_cells.mk
+        include stacked4_phase6_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),3)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_bufnow_cells.mk
+        include stacked4_phase2_allbuf_cells.mk
+        include stacked4_phase3_allbuf_cells.mk
+        include stacked4_phase4_allbuf_cells.mk
+        include stacked4_phase5_allbuf_cells.mk
+        include stacked4_phase6_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),4)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+        include stacked4_phase2_bufnow_cells.mk
+        include stacked4_phase3_bufnow_cells.mk
+        include stacked4_phase4_bufnow_cells.mk
+        include stacked4_phase5_bufnow_cells.mk
+        include stacked4_phase6_bufnow_cells.mk
+    else
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+        include stacked4_phase2_unbuf_cells.mk
+        include stacked4_phase3_unbuf_cells.mk
+        include stacked4_phase4_unbuf_cells.mk
+        include stacked4_phase5_unbuf_cells.mk
+        include stacked4_phase6_unbuf_cells.mk
+    endif
+    endif
+    endif
+else
+    #include crafted2_cells.mk
+    #include crafted3_cells.mk
+    #include crafted4_cells.mk
+    #include crafted5_cells.mk
+    ifeq ($(BUFFER),2)
+        include stacked2_aphase_bufnow_cells.mk
+        include stacked3_aphase_allbuf_cells.mk
+        include stacked4_phase2_allbuf_cells.mk
+        include stacked4_phase3_allbuf_cells.mk
+        include stacked4_phase4_allbuf_cells.mk
+        include stacked4_phase5_allbuf_cells.mk
+        include stacked4_phase6_allbuf_cells.mk
+        include stacked5_phase2_allbuf_cells.mk
+        include stacked5_phase3_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),3)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_bufnow_cells.mk
+        include stacked4_phase2_allbuf_cells.mk
+        include stacked4_phase3_allbuf_cells.mk
+        include stacked4_phase4_allbuf_cells.mk
+        include stacked4_phase5_allbuf_cells.mk
+        include stacked4_phase6_allbuf_cells.mk
+        include stacked5_phase2_allbuf_cells.mk
+        include stacked5_phase3_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),4)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+        include stacked4_phase2_bufnow_cells.mk
+        include stacked4_phase3_bufnow_cells.mk
+        include stacked4_phase4_bufnow_cells.mk
+        include stacked4_phase5_bufnow_cells.mk
+        include stacked4_phase6_bufnow_cells.mk
+        include stacked5_phase2_allbuf_cells.mk
+        include stacked5_phase3_allbuf_cells.mk
+    else
+    ifeq ($(BUFFER),5)
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+        include stacked4_phase2_unbuf_cells.mk
+        include stacked4_phase3_unbuf_cells.mk
+        include stacked4_phase4_unbuf_cells.mk
+        include stacked4_phase5_unbuf_cells.mk
+        include stacked4_phase6_unbuf_cells.mk
+        include stacked5_phase2_bufnow_cells.mk
+        include stacked5_phase3_bufnow_cells.mk
+    else
+        include stacked2_aphase_unbuf_cells.mk
+        include stacked3_aphase_unbuf_cells.mk
+        include stacked4_phase2_unbuf_cells.mk
+        include stacked4_phase3_unbuf_cells.mk
+        include stacked4_phase4_unbuf_cells.mk
+        include stacked4_phase5_unbuf_cells.mk
+        include stacked4_phase6_unbuf_cells.mk
+        include stacked5_phase2_unbuf_cells.mk
+        include stacked5_phase3_unbuf_cells.mk
+    endif
+    endif
+    endif
+    endif
+endif
+endif
+endif
+
+#   ----------------------------------------------------------------
 #               CELL TARGETS
 #   ----------------------------------------------------------------
 
-#   include makefile with highest number of (allowed) stacked transistors
-
-ifeq ($(LIMIT),2)
-    include stacked2_cells.mk
-else
-ifeq ($(LIMIT),3)
-    include stacked3_cells.mk
-else
-ifeq ($(LIMIT),4)
-    include stacked4_cells.mk
-else
-ifeq ($(LIMIT),5)
-    include stacked5_cells.mk
-endif
-endif
-endif
-endif
-
-#   generate cell file from gEDA schematic, while no popcorn-based target exist
+#   generate cell file from schematic, while no popcorn-based target exist
 
 %:  %.sym %.sch
 	$(NETLIST) $^ -o $@ > /dev/null
