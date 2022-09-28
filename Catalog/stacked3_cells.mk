@@ -1142,7 +1142,7 @@ OAOI221:        OAI22
 	$(POPCORN) -m pd -c $@ $< > $@
 	$(STACKED3)
 
-AAOAI221:       DESCR = "2-2-1-input AND-AND-OR-AND gate"
+AAOAI221:       DESCR = "2-2-1-input AND-AND-OR-AND-Invert gate"
 AAOAI221:       AAOI22
 	$(POPCORN) -m pu -c $@ $< > $@
 	$(STACKED3)
