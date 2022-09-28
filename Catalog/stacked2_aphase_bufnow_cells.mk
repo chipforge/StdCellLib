@@ -9,7 +9,7 @@
 #                           www.chipforge.org
 #                   there are projects from small cores up to PCBs, too.
 #
-#   File:           StdCellLib/Catalog/stacked2_cells.mk
+#   File:           StdCellLib/Catalog/stacked2_aphase_bufnow_cells.mk
 #
 #   Purpose:        Makefile for Cell Generation with popcorn
 #
@@ -38,19 +38,15 @@
 #               DESCRIPTION
 #   ----------------------------------------------------------------
 
-#   list all dependencies for cells with up to 2 stacked transistors
-#
-#include crafted2_cells.mk
+#   Dependencies for cells with up to 2 stacked transistors,
+#   which are buffered now.
 
 #   ----------------------------------------------------------------
-#               CELL TARGETS
+#               CELL TARGETS - now buffered
 #   ----------------------------------------------------------------
 
-ifeq ($(BUFFER),2)
+#   --------    one phase   ----------------------------------------
 
-#   --------    now buffered    ------------------------------------
-
-                # one phase
 CELLS +=        AND2 OR2
 
 AND2:           DESCR = "2-input AND gate"
@@ -63,7 +59,8 @@ OR2:            INV
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED2)
 
-                # two phases
+#   --------    two phases  ----------------------------------------
+
 CELLS +=        AO21 OA21 \
                 AAO22 OOA22
 
@@ -86,48 +83,3 @@ OOA22:          DESCR = "2-2-input OR-OR-AND gate"
 OOA22:          OA21
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED2)
-
-BUFFERED = true
-
-else
-
-#   --------    not buffered    ------------------------------------
-
-                # one phase
-CELLS +=        NAND2 NOR2
-
-NAND2:          DESCR = "2-input Not-AND (or NAND) gate"
-NAND2:          INV
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(STACKED2)
-
-NOR2:           DESCR = "2-input Not-OR (or NOR) gate"
-NOR2:           INV
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(STACKED2)
-
-                # two phases
-CELLS +=        AOI21 OAI21 \
-                AAOI22 OOAI22
-
-AOI21:          DESCR = "2-1-input AND-OR-Invert gate"
-AOI21:          NAND2
-	$(POPCORN) -m pd -c $@ $< > $@
-	$(STACKED2)
-
-OAI21:          DESCR = "2-1-input OR-AND-Invert gate"
-OAI21:          NOR2
-	$(POPCORN) -m pu -c $@ $< > $@
-	$(STACKED2)
-
-AAOI22:         DESCR = "2-2-input AND-AND-OR-Invert gate"
-AAOI22:         AOI21
-	$(POPCORN) -m nand -c $@ $< > $@
-	$(STACKED2)
-
-OOAI22:         DESCR = "2-2-input OR-OR-AND-Invert gate"
-OOAI22:         OAI21
-	$(POPCORN) -m nor -c $@ $< > $@
-	$(STACKED2)
-
-endif
