@@ -82,7 +82,8 @@ CELLS +=        AOI23 OAI23 \
                 AAAOI3321 OOOAI3321 \
                 AAAOI3331 OOOAI3331 \
                 AAAAOI2222 OOOOAI2222 \
-                AAAAOI3322 OOOOAI3222
+                           OOOOAI3222 \
+                AAAAOI3322 OOOOAI3322
 
 AOI23:          DESCR = "2-3-input AND-OR-Invert gate"
 AOI23:          AOI22
@@ -274,12 +275,17 @@ OOOOAI2222:     OOOAI2221
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
+OOOOAI3222:     DESCR = "3-2-2-2-input OR-OR-OR-OR-AND-Invert gate"
+OOOOAI3222:     OOOAI3221
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(STACKED4)
+
 AAAAOI3322:     DESCR = "3-3-2-2-input AND-AND-AND-AND-OR-Invert gate"
 AAAAOI3322:     AAAOI3321
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED4)
 
-OOOOAI3222:     DESCR = "3-2-2-2-input OR-OR-OR-OR-AND-Invert gate"
-OOOOAI3222:     OOOAI3221
+OOOOAI3322:     DESCR = "3-3-2-2-input OR-OR-OR-OR-AND-Invert gate"
+OOOOAI3322:     OOOAI3321
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)

@@ -104,20 +104,20 @@ CELLS +=        AOAI212 OAOI212 \
                            OAAAOI2232 \
                 AAAOAI22211 \
                 AAAOAI32211 OOOAOI32211 \
-                AAAOAI33211 \
+                AAAOAI33211 OOOAO33211 \
                 AAOOAI22121 OOAAOI22121 \
                 AAOOAI22131 OOAAOI22131 \
-                AAOOAI22141 \
+                AAOOAI22141 OOAAOI22141 \
                 AAOOOAI2222 OOAAAOI2222 \
                 AAOOOAI2232 OOAAAOI2232 \
                 AAAOOAI2224 OOOAAOI2224 \
                 AAAOOAI3222 OOOAAOI3222 \
-                AAAOOAI3322 \
+                AAAOOAI3322 OOOAAOI3322 \
                 AAAOOAI22221 OOOAAOI22221 \
                 AAAOOAI22231 OOOAAOI22231 \
                 AAOOOAI22122 \
-                AAOOOAI22132 \
-                AAAOOOAI22222
+                AAOOOAI22132 OOAAAOI22132 \
+                AAAOOOAI22222 OOOAAAOI22222
 
 AOAI212:        DESCR = "2-1-2-input AND-OR-AND-Invert gate"
 AOAI212:        AOAI211
@@ -639,6 +639,11 @@ AAAOAI33211:     AAAOI3321
 	$(POPCORN) -m pu -c $@ $< > $@
 	$(STACKED4)
 
+OOOAOI33211:    DESCR = "3-3-2-1-1-input OR-OR-OR-AND-OR-Invert gate"
+OOOAOI33211:    OOOAI3321
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(STACKED4)
+
 AAOOAI22121:    DESCR = "2-2-1-2-1-input AND-AND-OR-OR-AND-Invert gate"
 AAOOAI22121:    AAOOAI2212
 	$(POPCORN) -m pu -c $@ $< > $@
@@ -662,6 +667,11 @@ OOAAOI22131:    OOAAOI2213
 AAOOAI22141:    DESCR = "2-2-1-4-1-input AND-AND-OR-OR-AND-Invert gate"
 AAOOAI22141:    AAOOAI2214
 	$(POPCORN) -m pu -c $@ $< > $@
+	$(STACKED4)
+
+OOAAOI22141:    DESCR = "2-2-1-4-1-input OR-OR-AND-AND-OR-Invert gate"
+OOAAOI22141:    OOAAOI2214
+	$(POPCORN) -m pd -c $@ $< > $@
 	$(STACKED4)
 
 AAOOOAI2222:    DESCR = "2-2-2-2-input AND-AND-OR-OR-OR-AND-Invert gate"
@@ -709,6 +719,11 @@ AAAOOAI3322:    AAAOAI3321
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
+OOOAAOI3322:    DESCR = "3-3-2-2-input OR-OR-OR-AND-AND-OR-Invert gate"
+OOOAAOI3322:    OOOAOI3321
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(STACKED4)
+
 AAAOOAI22221:   DESCR = "2-2-2-2-1-input AND-AND-AND-OR-OR-AND-Invert gate"
 AAAOOAI22221:   AAAOOAI2222
 	$(POPCORN) -m pu -c $@ $< > $@
@@ -739,7 +754,17 @@ AAOOOAI22132:   AAOOAI22131
 	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
+OOAAAOI22132:   DESCR = "2-2-1-3-2-input OR-OR-AND-AND-AND-OR-Invert gate"
+OOAAAOI22132:   OOAAOI22131
+	$(POPCORN) -m nand -c $@ $< > $@
+	$(STACKED4)
+
 AAAOOOAI22222:  DESCR = "2-2-2-2-2-input AND-AND-AND-OR-OR-OR-AND-Invert gate"
 AAAOOOAI22222:  AAAOOAI22221
 	$(POPCORN) -m nor -c $@ $< > $@
+	$(STACKED4)
+
+OOOAAAOI22222:  DESCR = "2-2-2-2-2-input OR-OR-OR-AND-AND-AND-OR-Invert gate"
+OOOAAAOI22222:  OOOAAOI22221
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED4)
