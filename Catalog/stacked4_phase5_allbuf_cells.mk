@@ -49,7 +49,6 @@
 
 CELLS +=        AOAOA21111 OAOAO21111 \
                 AOAOA21121 OAOAO21121 \
-                           OAOAO21122 \
                 AOAOA22111 OAOAO22111 \
                            OAOAO32111 \
                 AAOAOA22111 OOAOAO22111 \
@@ -133,11 +132,6 @@ AOAOA21121:     AOAO2112
 OAOAO21121:     DESCR = "2-1-1-2-1-input OR-AND-OR-AND-OR gate"
 OAOAO21121:     OAOA2112
 	$(POPCORN) -m pd -c $@ $< > $@
-	$(STACKED4)
-
-OAOAO21122:     DESCR = "2-1-1-2-2-input OR-AND-OR-AND-OR gate"
-OAOAO21122:     OAOAO21121
-	$(POPCORN) -m nor -c $@ $< > $@
 	$(STACKED4)
 
 AOAOA22111:     DESCR = "2-2-1-1-1-input AND-OR-AND-OR-AND gate"
