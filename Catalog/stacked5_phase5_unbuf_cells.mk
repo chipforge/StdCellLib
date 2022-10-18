@@ -52,4 +52,4 @@ CELLS +=                    OAOAOI21122 \
 OAOAOI21122:    DESCR = "2-1-1-2-2-input OR-AND-OR-AND-OR-Invert gate"
 OAOAOI21122:    OAOAOI21121
 	$(POPCORN) -m nor -c $@ $< > $@
-	$(STACKED4)
+	$(STACKED5)
