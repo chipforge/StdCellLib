@@ -73,9 +73,9 @@ CELLS +=        AO23 OA23 \
                 AAO322 OOA322 \
                 AAO332 OOA332 \
                 AAO421 OOA421 \
-                       OOA422 \
-                       OOA431 \
-                       OOOA422 \
+                AAO422 OOA422 \
+                AAO431 OOA431 \
+                AAAO422 OOOA422 \
                 AAAO2221 OOOA2221 \
                 AAAO3221 OOOA3221 \
                 AAAO3222 \
@@ -206,14 +206,29 @@ OOA421:         OOA42
 	$(POPCORN) -m pu -c $@ $< > $@
 	$(STACKED4)
 
+AAO422:         DESCR = "4-2-2-input AND-AND-OR gate"
+AAO422:         AAO421
+	$(POPCORN) -m nor -c $@ $< > $@
+	$(STACKED4)
+
 OOA422:         DESCR = "4-2-2-input OR-OR-AND gate"
 OOA422:         OOA421
 	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED4)
 
+AAO431:         DESCR = "4-3-1-input AND-AND-OR gate"
+AAO431:         AAO43
+	$(POPCORN) -m pd -c $@ $< > $@
+	$(STACKED4)
+
 OOA431:         DESCR = "4-3-1-input OR-OR-AND gate"
 OOA431:         OOA43
 	$(POPCORN) -m pu -c $@ $< > $@
+	$(STACKED4)
+
+AAAO422:        DESCR = "4-2-2-input AND-AND-AND-OR gate"
+AAAO422:        AAO421
+	$(POPCORN) -m nand -c $@ $< > $@
 	$(STACKED4)
 
 OOOA422:        DESCR = "4-2-2-input OR-OR-OR-AND gate"
