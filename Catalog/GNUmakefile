@@ -129,24 +129,24 @@ header:
 ifeq ($(LIMIT),2)
     #include crafted2_cells.mk
     ifeq ($(BUFFER),2)
-        include stacked2_aphase_bufnow_cells.mk
+        include stacked2_2x_T_bufnow_cells.mk
     else
-        include stacked2_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
     endif
 else
 ifeq ($(LIMIT),3)
     #include crafted2_cells.mk
     #include crafted3_cells.mk
     ifeq ($(BUFFER),2)
-        include stacked2_aphase_bufnow_cells.mk
-        include stacked3_aphase_allbuf_cells.mk
+        include stacked2_2x_T_bufnow_cells.mk
+        include stacked3_2x_T_allbuf_cells.mk
     else
     ifeq ($(BUFFER),3)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_bufnow_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_bufnow_cells.mk
     else
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
     endif
     endif
 else
@@ -155,8 +155,8 @@ ifeq ($(LIMIT),4)
     #include crafted3_cells.mk
     #include crafted4_cells.mk
     ifeq ($(BUFFER),2)
-        include stacked2_aphase_bufnow_cells.mk
-        include stacked3_aphase_allbuf_cells.mk
+        include stacked2_2x_T_bufnow_cells.mk
+        include stacked3_2x_T_allbuf_cells.mk
         include stacked4_phase2_allbuf_cells.mk
         include stacked4_phase3_allbuf_cells.mk
         include stacked4_phase4_allbuf_cells.mk
@@ -164,8 +164,8 @@ ifeq ($(LIMIT),4)
         include stacked4_phase6_allbuf_cells.mk
     else
     ifeq ($(BUFFER),3)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_bufnow_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_bufnow_cells.mk
         include stacked4_phase2_allbuf_cells.mk
         include stacked4_phase3_allbuf_cells.mk
         include stacked4_phase4_allbuf_cells.mk
@@ -173,16 +173,16 @@ ifeq ($(LIMIT),4)
         include stacked4_phase6_allbuf_cells.mk
     else
     ifeq ($(BUFFER),4)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
         include stacked4_phase2_bufnow_cells.mk
         include stacked4_phase3_bufnow_cells.mk
         include stacked4_phase4_bufnow_cells.mk
         include stacked4_phase5_bufnow_cells.mk
         include stacked4_phase6_bufnow_cells.mk
     else
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
         include stacked4_phase2_unbuf_cells.mk
         include stacked4_phase3_unbuf_cells.mk
         include stacked4_phase4_unbuf_cells.mk
@@ -197,8 +197,8 @@ else
     #include crafted4_cells.mk
     #include crafted5_cells.mk
     ifeq ($(BUFFER),2)
-        include stacked2_aphase_bufnow_cells.mk
-        include stacked3_aphase_allbuf_cells.mk
+        include stacked2_2x_T_bufnow_cells.mk
+        include stacked3_2x_T_allbuf_cells.mk
         include stacked4_phase2_allbuf_cells.mk
         include stacked4_phase3_allbuf_cells.mk
         include stacked4_phase4_allbuf_cells.mk
@@ -208,8 +208,8 @@ else
         include stacked5_phase3_allbuf_cells.mk
     else
     ifeq ($(BUFFER),3)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_bufnow_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_bufnow_cells.mk
         include stacked4_phase2_allbuf_cells.mk
         include stacked4_phase3_allbuf_cells.mk
         include stacked4_phase4_allbuf_cells.mk
@@ -219,8 +219,8 @@ else
         include stacked5_phase3_allbuf_cells.mk
     else
     ifeq ($(BUFFER),4)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
         include stacked4_phase2_bufnow_cells.mk
         include stacked4_phase3_bufnow_cells.mk
         include stacked4_phase4_bufnow_cells.mk
@@ -230,8 +230,8 @@ else
         include stacked5_phase3_allbuf_cells.mk
     else
     ifeq ($(BUFFER),5)
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
         include stacked4_phase2_unbuf_cells.mk
         include stacked4_phase3_unbuf_cells.mk
         include stacked4_phase4_unbuf_cells.mk
@@ -240,8 +240,8 @@ else
         include stacked5_phase2_bufnow_cells.mk
         include stacked5_phase3_bufnow_cells.mk
     else
-        include stacked2_aphase_unbuf_cells.mk
-        include stacked3_aphase_unbuf_cells.mk
+        include stacked2_2x_T_unbuf_cells.mk
+        include stacked3_2x_T_unbuf_cells.mk
         include stacked4_phase2_unbuf_cells.mk
         include stacked4_phase3_unbuf_cells.mk
         include stacked4_phase4_unbuf_cells.mk
