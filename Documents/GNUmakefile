@@ -43,16 +43,11 @@ include $(PRD)/include.mk
 
 #   directory pathes
 
-TRUTHTABLEDIR ?= $(DOCUMENTSDIR)/Truthtables
-SCHEMATICDIR ?= $(DOCUMENTSDIR)/Schematics
-LAYOUTDIR ?= $(DOCUMENTSDIR)/Layouts
-LOADINGDIR ?= $(DOCUMENTSDIR)/Loading
-DATASHEETDIR ?= $(DOCUMENTSDIR)/Datasheets
-BOOKDIR ?= $(DOCUMENTSDIR)/Book
+DATASHEETDIR ?= ./Datasheets
 
 #   project tools
 
-LATEX ?= pdflatex # -output-directory $(RELEASEDIR)
+LATEX ?= lualatex --shell-escape
 BIBER ?= biber
 GLOSSARY ?= makeglossaries
 
@@ -71,58 +66,42 @@ help:
 	#   help        - print this help screen
 	#   clean       - clean up all intermediate files
 	#
-	#   truthtables - generate truth tables for every cell
-	#   schematics  - generate schematics for every cell
-	#   layouts     - generate layouts for every cell
-	#   loading     - generate loading for every cell
 	#   datasheets  - generate datasheets for every cell
 	#   reference   - generate complete reference book
 	#
 
+#   'clean' current directory
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(TRUTHTABLEDIR) $@
-	$(MAKE) -C $(SCHEMATICDIR) $@
-	$(MAKE) -C $(LAYOUTDIR) $@
-	$(MAKE) -C $(LOADINGDIR) $@
 	$(MAKE) -C $(DATASHEETDIR) $@
 	-$(RM) *.aux *.bcf *.idx *.log *.toc *.out *.acr *.alg
 	-$(RM) *.acn *.bbl *.blg *.glo *.ist *.xml *.xdy *.gls *.glg
 
 #   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
+#               DATASHEETS TARGET
 #   ----------------------------------------------------------------
 
-#   generate en detail
-
-.PHONY: truthtables
-truthtables:
-	$(MAKE) -C $(TRUTHTABLEDIR) $@
-
-.PHONY: schematics
-schematics:
-	$(MAKE) -C $(SCHEMATICDIR) $@
-
-.PHONY: layouts
-layouts:
-	$(MAKE) -C $(LAYOUTDIR) $@
-
-.PHONY: loading
-loading:
-	$(MAKE) -C $(LOADINGDIR) $@
+#   Generate Datasheets en detail as part of the Reference Manual.
+#   All stuff inside datasheets is organizied hierarchical.
 
 .PHONY: datasheets
 datasheets:
 	$(MAKE) -C $(DATASHEETDIR) $@
 
-#   grep all hierarchical LaTeX files and build the up-to-date PDF
+#   ----------------------------------------------------------------
+#               REFERENCE MANUAL
+#   ----------------------------------------------------------------
+
+#   Main target for the essential Reference Manual generation.
+#   Grep all hierarchical LaTeX files and build the up-to-date PDF.
 
 .PHONY: reference
-reference: truthtables schematics layouts loading datasheets #$(PROJECT).tex
+reference: datasheets #$(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(BIBER) $(PROJECT)
 	$(GLOSSARY) $(PROJECT)
+	$(LATEX) $(PROJECT).tex
 	$(LATEX) $(PROJECT).tex
 	$(MV) $(PROJECT).pdf $(RELEASEDIR)
 
