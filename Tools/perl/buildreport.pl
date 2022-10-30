@@ -124,18 +124,18 @@ foreach my $file (<*.cell>)
   } 
 
   print OUT "<tr><td>$b1$file$b2</td>";
-  print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $magfile ? "<a href='$magfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $svgfile ? "<a href='$svgfile' target='_blank'><font color='green'>&radic;</font><img src='$svgfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $schfile ? "<a href='$schfile' target='_blank'><font color='green'>&radic;</font><img src='$schfile' height='30'/></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $logfile ? "<a href='$logfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $errfile ? "<a href='$errfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $drcfile ? "<a href='$drcfile' target='_blank'><font color='green'>&radic;</font> $drccount</a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $libfile ? "<a href='$libfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $leffile ? "<a href='$leffile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $gdsfile ? "<a href='$gdsfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $spfile?"<a href='$spfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
-  print OUT "<td>".(-f $spicefile?"<a href='$spicefile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red'>X</font>")."</td>";
+  print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$file missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $magfile ? "<a href='$magfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$magfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $svgfile ? "<a href='$svgfile' target='_blank'><font color='green'>&radic;</font><img src='$svgfile' height='30'/></a>":"<font color='red' title='$svgfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $schfile ? "<a href='$schfile' target='_blank'><font color='green'>&radic;</font><img src='$schfile' height='30'/></a>":"<font color='red' title='$schfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $logfile ? "<a href='$logfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$logfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $errfile ? "<a href='$errfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$errfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $drcfile ? "<a href='$drcfile' target='_blank'><font color='green'>&radic;</font> $drccount</a>":"<font color='red' title='$drcfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $libfile ? "<a href='$libfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$libfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $leffile ? "<a href='$leffile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$leffile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $gdsfile ? "<a href='$gdsfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$gdsfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $spfile?"<a href='$spfile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$spfile missing'>X</font>")."</td>";
+  print OUT "<td>".(-f $spicefile?"<a href='$spicefile' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$spicefile missing'>X</font>")."</td>";
 
   if(open LIB,"<$libfile")
   {
