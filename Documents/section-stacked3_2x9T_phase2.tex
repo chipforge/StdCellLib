@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Book/chapter-design_considerations.tex
+%%  File:           StdCellLib/Documents/section-stacked3_2x9T_phase2.tex
 %%
-%%  Purpose:        Chapter Level File for Standard Cell Library Documentation
+%%  Purpose:        Section Level File for Standard Cell Library Documentation
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,10 +32,24 @@
 %%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %%      See the Libre Silicon Public License for more details.
 %%
-\addchap{Design Considerations}
+%%  ///////////////////////////////////////////////////////////////////
+\section{Eighteen Transistors in two phases}
 
-\addsec{Number of stacked transistors}
-\addsec{Output level restoration}
-\addsec{Port naming rules}
-\addsec{Gate naming rules}
+\begin{table}[ht]
+\centering
+\caption*{covers}
 
+\begin{tabular}{cc}
+    \toprule
+    non-buffered & buffered \\
+    \midrule
+
+    \nameref{cell:AAAOI333} & \nameref{cell:AAAO333} \\
+    \nameref{cell:OOOAI333} & \nameref{cell:OOOA333}
+
+\end{tabular}
+
+\end{table}
+
+\include{Datasheets/AAAOI333} \include{Datasheets/AAAO333}
+\include{Datasheets/OOOAI333} \include{Datasheets/OOOA333}

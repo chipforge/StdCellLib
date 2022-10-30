@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Book/chapter-design_considerations.tex
+%%  File:           StdCellLib/Documents/section-stacked3_2x7T_phase2.tex
 %%
-%%  Purpose:        Chapter Level File for Standard Cell Library Documentation
+%%  Purpose:        Section Level File for Standard Cell Library Documentation
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,10 +32,28 @@
 %%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %%      See the Libre Silicon Public License for more details.
 %%
-\addchap{Design Considerations}
+%%  ///////////////////////////////////////////////////////////////////
+\section{Fourteen Transistors in two phases}
 
-\addsec{Number of stacked transistors}
-\addsec{Output level restoration}
-\addsec{Port naming rules}
-\addsec{Gate naming rules}
+\begin{table}[ht]
+\centering
+\caption*{covers}
 
+\begin{tabular}{cc}
+    \toprule
+    non-buffered & buffered \\
+    \midrule
+
+    \nameref{cell:AAOI331} & \nameref{cell:AAO331} \\
+    \nameref{cell:OOAI331} & \nameref{cell:OOA331} \\
+    \nameref{cell:AAAOI322} & \nameref{cell:AAAO322} \\
+    \nameref{cell:OOOAI322} & \nameref{cell:OOOA322}
+
+\end{tabular}
+
+\end{table}
+
+\include{Datasheets/AAOI331} \include{Datasheets/AAO331}
+\include{Datasheets/OOAI331} \include{Datasheets/OOA331}
+\include{Datasheets/AAAOI322} \include{Datasheets/AAAO322}
+\include{Datasheets/OOOAI322} \include{Datasheets/OOOA322}

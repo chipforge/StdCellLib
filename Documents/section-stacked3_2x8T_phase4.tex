@@ -9,9 +9,9 @@
 %%                          www.chipforge.org
 %%                  there are projects from small cores up to PCBs, too.
 %%
-%%  File:           StdCellLib/Documents/Book/chapter-design_considerations.tex
+%%  File:           StdCellLib/Documents/section-stacked3_2x8T_phase4.tex
 %%
-%%  Purpose:        Chapter Level File for Standard Cell Library Documentation
+%%  Purpose:        Section Level File for Standard Cell Library Documentation
 %%
 %%  ************    LaTeX with circdia.sty package      ***************
 %%
@@ -32,10 +32,32 @@
 %%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %%      See the Libre Silicon Public License for more details.
 %%
-\addchap{Design Considerations}
+%%  ///////////////////////////////////////////////////////////////////
+\section{Sixteen Transistors in four phases}
 
-\addsec{Number of stacked transistors}
-\addsec{Output level restoration}
-\addsec{Port naming rules}
-\addsec{Gate naming rules}
+\begin{table}[ht]
+\centering
+\caption*{covers}
 
+\begin{tabular}{cc}
+    \toprule
+    non-buffered & buffered \\
+    \midrule
+
+    \nameref{cell:AOOAAOI2123} & \nameref{cell:AOOAAO2123} \\
+    \nameref{cell:OAAOOAI2123} & \nameref{cell:OAAOOA2123} \\
+    \nameref{cell:AAOAAOI2213} & \nameref{cell:AAOAAO2213} \\
+    \nameref{cell:OOAOOAI2213} & \nameref{cell:OOAOOA2213} \\
+    \nameref{cell:AAOOAAOI2222} & \nameref{cell:AAOOAAO2222} \\
+    \nameref{cell:OOAAOOAI2222} & \nameref{cell:OOAAOOA2222}
+
+\end{tabular}
+
+\end{table}
+
+\include{Datasheets/AOOAAOI2123} \include{Datasheets/AOOAAO2123}
+\include{Datasheets/OAAOOAI2123} \include{Datasheets/OAAOOA2123}
+\include{Datasheets/AAOAAOI2213} \include{Datasheets/AAOAAO2213}
+\include{Datasheets/OOAOOAI2213} \include{Datasheets/OOAOOA2213}
+\include{Datasheets/AAOOAAOI2222} \include{Datasheets/AAOOAAO2222}
+\include{Datasheets/OOAAOOAI2222} \include{Datasheets/OOAAOOA2222}
