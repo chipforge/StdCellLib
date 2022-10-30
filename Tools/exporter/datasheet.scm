@@ -185,7 +185,7 @@
         Returns list for (map display (list ..))"
         (list
             "\n"
-            "\n\\subsubsection*{See also:}" (origin cell)
+            "\n\\subsubsection*{See also: }\\nameref{cell:" (origin cell) "}"
             "\n"
             ;; generate topics !!
         ))
