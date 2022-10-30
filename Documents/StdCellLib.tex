@@ -33,7 +33,9 @@
 %%      See the Libre Silicon Public License for more details.
 %%
 %%  ///////////////////////////////////////////////////////////////////
-\documentclass[a4paper,10pt,twoside,openany,headsepline,footsepline,draft]{scrbook}
+\documentclass[a4paper, twoside,
+               openany,
+               headsepline, footsepline]{scrbook}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[style=authoryear]{biblatex}
@@ -42,17 +44,20 @@
 \usepackage{amssymb}
 %\usepackage{gensymb}
 \usepackage{booktabs}
+\usepackage{caption} \captionsetup{labelformat=empty}
 \usepackage{graphicx}
 \usepackage[digital,srcmeas,semicon]{circdia}
 % \usepackage[dvipsnames]{xcolor}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{pdflscape}
+\usepackage[inkscape=png]{svg}
+\usepackage{nameref}
+\usepackage[colorlinks=true,linkcolor=gray,citecolor=orange,filecolor=green,urlcolor=cyan]{hyperref}
 \pagestyle{myheadings}
 \markboth{LibreSilicon's Standard Cell Library - Reference Manual -\hfill}{\hfill - Reference Manual - LibreSilicon's Standard Cell Library}
 
 \input{glossary.tex}
 
-\usepackage[colorlinks=true,linkcolor=blue,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
 
 \addbibresource{readings.bib}
 
@@ -76,6 +81,18 @@ This design is distributed in the hope that it will be useful, but WITHOUT ANY W
 For further clarification consult the complete documentation of the process.
 \end{quote}
 \uppertitleback
+
+This work was supported by the Stichting NLnet\footnotemark NGI Zero Program under MoU 2019-12-075.
+\begin{figure}[htp]
+    \begin{minipage}{.5\linewidth}
+        \includesvg[width=6cm]{NLnet_banner}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.25\linewidth}
+        \includesvg[width=2cm]{NGIZero-white}
+    \end{minipage}
+\end{figure}
+\footnotetext[1]{https://nlnet.nl}
 
 \vfill
 \input{table-revision_history}
