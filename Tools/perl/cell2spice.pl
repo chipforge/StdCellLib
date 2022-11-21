@@ -54,7 +54,7 @@ foreach my $fn (@cells)
     {
       my($t,$g,$d,$s)=($1,$2,$3,$4);
       my $x=($t eq "pmos")?"vdd":"gnd";
-      $transistors.="M$M $d $g $s $x $t ".(($t eq "pmos") ? $ptech:$ntech)."\n";
+      $transistors.="M$M ".uc("$d $g $s $x")." $t ".(($t eq "pmos") ? $ptech:$ntech)."\n";
             #M1  vdd    B a_2_6# vdd pmos w=0.5u l=0.05u
             #M2  Y a_2_6# vdd vdd pmos w=0.5u l=0.05u
             #M3  a_9_6# A a_2_6# gnd nmos w=0.5u l=0.05u
@@ -66,12 +66,12 @@ foreach my $fn (@cells)
     if(m/^res (\w+) (\w+) (\w+)/i)
     {
       my($n1,$n2,$v)=($1,$2,$3);
-      $transistors.="R$M $n1 $n2 $v\n";
+      $transistors.="R$M ".uc($n1)." ".uc($n2)." ".uc($v)."\n";
       $M++;
     }
   }
   $ios=~s/,/ /g;$ios=~s/  / /g; $ios=~s/^ //; $ios=~s/ $//;
-  print OUT ".subckt $short vdd gnd $ios\n";
+  print OUT ".subckt $short ".uc("vdd gnd $ios")."\n";
   print OUT $transistors;
   print OUT ".ends $short\n\n";
   close IN;
