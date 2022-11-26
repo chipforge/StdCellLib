@@ -70,13 +70,12 @@ print OUT "Generated: ".localtime()." by <a href='https://libresilicon.com/' tar
 
 print OUT "<h2>Input files: PDK, <a href='https://download.libresilicon.com/process/v1/process_design_rules.pdf' target='_blank' title='Design Rules'>DRC</a>, <a title='layer colours, resistances, layer numbers'>layer definitions</a>, process parameters:</h2>";
 print OUT "These input files are necessary to define the rules and parameters for the standard cell library. All those files are collected in the <b>Tech</b> directory.<br/>";
-my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> rules for <a href='https://klayout.de/' target='_blank'>KLayout</a> GDS Viewer","librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transistor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> model SPICE <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a> (*.lib files in other tools)","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>Parasitic extraction parameters</a>","nmos.sp"=>"Transistor size template for SPICE models","pmos.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
+my %inputs=("drc.lydrc"=>"<a href='https://www.klayout.de/doc-qt5/about/drc_ref.html' target='_blank'>DRC</a> rules for <a href='https://klayout.de/' target='_blank'>KLayout</a> GDS Viewer",
+	"librecell_tech.py"=>"Cell layouting rules, DRC","libresilicon.m"=>"Transistor <a href='http://bsim.berkeley.edu/' target='_blank'>BSIM</a> model SPICE <a href='http://bsim.berkeley.edu/models/bsim3/' target='_blank'>parameters</a> (*.lib files in other tools)","libresilicon.tech"=>"<a href='http://opencircuitdesign.com/magic/' target='_blank'>Magic</a> Layers and <a href='http://opencircuitdesign.com/magic/techref/maint2.html' target='_blank'>Parasitic extraction parameters</a>","nmos.sp"=>"Transistor size template for SPICE models","pmos.sp"=>"Transistor size template for SPICE models","template.lef"=>"Template for the header of <a href='https://en.wikipedia.org/wiki/Library_Exchange_Format' target='_blank'>Library Exchange Format</a> LEF Files");
 print OUT "<table border='1'><tr><th>Filename</th><th>Description</th></tr>";
 foreach(sort keys %inputs)
 {
-	#  print OUT "<tr><td><a href='../Tech/$_' target='_blank'>$_</a></td><td>$inputs{$_}</td></tr>";
-  print OUT "<tr><td>".(-f "../Tech/$_"? "<a href='../Tech/$_' target='_blank'><font color='green'>&radic;</font>$_</a>":"<font color='red'>X</font>")."</td><td>$inputs{$_}</td></tr>";
-
+  print OUT "<tr><td>".(-f "../Tech/$_"? "<a href='../Tech/$_' target='_blank'><font color='green'>&radic;</font>$_</a>":"<font color='red' title='../Tech/$_'>X</font>$_")."</td><td>$inputs{$_}</td></tr>";
 }
 print OUT "</table>";
 
@@ -165,6 +164,7 @@ foreach my $file (<*.cell>)
   }
   $layouttime=~s/\.\d+$//;
   $lvs=~s/FAILED/<font color='red'>FAILED<\/font>/;
+  $lvs=""; # LVS engine is currently broken
 
   $errors.=" <b>This cell is currently building...</b>" if(-f $runfile);
   $errors.=" This cell has been excluded from building " if(-f $dontlayoutfile);
