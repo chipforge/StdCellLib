@@ -39,6 +39,8 @@ while(<IN>)
     open OUT,">$cellname.running";
     close OUT;
 
+    my $usage="/usr/bin/time -v -a -o $cellname.usage";
+
     sub step($)
     {
       print "$_[0]\n";
@@ -72,7 +74,7 @@ while(<IN>)
     foreach my $deb(1,0) # We dont want to overwrite the good output files with debug output files
     {
       next if($deb && !$debug);
-      my $cmd="lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
+      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
       print "$cmd\n";
       system $cmd;
     }
@@ -131,6 +133,7 @@ EOF
     elsif(! -f $gdsfile)
     {
       print STDERR "Error: lclayout has not generated Magic or GDS2.\n";
+      unlink "$cellname.running";
       next;
     }
 
@@ -144,10 +147,10 @@ EOF
     unlink "$cellname.drclog";
 
     step("NEXT STEP: DRC Check with Magic");
-    system "../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
+    system "$usage ../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
     step("NEXT STEP: DRC Fix");
-    system "../Tools/perl/drcfix.pl $cellname.mag ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
+    system "$usage ../Tools/perl/drcfix.pl $cellname.mag ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
     if(-f "corr_$cellname.mag")
     {
       unlink "$cellname.predrc.mag";
@@ -164,8 +167,7 @@ EOF
 
       step("NEXT STEP: Final DRC check");
       print "DRC errors in $cellname corrected. Now running final DRC check:\n";
-      system "../Tools/perl/drccheck.pl $cellname.mag";
-
+      system "$usage ../Tools/perl/drccheck.pl $cellname.mag";
     }
     step("DRC Fixing done.");
 
@@ -182,7 +184,7 @@ EOF
     rename "$cellname.gds","outputlib/$cellname.gds";
 
     step("NEXT STEP: magic2");
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
+    open OUT,"|$usage magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 extract warn all
 extract all
@@ -205,7 +207,7 @@ EOF
     #system "cat $cellname.ext";
     print "Second magic call:\n";
     step("NEXT STEP: magic3");
-    open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
+    open OUT,"|$usage magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 ext2sim rthresh 0
 ext2sim cthresh 0
@@ -231,10 +233,10 @@ EOF
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
 
     step("NEXT STEP: Characterization");
-    $cmd="lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
+    $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
-    $cmd="lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
+    $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
 
     step("NEXT STEP: Visualisation");
