@@ -2,9 +2,10 @@
 
 # This tool generates a HTML build report
 
-my $report="buildreportnew.html";
+my $reportnew="buildreportnew.html";
+my $report="buildreport.html";
 
-open OUT,">$report";
+open OUT,">$reportnew";
 print OUT "<html><head>";
 print OUT '<meta http-equiv="refresh" content="60">' if(!-f ".done");
 print OUT <<EOF
@@ -219,6 +220,6 @@ print OUT "If you want to build your own standard cell library, you can try our 
 
 print OUT "</body></html>";
 close OUT;
-rename "buildreportnew.html","buildreport.html";
+rename $reportnew,$report;
 print "firefox $report\n";
 
