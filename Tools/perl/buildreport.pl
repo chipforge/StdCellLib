@@ -175,8 +175,8 @@ foreach my $file (<*.cell>)
       if(m/Elapsed \(wall clock\) time \(h:mm:ss or m:ss\): ([\d:]+)/)
       {
 	my @ar=split ":",$1;
-        my $sec=$ar[-1]+$ar[-2]*60+$ar[-3]*60*60;
-	print "$1 -> $sec\n";
+        my $sec=$ar[-1]+$ar[-2]*60+($ar[-3]||0)*60*60;
+	#print "$1 -> $sec\n";
 	$thistime+=$sec;
 	$maxtime=$thistime if($thistime > $maxtime);
       }
