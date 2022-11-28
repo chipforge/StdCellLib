@@ -21,6 +21,9 @@ if(open IN,"<../Tech/lctime.conf")
 
 system "../Tools/perl/cell2spice.pl";
 
+mkdir "work";
+system "rm -rf work/*";
+
 open IN,"<$sp" || die "Could not open file $sp: $!\n";
 while(<IN>)
 {
@@ -232,12 +235,19 @@ EOF
     step("NEXT STEP: Generating Liberty Template");
     system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
 
-    step("NEXT STEP: Characterization");
+    step("NEXT STEP: Characterization with lctime:");
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
     print "$cmd\n"; system($cmd);
+
+
+    step("NEXT STEP: Characterization with CharLib:");
+    $cmd="python3 ../Tools/python/gen_CharLib.py";
+    print "$cmd\n"; system($cmd);
+    $cmd="python3 CharLib.py -b CharLib.cmd"; # Which Path should we use for CharLib?
+
 
     step("NEXT STEP: Visualisation");
     print "Visualisation:\nlibertyviz -l $cellname.lib --cell $cellname --pin Y --related-pin A --table cell_rise\n";
