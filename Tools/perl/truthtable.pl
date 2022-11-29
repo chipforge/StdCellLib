@@ -60,7 +60,7 @@ sub truth
         verb "i2: ".($i2||"")."\n";
         if((defined($i1) && defined($i2)) && (($i1=~m/vdd/i && $i2=~m/gnd/i) || ($i1=~m/vdd/i && $i2=~m/gnd/i)))
         {
-          die "ERROR: Short cirtuit detected: $n1->$i1->$iv{$n1} $n2->$i2->$iv{$2}!\n";
+          die "ERROR: Short circuit detected: $n1->$i1->$iv{$n1} $n2->$i2->$iv{$2}!\n";
         }
         if(defined($i1))
         {
@@ -99,7 +99,7 @@ sub truth
 
 	    if((defined($ig) && defined($id)) && (($ig=~m/vdd/i && $id=~m/gnd/i) || ($ig=~m/vdd/i && $id=~m/gnd/i)))
 	    {
-              die "ERROR: Short cirtuit detected: $g->$ig->$iv{$g} $d->$id->$iv{$d}!\n";
+              die "ERROR: Short circuit detected: $g->$ig->$iv{$g} $d->$id->$iv{$d}!\n";
 	    }
             if(defined($ig))
 	    {
