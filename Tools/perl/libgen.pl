@@ -153,7 +153,18 @@ sub mymax($$)
   return ($_[0]>$_[1])?$_[0]:$_[1];
 }
 
-foreach my $mag(<*.mag>)
+
+my @liste=();
+if(scalar(@ARGV))
+{
+  @liste=@ARGV;
+}
+else
+{
+  @liste=<*.mag>;
+}
+
+foreach my $mag(@liste)
 {
   my $cellname=$mag; $cellname=~s/\.mag$//;
   next if(defined($ENV{'CELL'}) && $ENV{'CELL'} ne $cellname);
