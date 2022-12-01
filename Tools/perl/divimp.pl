@@ -11,6 +11,12 @@ our @repos=();
 
 my $magictech="gf180mcuC";
 
+sub step($)
+{
+  print "$_[0]\n";
+  print STDERR "$_[0]\n";
+}
+
 sub nextgroup($)
 {
   $CARAVEL="gf180_stdcelllib_$_[0]";
@@ -44,24 +50,33 @@ sub endgroup($)
 {
   my $CARAVEL=$_[0];	
   chdir "$CARAVEL/cells/lef";
+  step("fixup_lef $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_lef.pl $magictech";
   chdir "../../../";
   chdir "$CARAVEL/cells/mag";
-  system "perl ../../../../Tools/caravel/fixup_mag.pl $magictech";
+  step("fixup_mag $CARAVEL");
+  system "perl ../../../../Tools/caravel/fixup_mag.pl $magictech" if($magictech eq "sky130A");
   chdir "../../../";
   chdir "$CARAVEL/cells/sp";
+  step("fixup_sp $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_sp.pl $magictech";
   chdir "../../../";
 
   chdir "$CARAVEL/cells/lib";
+  step("libertymerge");
   system "libertymerge -b ../../../libresilicon.libtemplate -o libresilicon.lib -u *.lib";
+  step("removenl");
   system "perl ../../../../Tools/caravel/removenl.pl >new.lib";
   system "mv newlib libresilicon.lib";
   chdir "../../../";
+  step("generator");
   system "perl ../Tools/caravel/generator.pl >$CARAVEL/verilog/rtl/user_proj_example.v";
+  step("cells");
   system "perl ../Tools/caravel/cells.pl >$CARAVEL/verilog/rtl/user_proj_cells.v";
+  step("placement");
   system "perl ../Tools/caravel/placement.pl >$CARAVEL/openlane/user_proj_example/macro_placement.cfg";
   chdir $CARAVEL; 
+  step("make user_proj_example");
   system "make user_proj_example && make user_project_wrapper";
   system "make dist";
   chdir "..";
