@@ -233,7 +233,7 @@ EOF
 
 
     step("NEXT STEP: Generating Liberty Template");
-    system "../Tools/perl/libgen.pl >$cellname.libtemplate 2>>$cellname.err";
+    system "../Tools/perl/libgen.pl $cellname.mag >$cellname.libtemplate 2>>$cellname.err";
 
     step("NEXT STEP: Characterization with lctime:");
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
