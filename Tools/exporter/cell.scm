@@ -76,6 +76,9 @@
             (if (null? (clocks record)) ; optional
                 ""
                 (string-append "\n.clocks " (method-pretty-print-nodes (clocks record))))
+            "\n# ----------------------------------------------------"
+            "\n# type gate drain source bulk size stacked xgrid ygrid"
+            "\n# ----------------------------------------------------"
             (method-pretty-print-netlist (netlist record))
             "\n.end"))
 
