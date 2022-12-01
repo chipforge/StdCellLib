@@ -7,7 +7,7 @@ my $report="buildreport.html";
 
 open OUT,">$reportnew";
 print OUT "<html><head>";
-print OUT '<meta http-equiv="refresh" content="60">' if(!-f ".done");
+print OUT '<meta http-equiv="refresh" content="120">' if(!-f ".done");
 print OUT <<EOF
 <style>
 body
