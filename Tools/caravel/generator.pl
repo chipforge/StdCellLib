@@ -2,6 +2,9 @@
 
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 
+print STDERR "Warning: environment variable CARAVEL not defined! Please define it.\n" unless (-d $ENV{'CARAVEL'}."/cells/mag/");
+
+
 print <<EOF
 `default_nettype none
 
