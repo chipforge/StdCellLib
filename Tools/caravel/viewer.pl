@@ -2,8 +2,10 @@
 
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 my $CARAVEL=$ENV{'CARAVEL'} || "/media/philipp/Daten/skywater/caravel-stdcelllib-stdcells";
+my $magictech=$ARGV[0] || "sky130A";
 
-open OUT,"|magic -noconsole -T sky130A";
+
+open OUT,"|magic -noconsole -T $magictech";
 foreach(<$CARAVEL/cells/lef/*.lef>)
 {
   print OUT "lef read $_\n";

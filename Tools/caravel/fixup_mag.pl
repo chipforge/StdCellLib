@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 
+my $magictech=$ARGV[0] || "sky130A";
+
 foreach my $mag (<*.mag>)
 {
   my $name=$mag; $name=~s/\.mag$//;
@@ -101,7 +103,7 @@ quit
 EOF
 ;
   #print $cmd;
-  open MAGIC,"|magic -dnull -noconsole -T sky130A $mag";
+  open MAGIC,"|magic -dnull -noconsole -T $magictech $mag";
   print MAGIC $cmd;
   close MAGIC;
   system "mv $name.gds ../gds/$name.gds";

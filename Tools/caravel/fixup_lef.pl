@@ -1,7 +1,11 @@
 #!/usr/bin/perl -w
 use strict;
 
+my $magictech=$ARGV[0] || "sky130A";
+
 my %layersToDo=("li1"=>1,"mcon"=>1,"locali"=>1,"metal1"=>1);
+
+
 
 sub readfile($)
 {
@@ -135,7 +139,7 @@ foreach my $origlef (<orig/*.lef>)
 
   system "cp $lef $lef.beforemagic";
 
-  open MAGIC,"|magic -dnull -noconsole -T sky130A";
+  open MAGIC,"|magic -dnull -noconsole -T $magictech";
   print MAGIC "lef read $lef\n";
   print MAGIC "load $cell\n";
   print MAGIC "lef write $lef\n";
