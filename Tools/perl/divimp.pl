@@ -60,6 +60,7 @@ sub endgroup($)
   $ENV{'PDK'}="gf180mcuC";
   #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
   mkdir "$CARAVEL/dependencies",0777;
+  system "perl ../Tools/caravel/configgen.pl >$CARAVEL/openlane/user_proj_example/config.json";
   chdir "$CARAVEL/cells/lef";
   step("fixup_lef $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_lef.pl $magictech";
@@ -78,7 +79,7 @@ sub endgroup($)
   system "libertymerge -b ../../../libresilicon.libtemplate -o libresilicon.lib -u *.lib";
   step("removenl");
   system "perl ../../../../Tools/caravel/removenl.pl >new.lib";
-  system "mv newlib libresilicon.lib";
+  system "mv new.lib libresilicon.lib";
   chdir "../../../";
   step("generator");
   system "perl ../Tools/caravel/generator.pl >$CARAVEL/verilog/rtl/user_proj_example.v";
