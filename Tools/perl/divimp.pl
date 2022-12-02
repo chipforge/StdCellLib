@@ -48,7 +48,18 @@ sub addcell($$)
 
 sub endgroup($)
 {
-  my $CARAVEL=$_[0];	
+  my $CARAVEL=$_[0];
+
+  #$ENV{'STD_CELL_LIBRARY'}='sky130_fd_sc_ls';
+  $ENV{'STDCELLLIB'}='../'; # /home/philipp/libresilicon/StdCellLib
+  $ENV{'OPENLANE_ROOT'}=$ENV{'PWD'}."/$CARAVEL/dependencies/openlane_src"; # =$(readlink -f $(pwd)/../openlane )
+  #$ENV{'OPENLANE_TAG'}="gfmpw-0c";
+  $ENV{'CARAVEL'}=$ENV{'PWD'}."/$CARAVEL"; # =$(pwd)
+  $ENV{'CARAVEL_ROOT'}=$ENV{'PWD'}."/$CARAVEL/caravel";
+  $ENV{'PDK_ROOT'}=$ENV{'PWD'}."/$CARAVEL/dependencies/pdks"; # =$(readlink -f $(pwd)/../pdk )
+  $ENV{'PDK'}="gf180mcuC";
+  #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
+  mkdir "$CARAVEL/dependencies",0777;
   chdir "$CARAVEL/cells/lef";
   step("fixup_lef $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_lef.pl $magictech";
@@ -77,6 +88,7 @@ sub endgroup($)
   system "perl ../Tools/caravel/placement.pl >$CARAVEL/openlane/user_proj_example/macro_placement.cfg";
   chdir $CARAVEL; 
   step("make user_proj_example");
+  system "make setup";
   system "make user_proj_example && make user_project_wrapper";
   system "make dist";
   chdir "..";
