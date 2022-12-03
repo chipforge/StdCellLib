@@ -55,9 +55,9 @@ CELLS =
 #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # global; max number of stacked mosfets - reasonable less or equal 5
-LIMIT ?=            4
-# buffering recommended, but free to reduce - usually $(LIMIT)
-BUFFER ?=           5
+LIMIT ?=            0
+# buffering recommended, but free to set - usually $(LIMIT)
+BUFFER ?=           0
 # textual description for cell functionality
 DESCR ?=            '?'
 
@@ -65,18 +65,23 @@ POPCORN +=          -b $(BUFFER) \
                     -D $(DESCR)
 NETLIST ?=          lepton-netlist -g geda # FIXME!! backend target still does not exist
 
-#   tool variables
+#   colourful tracing
 
 TRACE.DOT ?=        trace.dot
 TRACE.SVG ?=        trace.svg
 DOT ?=              dot -Tsvg $(TRACE.DOT) -o $(TRACE.SVG)
 
-STACKED2 ?=         -@echo "    $< -> $@ [color=blueviolet]" >> $(TRACE.DOT)
-STACKED3 ?=         -@echo "    $< -> $@ [color=dodgerblue]" >> $(TRACE.DOT)
-STACKED4 ?=         -@echo "    $< -> $@ [color=lime]" >> $(TRACE.DOT)
-STACKED5 ?=         -@echo "    $< -> $@ [color=yellow]" >> $(TRACE.DOT)
-STACKED6 ?=         -@echo "    $< -> $@ [color=orange]" >> $(TRACE.DOT)
-STACKED7 ?=         -@echo "    $< -> $@ [color=red]" >> $(TRACE.DOT)
+RAINBOW1 =          -@echo "    $@ [color=blueviolet]; $< -> $@" >> $(TRACE.DOT)
+RAINBOW2 =          -@echo "    $@ [color=dodgerblue]; $< -> $@" >> $(TRACE.DOT)
+RAINBOW3 =          -@echo "    $@ [color=lime]; $< -> $@" >> $(TRACE.DOT)
+RAINBOW4 =          -@echo "    $@ [color=orange]; $< -> $@" >> $(TRACE.DOT)
+RAINBOW5 =          -@echo "    $@ [color=red]; $< -> $@" >> $(TRACE.DOT)
+
+STACKED2 =          $(RAINBOW2)
+STACKED3 =          $(RAINBOW3)
+STACKED4 =          $(RAINBOW4)
+STACKED5 =          $(RAINBOW5)
+STACKED6 =          $(RAINBOW6)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -117,6 +122,7 @@ header:
 	#   |_|launched:|_| $(DATE)
 	-@echo "digraph catalog {" > $(TRACE.DOT)
 	-@echo "    node[shape=box]" >> $(TRACE.DOT)
+	-@echo "    INV [color=blueviolet]" >> $(TRACE.DOT)
 
 #   ----------------------------------------------------------------
 #               SETS
