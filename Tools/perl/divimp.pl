@@ -59,9 +59,21 @@ sub endgroup($)
   $ENV{'PDK_ROOT'}=$ENV{'PWD'}."/$CARAVEL/dependencies/pdks"; # =$(readlink -f $(pwd)/../pdk )
   $ENV{'PDK'}="gf180mcuC";
   #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
+  print "Writing Environment file for easy debugging, just \"source env.sh\" when you need it:\n";
+  open OUT,">$CARAVEL/env.sh";
+  foreach(qw(STDCELLLIB OPENLANE_ROOT CARAVEL CARAVEL_ROOT PDK_ROOT PDK))
+  {
+    print OUT "export $_=\"".$ENV{$_}."\"\n";
+  }
+  close OUT;
+
   mkdir "$CARAVEL/dependencies",0777;
-  system "perl ../Tools/caravel/configgen.pl >$CARAVEL/openlane/user_proj_example/config.json";
-  chdir "$CARAVEL/cells/lef";
+  chdir "$CARAVEL";
+  system "perl ../../Tools/caravel/configgen.pl >openlane/user_proj_example/config.json";
+
+
+
+  chdir "cells/lef";
   step("fixup_lef $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_lef.pl $magictech";
   chdir "../../../";
@@ -92,6 +104,8 @@ sub endgroup($)
   system "make setup";
   system "make user_proj_example && make user_project_wrapper";
   system "make dist";
+  system "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/*";
+  system "git commit -m \"Automatically generated files\"";
   chdir "..";
 }
 
