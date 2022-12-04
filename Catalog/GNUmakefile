@@ -56,8 +56,18 @@ CELLS =
 
 # global; max number of stacked mosfets - reasonable less or equal 5
 LIMIT ?=            0
+# same for pull-up network only
+PUN ?=              0
+# same for pull-down network only
+PDN ?=              0
+# global; max number of mosfets per (pull-up/pull-down) network
+TOTAL ?=            0
 # buffering recommended, but free to set - usually $(LIMIT)
 BUFFER ?=           0
+
+STACKEDP := $(intcmp 0,$(LIMIT),$(LIMIT),$(LIMIT),$(PUN))
+STACKEDN := $(intcmp 0,$(LIMIT),$(LIMIT),$(LIMIT),$(PDN))
+
 # textual description for cell functionality
 DESCR ?=            '?'
 
@@ -95,18 +105,24 @@ help:
 	#       available targets:
 	#   ----------------------------------------------------------
 	#
-	#   help       - print this help screen
-	#   clean      - clean up all intermediate files
+	#   help        - print this help screen
+	#   clean       - clean up all intermediate files
 	#
-	#   catalog    - compile *all* catalog cells (see list below)
-	#   cell CELL=<cell> - compile up to dedicated catalog cell
-	#   trace      - generate cell derivative tree (as SVG)
+	#   catalog     - compile *all* catalog cells (see list below)
+	#   .. LIMIT=4  - number of stacked transistors in both networks
+	#   .. PUN=3    - number of stacked transistors on pull-up network
+	#   .. PDN=3    - number of stacked transistors on pull-down network
+	#   .. TOTAL=15 - number of transistors per network
+	#   .. BUFFER=4 - buffer output
+	#   trace       - generate cell derivative tree (as SVG)
+	#
+	#   <cell>      - compile up to dedicated catalog cell
 	#
 	#   ----------------------------------------------------------
-	#       available cells [LIMIT=$(LIMIT) + BUFFER=$(BUFFER)]:
+	#       available cells [LIMIT=$(LIMIT), TOTAL=$(TOTAL), BUFFER=$(BUFFER)]:
 	#   ----------------------------------------------------------
+	#
 	#   $(CELLS)
-	#
 
 .PHONY: clean
 clean:
