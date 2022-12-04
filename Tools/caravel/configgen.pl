@@ -1,16 +1,23 @@
 #!/usr/bin/perl -w
 use strict;
 
+
+my $lefs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lef/*.lef>);
+my $gds=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
+my $libs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lib/libres*.gds>);
+my $verilog=$ENV{'PWD'}."/verilog/rtl/user_proj_cells.v";
+#    "EXTRA_LIBS": ["dir::../../cells/lib/libres*.lib"],
+ 
 print <<EOF
 {
     "DESIGN_NAME": "user_proj_example",
     "DESIGN_IS_CORE": 0,
     "VERILOG_FILES": ["dir::../../verilog/rtl/defines.v", "dir::../../verilog/rtl/user_proj_example.v"],
-    "EXTRA_LEFS": ["dir::../../cells/lef/*.lef"],
-    "EXTRA_LIBS": ["dir::../../cells/lib/libres*.lib"],
-    "EXTRA_GDS_FILES": ["dir::../../cells/gds/*.gds"],
-    "VERILOG_FILES_BLACKBOX": ["dir::../../rtl/user_proj_cells.v"],
-    "SYNTH_READ_BLACKBOX_LIB": 1,
+    "EXTRA_LEFS": ["$lefs"],
+    "EXTRA_GDS_FILES": ["$gds"],
+    "VERILOG_FILES_BLACKBOX": ["$verilog"],
+    "GPL_CELL_PADDING": 0,
+    "SYNTH_READ_BLACKBOX_LIB": 0,
     "CLOCK_TREE_SYNTH": 0,
     "DESIGN_IS_CORE": 0,
     "CLOCK_PERIOD": 10,
