@@ -83,7 +83,7 @@ foreach my $mag(<cells/mag/*.mag>)
         my $io=$nextio++;
 	if($io<$MPRJ_IO_PADS)
 	{
-	  $setting{$io}="GPIO_MODE_MGMT_STD_INPUT_PULLDOWN";
+	  $setting{$io}="GPIO_MODE_USER_STD_INPUT_PULLDOWN";
 	}
 	else
 	{
@@ -98,7 +98,7 @@ foreach my $mag(<cells/mag/*.mag>)
         my $io=$nextio++;
 	if($io<$MPRJ_IO_PADS)
 	{
-	  $setting{$io}="GPIO_MODE_MGMT_STD_OUTPUT";
+	  $setting{$io}="GPIO_MODE_USER_STD_OUTPUT";
 	}
 	else
 	{
@@ -113,7 +113,7 @@ foreach my $mag(<cells/mag/*.mag>)
 
 foreach(5 .. 37)
 {
-  print "`define USER_CONFIG_GPIO_$_"."_INIT `".($setting{$_}||"GPIO_MODE_MGMT_STD_INPUT_NOPULL")."\n";
+  print "`define USER_CONFIG_GPIO_$_"."_INIT `".($setting{$_}||"GPIO_MODE_USER_STD_INPUT_NOPULL")."\n";
 }
 
 print "`endif // __USER_DEFINES_H\n";
