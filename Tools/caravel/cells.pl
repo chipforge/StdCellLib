@@ -20,16 +20,16 @@ EOF
 our $nextla=0;
 our $nextio=0;
 
-foreach my $mag(sort <$STDCELLLIB/Catalog/*.mag>)
+foreach my $mag(sort <cells/mag/*.mag>)
 {
   next if((-s $mag)<=50);
   #print `ls -la $mag`;
-  my $cell=$mag; $cell=~s/\.mag$/.cell/;
-  my $lib=$mag; $lib=~s/\.mag$/.lib/;
+  my $cell=$mag; $cell=~s/\.mag$/.cell/; $cell=~s/\/mag\//\/cell\//;
+  my $lib=$mag; $lib=~s/\.mag$/.lib/; $lib=~s/\/mag\//\/lib\//;
   my $name=""; $name=$1 if($mag=~m/([\w\-\.]+)\.mag$/);
   next unless(-f $cell);
-  next unless(-f $lib);
-  next unless(-f $ENV{'CARAVEL'}."/cells/mag/$name.mag");
+  #next unless(-f $lib);
+  #next unless(-f $ENV{'CARAVEL'}."/cells/mag/$name.mag");
 
   open CELL,"<$cell";
   print "module $name(\n";
