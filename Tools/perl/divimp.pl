@@ -70,6 +70,8 @@ sub endgroup($)
   mkdir "$CARAVEL/dependencies",0777;
   chdir "$CARAVEL";
   system "perl ../../Tools/caravel/configgen.pl >openlane/user_proj_example/config.json";
+  system "perl ../../Tools/caravel/iogenerator.pl >verilog/rtl/user_defines.v";
+
 
 
 

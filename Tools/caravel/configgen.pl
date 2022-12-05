@@ -16,6 +16,7 @@ print <<EOF
     "EXTRA_LEFS": ["$lefs"],
     "EXTRA_GDS_FILES": ["$gds"],
     "VERILOG_FILES_BLACKBOX": ["$verilog"],
+    "PLACE_SITE": "GF018hv5v_green_sc9",
     "GPL_CELL_PADDING": 0,
     "SYNTH_READ_BLACKBOX_LIB": 0,
     "CLOCK_TREE_SYNTH": 0,
