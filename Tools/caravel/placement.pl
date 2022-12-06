@@ -14,14 +14,14 @@ our $nextla=$height*$row;
 
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 
-foreach my $mag(sort <$STDCELLLIB/Catalog/*.mag>)
+foreach my $mag(sort <cells/mag/*.mag>)
 {
   next if((-s $mag)<=50);
   #print `ls -la $mag`;
-  my $cell=$mag; $cell=~s/\.mag$/.cell/;
+  my $cell=$mag; $cell=~s/\.mag$/.cell/; $cell=~s/\/mag\//\/cell\//;
   next unless(-f $cell);
-  my $lib=$mag; $lib=~s/\.mag$/.lib/;
-  next unless(-f $lib);
+  my $lib=$mag; $lib=~s/\.mag$/.lib/; $lib=~s/\/mag\//\/lib\//;
+  #next unless(-f $lib);
   my $name=""; $name=$1 if($mag=~m/([\w\-\.]+)\.mag$/);
   next unless(-f $ENV{'CARAVEL'}."/cells/mag/$name.mag");
 
