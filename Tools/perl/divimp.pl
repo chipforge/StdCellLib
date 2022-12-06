@@ -124,6 +124,7 @@ foreach my $cell (@cells)
   $seen{$cell}=1;
   my $thisios=0;
   my $cn=$cell; $cn=~s/\.cell$//;
+  next if(-f "cn.dontuse");
   if(-f "outputlib/$cn.gds")
   {
     open IN,"<$cell";
