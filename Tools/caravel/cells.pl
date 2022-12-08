@@ -56,8 +56,20 @@ foreach my $mag(sort <cells/mag/*.mag>)
   }
   close CELL;
   print "     \`ifdef USE_POWER_PINS\n";
-  print "	inout VPWR, // cell power supply\n";
-  print "	inout VGND  // cell ground supply\n";
+  if($ENV{'PDK'}=~m/^gf180mcu/i)
+  {
+    print "	inout vdd, // cell power supply\n";
+    print "	inout vss  // cell ground supply\n";
+  }
+  elsif($ENV{'PDK'}=~m/^sky130/i)
+  {
+    print "	inout VPWR, // cell power supply\n";
+    print "	inout VGND  // cell ground supply\n";
+  }
+  else
+  {
+    print STDERR "WARNING: Environment variable \$PDK is not defined, therefore we cannot guess the names of the power pins!\n";
+  }
   print "     \`endif\n";
   print ");\n";
   print "endmodule\n\n";
