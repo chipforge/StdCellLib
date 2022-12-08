@@ -19,6 +19,12 @@ module user_proj_example #(
     parameter BITS = 32
 )(
 `ifdef USE_POWER_PINS
+EOF
+;
+
+if($ENV{'PDK'}=~m/^sky130/i)
+{
+  print <<EOF
     inout vdda1,        // User area 1 3.3V supply
     inout vdda2,        // User area 2 3.3V supply
     inout vssa1,        // User area 1 analog ground
@@ -27,6 +33,27 @@ module user_proj_example #(
     inout vccd2,        // User area 2 1.8v supply
     inout vssd1,        // User area 1 digital ground
     inout vssd2,        // User area 2 digital ground
+EOF
+  ;
+}
+elsif($ENV{'PDK'}=~m/^gf180/i)
+{
+  print <<EOF
+    inout vdd,
+    inout vss,
+EOF
+  ;
+}
+else
+{
+  print STDERR "WARNING: We could not recognize the PDK from the environment variable PDK, we assume the power pins are named vdd/vss.\n";
+  print <<EOF
+    inout vdd,
+    inout vss,
+EOF
+  ;
+}
+print <<EOF
 `endif
 
     // Wishbone Slave ports (WB MI A)

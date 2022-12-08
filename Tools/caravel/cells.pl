@@ -68,7 +68,9 @@ foreach my $mag(sort <cells/mag/*.mag>)
   }
   else
   {
-    print STDERR "WARNING: Environment variable \$PDK is not defined, therefore we cannot guess the names of the power pins!\n";
+    print STDERR "WARNING: Environment variable \$PDK is not defined, therefore we can only guess the names of the power pins to be vdd/vss!\n";
+    print "	inout vdd, // cell power supply\n";
+    print "	inout vss  // cell ground supply\n";
   }
   print "     \`endif\n";
   print ");\n";
