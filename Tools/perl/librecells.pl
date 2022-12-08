@@ -77,7 +77,7 @@ while(<IN>)
     foreach my $deb(1,0) # We dont want to overwrite the good output files with debug output files
     {
       next if($deb && !$debug);
-      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
+      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
       print "$cmd\n";
       system $cmd;
     }
