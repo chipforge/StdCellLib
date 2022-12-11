@@ -10,6 +10,7 @@ our $CARAVEL="";
 our @repos=();
 
 my $magictech="gf180mcuC";
+my $branch="gfmpw-0d";
 
 sub step($)
 {
@@ -20,8 +21,11 @@ sub step($)
 sub nextgroup($)
 {
   $CARAVEL="gf180_stdcelllib_$_[0]";
-  system "git clone git\@github.com:$githubuser/$CARAVEL.git" unless(-d $CARAVEL);
-  return(undef) unless(-d $CARAVEL);
+  unless(-d $CARAVEL)
+  {
+    system "git clone git\@github.com:efabless/caravel_user_project.git -b $branch $CARAVEL";
+    return(undef) unless(-d $CARAVEL);
+  }
   push @repos,$CARAVEL;
   return $CARAVEL;
 }
@@ -67,8 +71,41 @@ sub endgroup($)
   }
   close OUT;
 
+  
+  my $pdk=$ENV{'PDK'};
+  my $foundry=($pdk=~m/^sky/)?"SkyWater":($pdk=~m/^gf/)?"GlobalFoundries":($pdk=~m/^ls/)?"LibreSilicon":($pdk=~m/^tsmc/i)?"TSMC":"Unknown foundry";
+  open OUT,">$CARAVEL/info.yaml";
+  print OUT <<EOF
+---
+project:
+  description: "At Libresilicon we have been working for several years on making chipdesign and production available to a wider public. One big step is now to automatically generate standard cell libraries just from the DRC rules and a given or even generated netlist."
+  foundry: "$foundry"
+  git_url: "https://github.com/thesourcerer8/$CARAVEL.git"
+  organization: "Libresilicon Association"
+  organization_url: "http://libresilicon.com"
+  owner: "Philipp Guehring"
+  process: "$pdk"
+  project_name: "$CARAVEL"
+  project_id: "00000150"
+  tags:
+    - "Open MPW"
+    - "Test Wafer"
+    - "Libresilicon"
+    - "Librecell"
+    - "StdCellLib"
+    - "$pdk"
+  category: "Test Wafer"
+  top_level_netlist: "caravel/verilog/gl/caravel.v"
+  user_level_netlist: "verilog/gl/user_project_wrapper.v"
+  version: "1.00"
+  cover_image: "docs/source/_static/user_proj_example.gds.png"
+EOF
+;
+  close OUT;
+
   mkdir "$CARAVEL/dependencies",0777;
   chdir "$CARAVEL";
+  system "make setup";
   system "perl ../../Tools/caravel/configgen.pl >openlane/user_proj_example/config.json";
   system "perl ../../Tools/caravel/iogenerator.pl >verilog/rtl/user_defines.v";
 
