@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 my $maxios=38+128-2;
+my $maxdesigns=5;
 my $usedios=0;
 my $totalios=0;
 my $group=1;
@@ -11,6 +12,7 @@ our @repos=();
 
 my $magictech="gf180mcuC";
 my $branch="gfmpw-0d";
+our $ngroups=0;
 
 sub step($)
 {
@@ -21,12 +23,18 @@ sub step($)
 sub nextgroup($)
 {
   $CARAVEL="gf180_stdcelllib_$_[0]";
+  if($ngroups>=$maxdesigns)
+  {
+    print STDERR "Stopping at the defined limit of maximum $maxdesign designs.\n";
+    return(undef);
+  }
   unless(-d $CARAVEL)
   {
     system "git clone git\@github.com:efabless/caravel_user_project.git -b $branch $CARAVEL";
     return(undef) unless(-d $CARAVEL);
   }
   push @repos,$CARAVEL;
+  $ngroups++;
   return $CARAVEL;
 }
 
