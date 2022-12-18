@@ -33,6 +33,28 @@ print <<EOF
 // Authoritive source of these MODE defs is: caravel/verilog/rtl/user_defines.v
 // Useful GPIO mode values.  These match the names used in defs.h.
 //
+EOF
+;
+if($ENV{'PDK'}=~m/^gf/)
+{
+	print <<EOF
+`define GPIO_MODE_MGMT_STD_INPUT_NOPULL    10'h007
+`define GPIO_MODE_MGMT_STD_INPUT_PULLDOWN  10'h047
+`define GPIO_MODE_MGMT_STD_INPUT_PULLUP    10'h087
+`define GPIO_MODE_MGMT_STD_OUTPUT          10'h00b
+`define GPIO_MODE_MGMT_STD_BIDIRECTIONAL   10'h009
+
+`define GPIO_MODE_USER_STD_INPUT_NOPULL    10'h006
+`define GPIO_MODE_USER_STD_INPUT_PULLDOWN  10'h046
+`define GPIO_MODE_USER_STD_INPUT_PULLUP    10'h086
+`define GPIO_MODE_USER_STD_OUTPUT          10'h00a
+`define GPIO_MODE_USER_STD_BIDIRECTIONAL   10'h008
+EOF
+	;
+}
+elsif($ENV{'PDK'}=~m/^sky/)
+{
+	print <<EOF
 `define GPIO_MODE_MGMT_STD_INPUT_NOPULL    13'h0403
 `define GPIO_MODE_MGMT_STD_INPUT_PULLDOWN  13'h0c01
 `define GPIO_MODE_MGMT_STD_INPUT_PULLUP    13'h0801
@@ -47,9 +69,9 @@ print <<EOF
 `define GPIO_MODE_USER_STD_BIDIRECTIONAL   13'h1800
 `define GPIO_MODE_USER_STD_OUT_MONITORED   13'h1802
 `define GPIO_MODE_USER_STD_ANALOG          13'h000a
-
 EOF
 ;
+}
 
 
 our $nextla=0;
