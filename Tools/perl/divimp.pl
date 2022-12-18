@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 my $maxios=38+128-2;
-my $maxdesigns=5;
+my $maxdesigns=2;
 my $usedios=0;
 my $totalios=0;
 my $group=1;
@@ -25,7 +25,7 @@ sub nextgroup($)
   $CARAVEL="gf180_stdcelllib_$_[0]";
   if($ngroups>=$maxdesigns)
   {
-    print STDERR "Stopping at the defined limit of maximum $maxdesign designs.\n";
+    print STDERR "Stopping at the defined limit of maximum $maxdesigns designs.\n";
     return(undef);
   }
   unless(-d $CARAVEL)
@@ -132,6 +132,11 @@ EOF
   step("fixup_sp $CARAVEL");
   system "perl ../../../../Tools/caravel/fixup_sp.pl $magictech";
   chdir "../../../";
+  chdir "$CARAVEL/cells/gds";
+  step("fixup_gds $CARAVEL");
+  system "python3 ../../../../Tools/caravel/scale10.py";
+  chdir "../../../";
+
 
   chdir "$CARAVEL/cells/lib";
   step("libertymerge");
