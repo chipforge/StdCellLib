@@ -89,6 +89,8 @@ print OUT "<tr><th>Cell</th><th title='Cell description'>cell</th><th title='Mag
 
 my $maxmem=0;
 my $maxtime=0;
+my $ncells=0;
+my $nsvgs=0;
 
 foreach my $file (<*.cell>)
 {
@@ -128,6 +130,8 @@ foreach my $file (<*.cell>)
       $drccount=$1 if(m/Number of DRC errors: (\d+)/);
     }
   } 
+  $ncells++ if(-f $file);
+  $nsvgs++ if(-f $svgfile);
 
   print OUT "<tr><td>$b1$file$b2</td>";
   print OUT "<td>".(-f $file ? "<a href='$file' target='_blank'><font color='green'>&radic;</font></a>":"<font color='red' title='$file missing'>X</font>")."</td>";
@@ -214,7 +218,7 @@ foreach(sort keys %outputs)
 }
 print OUT "</table>";
 
-print OUT "Stats: Max memory per cell: ".int($maxmem/1024)."MB , Max time per cell: ".sprintf("%d:%02d:%02d",int($maxtime/60/60),int(($maxtime%3600)/60), $maxtime %60)."<br/><br/>";
+print OUT "Stats: Max memory per cell: ".int($maxmem/1024)."MB , Max time per cell: ".sprintf("%d:%02d:%02d",int($maxtime/60/60),int(($maxtime%3600)/60), $maxtime %60)." Cells: $ncells SVGs: $nsvgs<br/><br/>";
 
 print OUT "If you want to build your own standard cell library, you can try our <a href='https://pdk.libresilicon.com/'>Online Standard Cell Library Generator</a> or download the <a href='https://github.com/thesourcerer8/StdCellLib/'>generator software</a> and run it yourself.<br/>\n";
 
