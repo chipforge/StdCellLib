@@ -1,12 +1,13 @@
 #!/usr/bin/perl -w
 use strict;
 
-
 my $lefs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lef/*.lef>);
-my $gds=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
-my $libs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lib/libres*.gds>);
+my $gds =join(" ",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
+my $libs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lib/libresilicon.lib>);
 my $verilog=$ENV{'PWD'}."/verilog/rtl/user_proj_cells.v";
 #    "EXTRA_LIBS": ["dir::../../cells/lib/libres*.lib"],
+#
+print STDERR "lefs: $lefs\ngds: $gds\nlibs: $libs\nverilog: $verilog\n";
  
 print <<EOF
 {
@@ -15,6 +16,7 @@ print <<EOF
     "VERILOG_FILES": ["dir::../../verilog/rtl/defines.v", "dir::../../verilog/rtl/user_proj_example.v"],
     "EXTRA_LEFS": ["$lefs"],
     "EXTRA_GDS_FILES": ["$gds"],
+    "EXTRA_LIBS": ["$libs"],
     "VERILOG_FILES_BLACKBOX": ["$verilog"],
     "PLACE_SITE": "GF018hv5v_green_sc9",
     "STD_CELL_LIBRARY_OPT": "gf180mcu_fd_sc_mcu9t5v0",
