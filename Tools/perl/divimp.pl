@@ -44,7 +44,7 @@ sub addcell($$)
 {
   my ($group,$cn)=@_;
   print "Adding cell $cn to group $group\n";
-  $assigned{$group}{$cn}=1;
+  $assigned{$CARAVEL}{$cn}=1;
   mkdir "$CARAVEL/cells";
   mkdir "$CARAVEL/cells/mag";
   mkdir "$CARAVEL/cells/lib";
@@ -72,7 +72,7 @@ sub endgroup($)
   #$ENV{'OPENLANE_TAG'}="gfmpw-0c";
   $ENV{'CARAVEL'}=$ENV{'PWD'}."/$CARAVEL"; # =$(pwd)
   $ENV{'CARAVEL_ROOT'}=$ENV{'PWD'}."/$CARAVEL/caravel";
-  $ENV{'PDK_ROOT'}=$ENV{'PWD'}."/$CARAVEL/dependencies/pdks"; # =$(readlink -f $(pwd)/../pdk )
+  $ENV{'PDK_ROOT'}=$ENV{'PDK_ROOT'} || ($ENV{'PWD'}."/$CARAVEL/dependencies/pdks"); # =$(readlink -f $(pwd)/../pdk )
   $ENV{'PDK'}="gf180mcuC";
   #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
   print "Writing Environment file for easy debugging, just \"source env.sh\" when you need it:\n";
@@ -132,11 +132,8 @@ EOF
 
   mkdir "$CARAVEL/dependencies",0777;
   chdir "$CARAVEL";
-  system "make setup";
   system "perl ../../Tools/caravel/configgen.pl >openlane/user_proj_example/config.json";
   system "perl ../../Tools/caravel/iogenerator.pl >verilog/rtl/user_defines.v";
-
-
 
 
   chdir "cells/lef";
@@ -176,14 +173,14 @@ EOF
   system "make setup";
   system "make user_proj_example && make user_project_wrapper";
   system "make dist";
-  system "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/*";
+  system "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/* info.yaml";
   system "git commit -m \"Automatically generated files\"";
   system "git add -u .";
   system "git add gds/*";
   system "git commit -m \"Openlane generated files\"";
   system "git remote remove origin";
   system "git remote add origin git\@github.com:$githubuser/$CARAVEL.git";
-  system "git push -u origin main";
+  system "echo git push -u origin main";
   chdir "..";
 }
 
