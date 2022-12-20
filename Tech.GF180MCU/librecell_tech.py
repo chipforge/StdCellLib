@@ -104,8 +104,8 @@ output_map_magic = {
             l_poly_contact: 'polycont',
             l_pdiff_contact: 'pdiffc',
             l_ndiff_contact: 'ndiffc',
-            l_nplus: 'allnactivetap',
-            l_pplus: 'allpactivetap'
+            #l_nplus: 'nplus_s',
+            #l_pplus: 'pplus_s'
 }
 
 
@@ -281,8 +281,8 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_ndiffusion, l_ndiff_contact): 60*nm, # (licon.5a)
-    (l_pdiffusion, l_pdiff_contact): 60*nm, # (licon.5a)
+    (l_ndiffusion, l_ndiff_contact): 65*nm, # (CO.4)
+    (l_pdiffusion, l_pdiff_contact): 65*nm, # (CO.4)
     (l_poly, l_poly_contact): 80*nm, # (licon.8a) !!! OR (licon.4) ?
     (l_metal1, l_pdiff_contact): 80*nm, # (li.5)
     (l_metal1, l_ndiff_contact): 80*nm, # (li.5)
@@ -291,8 +291,8 @@ minimum_enclosure = {
     (l_metal2, l_via1): 60*nm, # Vn.4
 
     # l_*well must overlap l_*diffusion
-#    (l_nwell, l_pdiffusion): 180*nm+130*nm, # (difftap.8) # This causes notches, I am trying to get rid of them
-    (l_pwell, l_ndiffusion): 180*nm, # (difftap.8)
+    (l_nwell, l_pdiffusion): 430*nm, # (DF.7) # This causes notches, I am trying to get rid of them
+    (l_pwell, l_ndiffusion): 430*nm, # (DF.7)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
     (l_nplus, l_ndiff_contact): 230*nm, # NP.5a  Implicitly encodes the size of well taps.
