@@ -18,7 +18,7 @@ my @io=();
 print " printf(\"Initializing the Inputs of the cell:\\n\");\n";
 foreach(@ins)
 {
-  print "  reg_mprj_io_$reg = GPIO_MODE_MGMT_STD_OUTPUT; // $_\n";
+  print "  reg_mprj_io_$reg = GPIO_MODE_MGMT_STD_INPUT; // $_\n";
   $io[$reg>>5]|=1<<($reg&31);
   $reg++;
 }
