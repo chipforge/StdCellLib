@@ -16,7 +16,7 @@ my $group=1;
 
 
 
-open IN,"<../Tech/env.sh";
+open IN,"<../Tech/caravel-env.sh";
 while(<IN>)
 {
   if(m/^export (\w+)="([^"]+)"/)
