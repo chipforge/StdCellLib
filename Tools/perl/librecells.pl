@@ -175,6 +175,7 @@ EOF
     step("DRC Fixing done.");
 
     step("NEXT STEP: mag2gds");
+    print "The outputlib/$cellname.gds is being overwritten by the GDS file converted by Magic from the .mag file, to propagate the DRC corrections to GDS.\n";
     unlink "outputlib/$cellname.gds";
     unlink "$cellname.gds";
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
@@ -186,7 +187,7 @@ EOF
     close OUT;
     rename "$cellname.gds","outputlib/$cellname.gds";
 
-    step("NEXT STEP: magic2");
+    step("NEXT STEP: magic extraction");
     open OUT,"|$usage magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
 extract warn all
