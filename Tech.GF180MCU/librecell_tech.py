@@ -113,7 +113,7 @@ output_map_magic = {
 output_writers = [
     MagWriter(
         tech_name='gf180mcuC',
-        scale_factor=0.2, # Scale all coordinates by this factor (rounded down to next integer).
+        scale_factor=0.02, # Scale all coordinates by this factor (rounded down to next integer).
         output_map=output_map_magic
     ),
 
