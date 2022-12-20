@@ -96,7 +96,7 @@ clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
 	$(RM) $(CELLS)
 	$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
-	$(RM) *.mag *.svg *.ext *.res.ext *.spice *.nodes *.sp *.sim *.al *.res.lump *.png *.err *.log *.libtemplate *.lib *.truthtable.html *.truthtable.v *.truthtable.txt outputlib/*.gds outputlib/*.lef outputlib/*.mag debuglib/* *.running *.mag.drc *.drc *.predrc
+	$(RM) *.usage *.mag *.svg *.ext *.res.ext *.spice *.nodes *.sp *.sim *.al *.res.lump *.png *.err *.log *.libtemplate *.lib *.truthtable.html *.truthtable.v *.truthtable.txt outputlib/*.gds outputlib/*.lef outputlib/*.mag debuglib/* *.running *.mag.drc *.drc *.predrc *.done
 
 #   ----------------------------------------------------------------
 #               CELL TARGETS
