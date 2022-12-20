@@ -7,6 +7,7 @@ print STDERR "Warning: environment variable CARAVEL not defined! Please define i
 
 print <<EOF
 `default_nettype none
+`include "user_proj_cells.v"
 
 /*
  *-------------------------------------------------------------
