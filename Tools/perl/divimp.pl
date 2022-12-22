@@ -2,10 +2,7 @@
 
 my $maxios=38+128-2; # How many IOs does one Caravel have?
 my $maxdesigns=1; # How many Caravels do you want to use maximum?
-our $githubuser="thesourcerer8"; # GitHub Username for the Repository URL
-my $magictech="gf180mcuC"; # MAGIC Technology name (.tech filename)
-my $branch="gfmpw-0d"; # Git Branch for the Caravel User Project
-
+our $githubuser=$ENV{'GITHUB_USER'} || "thesourcerer8"; # GitHub Username for the Repository URL
 our $CARAVEL="";
 our @repos=();
 our %assigned=();
@@ -14,17 +11,20 @@ my $usedios=0;
 my $totalios=0;
 my $group=1;
 
-
-
 open IN,"<../Tech/caravel-env.sh";
+print "Loading
 while(<IN>)
 {
   if(m/^export (\w+)="([^"]+)"/)
   {
     $ENV{$1}=$2;
+    print "Setting Caravel variable $1 to $2\n";
   }
 }
 close IN;
+
+my $magictech=$ENV{'PDK'} || "gf180mcuC"; # MAGIC Technology name (.tech filename)
+my $branch=$ENV{'CARAVEL_BRANCH'} || "gfmpw-0d"; # Git Branch for the Caravel User Project
 
 sub system_v($)
 {
@@ -228,7 +228,7 @@ EOF
   chdir "../../../";
   chdir "$CARAVEL/cells/gds";
   step("fixup_gds $CARAVEL");
-  system "python3 ../../../../Tools/caravel/scale10.py";
+  #system "python3 ../../../../Tools/caravel/scale10.py";
   chdir "../../../";
 
 
