@@ -24,6 +24,7 @@ set oscale [cif scale out]
 set drcresult [lsort -stride 2 -index 0 [drc listall why]]
 set fout [open \"$outfile\" w]
 set countall 0
+puts "DRC start, writing to $outfile"
 foreach {errtype coordlist} \$drcresult {
 puts \$fout \$errtype
 puts \$fout "----------------------------------------"
@@ -42,6 +43,7 @@ puts \$fout ""
 puts \$fout "Number of DRC errors: \$countall"
 
 close \$fout
+puts "DRC done."
 quit -noprompt
 EOF
 ;
