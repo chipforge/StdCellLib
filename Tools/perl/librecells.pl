@@ -18,8 +18,15 @@ if(open IN,"<../Tech/lctime.conf")
   close IN;
 }
 
+sub system_v($)
+{
+  print "$_[0]\n";
+  print STDERR "$_[0]\n";
+  return system($_[0]);
+}
 
-system "../Tools/perl/cell2spice.pl";
+
+system_v "../Tools/perl/cell2spice.pl";
 
 mkdir "work";
 system "rm -rf work/*";
@@ -57,12 +64,12 @@ while(<IN>)
 
     step("NEXT CELL: $cellname");
 
-    system "../Tools/perl/truthtable.pl --format=text $cellname.cell >$cellname.truthtable.txt";
-    system "../Tools/perl/truthtable.pl --format=html $cellname.cell >$cellname.truthtable.html";
-    system "../Tools/perl/truthtable.pl --format=verilog $cellname.cell >$cellname.truthtable.v";
+    system_v "../Tools/perl/truthtable.pl --format=text $cellname.cell >$cellname.truthtable.txt";
+    system_v "../Tools/perl/truthtable.pl --format=html $cellname.cell >$cellname.truthtable.html";
+    system_v "../Tools/perl/truthtable.pl --format=verilog $cellname.cell >$cellname.truthtable.v";
 
 
-    my $placer=""; $placer="--placer=hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
+    my $placer=""; $placer="--placer hierarchical" if($cellname=~m/^(CLK|DFF|FAX|HAX)/);
     if(-f "$cellname.dontlayout")
     {
       print STDERR "TODO: $cellname is disabled by $cellname.dontlayout this is likely because it takes too much time to generate it\n";
@@ -71,15 +78,14 @@ while(<IN>)
     }
     unlink "outputlib/$cellname.mag";
     step("NEXT STEP: Running cell2spice");
-    system "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
+    system_v "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
     step("NEXT STEP: Running lclayout");
 
     foreach my $deb(1,0) # We dont want to overwrite the good output files with debug output files
     {
       next if($deb && !$debug);
-      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." >>$cellname.log 2>>$cellname.err";
-      print "$cmd\n";
-      system $cmd;
+      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." --route-max-iter 100 >>$cellname.log 2>>$cellname.err";
+      system_v $cmd;
     }
 
     my $magfile="outputlib/$cellname.mag";
@@ -148,7 +154,7 @@ EOF
     system "$usage ../Tools/perl/drccheck.pl $cellname.mag |tee $cellname.mag.drc";
 
     step("NEXT STEP: DRC Fix");
-    system "$usage ../Tools/perl/drcfix.pl $cellname.mag ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
+    system_v "$usage ../Tools/perl/drcfix.pl $cellname.mag ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
     if(-f "corr_$cellname.mag")
     {
       unlink "$cellname.predrc.mag";
@@ -165,7 +171,7 @@ EOF
 
       step("NEXT STEP: Final DRC check");
       print "DRC errors in $cellname corrected. Now running final DRC check:\n";
-      system "$usage ../Tools/perl/drccheck.pl $cellname.mag";
+      system_v "$usage ../Tools/perl/drccheck.pl $cellname.mag";
     }
     step("DRC Fixing done.");
 
@@ -229,19 +235,19 @@ EOF
 
 
     step("NEXT STEP: Generating Liberty Template");
-    system "../Tools/perl/libgen.pl $cellname.mag >$cellname.libtemplate 2>>$cellname.err";
+    system_v "../Tools/perl/libgen.pl $cellname.mag >$cellname.libtemplate 2>>$cellname.err";
 
     step("NEXT STEP: Characterization with lctime:");
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
     #print "$cmd\n"; system($cmd);
 
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
-    print "$cmd\n"; system($cmd);
+    print "$cmd\n"; system_v($cmd);
 
 
     step("NEXT STEP: Characterization with CharLib:");
     $cmd="python3 ../Tools/python/gen_CharLib.py";
-    print "$cmd\n"; system($cmd);
+    print "$cmd\n"; system_v($cmd);
     $cmd="python3 CharLib.py -b CharLib.cmd"; # Which Path should we use for CharLib?
 
 
@@ -260,6 +266,6 @@ EOF
 
 if(!defined($ENV{'CELL'}))
 {
-  system "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
+  system_v "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
 }
 
