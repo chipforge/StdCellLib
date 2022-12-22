@@ -166,12 +166,12 @@ min_spacing = {
     #(l_poly, l_outline): 210/2*nm, # (poly.2) 
     (l_poly, l_pdiff_contact): 155*nm, # 55*nm # (licon.11)
     (l_poly, l_ndiff_contact): 155*nm, # 55*nm # (licon.11)
-    (l_pdiff_contact, l_pdiff_contact): 280*nm, # CO.2b
+    (l_pdiff_contact, l_pdiff_contact): 250*nm, # CO.2a-CO.6
     #(l_pdiff_contact, l_outline): 270/2*nm, # (difftap.3)
-    (l_ndiff_contact, l_ndiff_contact): 280*nm, # CO.2b
+    (l_ndiff_contact, l_ndiff_contact): 250*nm, # CO.2a-CO.6
     #(l_ndiff_contact, l_outline): 270/2*nm, # (difftap.3)
-    (l_pdiff_contact, l_ndiff_contact): 280*nm, # CO.2b
-    (l_metal1, l_metal1): 230*nm, # Mn.2a ! WARNING: Spacing to huge_met1 (>=10um) needs to be 300nm !
+    (l_pdiff_contact, l_ndiff_contact): 250*nm, # CO.2a-CO.6
+    (l_metal1, l_metal1): 250*nm, # Mn.2a ! WARNING: Spacing to huge_met1 (>=10um) needs to be 300nm !
     #(l_metal1, l_outline): 170/2*nm, # (li.3) # !!!! WARNING: Spacing to huge_met1 (>=?nm) needs to be 280nm !
 #    (l_metal1, l_border_vertical): 190*nm, # To move the VIAs at the right place
 #    (l_metal2, l_border_vertical): 190*nm, # To move the VIAs at the right place
@@ -259,7 +259,7 @@ wire_width_horizontal = {
 # Side lengths of vias (square shaped).
 via_size = {
     l_poly_contact: 220*nm, # CO.1
-    l_ndiff_contact: 220*nm, # CO.1
+    l_ndiff_contact: 250*nm, # CO.1 + 2*CO.6
     l_pdiff_contact: 220*nm, # CO.1
     l_via1: 260*nm, # Vn.1
     #l_via2: 260*nm # Vn.1
@@ -272,7 +272,7 @@ minimum_width = {
     l_poly: gate_length, 
     l_metal1: 230*nm, # Mn.1
     l_metal2: 280*nm, # Mn.1
-    l_nwell: 860*nm, # NW.1a
+    l_nwell: 900*nm, # NW.1a
     l_pwell: 740*nm, # LPW.1
     l_nplus: 400*nm # NP.1
 }
@@ -288,7 +288,7 @@ minimum_enclosure = {
     (l_metal1, l_ndiff_contact): 80*nm, # (li.5)
     (l_metal1, l_poly_contact): 80*nm, # (li.5)
     (l_metal1, l_via1): 60*nm, # Vn.3
-    (l_metal2, l_via1): 60*nm, # Vn.4
+    (l_metal2, l_via1): 100*nm, # V1.4i
 
     # l_*well must overlap l_*diffusion
     (l_nwell, l_pdiffusion): 430*nm, # (DF.7) # This causes notches, I am trying to get rid of them
