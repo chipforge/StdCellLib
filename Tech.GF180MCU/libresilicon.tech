@@ -2404,7 +2404,7 @@ variants *
  # ORIGINAL RULE: width *m2,rm2 280 "Metal2 width < %d (M2.1)"
   width *m2,rm2 280 "Metal2 width < %d (M2.1) [paint m2contact,m3contact,metal2,padl,rmetal2]"
   spacing allm2,obsm2 allm2,obsm2 280 touching_ok "Metal2 spacing < %d (M2.2a) [erase m2contact m3contact metal2 obsm2 padl rmetal2]"
- area allm2,obsm2 144400 280 "Metal2 minimum area < %a (M2.3)"
+ #area allm2,obsm2 144400 280 "Metal2 minimum area < %a (M2.3)"  THIS RULE IS DISABLED FOR STANDARD CELLS SINCE THEY PROVIDE THE PADS ON LAYER METAL2 BUT THERE IS NOT ENOUGH METAL THERE TO FULFILL THE RULE
 
 variants (fast),(full)
  widespacing allm2,obsm2 10000 allm2,obsm2  300 touching_ok \
