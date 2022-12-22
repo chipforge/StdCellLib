@@ -84,7 +84,13 @@ while(<IN>)
 
     my $magfile="outputlib/$cellname.mag";
     my $gdsfile="outputlib/$cellname.gds";
-    if(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
+    if(-f "$cellname.fixed")
+    {
+      print "We found a manually fixed $cellname.fixed magic file for testing so we are using that one instead.\n";
+      step("NEXT STEP: Fixing file $cellname.fixed -> $cellname.mag");
+      system "cp -f $cellname.fixed $cellname.mag";
+    }
+    elsif(-f $magfile && (-s $magfile) > 51) # Has lclayout exported magic directly?
     {
       # Then we dont have to convert it
       open MAGIN,"<outputlib/$cellname.mag";
@@ -101,7 +107,7 @@ while(<IN>)
     }
     elsif(-f $gdsfile)
     {
-      print STDERR "lclayout has not exported magic, so we try to convert GDS2:\n";
+      print STDERR "lclayout has exported GDS2 but no magic, so we try to convert the GDS2:\n";
       # For this processing step, the refrenced libresilicon.tech file needs to contain the cifinput section to import from GDS and the extract section to do the parasitic extraction:
       open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech >>$cellname.log 2>>$cellname.err";
       print OUT <<EOF
@@ -120,22 +126,11 @@ quit -noprompt
 EOF
 ; # $cellname.spice
       close OUT;
-      #exit;
     }
-    else
+    
+    if(!-f $magfile)
     {
-      # Perhaps we have a fixed file, so let's continue
-    }
-
-    if(-f "$cellname.fixed")
-    {
-      print "We found a manually fixed $cellname.fixed magic file for testing so we are using that one instead.\n";
-      step("NEXT STEP: Fixing file $cellname.fixed -> $cellname.mag");
-      system "cp $cellname.fixed $cellname.mag";
-    }
-    elsif(! -f $gdsfile)
-    {
-      print STDERR "Error: lclayout has not generated Magic or GDS2.\n";
+      print STDERR "Error: lclayout has not generated Magic or GDS2, or we could not convert GDS2 to magic.\n";
       unlink "$cellname.running";
       next;
     }
@@ -176,7 +171,7 @@ EOF
 
     step("NEXT STEP: mag2gds");
     print "The outputlib/$cellname.gds is being overwritten by the GDS file converted by Magic from the .mag file, to propagate the DRC corrections to GDS.\n";
-    unlink "outputlib/$cellname.gds";
+    rename "outputlib/$cellname.gds","outputlib/$cellname.lclayout.gds";
     unlink "$cellname.gds";
     open OUT,"|magic -dnull -noconsole -T ../Tech/libresilicon.tech $cellname.mag >>$cellname.log 2>>$cellname.err";
     print OUT <<EOF
