@@ -4,7 +4,7 @@ print "This tool analyzes the available, used and unused grid:\n";
 my $cellname=$ARGV[0] || "INV";
 open MAGIN,"<$cellname.mag";
 open REPORT,"<$cellname.err";
-open REPIN,"<$cellname.log";
+#open REPIN,"<$cellname.log";
 open MAGOUT,">$cellname.grid.mag";
 my $fac=50;
 my $s=1;
@@ -32,11 +32,7 @@ while(<MAGIN>)
           print MAGOUT "<< met1 >>\nrect -10 $_ $t ".($_+$s)."\n";
         }
       }
-    }
-    # All tracks:
-    while (my $line=<REPIN>)
-    {
-      if($line=~m/x_grid_after: \[(.*?)\]/)
+      if($line=~m/grid_xs: \[(.*?)\]/)
       {
         foreach(split(",",$1))
         {
@@ -44,7 +40,7 @@ while(<MAGIN>)
           print MAGOUT "<< met2 >>\nrect $_ -20 ".($_+$s)." -11\n";
         }
       }
-      if($line=~m/y_grid_after: \[(.*?)\]/)
+      if($line=~m/grid_ys: \[(.*?)\]/)
       {
         foreach(split(",",$1))
         {
@@ -58,6 +54,6 @@ while(<MAGIN>)
 }
 close MAGIN;
 close REPORT;
-close REPIN;
+#close REPIN;
 close MAGOUT;
 print "Writing to $cellname.grid.mag\n";
