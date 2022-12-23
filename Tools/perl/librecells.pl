@@ -21,7 +21,7 @@ if(open IN,"<../Tech/lctime.conf")
 sub system_v($)
 {
   print "$_[0]\n";
-  print STDERR "$_[0]\n";
+  #print STDERR "$_[0]\n";
   return system($_[0]);
 }
 
@@ -81,12 +81,7 @@ while(<IN>)
     system_v "../Tools/perl/cell2spice.pl $cellname >>$cellname.log 2>>$cellname.err";
     step("NEXT STEP: Running lclayout");
 
-    foreach my $deb(1,0) # We dont want to overwrite the good output files with debug output files
-    {
-      next if($deb && !$debug);
-      my $cmd="$usage lclayout --output-dir ".($deb?"debug":"output")."lib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs ".($deb?"--debug-routing-graph ":"")." --route-max-iter 100 >>$cellname.log 2>>$cellname.err";
-      system_v $cmd;
-    }
+    system_v "$usage lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs --debug-routing-graph --route-max-iter 100 >>$cellname.log 2>>$cellname.err";
 
     my $magfile="outputlib/$cellname.mag";
     my $gdsfile="outputlib/$cellname.gds";
@@ -239,15 +234,14 @@ EOF
 
     step("NEXT STEP: Characterization with lctime:");
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.spice --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for fully extracted parasitics
-    #print "$cmd\n"; system($cmd);
+    #system_v($cmd);
 
     $cmd="$usage lctime ".($debug?"--debug":"")." --diff %_p,%_n --liberty $cellname.libtemplate --include ../Tech/libresilicon.m --spice $cellname.sp    --cell $cellname --output $cellname.lib $lctimeparams >>$cellname.log 2>>$cellname.err"; # This is for pure spice files without parasitics
-    print "$cmd\n"; system_v($cmd);
+    system_v($cmd);
 
 
     step("NEXT STEP: Characterization with CharLib:");
-    $cmd="python3 ../Tools/python/gen_CharLib.py";
-    print "$cmd\n"; system_v($cmd);
+    system_v("python3 ../Tools/python/gen_CharLib.py");
     $cmd="python3 CharLib.py -b CharLib.cmd"; # Which Path should we use for CharLib?
 
 
