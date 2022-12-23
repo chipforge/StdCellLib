@@ -90,10 +90,11 @@ sub endgroup($)
   $ENV{'CARAVEL_ROOT'}=$ENV{'PWD'}."/$CARAVEL/caravel";
   $ENV{'PDK_ROOT'}=$ENV{'PDK_ROOT'} || ($ENV{'PWD'}."/$CARAVEL/dependencies/pdks"); # =$(readlink -f $(pwd)/../pdk )
   $ENV{'PDK'}="gf180mcuC";
+  $ENV{'MCW_ROOT'}=$ENV{'PWD'}."/$CARAVEL/mgmt_core_wrapper";
   #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
   print "Writing Environment file for easy debugging, just \"source env.sh\" when you need it:\n";
   open OUT,">$CARAVEL/env.sh";
-  foreach(qw(STDCELLLIB OPENLANE_ROOT CARAVEL CARAVEL_ROOT PDK_ROOT PDK))
+  foreach(qw(STDCELLLIB OPENLANE_ROOT CARAVEL CARAVEL_ROOT PDK_ROOT PDK MCW_ROOT))
   {
     print OUT "export $_=\"".$ENV{$_}."\"\n";
   }
