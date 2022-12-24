@@ -4,9 +4,7 @@ from lclayout.writer.lef_writer import LefWriter
 from lclayout.writer.gds_writer import GdsWriter
 from lclayout.writer.oasis_writer import OasisWriter
 
-
 # This Tech file was created for 5V transistors for GlobalFoundries GF180MCU. There might be one layer missing for them. We could create additional cells for 3.3V and 6V, but that would change a lot of the DRC rules
-
 
 # Physical size of one data base unit in meters.
 # BUT GDS2 requires the database units to be in nanometers, and lclayout cannot convert to nanometers automatically yet
@@ -202,7 +200,8 @@ power_layer = l_metal1 # , l_metal2] # lclayout.metal2 = sky130.metal1
 connectable_layers = {l_nwell, l_pwell, l_poly}
 # Width of the gate polysilicon stripe.
 # is reused as the minimum_width for the l_poly layer
-gate_length = 500*nm # PL.2
+gate_length_nmos = 500*nm # PL.2
+gate_length_pmos = 600*nm # PL.2
 
 # Minimum length a polysilicon gate must overlap the silicon.
 gate_extension = 220*nm # PL.4
@@ -220,7 +219,7 @@ unit_cell_height = 5040*nm # (unit SITE) # measured from gf180mcu_fd_sc_mcu9t5v0
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
 
 # Routing pitch
-routing_grid_pitch_x = unit_cell_width // 2 # // 4
+routing_grid_pitch_x = unit_cell_width // 8 # // 4
 routing_grid_pitch_y = 135*nm # unit_cell_height // 8 // 2
 
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
@@ -260,7 +259,7 @@ wire_width_horizontal = {
 via_size = {
     l_poly_contact: 220*nm, # CO.1
     l_ndiff_contact: 250*nm, # CO.1 + 2*CO.6
-    l_pdiff_contact: 220*nm, # CO.1
+    l_pdiff_contact: 250*nm, # CO.1 + 2*CO.6
     l_via1: 260*nm, # Vn.1
     #l_via2: 260*nm # Vn.1
 }
@@ -269,7 +268,7 @@ via_size = {
 minimum_width = {
     l_ndiffusion: 300*nm, # DF.1a
     l_pdiffusion: 300*nm, # DF.1a
-    l_poly: gate_length, 
+    l_poly: 500*nm, # PL.2
     l_metal1: 230*nm, # Mn.1
     l_metal2: 280*nm, # Mn.1
     l_nwell: 900*nm, # NW.1a
@@ -316,7 +315,7 @@ min_area = {
     l_ndiffusion: 0.2025 * um * um,
     l_pdiffusion: 0.2025 * um * um,
     l_metal1: 0.1444 * um * um ,# Mn.3
-    l_metal2: 0.1444 * um * um ,# Mn.3
+    #l_metal2: 0.1444 * um * um ,# Mn.3  - We don't need to enforce it here since that will be done by Openlane
     l_nplus: 0.35 * um * um, #NP.8a
     l_pplus: 0.35 * um * um, #PP.8a
 }
@@ -351,8 +350,8 @@ via_weights = {
     (l_metal1, l_pdiffusion): 15000*viafactor, # LICON
     (l_metal1, l_poly): 15000*viafactor, # LICON
     (l_metal1, l_metal2): 152000*viafactor, # MCON
-#    (l_metal1, l_nplus): 1, # Contact to Well Taps, the value doesn't matter
-#    (l_metal1, l_pplus): 1,
+    (l_metal1, l_nplus): 15000*viafactor, # Contact to Well Taps, the value doesn't matter
+    (l_metal1, l_pplus): 15000*viafactor,
 
 }
 
@@ -422,9 +421,9 @@ print("grid_offset_y: "+str(grid_offset_y))
 print("grid_offset_x: "+str(grid_offset_x))
 print("routing_grid_pitch_x: "+str(routing_grid_pitch_x))
 
-
 grid_ys = list(range(grid_offset_y, grid_offset_y + unit_cell_height, routing_grid_pitch_y))
-#print("grid_before: "+str(grid_ys))
+
+#print("y_grid_before: "+str(grid_ys))
 #grid_ys[2] += 110*nm
 #grid_ys[-3] -= 110*nm
 #grid_ys[14] -= 10*nm
@@ -432,7 +431,13 @@ grid_ys = list(range(grid_offset_y, grid_offset_y + unit_cell_height, routing_gr
 #grid_ys[-2] = unit_cell_height
 #grid_ys.pop(-1)
 #grid_ys.pop(0)
-#print("grid_after: "+str(grid_ys))
+#print("y_grid_after: "+str(grid_ys))
+
+#grid_xs = list(range(grid_offset_x, grid_offset_x + unit_cell_width, routing_grid_pitch_x))
+#print("x_grid_after: "+str(grid_xs))
+#print("grid_offset_x"+str(grid_offset_x))
+#print("unit_cell_width"+str(unit_cell_width))
+#print("routing_grid_pitch_x"+str(routing_grid_pitch_x))
 
 
 
@@ -440,3 +445,4 @@ grid_ys = list(range(grid_offset_y, grid_offset_y + unit_cell_height, routing_gr
 #    return list(range(240*nm,unit_cell_width,480*nm))
 
 #power_vias=powervias
+
