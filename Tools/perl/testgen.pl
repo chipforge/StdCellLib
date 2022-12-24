@@ -82,9 +82,9 @@ my $reg=4; # Starting IO port
 
 foreach my $cell (@cells)
 {
-  next unless(-f "$cell.truthtable.txt");
- 
-  open IN,"<$cell.truthtable.txt";
+  print "* $cell\n";
+  next unless(-f "../truthtable/$cell.truthtable.txt");
+  open IN,"<../truthtable/$cell.truthtable.txt";
 
   my $header=<IN>; $header=~s/\s$//s;
   print "// Cell: $cell ($header)\n";
@@ -141,7 +141,11 @@ EOF
     my $if=0;
     foreach(@l)
     {
-      if(m/(\w+)=(\d)/)
+      if(m/(\w+)=HIGH-Z/)
+      {
+        print "  //We expect HIGH-Z Output on Output $1 here\n";
+      }
+      elsif(m/(\w+)=(\d|HIGH-Z)/)
       {
         print "  assert(get_la(".$map{$1}.")==$2); //$1\n" if($useassert);
 	if(!$useassert)
