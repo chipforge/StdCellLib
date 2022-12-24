@@ -77,6 +77,27 @@ foreach my $cell (@cells)
 
   my @io=();
   print " print(\"Connecting Inputs of the cell $cell with the management core:\\n\");\n";
+print <<EOF
+  reg_spi_enable = 1;
+
+        reg_mprj_io_31 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_30 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_29 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_28 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_27 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_26 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_25 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_24 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_23 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_22 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_21 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_20 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_19 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_18 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_17 = GPIO_MODE_MGMT_STD_OUTPUT;
+        reg_mprj_io_16 = GPIO_MODE_MGMT_STD_OUTPUT;
+EOF
+;
   foreach(@ins)
   {
     $map{$_}=$reg;
@@ -88,7 +109,7 @@ foreach my $cell (@cells)
   foreach(@outs)
   {
     $map{$_}=$reg;
-    print "  reg_mprj_io_$reg = GPIO_MODE_MGMT_STD_OUTPUT; // $_\n";
+    print "  reg_mprj_io_$reg = GPIO_MODE_USER_STD_OUTPUT; // $_\n";
     $reg++;
   }
 
@@ -96,9 +117,17 @@ foreach my $cell (@cells)
   print "  reg_mprj_xfer=1;\n";
   print "  while (reg_mprj_xfer == 1);\n";
 
-  foreach(0 .. 100)
+print <<EOF
+   // Flag start of the test
+        reg_mprj_datal = 0xAB600000;
+EOF
+;
+
+  $io[3]|=0xff000000;
+
+  foreach(0 .. 3)
   {
-    print "  reg_la".$_."_iena=".sprintf("0x%08X",$io[$_]).";\n" if(defined($io[$_]));
+    print "  reg_la".$_."_oenb = reg_la".$_."_iena=".sprintf("0x%08X",$io[$_]||0)."; // [".((($_+1)<<5)-1).":".($_<<5)."]\n"; # if(defined($io[$_]));
   }
 
   my $counter=0;
