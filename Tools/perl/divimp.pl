@@ -70,11 +70,13 @@ sub addcell($$)
   mkdir "$CARAVEL/cells/lef";
   mkdir "$CARAVEL/cells/lef/orig";
   mkdir "$CARAVEL/cells/gds";
+  mkdir "$CARAVEL/cells/truthtable";
   system "cp $cn.mag $CARAVEL/cells/mag/";
   system "cp $cn.lib $CARAVEL/cells/lib/" if(-f "$cn.lib");
   system_v "perl ../Tools/perl/dummychar.pl $cn >$CARAVEL/cells/lib/$cn.lib" unless(-f "$cn.lib");
   system "cp $cn.cell $CARAVEL/cells/cell/";
   system "cp $cn.sp $CARAVEL/cells/sp/";
+  system "cp $cn.truthtable.txt $CARAVEL/cells/truthtable/";
   system "cp outputlib/$cn.lef $CARAVEL/cells/lef/orig/";
   system "cp outputlib/$cn.gds $CARAVEL/cells/gds/";
 }
@@ -253,9 +255,9 @@ EOF
   mkdir "verilog/dv/stdcells",0755;
   system "cp ../../Tools/caravel/stdcells_tb.v verilog/dv/stdcells/";
   system "cp verilog/dv/io_ports/Makefile verilog/dv/stdcells/";
-  chdir "..";
-  system_v "perl ../Tools/perl/testgen.pl >$CARAVEL/verilog/dv/stdcells/stdcells.c";
-  chdir $CARAVEL;
+  chdir "cells/cell";
+  system_v "perl ../../../Tools/perl/testgen.pl >$CARAVEL/verilog/dv/stdcells/stdcells.c";
+  chdir "../../";
 
   step("make user_proj_example");
   system_v "make setup";
@@ -267,14 +269,14 @@ EOF
   }
   system_v "make dist";
 
-  system_v "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/* info.yaml";
+  system_v "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/* info.yaml verilog/dv/stdcells";
   system_v "git commit -m \"Automatically generated files\"";
   system_v "git add -u .";
   system_v "git add gds/*";
   system_v "git commit -m \"Openlane generated files\"";
   system_v "git remote remove origin";
   system_v "git remote add origin git\@github.com:$githubuser/$CARAVEL.git";
-  system_v "echo git push -u origin main";
+  system_v "echo git push origin HEAD:main -f";
   chdir "..";
 }
 
