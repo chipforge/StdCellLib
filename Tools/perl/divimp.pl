@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
 
+my $doverification=1;
 my $maxios=38+128-2; # How many IOs does one Caravel have?
 my $maxdesigns=1; # How many Caravels do you want to use maximum?
 our $githubuser=$ENV{'GITHUB_USER'} || "thesourcerer8"; # GitHub Username for the Repository URL
@@ -12,7 +13,7 @@ my $totalios=0;
 my $group=1;
 
 open IN,"<../Tech/caravel-env.sh";
-print "Loading
+print "Loading Caravel environment variables.\n";
 while(<IN>)
 {
   if(m/^export (\w+)="([^"]+)"/)
@@ -248,10 +249,24 @@ EOF
   step("placement");
   system "perl ../../Tools/caravel/placement.pl >openlane/user_proj_example/macro_placement.cfg";
 
+  step("verification");
+  mkdir "verilog/dv/stdcells",0755;
+  system "cp ../../Tools/caravel/stdcells_tb.v verilog/dv/stdcells/";
+  system "cp verilog/dv/io_ports/Makefile verilog/dv/stdcells/";
+  chdir "..";
+  system_v "perl ../Tools/perl/testgen.pl >$CARAVEL/verilog/dv/stdcells/stdcells.c";
+  chdir $CARAVEL;
+
   step("make user_proj_example");
-  system "make setup";
-  system "make user_proj_example && make user_project_wrapper";
-  system "make dist";
+  system_v "make setup";
+  system_v "make user_proj_example && make user_project_wrapper";
+  if($doverification)
+  {
+    system_v "make simenv";
+    system_v "make verify-stdcells-rtl";
+  }
+  system_v "make dist";
+
   system_v "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/* info.yaml";
   system_v "git commit -m \"Automatically generated files\"";
   system_v "git add -u .";
