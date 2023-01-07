@@ -83,6 +83,12 @@ while(<IN>)
 
     system_v "$usage lclayout --output-dir outputlib --tech ../Tech/librecell_tech.py --netlist $cellname.sp --cell $cellname -v $placer --placement-file $cellname.place --ignore-lvs --debug-routing-graph --route-max-iter 100 >>$cellname.log 2>>$cellname.err";
 
+
+    if(-f "$cellname.mag")
+    {
+      system_v("../Tools/perl/paintgridusage.pl $cellname >>$cellname.log 2>>$cellname.err");
+    }
+
     my $magfile="outputlib/$cellname.mag";
     my $gdsfile="outputlib/$cellname.gds";
     if(-f "$cellname.fixed")
