@@ -260,6 +260,10 @@ EOF
 
     step("NEXT STEP: mag2svg");
     system "../Tools/perl/mag2svg.pl $cellname.mag $cellname.svg" if(-f "$cellname.mag");
+    step("NEXT STEP: mag2siliwiz");
+    system "../Tools/perl/mag2siliwiz.pl <$cellname.mag >$cellname.json" if(-f "$cellname.mag");
+
+
     unlink "$cellname.running";
   }
 }
