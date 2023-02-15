@@ -22,7 +22,7 @@ sub layername($)
   $d=~s/^met(\d+)$/metal$1/;
   $d=~s/^([np])diffusion$/$1 diffusion/;
   $d=~s/^([np])well$/$1 well/;
-  $d=~s/^via(\d+)$/metal$1 via/;
+  $d=~s/^via1$/metal2 via/;
   $d=~s/^poly$/polysilicon/;
   $d=~s/^polycont$/metal1 via/;
   $d=~s/^[np]diffc$/metal1 via/;
