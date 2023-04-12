@@ -111,8 +111,9 @@ output_map_magic = {
 output_writers = [
     MagWriter(
         tech_name='gf180mcuC',
-        scale_factor=0.02, # Scale all coordinates by this factor (rounded down to next integer).
-        output_map=output_map_magic
+        scale_factor=0.2, # Scale all coordinates by this factor (rounded down to next integer).
+        output_map=output_map_magic,
+        magscale=[1,10]
     ),
 
     LefWriter(
@@ -148,23 +149,23 @@ routing_layers = {
 
 # Minimum spacing rules for layer pairs.
 min_spacing = {
-    (l_ndiffusion, l_ndiffusion): 270*nm, # (difftap.3)
-    #(l_ndiffusion, l_outline): 270/2*nm, # (difftap.3)
-    (l_pdiffusion, l_ndiffusion): 270*nm, # (difftap.3)
-    #(l_pdiffusion, l_outline): 270/2*nm, # (difftap.3)
-    (l_pdiffusion, l_pdiffusion): 270*nm, # (difftap.3)
-    (l_ndiffusion, l_poly_contact): 190*nm, # (licon.14)
-    (l_pdiffusion, l_poly_contact): 190*nm, # (licon.14)
+    (l_ndiffusion, l_ndiffusion): 360*nm, # DF.3a for 5V
+    #(l_ndiffusion, l_outline): 360/2*nm, # DF.3a for 5V
+    (l_pdiffusion, l_ndiffusion): 360*nm, # DF.3a for 5V
+    #(l_pdiffusion, l_outline): 360/2*nm, # DF.3a for 5V
+    (l_pdiffusion, l_pdiffusion): 360*nm, # DF.3a for 5V
+    (l_ndiffusion, l_poly_contact): 170*nm, # (CO.8)
+    (l_pdiffusion, l_poly_contact): 170*nm, # (CO.8)
     (l_nwell, l_nwell): 740*nm, # NW.2a
-    (l_nwell, l_pwell): 250*nm, # p_well not needed for SKY130, but lclayout uses it for sizing the wells!
-    (l_pwell, l_pwell): 1700*nm, # LPW.2a # If it would be the same potential, we could go down to 860*nm according to LPW.2b
-    (l_poly, l_ndiffusion): 75*nm, # (poly.4)
-    (l_poly, l_pdiffusion): 75*nm, # (poly.4)
+    (l_nwell, l_pwell): 0*nm, # NW.4
+    (l_pwell, l_pwell): 860*nm, # LPW.2b # If it would be the same potential, we could go down to 860*nm according to LPW.2b, if it is different potential we would have to go up to 1.7
+    #(l_poly, l_ndiffusion): 300*nm, # PL.5b This is only needed when the poly isn't rectangular, and it doesn't mean the poly that is directly on top of diffusion
+    #(l_poly, l_pdiffusion): 300*nm, # PL.5b
     (l_poly, l_poly): 240*nm, # PL.3a
-    #(l_poly, l_outline): 210/2*nm, # (poly.2) 
-    (l_poly, l_pdiff_contact): 155*nm, # 55*nm # (licon.11)
-    (l_poly, l_ndiff_contact): 155*nm, # 55*nm # (licon.11)
-    (l_pdiff_contact, l_pdiff_contact): 250*nm, # CO.2a-CO.6
+    #(l_poly, l_outline): 240/2*nm, # PL.3a 
+    (l_poly, l_pdiff_contact): 150*nm, # CO.7
+    (l_poly, l_ndiff_contact): 150*nm, # CO.7
+    (l_pdiff_contact, l_pdiff_contact): 250*nm, # CO.2a-CO.6   #!!! HIER WEITERMACHEN
     #(l_pdiff_contact, l_outline): 270/2*nm, # (difftap.3)
     (l_ndiff_contact, l_ndiff_contact): 250*nm, # CO.2a-CO.6
     #(l_ndiff_contact, l_outline): 270/2*nm, # (difftap.3)
@@ -193,11 +194,11 @@ min_spacing = {
 pin_layer = l_metal2 # lclayout.metal2 = sky130.metal1
 
 # Power stripe layer
-power_layer = l_metal1 # , l_metal2] # lclayout.metal2 = sky130.metal1
+power_layer = [l_metal1, l_metal2] # lclayout.metal2 = sky130.metal1
 
 # Layers that can be connected/merged without changing the schematic.
 # This can be used to resolve spacing/notch violations by just filling the space.
-connectable_layers = {l_nwell, l_pwell, l_poly}
+connectable_layers = {l_nwell, l_pwell, l_poly, l_metal1}
 # Width of the gate polysilicon stripe.
 # is reused as the minimum_width for the l_poly layer
 gate_length_nmos = 500*nm # PL.2
@@ -219,7 +220,7 @@ unit_cell_height = 5040*nm # (unit SITE) # measured from gf180mcu_fd_sc_mcu9t5v0
 # due to nwell size and spacing requirements routing_grid_pitch_y * 8 # * 8
 
 # Routing pitch
-routing_grid_pitch_x = unit_cell_width // 8 # // 4
+routing_grid_pitch_x = unit_cell_width // 2 # // 4
 routing_grid_pitch_y = 135*nm # unit_cell_height // 8 // 2
 
 # Translate routing grid such that the bottom left grid point is at (grid_offset_x, grid_offset_y)
@@ -257,9 +258,9 @@ wire_width_horizontal = {
 
 # Side lengths of vias (square shaped).
 via_size = {
-    l_poly_contact: 220*nm, # CO.1
-    l_ndiff_contact: 250*nm, # CO.1 + 2*CO.6
-    l_pdiff_contact: 250*nm, # CO.1 + 2*CO.6
+    l_poly_contact: 230*nm, # CO.1 + magic extensions 2*CO.6
+    l_ndiff_contact: 230*nm, # CO.1 + magic extension 2*CO.6
+    l_pdiff_contact: 230*nm, # CO.1 + magic extension 2*CO.6
     l_via1: 260*nm, # Vn.1
     #l_via2: 260*nm # Vn.1
 }
@@ -280,8 +281,8 @@ minimum_width = {
 # Syntax: {(outer layer, inner layer): minimum enclosure, ...}
 minimum_enclosure = {
     # Via enclosure
-    (l_ndiffusion, l_ndiff_contact): 65*nm, # (CO.4)
-    (l_pdiffusion, l_pdiff_contact): 65*nm, # (CO.4)
+    (l_ndiffusion, l_ndiff_contact): 70*nm, # (CO.4)
+    (l_pdiffusion, l_pdiff_contact): 70*nm, # (CO.4)
     (l_poly, l_poly_contact): 80*nm, # (licon.8a) !!! OR (licon.4) ?
     (l_metal1, l_pdiff_contact): 80*nm, # (li.5)
     (l_metal1, l_ndiff_contact): 80*nm, # (li.5)
@@ -290,7 +291,7 @@ minimum_enclosure = {
     (l_metal2, l_via1): 100*nm, # V1.4i
 
     # l_*well must overlap l_*diffusion
-    (l_nwell, l_pdiffusion): 430*nm, # (DF.7) # This causes notches, I am trying to get rid of them
+    (l_nwell, l_pdiffusion): 430*nm, # (DF.7)
     (l_pwell, l_ndiffusion): 430*nm, # (DF.7)
     (l_abutment_box, l_nwell): 0, # The nwell and pwell should not go beyond the abutment
     (l_abutment_box, l_pwell): 0,
@@ -316,8 +317,8 @@ min_area = {
     l_pdiffusion: 0.2025 * um * um,
     l_metal1: 0.1444 * um * um ,# Mn.3
     #l_metal2: 0.1444 * um * um ,# Mn.3  - We don't need to enforce it here since that will be done by Openlane
-    l_nplus: 0.35 * um * um, #NP.8a
-    l_pplus: 0.35 * um * um, #PP.8a
+    #l_nplus: 0.35 * um * um, #NP.8a
+    #l_pplus: 0.35 * um * um, #PP.8a
 }
 
 # ROUTING #
@@ -386,15 +387,15 @@ if((l_poly_contact, l_poly_contact) in min_spacing and  min_spacing[(l_poly_cont
         print("Minimum Spacing "+str(min_spacing[(l_poly_contact, l_poly_contact)])+" for poly_contact too small because of local interconnect, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+"+str(minimum_enclosure[(l_metal1, l_poly_contact)])+"+"+str(minimum_enclosure[(l_metal1, l_poly_contact)])+") Fixing minimum_spacing")
         min_spacing[(l_poly_contact, l_poly_contact)]=newmin
 
-if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]):
-        newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]
-        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of local interconnect, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+2*"+str(minimum_enclosure[(l_metal1, l_via1)])+") Fixing minimum_spacing")
-        min_spacing[(l_via1, l_via1)]=newmin
+#if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]):
+#        newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]
+#        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal1, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+2*"+str(minimum_enclosure[(l_metal1, l_via1)])+") Fixing minimum_spacing")
+#        min_spacing[(l_via1, l_via1)]=newmin
 
-if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]):
-        newmin=min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]
-        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal1, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal2,l_metal2)])+"+2*"+str(minimum_enclosure[(l_metal2, l_via1)])+") Fixing minimum_spacing")
-        min_spacing[(l_via1, l_via1)]=newmin
+#if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]):
+#        newmin=min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]
+#        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal2, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal2,l_metal2)])+"+2*"+str(minimum_enclosure[(l_metal2, l_via1)])+") Fixing minimum_spacing")
+#        min_spacing[(l_via1, l_via1)]=newmin
 
 
 
