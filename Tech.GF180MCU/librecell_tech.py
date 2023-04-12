@@ -142,7 +142,7 @@ output_writers = [
 routing_layers = {
     l_ndiffusion: '', # Allow adding shapes on diffusion layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
     l_pdiffusion: '', # Allow adding shapes on diffusion layer but without using it for routing. This is used to automatically add the necessary enclosure around contacts.
-    l_poly: '',
+    l_poly: 'v',
     l_metal1: 'hv',
     l_metal2: 'hv',
 }
@@ -242,7 +242,7 @@ minimum_pin_width = 220*nm
 wire_width = {
     l_ndiffusion: 150*nm, # (difftap.1)
     l_pdiffusion: 150*nm, # (difftap.2)
-    l_poly: 150*nm,   # (poly.1a)
+    l_poly: 390*nm,   # (poly.1a) -> Magic requires 180nm -> But we want 390nm to avoid notches
     l_metal1: 230*nm, # Mn.1
     l_metal2: 280*nm, # Mn.1
 }
@@ -304,7 +304,7 @@ minimum_enclosure = {
 minimum_notch = {
     l_ndiffusion: 130*nm,
     l_pdiffusion: 130*nm,
-    l_poly: 130*nm,
+    l_poly: 180*nm,
     l_metal1: 130*nm,
     l_metal2: 130*nm,
     l_nwell: 5*130*nm,
@@ -329,30 +329,30 @@ orientation_change_penalty = 100000
 
 # Routing edge weights per data base unit.
 weights_horizontal = {
-    l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
-    l_pdiffusion: 197000, # (mohms/square)
-    l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
-    l_metal1: 1280, # SKY130_Li1 Local Interconnect! (mohms/square)
-    l_metal2: 125, # SKY130_Metal1
+    l_ndiffusion: 6300, # (mohms/square)
+    l_pdiffusion: 7000, # (mohms/square)
+    l_poly: 6300, # (mohms/square)
+    l_metal1: 90, # (mohms/square)
+    l_metal2: 90, # (mohms/square)
 }
 weights_vertical = {
-    l_ndiffusion: 120000, # (mohms/square) taken from spreadsheet "Layer resistances and capacitances"
-    l_pdiffusion: 197000, # (mohms/square)
-    l_poly: 48200*10, # (mohms/square) # 10 to avoid routing
-    l_metal1: 1280, # SKY130_Li1 Local Interconnect! (mohms/square)
-    l_metal2: 125, # SKY130_Metal1
+    l_ndiffusion: 6300, # (mohms/square)
+    l_pdiffusion: 7000, # (mohms/square)
+    l_poly: 6300, # (mohms/square)
+    l_metal1: 90, # (mohms/square)
+    l_metal2: 90, # (mohms/square)
 }
 
-viafactor = 1
+viafactor = 1000
 
 # Via weights.
 via_weights = {
-    (l_metal1, l_ndiffusion): 15000*viafactor, # LICON
-    (l_metal1, l_pdiffusion): 15000*viafactor, # LICON
-    (l_metal1, l_poly): 15000*viafactor, # LICON
-    (l_metal1, l_metal2): 152000*viafactor, # MCON
-    (l_metal1, l_nplus): 15000*viafactor, # Contact to Well Taps, the value doesn't matter
-    (l_metal1, l_pplus): 15000*viafactor,
+    (l_metal1, l_ndiffusion): 6300*viafactor, # LICON
+    (l_metal1, l_pdiffusion): 5200*viafactor, # LICON
+    (l_metal1, l_poly): 5900*viafactor, # LICON
+    (l_metal1, l_metal2): 4500*viafactor, # MCON
+    (l_metal1, l_nplus): 6300*viafactor, # Contact to Well Taps, the value doesn't matter
+    (l_metal1, l_pplus): 5200*viafactor,
 
 }
 
@@ -388,14 +388,14 @@ if((l_poly_contact, l_poly_contact) in min_spacing and  min_spacing[(l_poly_cont
         min_spacing[(l_poly_contact, l_poly_contact)]=newmin
 
 #if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]):
-#        newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]
-#        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal1, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+2*"+str(minimum_enclosure[(l_metal1, l_via1)])+") Fixing minimum_spacing")
-#        min_spacing[(l_via1, l_via1)]=newmin
+#	newmin=min_spacing[(l_metal1,l_metal1)]+2*minimum_enclosure[(l_metal1, l_via1)]
+#	print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal1, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal1,l_metal1)])+"+2*"+str(minimum_enclosure[(l_metal1, l_via1)])+") Fixing minimum_spacing")
+#	min_spacing[(l_via1, l_via1)]=newmin
 
 #if( min_spacing[(l_via1, l_via1)] < min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]):
-#        newmin=min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]
-#        print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal2, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal2,l_metal2)])+"+2*"+str(minimum_enclosure[(l_metal2, l_via1)])+") Fixing minimum_spacing")
-#        min_spacing[(l_via1, l_via1)]=newmin
+#	newmin=min_spacing[(l_metal2,l_metal2)]+2*minimum_enclosure[(l_metal2, l_via1)]
+#	print("Minimum Spacing "+str(min_spacing[(l_via1, l_via1)])+" for via1 too small because of metal2, minimum should be "+ str(newmin)+"(="+str(min_spacing[(l_metal2,l_metal2)])+"+2*"+str(minimum_enclosure[(l_metal2, l_via1)])+") Fixing minimum_spacing")
+#	min_spacing[(l_via1, l_via1)]=newmin
 
 
 
