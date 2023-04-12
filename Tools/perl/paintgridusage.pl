@@ -6,8 +6,8 @@ open MAGIN,"<$cellname.mag";
 open REPORT,"<$cellname.err";
 #open REPIN,"<$cellname.log";
 open MAGOUT,">$cellname.grid.mag";
-my $fac=50;
-my $s=1;
+my $fac=5;
+my $s=5;
 my $t=2;
 while(<MAGIN>)
 {
@@ -21,7 +21,7 @@ while(<MAGIN>)
         foreach(split(",",$1))
         {
 	  $_=int($_/$fac);
-          print MAGOUT "<< met1 >>\nrect $_ -10 ".($_+$s)." $t\n";
+          print MAGOUT "<< met1 >>\nrect $_ -100 ".($_+$s)." $t\n";
         }
       }
       if($line=~m/Unused tracks \(y coordinates\): \[(.*?)\]/)
@@ -29,7 +29,7 @@ while(<MAGIN>)
         foreach(split(",",$1))
         {
 	  $_=int($_/$fac);
-          print MAGOUT "<< met1 >>\nrect -10 $_ $t ".($_+$s)."\n";
+          print MAGOUT "<< met1 >>\nrect -100 $_ $t ".($_+$s)."\n";
         }
       }
       if($line=~m/grid_xs: \[(.*?)\]/)
@@ -37,7 +37,7 @@ while(<MAGIN>)
         foreach(split(",",$1))
         {
           $_=int($_/$fac);
-          print MAGOUT "<< met2 >>\nrect $_ -20 ".($_+$s)." -11\n";
+          print MAGOUT "<< met2 >>\nrect $_ -200 ".($_+$s)." -110\n";
         }
       }
       if($line=~m/grid_ys: \[(.*?)\]/)
@@ -45,9 +45,18 @@ while(<MAGIN>)
         foreach(split(",",$1))
         {
           $_=int($_/$fac);
-          print MAGOUT "<< met2 >>\nrect -20 $_ -10 ".($_+$s)."\n";
+          print MAGOUT "<< met2 >>\nrect -200 $_ -100 ".($_+$s)."\n";
         }
       }
+      if($line=~m/via cost: (\d+) \((-?\d+),(-?\d+)\) (\w+)/)
+      {
+        my $x=int($2/$fac);
+	my $y=int($3/$fac);
+        next unless($4 eq "pdiff_contact");
+	print "via cost $1 $2 $3 $4\n";
+        print MAGOUT "<< ".($1?"via3":"met3")." >>\nrect $x $y ".($x+$s)." ".($y+$s)."\n";
+      }
+
     }
   }
   print MAGOUT $_;
