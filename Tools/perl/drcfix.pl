@@ -2,7 +2,7 @@
 
 if(scalar(@ARGV)<1)
 { 
-  print "Usage: drcfix.pl problematic.mag [techfile.tech]\n";
+  print "Usage: drcfix.pl problematic.mag [techfile.tech] [DRC rule deck]\n";
   exit;	
 }
 
@@ -15,9 +15,10 @@ print "Handling $ARGV[0]\n";
 open IN,"<".$ARGV[0];
 my $mag=$ARGV[0];$mag=~s/\.drc$/.mag/; $mag=~s/\.mag\.mag/\.mag/;
 my $output="corr_$mag";
+my $tcl=$mag; $tcl=~s/\.mag$/.drc.tcl/;
 my $mode=0;
 my $try=1;
-my $debug=0;
+my $debug=1;
 
 sub form($)
 {
@@ -25,12 +26,14 @@ sub form($)
 }
 
 my $insert="";
-
 our $tech=$ARGV[1] || "../Tech/libresilicon.tech";
+our $drcstyle=$ARGV[2] || "";
 
 #sub tryfix($)
 #{
   print "Trying the fix on $mag:\nRuning magic ...\n";
+
+
 
 my $todo=<<EOF
 proc redirect_variable {varname cmd} {
@@ -96,19 +99,32 @@ proc undoToCheckpoint {checkpoint} {
 #getCheckpoint
 
 proc fix_drc {} {
+   puts "select top cell"
    select top cell
+   puts "drc style $drcstyle"
+   drc style $drcstyle
+   puts "drc on"
    drc on
+   puts "drc check"
    drc check
+   puts "drc catchup"
    drc catchup
+   puts "drc listall catchup"
    drc listall catchup
+   puts "drc find"
    drc find
+   puts "drc check"
    drc check
+   puts "drc catchup"
    drc catchup
    set ndebugfile 1
+   puts "Redirecting Variable"
    redirect_variable drccount {drc count total}
+   puts "Setting checkpoint"
    set checkpoint [getCheckpoint]
    puts "Checkpoint: \$checkpoint"
    set nFixed 0
+   puts "DRC count: \$drccount"
    set drcc [string trim [string map {"Total DRC errors found: " ""} \$drccount] ]
    if {\$drcc == 0} return
    set yReposition {0 2 -2 9 -9}
@@ -196,6 +212,7 @@ proc fix_drc {} {
 }   
 puts "Trying to FIX some DRC issues"
 load $mag
+puts "Calling fix_drc"
 fix_drc
 puts "Done trying to FIX some DRC issues"
 quit -noprompt
@@ -203,10 +220,10 @@ EOF
 ;
 if($debug)
 {
-  open OUT,">magic-commands.tcl";
+  open OUT,">$tcl";
   print OUT $todo;
   close OUT;
-  system "magic -dnull -rcfile magic-commands.tcl -noconsole -T $tech";
+  system "magic -dnull -rcfile $tcl -noconsole -T $tech";
 }
 else
 {
