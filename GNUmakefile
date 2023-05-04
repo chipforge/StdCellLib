@@ -90,6 +90,8 @@ help:
 
 .PHONY: dist
 dist: clean
+	echo 1 >Catalog/.done
+	cd Catalog && ../Tools/perl/buildreport.pl && cd ..
 	$(ECHO) "---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
 	echo $(PROJECT)_$(DATE).tgz has been written.
