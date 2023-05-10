@@ -45,6 +45,8 @@ our $printedheader=0;
 
 our $magscale=undef;
 
+our $usebbox=1;
+
 
 foreach(@cells)
 {
@@ -67,8 +69,13 @@ foreach(@cells)
       {
         $layer=$1;
       }
+      if(m/^string FIXED_BBOX (-?\d+) (-?\d+) (-?\d+) (-?\d+)$/ && $usebbox)
+      {
+	@mins=($2,$1);
+	@maxs=($4,$3);
+      }
       next if($layer eq "checkpaint"); 
-      if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
+      if(m/^rect (-?\d+) (-?\d+) (-?\d+) (-?\d+)/ && !$usebbox)
       { 
         #print STDERR "$name min:@mins max:@maxs $_";
         my @a=split " ",$_;
