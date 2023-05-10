@@ -270,6 +270,7 @@ EOF
 
 if(!defined($ENV{'CELL'}))
 {
+  print "WRAPUP STEP: Concatenating GDS files\n";
   system_v "python3 ../Tools/python/concat4gds.py outputlib/*.gds";
 }
 
