@@ -18,16 +18,18 @@ our $csscolors="";
 sub initColors()
 {
   my $dir=$ENV{'MAGIC_DIR'} || "/usr/local/lib/magic/sys";	 
-  open IN,"<$dir/mos.24bit.std.cmap";
-  while(<IN>)
+  if(open(IN,"<$dir/mos.24bit.std.cmap"))
   {
-    if(m/^(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\w+)\s*$/)
+    while(<IN>)
     {
-      $colors{$4}=sprintf("#%02X%02X%02X",$1,$2,$3);
-      #print "$4:$colors{$4}\n";
+      if(m/^(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\w+)\s*$/)
+      {
+        $colors{$4}=sprintf("#%02X%02X%02X",$1,$2,$3);
+        #print "$4:$colors{$4}\n";
+      }
     }
+    close IN;
   }
-  close IN;
   for my $style (<$dir/mos.24bit.dstyle>)
   {
     open IN,"<$style";
