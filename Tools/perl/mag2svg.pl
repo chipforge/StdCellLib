@@ -113,11 +113,11 @@ if(-f "$mag.mag")
     {
       close IN; # We dont need it anymore, we use a different approach now:
       #print STDERR "Running magic to flatten the file:\n";
-      open MAGIC,"|magic -dnull -noconsole -nowindow -T $tech $mag";
+      open MAGIC,"|magic -dnull -noconsole -T $tech $mag";
       my $flat="tmp".int(rand()*10000).".mag";
       unlink $flat;
       $flat=~s/\.mag$//i; # We need to remove the extension otherwise load will not work
-      print MAGIC "expand\nflatten $flat\nload $flat\nsave\n";
+      print MAGIC "select top cell\nexpand\nflatten $flat\nload $flat\nsave\n";
       print MAGIC "exit\n";
       close MAGIC;
       #print STDERR "magic flatten done.\n";
