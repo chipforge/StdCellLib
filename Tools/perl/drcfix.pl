@@ -227,7 +227,7 @@ if($debug)
 }
 else
 {
-  open OUT,"|magic -dnull -noconsole -T $tech";
+  open OUT,"|magic -dnull -noconsole -nowindow -T $tech";
   print OUT $todo;
   close OUT;
 }
