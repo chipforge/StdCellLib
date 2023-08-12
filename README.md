@@ -81,7 +81,7 @@ The Standard Cells (and the cell generator) are controlled / ruled with GNU Make
 apt-get install make
 ```
 
-Please make yourself familiar with the GNUmakefile system - assure your are not root anymore - by typing:
+Please make yourself familiar with the GNUmakefile system - assure you are not root anymore - by typing:
 
 ```
 make
