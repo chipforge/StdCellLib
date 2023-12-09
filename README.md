@@ -72,7 +72,7 @@ While the generation is running you can continuously generate the build-report e
 bash ../Tools/reporter.sh
 ```
 You can then view the build-report in the file buildreport.html 
-An example build report is available here: https://pdk.libresilicon.com/dist/StdCellLib_20200417/Catalog/buildreport.html
+An example build report is available here: https://pdk.libresilicon.com/dist/StdCellLib_20200417_LS1U/Catalog/buildreport.html
 
 ### Generate Library Documentation
 
