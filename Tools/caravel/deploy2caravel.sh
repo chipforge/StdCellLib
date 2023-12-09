@@ -1,6 +1,8 @@
 #!/bin/bash
 #CARAVEL=/media/philipp/Daten/skywater/caravel-stdcelllib-stdcells
 
+# Builds a single Caravel User Space
+
 if [ -z "$CARAVEL" ]
 then
 	echo "Environment variables not found, please run '. env.sh' to define them."
@@ -65,5 +67,8 @@ cd $CARAVEL
 #bash my.sh
 echo "Now building the Caravel user-project"
 make user_proj_example && make user_project_wrapper
+
+
+echo "Now we should git submit ..."
 
 echo "Deployment done.";

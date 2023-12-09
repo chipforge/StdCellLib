@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+print STDERR "Fixups for the LIBERTY files\n";
+
 open IN,"<libresilicon.lib";
 undef $/;
 my $content=<IN>;

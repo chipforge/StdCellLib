@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 
+# Generates the configuration file for a single Caravel user space
+
 my $lefs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lef/*.lef>);
 my $gds =join(" ",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
 my $libs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lib/libresilicon.lib>);

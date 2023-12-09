@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 
+print STDERR "Fixing up .SP files for a Caravel\n";
+
 sub readfile($)
 {
   if(open MYRIN,"<$_[0]")

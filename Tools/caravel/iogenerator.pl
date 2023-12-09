@@ -1,4 +1,7 @@
 #!/usr/bin/perl -w
+use strict;
+
+print STDERR "Generating IO configuration\n";
 
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 

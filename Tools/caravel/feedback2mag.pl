@@ -1,3 +1,4 @@
+print STDERR "Convert feedback to a .mag file\n";
 my $example=<<EOF
 box 55873 307343 55907 307362
 feedback add "Illegal overlap (types do not connect)" medium

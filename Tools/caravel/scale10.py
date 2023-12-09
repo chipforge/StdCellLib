@@ -1,6 +1,7 @@
 import glob
 import gdsfactory as gf
 
+# Rescale GDS files
 
 for a in glob.glob("*.gds"):
   print(a)

@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 
+print STDERR "Fixing up .mag files\n";
+
 my $magictech=$ARGV[0] || "sky130A";
 
 foreach my $mag (<*.mag>)

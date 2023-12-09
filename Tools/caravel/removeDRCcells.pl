@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+print STDERR "Remove cells that have DRC errors from the Caravel so that we only have good cells on the Caravel\n";
+
 foreach my $mag (<*.mag>)
 {
   my $cell=$mag; $cell=~s/\.mag$//;	

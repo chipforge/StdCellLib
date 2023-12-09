@@ -2,6 +2,8 @@
 
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 
+print STDERR "Generates Verilog for user_proj_example\n";
+
 print STDERR "Warning: environment variable CARAVEL not defined! Please define it.\n" unless (-d $ENV{'CARAVEL'}."/cells/mag/");
 
 

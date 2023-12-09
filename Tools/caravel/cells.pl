@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+# Generates the Verilog code for a single caravel userspace module
+
 my $STDCELLLIB=$ENV{'STDCELLLIB'} || "/home/philipp/libresilicon/StdCellLib";
 
 

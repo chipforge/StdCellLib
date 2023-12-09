@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+print STDERR "Generates macro placement file for all cells - not needed\n";
+
 my $width=0.48;
 my $height=3.33;
 

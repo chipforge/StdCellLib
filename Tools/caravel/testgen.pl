@@ -1,4 +1,8 @@
 #!/usr/bin/perl -w
+use strict;
+
+print STDERR "Generating testbench firmware file for Caravel to test all the functions (this is a ATPG)\n";
+
 open IN,"<$ARGV[0]";
 
 print <<EOF
