@@ -385,6 +385,7 @@ EOF
           print "!(".join($format eq "liberty"?"|":" || ",@list).")";
         }
 	print $format eq "liberty" ? "\";\n  }":" ";
+	print $format eq "verilog" ? "\n":"";
         # TODO: We should try more functional representations like AOI, OAI, OR, NOR and see which one is the shortest representation
       }
 
