@@ -224,6 +224,15 @@ test2:
 %.svg : %.mag
 	perl ../Tools/perl/mag2svg.pl $@
 
+%.truthtable.v : %.cell
+	perl ../Tools/perl/truthtable.pl --format=verilog $^ >$@
+
+%.truthtable.txt : %.cell
+	perl ../Tools/perl/truthtable.pl --format=text $^ >$@
+
+%.truthtable.html : %.cell
+	perl ../Tools/perl/truthtable.pl --format=html $^ >$@
+
 
 .PHONY: cell
 cell:       $(CELL)
