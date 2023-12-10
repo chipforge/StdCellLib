@@ -1,0 +1,10 @@
+export STDCELLLIB="../"
+#e#xport OPENLANE_ROOT="/home/philipp/libresilicon/StdCellLib/Catalog/sky130_stdcelllib_1/dependencies/openlane_src"
+#e#xport CARAVEL="/home/philipp/libresilicon/StdCellLib/Catalog/sky130_stdcelllib_1"
+#e#xport CARAVEL_ROOT="/home/philipp/libresilicon/StdCellLib/Catalog/sky130_stdcelllib_1/caravel"
+export PDK_ROOT=/home/philipp/.volare
+export PDK="sky130A"
+export STD_CELL_LIBRARY="sky130_fd_sc_lp"
+export STD_CELL_LIBRARY_OPT="sky130_fd_sc_lp"
+export CARAVEL_BRANCH="skympw-8d"
+export KLAYOUT_HOME=/home/philipp/.volare/sky130A/libs.tech/klayout
