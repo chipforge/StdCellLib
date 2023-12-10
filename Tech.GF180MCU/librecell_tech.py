@@ -110,7 +110,7 @@ output_map_magic = {
 # Define a list of output writers.
 output_writers = [
     MagWriter(
-        tech_name='gf180mcuC',
+        tech_name='gf180mcuD',
         scale_factor=0.2, # Scale all coordinates by this factor (rounded down to next integer).
         output_map=output_map_magic,
         magscale=[1,10]
