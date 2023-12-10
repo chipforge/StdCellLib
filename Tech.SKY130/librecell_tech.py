@@ -27,7 +27,7 @@ my_nwell = (64, 20)
 my_nwell_label = (64, 5)
 my_nwell_pin = (64, 16) #  (64, 0) !!! both GDS definitions were found in the Skywater documentation, please check which are correct.
 
-# my_pwell = (64, 13) # This layer is only used for resistors, which we dont need here
+my_pwell = (64, 13) # This layer is only used for resistors, which we dont need here
 
 my_poly = (66, 20) # poly silicium for gates -> poly + ntransistor + ptransistor
 my_poly_gate = (66, 9) # poly gates? Why do we have a second layer for gates?
@@ -59,7 +59,7 @@ output_map = {
     l_ndiffusion: my_diffusion,
     l_pdiffusion: my_diffusion,
     l_nwell: my_nwell, # [my_nwell, my_nwell2],  # Map l_nwell to two output layers.
-    #l_pwell: my_pwell,  # Output layer for pwell. Uncomment this if needed. For instance for twin-well processes.
+    l_pwell: my_pwell,  # Output layer for pwell. Uncomment this if needed. For instance for twin-well processes.
     l_poly: my_poly,
     l_poly_contact: my_licon1,
     l_pdiff_contact: my_licon1,
@@ -91,6 +91,7 @@ obstruction_layers = [
 
 output_map_magic = {
             l_nwell: 'nwell',
+            l_pwell: 'pwell',
             l_via1: 'viali',
             l_poly: 'poly',
             l_abutment_box: ['abutment'],
@@ -195,7 +196,7 @@ min_spacing = {
 pin_layer = l_metal2 # lclayout.metal2 = sky130.metal1
 
 # Power stripe layer
-power_layer = [l_metal1, l_metal2] # lclayout.metal2 = sky130.metal1
+power_layer = l_metal1 # , l_metal2] # lclayout.metal2 = sky130.metal1
 
 # Layers that can be connected/merged without changing the schematic.
 # This can be used to resolve spacing/notch violations by just filling the space.
