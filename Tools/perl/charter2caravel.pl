@@ -4,6 +4,7 @@ my $doverification=1;
 my $maxios=38+128-2; # How many IOs does one Caravel have?
 my $maxdesigns=1; # How many Caravels do you want to use maximum?
 our $githubuser=$ENV{'GITHUB_USER'} || "thesourcerer8"; # GitHub Username for the Repository URL
+our $efablessuser=$ENV{'EFABLESS_USER'} || "philippguehring"; # EFabless GIT username
 our $CARAVEL="";
 our @repos=();
 our %assigned=();
@@ -24,8 +25,19 @@ while(<IN>)
 }
 close IN;
 
-my $magictech=$ENV{'PDK'} || "gf180mcuC"; # MAGIC Technology name (.tech filename)
-my $branch=$ENV{'CARAVEL_BRANCH'} || "gfmpw-0d"; # Git Branch for the Caravel User Project
+my $magictech=$ENV{'PDK'} || "gf180mcuD"; # MAGIC Technology name (.tech filename)
+$ENV{'PDK'}=$magictech;
+
+sub getCellLibrary($)
+{
+  return "gf180mcu_fd_sc_mcu9t5v0" if($_[0]=~m/gf180/i);
+  return "sky130_fd_sc_hd" if($_[0]=~m/sky130/i);
+  return "";
+}
+
+my $celllibrary=getCellLibrary($ENV{'PDK'});
+
+my $branch=$ENV{'CARAVEL_BRANCH'} || "gfmpw-1c"; # Git Branch for the Caravel User Project
 
 sub system_v($)
 {
@@ -42,6 +54,8 @@ sub step($)
 sub nextgroup($)
 {
   $CARAVEL="gf180_stdcelllib_$_[0]";
+  $CARAVEL="sky130_stdcelllib_$_[0]" if($ENV{'PDK'}=~m/sky130/i);
+
   if($ngroups>=$maxdesigns)
   {
     print STDERR "Stopping at the defined limit of maximum $maxdesigns designs.\n";
@@ -92,7 +106,7 @@ sub endgroup($)
   $ENV{'CARAVEL'}=$ENV{'PWD'}."/$CARAVEL"; # =$(pwd)
   $ENV{'CARAVEL_ROOT'}=$ENV{'PWD'}."/$CARAVEL/caravel";
   $ENV{'PDK_ROOT'}=$ENV{'PDK_ROOT'} || ($ENV{'PWD'}."/$CARAVEL/dependencies/pdks"); # =$(readlink -f $(pwd)/../pdk )
-  $ENV{'PDK'}="gf180mcuC";
+  #$ENV{'PDK'}="gf180mcuD";
   $ENV{'MCW_ROOT'}=$ENV{'PWD'}."/$CARAVEL/mgmt_core_wrapper";
   #$ENV{'PATH'}.=#export PATH=$PATH:$(readlink -f $(pwd)../openlane_summary/ )
   print "Writing Environment file for easy debugging, just \"source env.sh\" when you need it:\n";
@@ -105,7 +119,7 @@ sub endgroup($)
 
   
   my $pdk=$ENV{'PDK'};
-  my $foundry=($pdk=~m/^sky/)?"SkyWater":($pdk=~m/^gf/)?"GlobalFoundries":($pdk=~m/^ls/)?"LibreSilicon":($pdk=~m/^tsmc/i)?"TSMC":"Unknown foundry";
+  my $foundry=($pdk=~m/^sky/i)?"SkyWater":($pdk=~m/^gf/i)?"GlobalFoundries":($pdk=~m/^ls/i)?"LibreSilicon":($pdk=~m/^tsmc/i)?"TSMC":"Unknown foundry";
   open OUT,">$CARAVEL/info.yaml";
   print OUT <<EOF
 ---
@@ -173,7 +187,7 @@ print OUT <<EOF
 # SPDX-License-Identifier: Apache-2.0
 
 set ::env(PDK) "$pdk"
-set ::env(STD_CELL_LIBRARY) "gf180mcu_fd_sc_mcu9t5v0"
+set ::env(STD_CELL_LIBRARY) "$celllibrary"
 
 set ::env(DESIGN_NAME) user_proj_example
 
@@ -254,7 +268,7 @@ EOF
   step("verification");
   mkdir "verilog/dv/stdcells",0755;
   system "cp ../../Tools/caravel/stdcells_tb.v verilog/dv/stdcells/";
-  system "cp verilog/dv/io_ports/Makefile verilog/dv/stdcells/";
+  system "cp verilog/dv/io_ports/Makefile verilog/dv/stdcells/" if(-f "verilog/dv/io_ports/Makefile");
   chdir "cells/cell";
   system_v "perl ../../../Tools/perl/testgen.pl >$CARAVEL/verilog/dv/stdcells/stdcells.c";
   chdir "../../";
@@ -269,6 +283,8 @@ EOF
   }
   system_v "make dist";
 
+  if(0)
+  {
   system_v "git add cells env.sh verilog/rtl/user_proj_cells.v verilog/rtl/user_proj_example.v openlane/user_proj_example/* info.yaml verilog/dv/stdcells";
   system_v "git commit -m \"Automatically generated files\"";
   system_v "git add -u .";
@@ -277,12 +293,25 @@ EOF
   system_v "git remote remove origin";
   system_v "git remote add origin git\@github.com:$githubuser/$CARAVEL.git";
   system_v "echo git push origin HEAD:main -f";
+  }
+  else
+  {
+  #system_v "git clone ssh://git\@repositories.efabless.com/$efablessuser/$CARAVEL.git";
+  system_v "git remote add origin ssh://git\@repositories.efabless.com/$efablessuser/$CARAVEL.git";
+  #system_v "cd gf180_stdcelllib_1";
+  #system_v "git checkout -b main";
+  system_v "touch README.rst";
+  system_v "git add README.rst";
+  system_v "git commit -m \"Add README file\"";
+  system_v "echo git push -u origin main";
+
+  }
   chdir "..";
 }
 
 print "Selecting first group:\n";
 nextgroup($group);
-my @cells=qw(AAAAOI3322.cell AAAOAI3221.cell AAAOAOI33311.cell AAAOI222.cell AAAOI333.cell AAOAOI33111.cell AAOI22.cell AAOOAAOI2224.cell AOAAOI2124.cell AOAI221.cell AOI21.cell ASYNC1.cell ASYNC2.cell ASYNC3.cell INV.cell MARTIN1989.cell MUX2.cell MUX3.cell MUX4.cell MUX8.cell NAND2.cell NAND3.cell NAND4.cell NOR2.cell NOR3.cell NOR4.cell OAAAOI2132.cell OAAOAOI21311.cell OAAOI224.cell OAOOAAOI21132.cell OAI41.cell OOOOAI3332.cell OR4.cell sutherland1989.cell vanberkel1991.cell);
+my @cells=qw(NAND2.cell AAAOI333.cell AAOAOI33111.cell AAOI22.cell AAOOAAOI2224.cell AOAAOI2124.cell AOAI221.cell AOI21.cell ASYNC1.cell ASYNC2.cell ASYNC3.cell INV.cell MARTIN1989.cell MUX2.cell MUX3.cell MUX4.cell MUX8.cell NAND3.cell NAND4.cell NOR2.cell NOR3.cell NOR4.cell OAAAOI2132.cell OAAOAOI21311.cell OAAOI224.cell OAOOAAOI21132.cell OAI41.cell OOOOAI3332.cell OR4.cell sutherland1989.cell vanberkel1991.cell AAAAOI3322.cell AAAOAI3221.cell AAAOAOI33311.cell AAAOI222.cell);
 push @cells,<*.cell>;
 my %seen=();
 
@@ -294,6 +323,11 @@ foreach my $cell (@cells)
   my $thisios=0;
   my $cn=$cell; $cn=~s/\.cell$//;
   next if(-f "cn.dontuse");
+  if(! -s "$cell.truthtable.v");
+  {
+    print "The cell $cell has an empty and unusable truthtable.\n";
+    next;
+  }
   if(-f "outputlib/$cn.gds")
   {
     open IN,"<$cell";
