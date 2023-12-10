@@ -96,7 +96,14 @@ EOF
       direction: output;
 EOF
       ;
-    print $funcs{$_}."\n";
+    if(!defined($funcs{$_}))
+    {
+      print STDERR "Warning: In the cell $cell the output $_ does not have a defined function in the $cell.truthtable.v ! Use this cell on your own risk.\n";
+    }
+    else
+    {
+      print $funcs{$_}."\n";
+    }
     print <<EOF
     }
 EOF
