@@ -233,6 +233,10 @@ test2:
 %.truthtable.html : %.cell
 	perl ../Tools/perl/truthtable.pl --format=html $^ >$@
 
+.PHONY: charter
+charter:
+	perl ../Tools/perl/charter2caravel.pl
+
 
 .PHONY: cell
 cell:       $(CELL)
