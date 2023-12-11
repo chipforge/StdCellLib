@@ -36,6 +36,7 @@ foreach my $mag(sort <cells/mag/*.mag>)
   open CELL,"<$cell";
   print "module $name(\n";
 
+  my $counter=0;
   while(<CELL>)
   {
     if(m/^\.inputs (.*)/)
@@ -43,7 +44,8 @@ foreach my $mag(sort <cells/mag/*.mag>)
       foreach my $inp(sort split " ",$1)
       {
         my $io=$nextio++;
-	print "  inout $inp, // input\n";
+	print "  ".($counter?",":"")."inout $inp // input $io\n";
+	$counter++;
       }
     }
     if(m/^\.outputs (.*)/)
@@ -51,7 +53,8 @@ foreach my $mag(sort <cells/mag/*.mag>)
       foreach my $outp(sort split " ",$1)
       {
         my $io=$nextio++;
-	print "  inout $outp, // output\n";
+	print "  ".($counter?",":"")."inout $outp // output $io\n";
+	$counter++;
       }
     }
 
@@ -60,19 +63,19 @@ foreach my $mag(sort <cells/mag/*.mag>)
   print "     \`ifdef USE_POWER_PINS\n";
   if($ENV{'PDK'}=~m/^gf180mcu/i)
   {
-    print "	inout vdd, // cell power supply\n";
-    print "	inout vss  // cell ground supply\n";
+    print "	,inout vdd // cell power supply\n";
+    print "	,inout vss // cell ground supply\n";
   }
   elsif($ENV{'PDK'}=~m/^sky130/i)
   {
-    print "	inout VPWR, // cell power supply\n";
-    print "	inout VGND  // cell ground supply\n";
+    print "	,inout VPWR // cell power supply\n";
+    print "	,inout VGND // cell ground supply\n";
   }
   else
   {
     print STDERR "WARNING: Environment variable \$PDK is not defined, therefore we can only guess the names of the power pins to be vdd/vss!\n";
-    print "	inout vdd, // cell power supply\n";
-    print "	inout vss  // cell ground supply\n";
+    print "	,inout vdd // cell power supply\n";
+    print "	,inout vss // cell ground supply\n";
   }
   print "     \`endif\n";
   print ");\n";
