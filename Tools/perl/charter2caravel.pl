@@ -166,6 +166,39 @@ EOF
 
   mkdir "$CARAVEL/dependencies",0777;
   chdir "$CARAVEL";
+  system_v "perl ../../Tools/caravel/iogenerator.pl >verilog/rtl/user_defines.v";
+
+
+  chdir "cells/lef";
+  step("fixup_lef $CARAVEL");
+  system "perl ../../../../Tools/caravel/fixup_lef.pl ../../../../Tech/libresilicon.tech";
+  chdir "../../../";
+  chdir "$CARAVEL/cells/mag";
+  step("fixup_mag $CARAVEL");
+  system "perl ../../../../Tools/caravel/fixup_mag.pl ../../../../Tech/libresilicon.tech" if($magictech eq "sky130A");
+  chdir "../../../";
+  chdir "$CARAVEL/cells/sp";
+  step("fixup_sp $CARAVEL");
+  system "perl ../../../../Tools/caravel/fixup_sp.pl ../../../../Tech/libresilicon.tech";
+  chdir "../../../";
+  chdir "$CARAVEL/cells/gds";
+  step("fixup_gds $CARAVEL");
+  #system "python3 ../../../../Tools/caravel/scale10.py";
+  chdir "../../../";
+
+
+  chdir "$CARAVEL/cells/lib";
+  step("libertymerge");
+  system_v "libertymerge -b ../../../libresilicon.libtemplate -o libresilicon.lib -u *.lib";
+  step("removenl");
+  system "perl ../../../../Tools/caravel/removenl.pl >new.lib";
+  rename "libresilicon.lib","libresilicon.lib.orig";
+  rename "new.lib","libresilicon.lib";
+  chdir "../../../";
+
+  step("config");
+  chdir $CARAVEL;
+
   system_v "perl ../../Tools/caravel/configgen.pl >openlane/user_proj_example/config.json";
 
 
@@ -190,6 +223,8 @@ set ::env(PDK) "$pdk"
 set ::env(STD_CELL_LIBRARY) "$celllibrary"
 
 set ::env(DESIGN_NAME) user_proj_example
+
+set ::env(EXTRA_LEFS) "\$::env(DESIGN_DIR)/../../cells/lef/*.lef"
 
 set ::env(VERILOG_FILES) "\$::env(CARAVEL_ROOT)/verilog/rtl/defines.v \$::env(DESIGN_DIR)/../../verilog/rtl/user_proj_example.v"
 
@@ -228,35 +263,10 @@ set ::env(RUN_CVC) 1
 EOF
   ;
   close OUT;
-
-  system_v "perl ../../Tools/caravel/iogenerator.pl >verilog/rtl/user_defines.v";
-
-
-  chdir "cells/lef";
-  step("fixup_lef $CARAVEL");
-  system "perl ../../../../Tools/caravel/fixup_lef.pl $magictech";
-  chdir "../../../";
-  chdir "$CARAVEL/cells/mag";
-  step("fixup_mag $CARAVEL");
-  system "perl ../../../../Tools/caravel/fixup_mag.pl $magictech" if($magictech eq "sky130A");
-  chdir "../../../";
-  chdir "$CARAVEL/cells/sp";
-  step("fixup_sp $CARAVEL");
-  system "perl ../../../../Tools/caravel/fixup_sp.pl $magictech";
-  chdir "../../../";
-  chdir "$CARAVEL/cells/gds";
-  step("fixup_gds $CARAVEL");
-  #system "python3 ../../../../Tools/caravel/scale10.py";
-  chdir "../../../";
+  rename "openlane/user_proj_example/config.tcl","openlane/user_proj_example/config.tcl.old";
 
 
-  chdir "$CARAVEL/cells/lib";
-  step("libertymerge");
-  system_v "libertymerge -b ../../../libresilicon.libtemplate -o libresilicon.lib -u *.lib";
-  step("removenl");
-  system "perl ../../../../Tools/caravel/removenl.pl >new.lib";
-  system "mv new.lib libresilicon.lib";
-  chdir "../../../";
+
   step("generator");
   chdir $CARAVEL;
   system "perl ../../Tools/caravel/generator.pl >verilog/rtl/user_proj_example.v";
@@ -267,14 +277,16 @@ EOF
 
   step("verification");
   mkdir "verilog/dv/stdcells",0755;
+  mkdir "verilog/dv/cocotb",0755;
   system "cp ../../Tools/caravel/stdcells_tb.v verilog/dv/stdcells/";
   system "cp verilog/dv/io_ports/Makefile verilog/dv/stdcells/" if(-f "verilog/dv/io_ports/Makefile");
   chdir "cells/cell";
-  system_v "perl ../../../Tools/perl/testgen.pl >$CARAVEL/verilog/dv/stdcells/stdcells.c";
+  system_v "perl ../../../../Tools/perl/testgen.pl >../../verilog/dv/stdcells/stdcells.c";
   chdir "../../";
-
-  step("make user_proj_example");
+  
+  step("make setup");
   system_v "make setup";
+  step("make user_proj_example");
   system_v "make user_proj_example && make user_project_wrapper";
   if($doverification)
   {
@@ -297,6 +309,7 @@ EOF
   else
   {
   #system_v "git clone ssh://git\@repositories.efabless.com/$efablessuser/$CARAVEL.git";
+  system_v "git remote rename origin upstream";
   system_v "git remote add origin ssh://git\@repositories.efabless.com/$efablessuser/$CARAVEL.git";
   #system_v "cd gf180_stdcelllib_1";
   #system_v "git checkout -b main";
@@ -311,8 +324,9 @@ EOF
 
 print "Selecting first group:\n";
 nextgroup($group);
-my @cells=qw(NAND2.cell AAAOI333.cell AAOAOI33111.cell AAOI22.cell AAOOAAOI2224.cell AOAAOI2124.cell AOAI221.cell AOI21.cell ASYNC1.cell ASYNC2.cell ASYNC3.cell INV.cell MARTIN1989.cell MUX2.cell MUX3.cell MUX4.cell MUX8.cell NAND3.cell NAND4.cell NOR2.cell NOR3.cell NOR4.cell OAAAOI2132.cell OAAOAOI21311.cell OAAOI224.cell OAOOAAOI21132.cell OAI41.cell OOOOAI3332.cell OR4.cell sutherland1989.cell vanberkel1991.cell AAAAOI3322.cell AAAOAI3221.cell AAAOAOI33311.cell AAAOI222.cell);
-push @cells,<*.cell>;
+# Too complex cells:AAOAOI33111.cell AAOOAAOI2224.cell AOAAOI2124.cell OAAAOI2132.cell OAAOAOI21311.cell OAAOI224.cell OAOOAAOI21132.cell AAAAOI3322.cell AAAOAI3221.cell AAAOAOI33311.cell AAAOI222.cell
+my @cells=qw(NAND2.cell AAAOI333.cell AAOI22.cell AOAI221.cell AOI21.cell ASYNC1.cell ASYNC2.cell ASYNC3.cell INV.cell MARTIN1989.cell MUX2.cell MUX3.cell MUX4.cell MUX8.cell NAND3.cell NAND4.cell NOR2.cell NOR3.cell NOR4.cell OAI41.cell OOOOAI3332.cell OR4.cell sutherland1989.cell vanberkel1991.cell );
+#push @cells,<*.cell>;
 my %seen=();
 
 print "Adding all the cells onboard the Caravels:\n";
@@ -323,7 +337,7 @@ foreach my $cell (@cells)
   my $thisios=0;
   my $cn=$cell; $cn=~s/\.cell$//;
   next if(-f "cn.dontuse");
-  if(! -s "$cell.truthtable.v");
+  if(! -s "$cn.truthtable.v")
   {
     print "The cell $cell has an empty and unusable truthtable.\n";
     next;
