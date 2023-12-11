@@ -19,7 +19,7 @@ print <<EOF
  */
 
 module user_proj_example #(
-    parameter BITS = 32
+  /*  parameter BITS = 32 */
 )(
 `ifdef USE_POWER_PINS
 EOF
@@ -82,9 +82,16 @@ print <<EOF
     output [`MPRJ_IO_PADS-1:0] io_oeb,
 
     // IRQ
-    output [2:0] irq,
+    output [2:0] irq
 
 );
+
+    wire [`MPRJ_IO_PADS-1:0] io_in_wire;
+    assign io_in_wire=io_in;
+
+    wire [127:0] la_data_in_wire;
+    assign la_data_in_wire=la_data_in;
+
 
     // IRQ
     assign irq = 3'b000;	// Unused
@@ -97,6 +104,8 @@ our $nextla=0;
 our $nextio=0;
 our $conf="";
 my $MPRJ_IO_PADS=38;
+
+my %driven=();
 
 foreach my $mag(<cells/mag/*.mag>)
 {
@@ -117,7 +126,7 @@ foreach my $mag(<cells/mag/*.mag>)
   print "  \.VGND(vssd1),\n";
   print " `endif\n";
 
-
+  my $counter=0;
   while(<CELL>)
   {
     if(m/^\.inputs (.*)/)
@@ -127,15 +136,17 @@ foreach my $mag(<cells/mag/*.mag>)
         my $io=$nextio++;
 	if($io<$MPRJ_IO_PADS)
 	{
-          print "  \.$inp(io_in[$io]),\n";
+          print "  ".($counter?', ':'')."\.$inp(io_in_wire[$io])\n";
 	  $conf.="assign io_oeb[$io] = 1'b1;\n";
           $inout{"io$io"}="ioin";
+	  $counter++;
 	}
 	else
 	{
 	  my $la=$io-$MPRJ_IO_PADS;
-          print "  \.$inp(la_data_in[$la]),\n";
+          print "  ".($counter?', ':'')."\.$inp(la_data_in_wire[$la])\n";
           $inout{"io$io"}="lain";
+	  $counter++;
 	}
       }
     }
@@ -146,23 +157,41 @@ foreach my $mag(<cells/mag/*.mag>)
         my $io=$nextio++;
 	if($io<$MPRJ_IO_PADS)
 	{
-          print "  \.$outp(io_out[$io]),\n";
+          print "  ".($counter?', ':'')."\.$outp(io_out[$io])\n";
+	  $driven{"io_out[$io]"}=1;
 	  $conf.="assign io_oeb[$io] = 1'b0;\n";
           $inout{"io$io"}="ioout";
+	  $counter++;
 	}
 	else
 	{
 	  my $la=$io-$MPRJ_IO_PADS;
-          print "  \.$outp(la_data_out[$la]),\n";
+          print "  ".($counter?', ':'')."\.$outp(la_data_out[$la])\n";
+	  $driven{"la_data_out[$la]"}=1;
           $inout{"io$io"}="laout";
+	  $counter++;
 	}
       }
     }
 
   }
   close CELL;
+
   print ");\n";
 }
+
+  foreach(0 .. 127)
+  {
+    print "assign la_data_out[$_] = 1'b0;\n" if(!defined($driven{"la_data_out[$_]"}));
+  }
+  foreach(0 .. $MPRJ_IO_PADS-1)
+  {
+    print "assign io_out[$_] = 1'b0;\nassign io_oeb[$_] =1'b0;\n" if(!defined($driven{"io_out[$_]"}));
+  }
+
+  print "assign wbs_ack_o = 1'b1;\n";
+  print "assign wbs_dat_o = 32'b0;\n";
+
 print $conf;
 print "endmodule\n";
 print "`default_nettype wire\n";
