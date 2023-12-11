@@ -33,7 +33,7 @@ print <<EOF
     "CLOCK_PORT": "wb_clk_i",
     "CLOCK_NET": "counter.clk",
     "FP_SIZING": "absolute",
-    "DIE_AREA": "0 0 400 400",
+    "DIE_AREA": "0 0 700 700",
     "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
     "PL_BASIC_PLACEMENT": 0,
     "PL_TARGET_DENSITY": 0.55,
