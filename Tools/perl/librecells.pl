@@ -247,8 +247,9 @@ EOF
 
 
     step("NEXT STEP: Characterization with CharLib:");
-    system_v("python3 ../Tools/python/gen_CharLib.py");
-    $cmd="python3 CharLib.py -b CharLib.cmd"; # Which Path should we use for CharLib?
+    # system_v("python3 ../Tools/python/gen_CharLib.py"); # Old CharLib and Libretto support
+    system_v("perl ../Tools/perl/gencharlibyml.pl");
+    $cmd="charlib run ."; # Which Path should we use for CharLib?
 
 
     step("NEXT STEP: Visualisation");
