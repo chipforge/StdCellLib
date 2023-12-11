@@ -28,7 +28,16 @@ settings:
             name:       VNW
             voltage:    3.3
     cell_defaults:
-        models: [gf180.ngspice]
+        models:
+EOF
+;
+# This is PDK dependent!
+print OUT <<EOF
+            - ../Tech.GF180MCU/sm141064.ngspice typical # This syntax tells CharLib to use the '.lib file section' syntax for this model
+            - ../Tech.GF180MCU/design.ngspice
+EOF
+;
+print OUT <<EOF
         slews: [0.015, 0.04, 0.08, 0.2, 0.4]
         loads: [0.06, 0.18, 0.42, 0.6, 1.2]
 cells:
@@ -73,7 +82,7 @@ foreach my $cell(<*.cell>)
     print OUT "        functions:\n";
     while(<IN>)
     {
-      s/function: //; s/\&\&/\&/g; s/\|\|/\|/g;
+      s/function: //; s/\&\&/\&/g; s/\|\|/\|/g; s/ //g;
       print OUT "            - $_";
     }
     close IN;
