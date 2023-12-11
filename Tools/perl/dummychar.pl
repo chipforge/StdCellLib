@@ -66,7 +66,9 @@ foreach my $cell(@cells)
   {
     if(m/(\w+) = ((.*))$/)
     {
-      $funcs{$1}="      function: \"".$2."\";";
+      my ($pin,$func)=($1,$2);
+      $func=~s/ //g; $func=~s/\&\&/\&/g; $func=~s/\|\|/\|/g;
+      $funcs{$pin}="      function: \"".$func."\";";
     }
   }
   close IN;
