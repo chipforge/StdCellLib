@@ -9,7 +9,7 @@ $content=~s/area/pg_pin (VPWR) { voltage_name : "VPWR"; pg_type : "primary_power
 
 #$content=~s/"\s*\n/"/gs;
 #$content=~s/;\s*\n/;/gs;
-$content=~s/\n//gs;
+#$content=~s/\n//gs; # Why did we remove the newlines? - it now works without removing them
 $content=~s/\\//gs;
 
 
