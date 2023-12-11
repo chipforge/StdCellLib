@@ -235,7 +235,7 @@ set ::env(CLOCK_NET) "counter.clk"
 set ::env(CLOCK_PERIOD) "24.0"
 
 set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 400 400"
+set ::env(DIE_AREA) "0 0 700 700"
 
 set ::env(FP_PIN_ORDER_CFG) \$::env(DESIGN_DIR)/pin_order.cfg
 
