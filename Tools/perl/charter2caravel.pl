@@ -13,6 +13,8 @@ my $usedios=0;
 my $totalios=0;
 my $group=1;
 
+print "Chartering one or more Caravels ...\n";
+
 open IN,"<../Tech/caravel-env.sh";
 print "Loading Caravel environment variables.\n";
 while(<IN>)
@@ -264,6 +266,17 @@ EOF
   ;
   close OUT;
   rename "openlane/user_proj_example/config.tcl","openlane/user_proj_example/config.tcl.old";
+
+  if(open(OUT,">>openlane/user_proj_example/pin_order.cfg"))
+  {
+    foreach(16..37)	   
+    {
+      print OUT "io_in\\[$_\\]\n";
+      print OUT "io_out\\[$_\\]\n";
+      print OUT "io_oeb\\[$_\\]\n";
+    }
+    close OUT;
+  }
 
 
 
