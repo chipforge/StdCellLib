@@ -3,22 +3,24 @@ use strict;
 
 # Generates the configuration file for a single Caravel user space
 
-my $lefs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lef/*.lef>);
-my $gds =join(" ",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
-my $libs=join(" ",map { $ENV{'PWD'}."/".$_ } <cells/lib/libresilicon.lib>);
+my $lefs=join("\",\"",map { $ENV{'PWD'}."/".$_ } <cells/lef/*.lef>);
+my $gds =join("\",\"",map { $ENV{'PWD'}."/".$_ } <cells/gds/*.gds>);
+my $libs=join("\",\"",map { $ENV{'PWD'}."/".$_ } <cells/lib/libresilicon.lib>);
 my $verilog=$ENV{'PWD'}."/verilog/rtl/user_proj_cells.v";
 #    "EXTRA_LIBS": ["dir::../../cells/lib/libres*.lib"],
 #
 print STDERR "lefs: $lefs\ngds: $gds\nlibs: $libs\nverilog: $verilog\n";
  
+#"CLOCK_TREE_SYNTH": 0,
+
 print <<EOF
 {
     "DESIGN_NAME": "user_proj_example",
     "CELLS_DIR": "dir::../../cells",
     "DESIGN_IS_CORE": 0,
     "VERILOG_FILES": ["dir::../../verilog/rtl/defines.v", "dir::../../verilog/rtl/user_proj_example.v"],
-    "EXTRA_LEFS": ["ref::\$CELLS_DIR/lef/*.lef"],
-    "EXTRA_GDS_FILES": ["ref::\$CELLS_DIR/gds/*.gds"],
+    "EXTRA_LEFS": ["$lefs"],
+    "EXTRA_GDS_FILES": ["$gds"],
     "EXTRA_LIBS": ["$libs"],
     "VERILOG_FILES_BLACKBOX": ["$verilog"],
     "PLACE_SITE": "GF018hv5v_green_sc9",
@@ -26,7 +28,6 @@ print <<EOF
     "GPL_CELL_PADDING": 0,
     "DPL_CELL_PADDING": 4,
     "SYNTH_READ_BLACKBOX_LIB": 1,
-    "CLOCK_TREE_SYNTH": 0,
     "DESIGN_IS_CORE": 0,
     "CLOCK_PERIOD": 10,
     "CLOCK_PORT": "wb_clk_i",
