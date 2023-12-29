@@ -1,0 +1,172 @@
+v 20130925 2
+C 45800 43000 1 0 0 vdc-1.sym
+{
+T 46500 43650 5 10 1 1 0 0 1
+refdes=VDD
+T 46500 43850 5 10 0 0 0 0 1
+device=VOLTAGE_SOURCE
+T 46500 44050 5 10 0 0 0 0 1
+footprint=none
+T 46500 43450 5 10 1 1 0 0 1
+value=DC 'SUPPLY'
+}
+C 48700 38900 1 0 0 cvstitleblock-1.sym
+{
+T 49300 39300 5 10 1 1 0 0 1
+date=2019-08-23
+T 53200 39300 5 10 1 1 0 0 1
+rev=$Revision$
+T 53200 39000 5 10 1 1 0 0 1
+auth=<stdcelllib@nospam.chipforge.org>
+T 49300 39600 5 10 1 1 0 0 1
+fname=BUF2_tb.sch
+T 51900 40100 5 14 1 1 0 4 1
+title=BUF2 - non-inverting Buffer, 2x driver strength 
+}
+T 49300 39000 9 10 1 0 0 0 1
+1
+T 50800 39000 9 10 1 0 0 0 1
+1
+C 42100 41500 1 0 0 spice-include-1.sym
+{
+T 42200 41800 5 10 0 1 0 0 1
+device=include
+T 42200 41900 5 10 1 1 0 0 1
+refdes=A4
+T 42600 41600 5 10 1 1 0 0 1
+file=TBench/spice/BUF2_tb.cmd
+}
+C 42100 44100 1 0 0 spice-directive-1.sym
+{
+T 42200 44400 5 10 0 1 0 0 1
+device=directive
+T 42200 44500 5 10 1 1 0 0 1
+refdes=A1
+T 42200 44200 5 10 1 1 0 0 1
+value=.PARAM SUPPLY=5.0
+}
+C 42100 43100 1 0 0 spice-model-1.sym
+{
+T 42200 43700 5 10 1 1 0 0 1
+refdes=A2
+T 43400 43400 5 10 1 1 0 0 1
+model-name=BUF2
+T 42600 43200 5 10 1 1 0 0 1
+file=Library/spice/BUF2.cir
+}
+C 47800 41100 1 0 0 vpulse-1.sym
+{
+T 48500 41750 5 10 1 1 0 0 1
+refdes=V2
+T 48500 41950 5 10 0 0 0 0 1
+device=vpulse
+T 48500 42150 5 10 0 0 0 0 1
+footprint=none
+T 44500 41850 5 10 1 1 0 0 1
+value=pulse 0 'SUPPLY' 0.5n 7.5n 7.5n 7.5n 30n
+}
+N 48100 42300 48100 42500 4
+C 45900 44400 1 0 0 vdd-1.sym
+C 46000 42500 1 0 0 gnd-1.sym
+N 46100 44400 46100 44200 4
+{
+T 46100 44400 5 10 1 1 0 0 1
+netname=VDD
+}
+N 46100 42800 46100 43000 4
+{
+T 46100 42800 5 10 1 1 0 0 1
+netname=GND
+}
+C 48000 40800 1 0 0 gnd-1.sym
+C 55600 41000 1 0 0 gnd-1.sym
+C 55500 42300 1 270 0 capacitor-1.sym
+{
+T 56200 42100 5 10 0 0 270 0 1
+device=CAPACITOR
+T 56000 42100 5 10 1 1 270 0 1
+refdes=CL
+T 56400 42100 5 10 0 0 270 0 1
+symversion=0.1
+T 55800 41600 5 10 1 1 0 0 1
+value=10n
+}
+C 54500 42400 1 0 0 resistor-2.sym
+{
+T 54900 42750 5 10 0 0 0 0 1
+device=RESISTOR
+T 54700 42700 5 10 1 1 0 0 1
+refdes=RL
+T 54700 42200 5 10 1 1 0 0 1
+value=100k
+}
+N 55400 42500 55700 42500 4
+{
+T 55400 42600 5 10 1 1 0 0 1
+netname=resp
+}
+N 55700 42500 55700 42300 4
+N 55700 41400 55700 41300 4
+N 48100 42500 49700 42500 4
+{
+T 48700 42600 5 10 1 1 0 0 1
+netname=stim
+}
+N 50800 42500 51500 42500 4
+{
+T 51100 42600 5 10 1 1 0 0 1
+netname=A
+}
+N 52600 42500 53200 42500 4
+{
+T 52800 42600 5 10 1 1 0 0 1
+netname=Z
+}
+N 54300 42500 54500 42500 4
+C 49700 42100 1 0 0 BUF2.sym
+{
+T 49992 42392 5 16 1 1 0 0 1
+device=BUF2
+T 49992 42889 5 10 1 1 0 0 1
+refdes=X1
+T 51592 43292 5 10 0 0 0 0 1
+footprint=none
+T 49700 42100 5 10 0 1 0 0 1
+value=BUF2
+}
+C 51500 42100 1 0 0 BUF2.sym
+{
+T 51792 42392 5 16 1 1 0 0 1
+device=BUF2
+T 51792 42889 5 10 1 1 0 0 1
+refdes=XUT
+T 53392 43292 5 10 0 0 0 0 1
+footprint=none
+T 51500 42100 5 10 0 1 0 0 1
+value=BUF2
+}
+N 50300 42100 53800 42100 4
+N 50300 42900 53800 42900 4
+C 52000 41800 1 0 0 gnd-1.sym
+N 46100 44300 52100 44300 4
+N 52100 44300 52100 42900 4
+C 53200 42100 1 0 0 FO4.sym
+{
+T 53492 42392 5 16 1 1 0 0 1
+device=FO4
+T 53492 42889 5 10 1 1 0 0 1
+refdes=X2
+T 55092 43292 5 10 0 0 0 0 1
+footprint=none
+T 53200 42100 5 10 0 0 0 0 1
+value=FO4
+}
+C 42100 42300 1 0 0 spice-model-1.sym
+{
+T 42200 42900 5 10 1 1 0 0 1
+refdes=A3
+T 43400 42600 5 10 1 1 0 0 1
+model-name=FO4
+T 42600 42400 5 10 1 1 0 0 1
+file=Library/spice/FO4.cir
+}

@@ -1,11 +1,13 @@
 .DESCRIPTION "a 3-1-input OR-AND-Invert gate"
 .SEE_ALSO "OAI31 - a 3-1-input OR-AND-Invert gate"
-.ORDER "Gate Drain Source MOSFET"
-A Y vdd pmos
-B Y 1 pmos
-B1 1 3 pmos
-B2 3 vdd pmos
-A Y 2 nmos
-B 2 gnd nmos
-B1 2 gnd nmos
-B2 2 gnd nmos
+.inputs A B B1 B2
+.outputs Y
+.ORDER "MOSFET Gate Drain Source"
+pmos A Y vdd
+pmos B Y 1
+pmos B1 1 3
+pmos B2 3 vdd
+nmos A Y 2
+nmos B 2 gnd
+nmos B1 2 gnd
+nmos B2 2 gnd

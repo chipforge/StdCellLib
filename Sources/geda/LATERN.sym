@@ -1,0 +1,93 @@
+v 20130925 2
+B 300 300 1200 1600 3 10 1 0 -1 -1 0 -1 -1 -1 -1 -1
+V 250 600 50 6 0 0 0 -1 -1 0 -1 -1 -1 -1 -1
+P 1800 1600 1500 1600 1 0 0
+{
+T 1500 1650 5 10 0 0 0 6 1
+pintype=out
+T 1442 1592 9 10 1 1 0 6 1
+pinlabel=Q
+T 1592 1642 5 10 0 1 0 0 1
+pinnumber=1
+T 1500 1650 5 10 0 0 0 6 1
+pinseq=1
+}
+P 0 1600 300 1600 1 0 0
+{
+T 100 1650 5 10 0 0 0 0 1
+pintype=in
+T 100 1650 5 10 0 0 0 0 1
+pinseq=2
+T 358 1592 9 10 1 1 0 0 1
+pinlabel=D
+T 208 1542 5 10 0 1 0 6 1
+pinnumber=2
+}
+P 700 0 700 300 1 0 0
+{
+T 750 300 5 10 0 0 270 6 1
+pintype=in
+T 700 355 9 10 1 1 90 0 1
+pinlabel=R
+T 650 205 5 10 0 1 90 6 1
+pinnumber=3
+T 750 300 5 10 0 0 270 6 1
+pinseq=3
+}
+P 0 1300 200 1300 1 0 0
+{
+T 100 1350 5 10 0 0 0 0 1
+pintype=in
+T 100 1350 5 10 0 0 0 0 1
+pinseq=4
+T 358 1292 9 10 1 1 0 0 1
+pinlabel=EN
+T 208 1242 5 10 0 1 0 6 1
+pinnumber=4
+}
+P 0 600 200 600 1 0 0
+{
+T 100 650 5 10 0 0 0 0 1
+pintype=clk
+T 100 650 5 10 0 0 0 0 1
+pinseq=5
+T 358 592 9 10 1 1 0 0 1
+pinlabel=XN
+T 208 642 5 10 0 1 0 6 1
+pinnumber=5
+}
+P 1200 2200 1200 1900 1 0 0
+{
+T 1150 1900 5 10 0 0 90 6 1
+pintype=pwr
+T 1200 1845 9 10 1 1 90 6 1
+pinlabel=VDD
+T 1150 1995 5 10 0 1 90 0 1
+pinnumber=6
+T 1150 1900 5 10 0 0 90 6 1
+pinseq=6
+}
+P 1200 0 1200 300 1 0 0
+{
+T 1250 300 5 10 0 0 270 6 1
+pintype=pwr
+T 1200 355 9 10 1 1 90 0 1
+pinlabel=GND
+T 1150 205 5 10 0 1 90 6 1
+pinnumber=7
+T 1250 300 5 10 0 0 270 6 1
+pinseq=7
+}
+T 392 992 5 16 1 1 0 0 1
+device=LATERN
+T 1292 2292 8 10 0 1 0 0 1
+description=Low-active D-Latch w/ clock-enable + high-active Reset
+T 292 1989 5 10 1 1 0 0 1
+refdes=X?
+T 1892 1392 8 10 0 0 0 0 1
+footprint=none
+T -8 -8 8 10 0 1 0 0 1
+source=LATERN.sch
+T 600 100 9 10 0 0 0 0 1
+numslots=0
+V 250 1300 50 6 0 0 0 -1 -1 0 -1 -1 -1 -1 -1

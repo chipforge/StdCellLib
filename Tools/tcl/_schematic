@@ -92,17 +92,19 @@ proc length? {path from to netlist} {
 
     set length 0
     set result 0
+    verb "length from $from to $to is $length for $path"
+
     foreach mosfet $netlist {
         # check mosfet type
-        if {[string compare -nocase [lindex $mosfet 2] $from] == 0} {
-            if {[string compare -nocase [lindex $mosfet 1] $to] == 0} {
+        if {[string compare -nocase [lindex $mosfet 3] $from] == 0} {
+            if {[string compare -nocase [lindex $mosfet 2] $to] == 0} {
                 if {$length == 0} {
                     # 1st founding
                     set length 1
                 }
             } else {
                 # while current $to does not match target, go deeper and check result
-                set result [expr [length? [list $path $mosfet] [lindex $mosfet 1] $to $netlist] +1]
+                set result [expr [length? [list $path $mosfet] [lindex $mosfet 2] $to $netlist] +1]
                 if {$result > $length} {
                     # means, last recursive call gots a longer path
                     set length $result
@@ -125,7 +127,7 @@ proc tpmos {netlist} {
     # collect pmos transistors
     set net {}
     foreach mosfet $netlist {
-        if {[string compare -nocase [lindex $mosfet 3] "pmos"] == 0} {
+        if {[string compare -nocase [lindex $mosfet 0] "pmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -149,7 +151,7 @@ proc tnmos {netlist} {
     # collect nmos transistor
     set net {}
     foreach mosfet $netlist {
-        if {[string compare -nocase [lindex $mosfet 3] "nmos"] == 0} {
+        if {[string compare -nocase [lindex $mosfet 0] "nmos"] == 0} {
             set net [lappend net $mosfet]
         }
     }
@@ -188,8 +190,8 @@ proc eval_mosfets {node ttype netlist} {
     # collect 'ttype' transistor
     set unsorted {}
     foreach mosfet $netlist {
-        if {[string compare -nocase [lindex $mosfet 3] $ttype] == 0} {
-            if {[string compare -nocase [lindex $mosfet 1] $node] == 0} {
+        if {[string compare -nocase [lindex $mosfet 0] $ttype] == 0} {
+            if {[string compare -nocase [lindex $mosfet 2] $node] == 0} {
                 set unsorted [lappend unsorted $mosfet]
             }
         }
@@ -213,7 +215,7 @@ proc eval_nodes {netlist} {
 
     set nodes {}
     foreach mosfet $netlist {
-        set nodes [lappend nodes [lindex $mosfet 2]]
+        set nodes [lappend nodes [lindex $mosfet 3]]
     }
 
     # verbose message
@@ -231,7 +233,7 @@ proc outputs? {netlist} {
     # collect nodes on drain
     set unsorted {}
     foreach mosfet $netlist {
-        set drain [lindex $mosfet 1]
+        set drain [lindex $mosfet 2]
         if {![string is entier $drain]} {
             lappend unsorted $drain
         }
@@ -433,8 +435,8 @@ puts $f "                \\wire\{$xstart\}\{$ystart\}\{$xend\}\{$yend\}"
     proc stages {netlist} {
         foreach mosfet $netlist {
             # If there is a transistor with Y as input we definitely have at least 2 stages
-            verb "Searching for Y: [lindex $mosfet 0]"
-            if {[string compare -nocase [lindex $mosfet 0] "Y"] == 0} {
+            verb "Searching for Y: [lindex $mosfet 1]"
+            if {[string compare -nocase [lindex $mosfet 1] "Y"] == 0} {
                  return 2
             }
         }
@@ -564,7 +566,7 @@ if {[file exist $option_cell]} {
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
 	    verb "pulldown nmos i:$i xgrid:$xgrid xjunc:$xjunc yjunc:$yjunc mosfet:$mosfet"
-            puts_nmos $f [lindex $mosfet 0] [string cat "N" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+            puts_nmos $f [lindex $mosfet 1] [string cat "N" [lindex $mosfet 1]] [expr ($i * $xgrid) + $xjunc ] $yjunc
 	    if {$i >= 1} {
                 # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
                 puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc
@@ -618,7 +620,7 @@ if {[file exist $option_cell]} {
         # layout known mosfet for 'node'
         for {set i 0} {$i < $length} {incr i} {
             set mosfet [lindex $todo $i]
-            puts_pmos $f [lindex $mosfet 0] [string cat "P" [lindex $mosfet 0]] [expr ($i * $xgrid) + $xjunc ] $yjunc
+            puts_pmos $f [lindex $mosfet 1] [string cat "P" [lindex $mosfet 1]] [expr ($i * $xgrid) + $xjunc ] $yjunc
 	    if {$i >= 1} {
                 # TODO: Here we are potentially drawing too many and connecting nets that are not supposed to be connected. We should check for that 
                 puts_wire $f [expr ($i * $xgrid) - $xgrid + $xjunc ] $yjunc [expr ($i * $xgrid) + $xjunc ] $yjunc

@@ -52,14 +52,14 @@
           ; popcorn libs also
           (popcorn-lib)
           (popcorn-cell))
-  (export export-verilog-switch
-          export-verilog-bench)
+  (export verilog:export-switch
+          verilog:export-bench)
   (begin
 
 ;;  ------------    build-in self test  -------------------------------
 
     ; use this switch during development only
-    (define build-in-self-test #t)
+    (define build-in-self-test? #f)
 
 ;;  -------------------------------------------------------------------
 ;;                  AUXILARY FUNCTIONS
@@ -74,7 +74,7 @@
 ;   transfer a list of input symbols into list of strings
 
 ;   Example:
-;   (inputlist->stimulilist '(C B A)) => ("stimuli[2]" "stimuli[1]" "stimuli[0]")
+;   (inputlist->stimulilist '("C" "B" "A")) => ("stimuli[2]" "stimuli[1]" "stimuli[0]")
 
 ;   Definition:
     (define inputlist->stimulilist
@@ -89,9 +89,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (inputlist->stimulilist '(C B A)) '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
+            (if (equal? (inputlist->stimulilist '("C" "B" "A")) '("stimuli[2]" "stimuli[1]" "stimuli[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " inputlist->stimulilist test" (current-error-port))
@@ -108,7 +108,7 @@
 ;   transfer a list of output symbols into list of strings
 
 ;   Example:
-;   (outputlist->responselist '(Z Y X)) => ("response[2]" "response[1]" "response[0]")
+;   (outputlist->responselist '("Z" "Y")) => ("response[1]" "response[0]")
 
 ;   Definition:
     (define outputlist->responselist
@@ -123,9 +123,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (outputlist->responselist '(Z Y X)) '("response[2]" "response[1]" "response[0]"))
+            (if (equal? (outputlist->responselist '("Z" "Y")) '("response[1]" "response[0]"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " outputlist->responselist test" (current-error-port))
@@ -142,7 +142,7 @@
 ;   transfer a list of clock symbols into list of strings
 
 ;   Example:
-;   (clocklist->signallist '(Ckl)) => ("clk_tb")
+;   (clocklist->signallist '("X")) => ("clk_tb")
 
 ;   Definition:
     (define clocklist->signallist
@@ -155,9 +155,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (clocklist->signallist (list 'Clk)) '("clk_tb"))
+            (if (equal? (clocklist->signallist (list "X")) '("clk_tb"))
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " clocklist->signallist test" (current-error-port))
@@ -174,7 +174,7 @@
 ;   transfer lists of ports into well-formed table format
 
 ;   Example:
-;   (portlists->tableformat '(Y A)) => ("\\t%b\\t:%b")
+;   (portlists->tableformat '("Y" "A")) => ("\\t%b\\t:%b")
 
 ;   Definition:
     (define portlists->tableformat
@@ -183,7 +183,7 @@
                 ; empty list?
                 [(null? port-list) ""]
                 ; output port?
-                [(output-space? (car port-list)) (string-append "\\t:\%b" (portlists->tableformat (cdr port-list)))]
+                [(output-space? (car port-list)) (string-append "\\t:\\t\%b" (portlists->tableformat (cdr port-list)))]
                 ; inputs and clock
                 [else (string-append "\\t\%b" (portlists->tableformat (cdr port-list)))]
             )
@@ -191,9 +191,9 @@
     )
 
 ;   Test:   !! replace code by a portable SRFI test environemt
-    (if build-in-self-test
+    (if build-in-self-test?
         (begin
-            (if (equal? (portlists->tableformat '(A Y)) "\\t%b\\t:%b")
+            (if (equal? (portlists->tableformat '("A" "Y")) "\\t%b\\t:\\t%b")
                 (display "++ passed" (current-error-port))
                 (display "-- failed" (current-error-port)))
             (display " portlists->tableformat test" (current-error-port))
@@ -208,16 +208,16 @@
 ;;  ------------    export verilog header   ---------------------------
 
 ;   Contract:
-;   export-verilog-header : cell purspose-string-> --
+;   verilog:export-header : cell purspose-string-> --
 
 ;   Purpose:
 ;   generate Verilog Header on STDOUT
 
 ;   Example:
-;   (export-verilog-header INV-cell "Verilog Model") => --
+;   (verilog:export-header INV-cell "Verilog Model") => --
 
 ;   Definition:
-    (define export-verilog-header
+    (define verilog:export-header
         (lambda (cell purpose-string)
             (let ((at-port current-output-port))
                 (begin
@@ -236,7 +236,7 @@
 //  Cell:           ~a
 //
 //  Purpose:        ~a
-//                  proudly AUTOGENERATED by \"Popcorn\" R7RS Scheme tool
+//                  AUTOGENERATED by \"Popcorn\" R7RS Scheme tool
 //
 //  ************    IEEE Std 1364-1995 (Verilog '95 HDL)    ***********
 //
@@ -271,21 +271,22 @@
 ;;  ------------    export verilog footer   ---------------------------
 
 ;   Contract:
-;   export-verilog-footer : -> --
+;   verilog:export-footer : -> --
 
 ;   Purpose:
 ;   generate Verilog Footer on STDOUT
 
 ;   Example:
-;   (export-verilog-footer) => --
+;   (verilog:export-footer) => --
 
 ;   Definition:
-    (define export-verilog-footer
+    (define verilog:export-footer
         (lambda ()
             (let ((at-port current-output-port))
                 (begin
                     (format (at-port)
-"endmodule
+"
+endmodule
 "                   )
                 )
             )
@@ -293,22 +294,22 @@
     )
 
 ;;  -------------------------------------------------------------------
-;;                  WRITING CELL DESCRIPTIONS
+;;                  WRITING VERILOG MODULE
 ;;  -------------------------------------------------------------------
 
 ;;  ------------    export verilog module   ---------------------------
 
 ;   Contract:
-;   export-verilog-module : cell -> --
+;   verilog:export-module : cell -> --
 
 ;   Purpose:
 ;   generate Verilog '95 module frame on STDOUT
 
 ;   Example:
-;   (export-verilog-module INV-cell) => --
+;   (verilog:export-module INV-cell) => --
 
 ;   Definition:
-    (define export-verilog-module
+    (define verilog:export-module
         (lambda (cell)
             (let ((at-port current-output-port))
                 (format (at-port)
@@ -317,13 +318,13 @@
     output      ~a;
     input       ~a;
 
-    parameter vdd = 1'b1;
-    parameter gnd = 1'b0;
+    parameter VDD = 1'b1;
+    parameter GND = 1'b0;
 
 "                   (cell-id cell)
-                    (stringlist->csv (symbollist->stringlist (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell))))
-                    (stringlist->csv (symbollist->stringlist (cell-outputs cell)))
-                    (stringlist->csv (symbollist->stringlist (cell-inputs cell)))
+                    (stringlist->csv (append (cell-outputs cell) (cell-inputs cell) (cell-clocks cell)))
+                    (stringlist->csv (cell-outputs cell))
+                    (stringlist->csv (cell-inputs cell))
                 )
             )
         )
@@ -332,16 +333,16 @@
 ;;  ------------    export verilog mosfet   ---------------------------
 
 ;   Contract:
-;   export-verilog-mosfet : transistor -> --
+;   verilog:export-mosfet : transistor -> --
 
 ;   Purpose:
 ;   generate Verilog '95 transistor line on STDOUT
 
 ;   Example:
-;   (export-verilog-mosfet '#(nmos A Y VDD substrate 1 1 -1)) => --
+;   (verilog:export-mosfet '#(nmos A Y GND GND 1 1 -1)) => --
 
 ;   Definition:
-    (define export-verilog-mosfet
+    (define verilog:export-mosfet
         (lambda (mosfet)
             (let ((at-port current-output-port))
                 (format (at-port)
@@ -355,19 +356,19 @@
 ;;  ------------    export verilog netlist  ---------------------------
 
 ;   Contract:
-;   export-verilog-netlist : cell -> --
+;   verilog:export-netlist : cell -> --
 
 ;   Purpose:
 ;   generate Verilog '95 netlist frame on STDOUT
 
 ;   Example:
-;   (export-verilog-netlist INV-cell) => --
+;   (verilog:export-netlist INV-cell) => --
 
 ;   Definition:
-    (define export-verilog-netlist
+    (define verilog:export-netlist
         (lambda (cell)
             (let ((at-port current-output-port))
-                (map (lambda (n) (export-verilog-mosfet n)) (cell-netlist cell))
+                (map (lambda (n) (verilog:export-mosfet n)) (cell-netlist cell))
             )
         )
     )
@@ -375,27 +376,27 @@
 ;;  ------------    export verilog switch   ---------------------------
 
 ;   Contract:
-;   export-verilog-switch : cell -> --
+;   verilog:export-switch : cell -> --
 
 ;   Purpose:
 ;   generate Verilog Switch level description on STDOUT
 
 ;   Example:
-;   (export-verilog-switch INV-cell) => --"
+;   (verilog:export-switch INV-cell) => --"
 
 ;   Definition:
-    (define export-verilog-switch
+    (define verilog:export-switch
         (lambda (cell)
             (let ((at-port current-output-port))
                 (begin
                     ; header
-                    (export-verilog-header cell "Verilog Switch Model")
+                    (verilog:export-header cell "Verilog Switch Model")
                     ; module
-                    (export-verilog-module cell)
+                    (verilog:export-module cell)
                     ; stages
-                    (export-verilog-netlist cell)
+                    (verilog:export-netlist cell)
                     ; footer
-                    (export-verilog-footer)
+                    (verilog:export-footer)
                 )
             )
         )
@@ -408,16 +409,16 @@
 ;;  ------------    export verilog definitions  -----------------------
 
 ;   Contract:
-;   export-verilog-definitions : -> --
+;   verilog:export-definitions : -> --
 
 ;   Purpose:
 ;   generate Verilog work bench definitions on STDOUT
 
 ;   Example:
-;   (export-verilog-definitions INV-cell) => --
+;   (verilog:export-definitions INV-cell) => --
 
 ;   Definition:
-    (define export-verilog-definitions
+    (define verilog:export-definitions
         (lambda (cell)
             (let ((at-port current-output-port))
                 (begin
@@ -461,16 +462,16 @@ module ~a_bench (
 ;;  ------------    export verilog globals  ---------------------------
 
 ;   Contract:
-;   export-verilog-globals : -> --
+;   verilog:export-globals : -> --
 
 ;   Purpose:
 ;   generate Verilog global signal definitions on STDOUT
 
 ;   Example:
-;   (export-verilog-globals) => --
+;   (verilog:export-globals) => --
 
 ;   Definition:
-    (define export-verilog-globals
+    (define verilog:export-globals
         (lambda ()
             (let ((at-port current-output-port))
                 (begin
@@ -505,16 +506,16 @@ end
 ;;  ------------    export verilog dut  -------------------------------
 
 ;   Contract:
-;   export-verilog-dut : -> --
+;   verilog:export-dut : -> --
 
 ;   Purpose:
 ;   generate Verilog device-under-test definitions on STDOUT
 
 ;   Example:
-;   (export-verilog-dut INV-cell) => --
+;   (verilog:export-dut INV-cell) => --
 
 ;   Definition:
-    (define export-verilog-dut
+    (define verilog:export-dut
         (lambda (cell)
             (let ((input-width (length (cell-inputs cell)))
                   (output-width (length (cell-outputs cell)))
@@ -542,16 +543,16 @@ end
 ;;  ------------    export verilog stimulus ---------------------------
 
 ;   Contract:
-;   export-verilog-stimulus : -> --
+;   verilog:export-stimulus : -> --
 
 ;   Purpose
 ;   generate Verilog stimulus functionality on STDOUT
 
 ;   Example:
-;   (export-verilog-stimulus INV-cell) => --
+;   (verilog:export-stimulus INV-cell) => --
 
 ;   Definition:
-    (define export-verilog-stimulus
+    (define verilog:export-stimulus
         (lambda (cell)
             (let ((at-port current-output-port))
                 (begin
@@ -585,7 +586,7 @@ initial
 begin
     t_initialize;
 
-    $display(\".table\");
+    $display(\"..table\");
 
     for (i=0; i<2**INWIDTH; i=i+1)
         begin
@@ -593,7 +594,7 @@ begin
         t_step(1);
         end
 
-    $display(\".endtable\");
+    $display(\"..endtable\");
     $finish;
 end
 
@@ -616,31 +617,31 @@ end
 ;;  ------------    export verilog work bench   -----------------------
 
 ;   Contract:
-;   export-verilog-bench : cell -> --
+;   verilog:export-bench : cell -> --
 
 ;   Purpose:
 ;   generate Verilog Stimulus (kind of work bench) description on STDOUT
 
 ;   Example:
-;   (export-verilog-bench INV-cell) => --"
+;   (verilog:export-bench INV-cell) => --"
 
 ;   Definition:
-    (define export-verilog-bench
+    (define verilog:export-bench
         (lambda (cell)
             (let ((at-port current-output-port))
                 (begin
                     ; header
-                    (export-verilog-header cell "Verilog Stimulus Work Bench")
+                    (verilog:export-header cell "Verilog Stimulus Work Bench")
                     ; definions
-                    (export-verilog-definitions cell)
+                    (verilog:export-definitions cell)
                     ; globals
-                    (export-verilog-globals)
+                    (verilog:export-globals)
                     ; device under test
-                    (export-verilog-dut cell)
+                    (verilog:export-dut cell)
                     ; stimulus
-                    (export-verilog-stimulus cell)
+                    (verilog:export-stimulus cell)
                     ; footer
-                    (export-verilog-footer)
+                    (verilog:export-footer)
                 )
             )
         )

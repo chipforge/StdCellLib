@@ -37,12 +37,20 @@
 
 include include.mk
 
-DISTRIBUTION =  $(CATALOGDIR)/*.cell \
+DISTRIBUTION =  $(CATALOGDIR)/ \
                 $(DOCUMENTSDIR)/*.pdf \
-                $(SIMULATIONDIR) \
+		$(TECHDIR) \
+#                $(RELEASEDIR) \
+#               $(SIMULATIONDIR) \
                 $(SOURCESDIR) \
                 $(SYNTHESISDIR) \
-                $(TBENCHDIR)
+                $(TBENCHDIR) \
+
+
+#   collect available cells
+
+IGNORE := $(wildcard $(CATALOGDIR)/*.mk $(CATALOGDIR)/GNUmakefile)
+CELLS := $(notdir $(filter-out $(IGNORE), $(wildcard $(CATALOGDIR)/*)))
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -65,6 +73,7 @@ help:
 	$(ECHO) "    doc        - generate data book"
 	$(ECHO) ""
 	$(ECHO) "    alf [CELL=<cell>]      - generate ALF export"
+	$(ECHO) "    record [CELL=<cell>]   - measure / characterize cell"
 	$(ECHO) "    magic [CELL=<cell>]    - generate MAGIC layout"
 	$(ECHO) "    spice [CELL=<cell>]    - generate SPICE models"
 	$(ECHO) "    svg [CELL=<cell>]      - generate SVG layout"
@@ -81,8 +90,11 @@ help:
 
 .PHONY: dist
 dist: clean
+	echo 1 >Catalog/.done
+	cd Catalog && ../Tools/perl/buildreport.pl && cd ..
 	$(ECHO) "---- build a tarball with all important files ----"
 	$(TAR) -cvf $(PROJECT)_$(DATE).tgz $(DISTRIBUTION)
+	echo $(PROJECT)_$(DATE).tgz has been written.
 
 #   well, 'clean' directories before distributing
 
@@ -99,7 +111,7 @@ clean:
 
 #   prepare Popcorn before usage
 
-.PHONY: tools 
+.PHONY: tools
 tools:
 	$(MAKE) -C $(TOOLSDIR)/popcorn -f GNUmakefile $@
 
@@ -116,12 +128,20 @@ catalog:   tools
 	$(MAKE) -C $(CATALOGDIR) -f GNUmakefile $@
 
 #   ----------------------------------------------------------------
-#               GENERATION TARGETS
+#               CELL TARGETS
 #   ----------------------------------------------------------------
+
+#   generate truth table
 
 .PHONY: table-file
 table-file:
 	$(MAKE) -f simulation.mk CELL=$(CELL) table-file
+
+#   measure / characterize cells
+
+.PHONY: record
+record:
+	$(MAKE) -f simulation.mk CELL=$(CELL) record
 
 #   ----------------------------------------------------------------
 #               DOCUMENTATION TARGETS

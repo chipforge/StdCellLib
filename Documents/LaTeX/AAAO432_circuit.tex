@@ -1,0 +1,61 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/AAAO432_circuit.tex
+%%
+%%  Purpose:        Circuit File for AAAO432
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{24}{18}
+            \usgate
+            \gate[\inputs{2}]{and}{5}{3}{R}{}{}    % AND
+            \gate[\inputs{3}]{and}{5}{9}{R}{}{}    % AND
+            \gate[\inputs{4}]{and}{5}{16}{R}{}{}   % AND
+            \gate[\inputs{3}]{nor}{12}{9}{R}{}{}   % NOR
+            \gate{not}{19}{9}{R}{}{}   % NOT
+            \pin{1}{1}{L}{A}     % pin A
+            \pin{1}{5}{L}{A1}    % pin A1
+            \pin{1}{7}{L}{B}     % pin B
+            \pin{1}{9}{L}{B1}    % pin B1
+            \pin{1}{11}{L}{B2}   % pin B2
+            \pin{1}{13}{L}{C}    % pin C
+            \pin{1}{15}{L}{C1}   % pin C1
+            \pin{1}{17}{L}{C2}   % pin C2
+            \pin{1}{19}{L}{C3}   % pin C3
+            \wire{9}{3}{9}{7}    % wire between AND and NOR
+            \wire{9}{11}{9}{16}  % wire between AND and NOR
+            \pin{23}{9}{R}{Z}    % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

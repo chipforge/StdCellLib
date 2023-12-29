@@ -51,6 +51,8 @@ SYNTHESISDIR =  Synthesis
 TEMPDIR =       Intermediate
 TBENCHDIR =     TBench
 TOOLSDIR =      Tools
+RELEASEDIR =    Library
+TECHDIR = 	Tech
 
 #   tool variables
 
@@ -70,4 +72,3 @@ SCHEMATIC ?=    $(TOOLSDIR)/tcl/_schematic -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOG
 MANUAL ?=       $(TOOLSDIR)/tcl/_manpage -o $(DOCUMENTSDIR)/LaTeX -i $(CATALOGDIR) -g LaTeX
 SWITCH ?=       $(TOOLSDIR)/tcl/_switch -o $(SOURCESDIR)/verilog -i $(CATALOGDIR) -f verilog
 
-.SUFFIXES:      # delete all default suffix rules

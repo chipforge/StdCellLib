@@ -1,0 +1,55 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/LATERN_circuit.tex
+%%
+%%  Purpose:        Circuit File for LATERN
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{21}{10}
+            \usgate
+            \gate{nor}{5}{4}{R}{}{}
+            \flipflop[\clockin{p}\resetin{p}]{d}{15}{6}{R}{}{}
+            \pin{1}{8}{L}{D}   % pin D
+            \wire{2}{8}{11}{8}
+            \pin{1}{6}{L}{EN}  % pin EN
+            \pin{1}{2}{L}{XN}  % pin XN
+            \wire{9}{4}{10}{4}
+            \wire{10}{4}{10}{6}
+            \wire{10}{6}{11}{6}
+            \pin{15}{1}{D}{R}  % pin R
+            \pin{20}{8}{R}{Q}  % pin Q
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

@@ -1,0 +1,9 @@
+*.mag 
+*.cell
+*.svg
+*.sp
+*.pxi
+!INV.cell
+__pycache__
+libresilicon.lib
+libresilicon.lef

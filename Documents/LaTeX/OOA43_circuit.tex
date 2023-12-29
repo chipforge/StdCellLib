@@ -1,0 +1,58 @@
+%%  ************    LibreSilicon's StdCellLibrary   *******************
+%%
+%%  Organisation:   Chipforge
+%%                  Germany / European Union
+%%
+%%  Profile:        Chipforge focus on fine System-on-Chip Cores in
+%%                  Verilog HDL Code which are easy understandable and
+%%                  adjustable. For further information see
+%%                          www.chipforge.org
+%%                  there are projects from small cores up to PCBs, too.
+%%
+%%  File:           StdCellLib/Documents/LaTeX/OOA43_circuit.tex
+%%
+%%  Purpose:        Circuit File for OOA43
+%%
+%%  ************    LaTeX with circdia.sty package      ***************
+%%
+%%  ///////////////////////////////////////////////////////////////////
+%%
+%%  Copyright (c) 2019 by chipforge <stdcelllib@nospam.chipforge.org>
+%%  All rights reserved.
+%%
+%%      This Standard Cell Library is licensed under the Libre Silicon
+%%      public license; you can redistribute it and/or modify it under
+%%      the terms of the Libre Silicon public license as published by
+%%      the Libre Silicon alliance, either version 1 of the License, or
+%%      (at your option) any later version.
+%%
+%%      This design is distributed in the hope that it will be useful,
+%%      but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%%      See the Libre Silicon Public License for more details.
+%%
+%%  ///////////////////////////////////////////////////////////////////
+\begin{center}
+    Circuit
+    \begin{figure}[h]
+        \begin{center}
+            \begin{circuitdiagram}{24}{14}
+            \usgate
+            \gate[\inputs{4}]{or}{5}{10}{R}{}{}   % OR
+            \gate[\inputs{3}]{or}{5}{3}{R}{}{}    % OR
+            \gate[\inputs{2}]{nand}{12}{6}{R}{}{} % NAND
+            \gate{not}{19}{6}{R}{}{} % NOT
+            \pin{1}{1}{L}{A}     % pin A
+            \pin{1}{3}{L}{A1}    % pin A1
+            \pin{1}{5}{L}{A2}    % pin A2
+            \pin{1}{7}{L}{B}     % pin B
+            \pin{1}{9}{L}{B1}    % pin B1
+            \pin{1}{11}{L}{B2}   % pin B2
+            \pin{1}{13}{L}{B3}   % pin B3
+            \wire{9}{3}{9}{4}    % wire between OR and NAND
+            \wire{9}{10}{9}{8}   % wire between OR and NAND
+            \pin{23}{6}{R}{Z}   % pin Z
+            \end{circuitdiagram}
+        \end{center}
+    \end{figure}
+\end{center}

@@ -17,7 +17,8 @@
 #
 #   ////////////////////////////////////////////////////////////////
 #
-#   Copyright (c) 2018 by chipforge <hsank@nospam.chipforge.org>
+#   Copyright (c)   2018, 2019 by
+#                   chipforge - <popcorn@nospam.chipforge.org>
 #   All rights reserved.
 #
 #       This Standard Cell Library is licensed under the Libre Silicon
@@ -51,11 +52,19 @@ RM ?=           rm -f
 TAR ?=          tar -zh
 DATE :=         $(shell date +%Y%m%d)
 
-#   project tools
+#   project settings
 
-POPCORN ?=      ../Tools/tcl/popcorn
-CELLS =         INV.cell NAND2.cell NAND3.cell AND4.cell NOR2.cell NOR3.cell OR4.cell
-LIMIT =         4
+CELLS =
+
+#   Attention! limit/buffer changes will impact cell catalog
+
+LIMIT ?=        5
+BUFFER ?=       $(LIMIT)    # recommended, but free to reduce
+LEVEL ?=        $(LIMIT)    # hack for fencing expand algorithmen
+DESCR ?=        '?'
+
+#POPCORN ?=      ../Tools/tcl/popcorn
+POPCORN ?=      ../Tools/popcorn/popcorn -l $(LEVEL) -b $(BUFFER) -D $(DESCR)
 
 #   ----------------------------------------------------------------
 #               DEFAULT TARGETS
@@ -72,36 +81,162 @@ help:
 	$(ECHO) "    help       - print this help screen"
 	$(ECHO) "    clean      - clean up all intermediate files"
 	$(ECHO) ""
-	$(ECHO) "    catalog    - compile catalog cells"
+	$(ECHO) "    catalog    - compile *all* catalog cells (see list below)"
+	$(ECHO) "    cell CELL=<cell> - compile up to dedicated catalog cell"
 	$(ECHO) ""
-
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) "    available cells [limit=" $(LIMIT) "+ buffer=" $(BUFFER)"]:"
+	$(ECHO) "-------------------------------------------------------------------"
+	$(ECHO) ""
+	$(ECHO) $(CELLS)
+	$(ECHO) ""
 
 .PHONY: clean
 clean:
 #	$(RM) *.aux *.idx *.log *.toc *.out
+	$(RM) $(CELLS)
+	#$(RM) AND4.cell NAND2.cell NAND3.cell NOR2.cell NOR3.cell OR4.cell
+	$(RM) *.usage *.mag *.svg *.ext *.res.ext *.spice *.nodes *.sp *.sim *.al *.res.lump *.png *.err *.log *.libtemplate *.lib *.truthtable.html *.truthtable.v *.truthtable.txt outputlib/*.gds outputlib/*.lef outputlib/*.mag debuglib/* *.running *.mag.drc *.drc *.predrc *.done *.lef *_debug.oas *_debug.gds *.drc.tcl
 
 #   ----------------------------------------------------------------
-#               DOCUMENTATION TARGETS
+#               CELL TARGETS
 #   ----------------------------------------------------------------
+
+#   include makefile with highest number of (allowed) stacked transistors
+
+ifeq ($(LIMIT),2)
+    include stacked2_cells.mk
+else
+ifeq ($(LIMIT),3)
+    include stacked3_cells.mk
+else
+ifeq ($(LIMIT),4)
+    include stacked4_cells.mk
+else
+ifeq ($(LIMIT),5)
+    include stacked5_cells.mk
+endif
+endif
+endif
+endif
 
 .PHONY: catalog
-catalog:    $(CELLS)
+catalog:    $(CELLS) 
+	
+.PHONY: layout
+layout: libresilicon.sp libresilicon.lef libresilicon.lib demoboard.mag doc/StdCellLib.pdf demoboard.svg
 
-AND4.cell: NAND3.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
 
-NAND2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+libresilicon.sp: *.cell ../Tech/librecell_tech.py ../Tools/perl/cell2spice.pl ../Tools/perl/librecells.pl ../Tech/nmos.sp
+	../Tools/perl/cell2spice.pl
+	../Tools/perl/librecells.pl
+	rm -f libresilicon.lib
+	../Tools/perl/libgen.pl >libresilicon.libtemplate
+	libertymerge -b libresilicon.libtemplate -o libresilicon.lib -u *.lib
 
-NAND3.cell: NAND2.cell
-	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+demoboard.mag: *.cell libresilicon.sp
+	perl ../Tools/perl/demoboard.pl >demoboard.mag
 
-NOR2.cell: INV.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
+.PHONY: buildreport
+buildreport:
+	bash ../Tools/reporter.sh
 
-NOR3.cell: NOR2.cell
-	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
+libresilicon.lef: *.cell libresilicon.sp
+	../Tools/perl/lefgen.pl outputlib/*.lef >libresilicon.lef
 
-OR4.cell: NOR3.cell
-	$(POPCORN) -l $(LIMIT) -n nor -b $(LIMIT) -c $@ $<
+libresilicon.lib: *.cell libresilicon.sp
+	../Tools/perl/libgen.pl >libresilicon.libtemplate
+	rm -f libresilicon.lib
+	libertymerge -b libresilicon.libtemplate -o libresilicon.lib -u *.lib
 
+
+.PHONY: qflow
+qflow:	libresilicon.lef libresilicon.lib
+	sudo mkdir -p /usr/local/share/qflow/tech/ls050
+	sudo cp libresilicon.lef /usr/local/share/qflow/tech/ls050/ls050_stdcells.lef
+	sudo cp libresilicon.lib /usr/local/share/qflow/tech/ls050/ls05_stdcells.lib
+
+#AND4.cell: NAND3.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ -b $(LIMIT) $< 
+#
+#NAND2.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+#
+#NAND3.cell: NAND2.cell
+#	$(POPCORN) -l $(LIMIT) -n nand -c $@ $<
+#
+#AOI21.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n aoi -c $@ $<
+#
+#OAI21.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n oai -c $@ $<
+#
+#NOR2.cell: INV.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ $<
+#
+#NOR3.cell: NOR2.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ $< 
+#
+#OR4.cell: NOR3.cell
+#	$(POPCORN) -l $(LIMIT) -n nor -c $@ -b $(LIMIT) $<
+
+doc/StdCellLib.pdf: *.cell libresilicon.sp
+#	doc/docu.sh
+
+.PHONY: importQflow
+importQflow:
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/gscl45nm/gscl45nm.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu018/osu018_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu035/osu035_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/local/share/qflow/tech/osu050/osu050_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu018/osu018_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu035/osu035_stdcells.sp
+	../Tools/perl/spice2cell.pl /usr/share/qflow/tech/osu050/osu050_stdcells.sp
+
+mags=$(wildcard *.mag)
+svgs=$(mags:.mag=.svg)
+
+.PHONY: svg
+svg: $(svgs)
+
+test:
+	echo For debugging run "export PySpiceLogLevel=DEBUG" before make
+	lctime --debug --liberty libresilicon.lib \
+	--include ../Tech/libresilicon.m \
+	--spice INV.spice \
+	--cell INV \
+	--output INV.lib
+	libertyviz -l INV.lib --cell INV --pin Y --related-pin A --table cell_rise
+	libertymerge -b libresilicon.lib -o output_liberty.lib -u INV.lib AND2X1.lib
+
+test2:
+	/usr/local/bin/lctime --debug --liberty ~/FreePDK45/osu_soc/lib/files/gscl45nm.lib \
+	--include ~/FreePDK45/osu_soc/lib/files/gpdk45nm.m \
+	--spice ~/FreePDK45/osu_soc/lib/source/netlists/AND2X1.pex.netlist \
+	--cell AND2X1 \
+	--output /tmp/and2x1.lib
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin A --table cell_rise &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin B --table rise_transition &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin A --table cell_fall &
+	libertyviz -l /tmp/and2x1.lib --cell AND2X1 --pin Y --related-pin B --table fall_transition &
+
+
+%.svg : %.mag
+	perl ../Tools/perl/mag2svg.pl $@
+
+%.truthtable.v : %.cell
+	perl ../Tools/perl/truthtable.pl --format=verilog $^ >$@
+
+%.truthtable.txt : %.cell
+	perl ../Tools/perl/truthtable.pl --format=text $^ >$@
+
+%.truthtable.html : %.cell
+	perl ../Tools/perl/truthtable.pl --format=html $^ >$@
+
+.PHONY: charter
+charter:
+	perl ../Tools/perl/charter2caravel.pl
+
+
+.PHONY: cell
+cell:       $(CELL)

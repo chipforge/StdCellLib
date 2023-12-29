@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>drc</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>drc_scripts</group-name>
+ <menu-path>tools_menu.drc.end</menu-path>
+ <interpreter>dsl</interpreter>
+ <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
+ <text># Read about DRC scripts in the User Manual under "Design Rule Check (DRC)"
+# These are the design rules for the Libresilicon.com 1um Process node:
+
+report("Libresilicon DRC Rules")
+
+active = input(1)
+nwell = input(2)
+pwell = input(2,7)
+poly = input(3)
+polycontact = input(4)
+diffcontact = input(5)
+contact = polycontact | diffcontact
+metal1 = input(6)
+via1 = input(7)
+metal2 = input(8)
+via2 = input(89) # TODO: CORRECT THE LAYER NUMBER WHEN THE LAYER EXISTS
+metal3 = input(99) # TODO: CORRECT THE LAYER NUMBER WHEN THE LAYER EXISTS
+abutment = input(200)
+gate = poly &amp; active
+polyoveractive = poly &amp; active
+polyoverother = poly - active
+
+l=0.5.micron
+
+# Chapter 3:
+pwell.width(10*l).output("pwell_min_width", "PWELL width violations")
+nwell.width(10*l).output("nwell_min_width", "NWELL width violations")
+# THE DOCUMENTATION SAYS ACTIVE.WIDTH &gt;= 3*l but I think 2*l is better for now.
+active.width(2*l).output("active_min_width", "ACTIVE width violations")
+poly.width(2*l).output("poly_min_width", "POLY width violations")
+polycontact.width(2*l).output("polycontact_min_width", "POLY CONTACT width violations")
+diffcontact.width(2*l).output("diffcontact_min_width", "DIFF CONTACT width violations")
+metal1.width(4*l).output("metal1_min_width", "METAL1 width violations")
+via1.width(2*l).output("via1_min_width", "VIA1 width violations")
+metal2.width(4*l).output("metal2_min_width", "METAL2 width violations")
+via2.width(2*l).output("via2_min_width", "VIA2 width violations")
+metal3.width(6*l).output("metal3_min_width", "METAL3 width violations")
+
+pwell.space(10*l).output("pwell_min_space", "PWELL space violations")
+nwell.space(10*l).output("nwell_min_space", "NWELL space violations")
+active.space(3*l).output("active_min_space", "ACTIVE space violations")
+poly.space(2*l).output("poly_min_space", "POLY space violations")
+polycontact.space(2*l).output("polycontact_min_space", "POLY CONTACT space violations")
+diffcontact.space(2*l).output("diffcontact_min_space", "DIFF CONTACT space violations")
+metal1.space(4*l).output("metal1_min_space", "METAL1 space violations")
+via1.space(3*l).output("via1_min_space", "VIA1 space violations")
+metal2.space(4*l).output("metal2_min_space", "METAL2 space violations")
+via2.space(3*l).output("via2_min_space", "VIA2 space violations")
+metal3.space(4*l).output("metal3_min_space", "METAL3 space violations")
+
+# Chapter 4.1 PWELL rules
+# Can we detect the potential and define DRC rules based on same or different potential?
+
+pwell.separation(nwell,12*l).output("pwell_nwell_separation", "PWELL&lt;-&gt;NWELL separation violations")
+
+# Chapter 4.5 ACTIVE rules
+# TODO: The PDF says 6*l, but 2*l is more reasonable.
+pwell.enclosing(active,2*l).output("pwell_active_enclosing", "Minimum ACTIVE surround by PWELL")
+nwell.enclosing(active,2*l).output("nwell_active_enclosing", "Minimum ACTIVE surround by NWELL")
+
+# Chapter 4.6 POLY rules
+polyoveractive.space(2*l).output("poly_active_separation","Minimum Spacing to POLY over ACTIVE")
+poly.overlap(active,2*l).output("poly_active_overlap","Minimum Gate extension beyond ACTIVE")
+active.overlap(poly,3*l).output("active_poly_overlap","Minimum ACTIVE extension beyond POLY")
+poly.separation(active,1*l).output("poly_active_separation","Minimum Spacing of POLY to ACTIVE")
+nwell.enclosing(poly,1*l).output("nwell_poly_enclosing","Minimum POLY surround by NWELL")
+pwell.enclosing(poly,1*l).output("pwell_poly_enclosing","Minimum POLY surround by PWELL")
+
+# Chapter 4.8 CONTACT Rules
+contact.overlap(poly|active,1*l).output("contact_polyactive_overlap","Minimum Overlap by POLY or ACTIVE")
+contact.separation(gate,2*l).output("contact_gate_separation","Minimum Spacing to Gate")
+polycontact.separation(poly,4*l).output("polycontact_poly_separation","Minimum Spacing of POLY CONTACT other POLY")
+(active&amp;contact).separation((poly&amp;contact),4*l).output("activecontact_polycontact_separation","Minimum Spacing of POLY CONTACT to other POLY")
+
+# Chapter 4.9 METAL1 Rules
+metal1.overlap(contact|via1,1*l).output("metal1_contact_overlap")
+# I dont have an idea how put 2.7.4 into a Klayout design rule
+
+# Chapter 4.10
+via1.separation(contact,2*l).output("via1_contact_separation","Minimum Spacing to CONTACT")
+via1.separation(poly|active,2*l).output("via1_polyactive_separation","Minimum Spacing to POLY or ACTIVE")
+
+# Chapter 4.11
+metal2.overlap(via1,1*l).output("metal2_via1_overlap","Minimum Overlap to VIA1")
+
+</text>
+</klayout-macro>

@@ -1,0 +1,60 @@
+v 20130925 2
+L 300 100 300 700 3 0 0 0 -1 -1
+L 300 100 800 400 3 0 0 0 -1 -1
+L 300 700 800 400 3 0 0 0 -1 -1
+P 1100 400 800 400 1 0 0
+{
+T 800 450 5 10 0 0 0 6 1
+pintype=out
+T 800 450 5 10 0 0 0 6 1
+pinseq=1
+T 742 392 9 10 0 1 0 6 1
+pinlabel=Z
+T 892 442 5 10 0 1 0 0 1
+pinnumber=1
+}
+P 0 400 300 400 1 0 0
+{
+T 100 450 5 10 0 0 0 0 1
+pintype=in
+T 100 450 5 10 0 0 0 0 1
+pinseq=2
+T 358 392 9 10 0 1 0 0 1
+pinlabel=A
+T 208 442 5 10 0 1 0 6 1
+pinnumber=2
+}
+P 600 800 600 500 1 0 0
+{
+T 650 700 5 10 0 0 270 0 1
+pintype=pwr
+T 650 700 5 10 0 0 270 0 1
+pinseq=3
+T 600 445 9 10 0 1 90 6 1
+pinlabel=VDD
+T 550 595 5 10 0 1 90 0 1
+pinnumber=3
+}
+P 600 0 600 300 1 0 0
+{
+T 550 100 5 10 0 0 90 0 1
+pintype=pwr
+T 550 100 5 10 0 0 90 0 1
+pinseq=4
+T 600 355 9 10 0 1 90 0 1
+pinlabel=GND
+T 550 205 5 10 0 1 90 6 1
+pinnumber=4
+}
+T 292 292 5 16 1 1 0 0 1
+device=FO4
+T 1292 2092 8 10 0 1 0 0 1
+description=FO4 - TBench Load with high (4x) fan-in
+T 292 789 5 10 1 1 0 0 1
+refdes=X?
+T 1892 1192 8 10 0 0 0 0 1
+footprint=none
+T -8 -208 8 10 0 1 0 0 1
+source=FO4.sch
+T 600 -100 9 10 0 0 0 0 1
+numslots=0
